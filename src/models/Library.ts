@@ -7,7 +7,8 @@
 import {
     Column,
     DataType,
-    HasMany, Model,
+    HasMany,
+    Model,
     Table
 } from "sequelize-typescript";
 
@@ -26,6 +27,7 @@ import {BadRequest} from "../util/http-errors";
 @Table({
     modelName: "library",
     tableName: "libraries",
+    timestamps: false,
     validate: {
         isNameUnique: async function(this: Library): Promise<void> {
             if (!(await validateLibraryNameUnique(this))) {
@@ -33,7 +35,8 @@ import {BadRequest} from "../util/http-errors";
                     (`name: Name ${this.name} is already in use`);
             }
         }
-    }
+    },
+    version: false,
 })
 export class Library extends Model {
 

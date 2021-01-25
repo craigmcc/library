@@ -23,6 +23,7 @@ import { BadRequest } from "../util/http-errors";
 @Table({
     modelName: "accessToken",
     tableName: "access_tokens",
+    timestamps: false,
     validate: {
         isTokenUnique: async function(this: AccessToken): Promise<void> {
             if (!(await validateAccessTokenUnique(this))) {
@@ -30,7 +31,8 @@ import { BadRequest } from "../util/http-errors";
                     (`token: Token '${this.token}' is already in use`);
             }
         }
-    }
+    },
+    version: false,
 })
 export class AccessToken extends Model {
 

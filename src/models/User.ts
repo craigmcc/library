@@ -31,6 +31,7 @@ import { BadRequest } from "../util/http-errors";
 @Table({
     modelName: "user",
     tableName: "users",
+    timestamps: false,
     validate: {
         isLibraryIdValid: async function(this: User): Promise<void> {
             if (!(await validateLibraryId(this.libraryId))) {
@@ -45,7 +46,8 @@ import { BadRequest } from "../util/http-errors";
                          + "is already in use`);
             }
         },
-    }
+    },
+    version: false,
 })
 export class User extends Model {
 

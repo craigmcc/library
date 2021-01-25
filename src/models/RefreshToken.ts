@@ -24,6 +24,7 @@ import { BadRequest } from "../util/http-errors";
 @Table({
     modelName: "refreshToken",
     tableName: "refresh_tokens",
+    timestamps: false,
     validate: {
         isTokenUnique: async function(this: RefreshToken): Promise<void> {
             if (!(await validateRefreshTokenUnique(this))) {
@@ -31,7 +32,8 @@ import { BadRequest } from "../util/http-errors";
                     (`token: Token '${this.token}' is already in use`);
             }
         }
-    }
+    },
+    version: false,
 })
 export class RefreshToken extends Model {
 

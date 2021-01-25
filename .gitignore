@@ -1,0 +1,7 @@
+.env.*
+.idea/
+build/
+config/config.json
+dist/
+node_modules/
+test/database.sqlite
