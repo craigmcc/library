@@ -10,6 +10,7 @@ import { Sequelize } from "sequelize-typescript";
 
 import AccessToken from "./AccessToken";
 import Author from "./Author";
+import AuthorVolume from "./AuthorVolume";
 import Library from "./Library";
 import RefreshToken from "./RefreshToken";
 import User from "./User";
@@ -46,14 +47,13 @@ export const Database = ((process.env.NODE_ENV !== "test")
 );
 
 Database.addModels([
-    // Application specific models
+    AccessToken,
     Author,
+    AuthorVolume,
     Library,
+    RefreshToken,
     User,
     Volume,
-    // OAuth integration models
-    AccessToken,
-    RefreshToken,
 ]);
 
 export default Database;

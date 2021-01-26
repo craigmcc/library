@@ -6,6 +6,7 @@
 
 import {
     BelongsTo,
+    BelongsToMany,
     Column,
     DataType,
     ForeignKey,
@@ -16,6 +17,8 @@ import {
 
 // Internal Modules ----------------------------------------------------------
 
+import Author from "./Author";
+import AuthorVolume from "./AuthorVolume";
 import Library from "./Library";
 import {
     validateISBN,
@@ -60,6 +63,9 @@ class Volume extends Model {
         type: DataType.INTEGER,
     })
     id!: number;
+
+    @BelongsToMany(() => Author, () => AuthorVolume)
+    authors!: Author[];
 
     @Column({
         allowNull: true,

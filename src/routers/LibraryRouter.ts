@@ -78,7 +78,7 @@ LibraryRouter.delete("/:libraryId",
     requireSuperuser,
     async (req: Request, res: Response) => {
         res.send(await LibraryServices.remove
-        (parseInt(req.params.libraryId)));
+            (parseInt(req.params.libraryId)));
     });
 
 // Find Library by libraryId
@@ -86,7 +86,7 @@ LibraryRouter.get("/:libraryId",
     requireRegular,
     async (req: Request, res: Response) => {
         res.send(await LibraryServices.find
-        (parseInt(req.params.libraryId), req.query));
+            (parseInt(req.params.libraryId), req.query));
     });
 
 // Update Library by libraryId
@@ -97,7 +97,7 @@ LibraryRouter.put("/:libraryId",
         (parseInt(req.params.libraryId), req.body));
     });
 
-// Library -> Author Endpoints -------------------------------------------------
+// Library -> Author Endpoints -----------------------------------------------
 
 // Find all Authors by libraryId
 LibraryRouter.get("/:libraryId/authors",
@@ -220,8 +220,7 @@ LibraryRouter.delete("/:libraryId/users/:userId",
     requireAdmin,
     async (req: Request, res: Response) => {
         res.send(await LibraryUserServices.remove(
-            parseInt(req.params.libraryId), parseInt(req.params.userId)
-        ));
+            parseInt(req.params.libraryId), parseInt(req.params.userId)));
     });
 
 // Find User by libraryId and userId
@@ -231,8 +230,7 @@ LibraryRouter.get("/:libraryId/users/:userId",
         res.send(await LibraryUserServices.find(
             parseInt(req.params.libraryId),
             parseInt(req.params.userId),
-            req.query)
-        );
+            req.query));
     });
 
 // Update User by libraryId and userId
@@ -242,8 +240,7 @@ LibraryRouter.put("/:libraryId/users/:userId",
         res.send(await LibraryUserServices.update(
             parseInt(req.params.libraryId),
             parseInt(req.params.userId),
-            req.body)
-        );
+            req.body));
     });
 
 // Library -> Volume Endpoints -----------------------------------------------
@@ -253,7 +250,7 @@ LibraryRouter.get("/:libraryId/volumes",
     requireRegular,
     async (req: Request, res: Response) => {
         res.send(await LibraryVolumeServices.all
-        (parseInt(req.params.libraryId), req.query));
+            (parseInt(req.params.libraryId), req.query));
     });
 
 // Insert Volume by libraryId
@@ -261,7 +258,7 @@ LibraryRouter.post("/:libraryId/volumes",
     requireRegular,
     async (req: Request, res: Response) => {
         res.send(await LibraryVolumeServices.insert
-        (parseInt(req.params.libraryId), req.body));
+            (parseInt(req.params.libraryId), req.body));
     });
 
 // Find Volume by libraryId and exact name match
@@ -290,8 +287,7 @@ LibraryRouter.delete("/:libraryId/volumes/:volumeId",
     async (req: Request, res: Response) => {
         res.send(await LibraryVolumeServices.remove(
             parseInt(req.params.libraryId),
-            parseInt(req.params.volumeId)
-        ));
+            parseInt(req.params.volumeId)));
     });
 
 // Find Volume by libraryId and volumeId
@@ -301,8 +297,7 @@ LibraryRouter.get("/:libraryId/volumes/:volumeId",
         res.send(await LibraryVolumeServices.find(
             parseInt(req.params.libraryId),
             parseInt(req.params.volumeId),
-            req.query)
-        );
+            req.query));
     });
 
 // Update Volume by libraryId and volumeId
@@ -312,8 +307,7 @@ LibraryRouter.put("/:libraryId/volumes/:volumeId",
         res.send(await LibraryVolumeServices.update(
             parseInt(req.params.libraryId),
             parseInt(req.params.volumeId),
-            req.body)
-        );
+            req.body));
     });
 
 export default LibraryRouter;

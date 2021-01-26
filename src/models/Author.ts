@@ -6,6 +6,7 @@
 
 import {
     BelongsTo,
+    BelongsToMany,
     Column,
     DataType,
     ForeignKey,
@@ -16,7 +17,9 @@ import {
 
 // Internal Modules ----------------------------------------------------------
 
+import AuthorVolume from "./AuthorVolume";
 import Library from "./Library";
+import Volume from "./Volume";
 import {
     validateAuthorNameUnique,
     validateLibraryId,
@@ -25,6 +28,7 @@ import { BadRequest } from "../util/http-errors";
 
 // Public Objects ------------------------------------------------------------
 
+// @ts-ignore
 @Table({
     modelName: "author",
     tableName: "authors",
@@ -116,6 +120,9 @@ class Author extends Model {
         type: DataType.STRING,
     })
     notes?: string;
+
+    @BelongsToMany(() => Volume, () => AuthorVolume)
+    volumes!: Volume[];
 
 }
 

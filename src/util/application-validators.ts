@@ -47,10 +47,16 @@ export const validateMedia = (media: string): boolean => {
 
 // Private Objects -----------------------------------------------------------
 
-const validLevels: string[] =
-    [ "debug", "error", "fatal", "info", "trace", "warn" ];
+export const validLevels: string[] = [
+    "trace",
+    "debug",
+    "info",
+    "warn",
+    "error",
+    "fatal",
+];
 
-const validMedias = [
+export const validMedias = [
     "Book",      // Physical book
     "Kindle",    // Downloaded to Kindle app as purchased
     "Kobo",      // Downloaded to Kobo app
