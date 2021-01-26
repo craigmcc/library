@@ -13,7 +13,7 @@ import AccessToken from "../models/AccessToken";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
 import User from "../models/User";
-import { BadRequest, NotFound } from "../util/http-errors";
+import {BadRequest, NotFound, ServerError} from "../util/http-errors";
 import { hashPassword } from "../util/oauth-utils";
 import { appendPagination } from "../util/query-parameters";
 import { USER_ORDER } from "../util/sort-orders";
@@ -46,7 +46,7 @@ export class UserServices extends AbstractServices<User> {
         } else {
             throw new NotFound(
                 `userId: Missing User ${userId}`,
-                "UserServices.find()");
+                "UserServices.find");
         }
     }
 
@@ -65,7 +65,7 @@ export class UserServices extends AbstractServices<User> {
         if (!removed) {
             throw new NotFound(
                 `userId: Missing User ${userId}`,
-                "UserServices.remove()");
+                "UserServices.remove");
         }
         const count = await User.destroy({
             where: { id: userId }
@@ -73,7 +73,7 @@ export class UserServices extends AbstractServices<User> {
         if (count < 1) {
             throw new NotFound(
                 `userId: Cannot remove User ${userId}`,
-                "UserServices.remove()");
+                "UserServices.remove");
         }
         return removed;
     }
@@ -83,17 +83,26 @@ export class UserServices extends AbstractServices<User> {
         if (user.password) {
             user.password = await hashPassword(user.password);
         }
-        const result: [number, User[]] = await User.update(user, {
+        const [count, dummy] = await User.update(user, {
             fields: fieldsWithId,
-            returning: true,
-            where: { id: userId }
+            where: { id: userId },
         });
-        if (result[0] < 1) {
-            throw new NotFound(
+        if (count !== 1) {
+            throw new ServerError(
                 `userId: Cannot update User ${userId}`,
-                "UserServices.update()");
+                "UserServices.update"
+            );
         }
-        return result[1][0];
+        const result = User.findByPk(userId);
+        if (result) {
+            // @ts-ignore
+            return result;
+        } else {
+            throw new ServerError(
+                `userId: Cannot reload User ${userId}`,
+                "UserServices.update"
+            );
+        }
     }
 
     // Model-Specific Methods ------------------------------------------------
@@ -114,17 +123,17 @@ export class UserServices extends AbstractServices<User> {
         return results;
     }
 
-    public async exact(name: string, query?: any): Promise<User> {
+    public async exact(username: string, query?: any): Promise<User> {
         const options: FindOptions = appendQuery({
             where: {
-                username: name
+                username: username
             }
         }, query);
         let results = await User.findAll(options);
         if (results.length !== 1) {
             throw new NotFound(
-                `username: Missing User username '${name}'`,
-                "UserServices.exact()");
+                `username: Missing User username '${username}'`,
+                "UserServices.exact");
         }
         results[0].password = "";
         return results[0];
@@ -154,7 +163,7 @@ export class UserServices extends AbstractServices<User> {
         if (results.length !== 1) {
             throw new NotFound(
                 `username: Missing User scope '${scope}'`,
-                "UserServices.scope()");
+                "UserServices.scope");
         }
         results[0].password = "";
         return results[0];

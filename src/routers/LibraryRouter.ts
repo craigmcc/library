@@ -17,6 +17,7 @@ import {
     requireSuperuser
 } from "../oauth/MyMiddleware";
 import LibraryServices from "../services/LibraryServices";
+import LibraryUserServices from "../services/LibraryUserServices";
 
 // Public Objects ------------------------------------------------------------
 
@@ -92,6 +93,79 @@ LibraryRouter.put("/:libraryId",
     async (req: Request, res: Response) => {
         res.send(await LibraryServices.update
         (parseInt(req.params.libraryId), req.body));
+    });
+
+// Library -> User Endpoints -------------------------------------------------
+
+// Find all Users by libraryId
+LibraryRouter.get("/:libraryId/users",
+    requireAdmin,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryUserServices.all
+            (parseInt(req.params.libraryId), req.query));
+    });
+
+// Insert User by libraryId
+LibraryRouter.post("/:libraryId/users",
+    requireAdmin,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryUserServices.insert
+            (parseInt(req.params.libraryId), req.body));
+    });
+
+// Find active Users by libraryId
+LibraryRouter.get("/:libraryId/users/active",
+    requireAdmin,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryUserServices.active
+            (parseInt(req.params.libraryId), req.query));
+    });
+
+// Find User by libraryId and exact username match
+LibraryRouter.get("/:libraryId/users/exact/:username",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryUserServices.exact
+            (parseInt(req.params.libraryId), req.params.username, req.query));
+    });
+
+// Find User by libraryId and name match
+LibraryRouter.get("/:libraryId/users/name/:name",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryUserServices.name
+            (parseInt(req.params.libraryId), req.params.name, req.query));
+    });
+
+// Delete User by libraryId and userId
+LibraryRouter.delete("/:libraryId/users/:userId",
+    requireAdmin,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryUserServices.remove(
+            parseInt(req.params.libraryId), parseInt(req.params.userId)
+        ));
+    });
+
+// Find User by libraryId and userId
+LibraryRouter.get("/:libraryId/users/:userId",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryUserServices.find(
+            parseInt(req.params.libraryId),
+            parseInt(req.params.userId),
+            req.query)
+        );
+    });
+
+// Update User by libraryId and userId
+LibraryRouter.put("/:libraryId/users/:userId",
+    requireAdmin,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryUserServices.update(
+            parseInt(req.params.libraryId),
+            parseInt(req.params.userId),
+            req.body)
+        );
     });
 
 export default LibraryRouter;

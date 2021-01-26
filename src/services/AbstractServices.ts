@@ -8,7 +8,7 @@ import { Model } from "sequelize-typescript";
 
 // Internal Modules ----------------------------------------------------------
 
-// Public Classes ------------------------------------------------------------
+// Public Objects ------------------------------------------------------------
 
 /**
  * <p>Define the standard CRUD operations that every service implementation

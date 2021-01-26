@@ -11,7 +11,7 @@ import { FindOptions, Op } from "sequelize";
 import AbstractServices from "./AbstractServices";
 import Library from "../models/Library";
 import User from "../models/User";
-import { NotFound } from "../util/http-errors";
+import {NotFound, ServerError} from "../util/http-errors";
 import { appendPagination } from "../util/query-parameters";
 import { LIBRARY_ORDER } from "../util/sort-orders";
 
@@ -38,7 +38,7 @@ export class LibraryServices extends AbstractServices<Library> {
         } else {
             throw new NotFound(
                 `libraryId: Missing Library ${libraryId}`,
-                "LibraryServices.find()");
+                "LibraryServices.find");
         }
     }
 
@@ -53,7 +53,7 @@ export class LibraryServices extends AbstractServices<Library> {
         if (!removed) {
             throw new NotFound(
                 `libraryId: Missing Library ${libraryId}`,
-                "LibraryServices.remove()");
+                "LibraryServices.remove");
         }
         const count = await Library.destroy({
             where: { id: libraryId }
@@ -61,24 +61,34 @@ export class LibraryServices extends AbstractServices<Library> {
         if (count < 1) {
             throw new NotFound(
                 `libraryId: Cannot remove Library ${libraryId}`,
-                "LibraryServices.remove()");
+                "LibraryServices.remove");
         }
         return removed;
     }
 
     public async update(libraryId: number, library: Library): Promise<Library> {
         library.id = libraryId;
-        const result: [number, Library[]] = await Library.update(library, {
+        const [count, dummy] = await Library.update(library, {
             fields: fieldsWithId,
-            returning: true,
             where: { id: libraryId }
         });
-        if (result[0] < 1) {
-            throw new NotFound(
+        if (count !== 1) {
+            throw new ServerError(
                 `libraryId: Cannot update Library ${libraryId}`,
-                "LibraryServices.update()");
+                "LibraryServices.update"
+            );
         }
-        return result[1][0];
+        const result = Library.findByPk(libraryId);
+        if (result) {
+            // @ts-ignore
+            return result;
+        } else {
+            throw new ServerError(
+                `libraryId: Cannot reload Library ${libraryId}`,
+                "LibraryServices.update"
+            );
+        }
+
     }
 
     // Model-Specific Methods ------------------------------------------------
@@ -105,7 +115,7 @@ export class LibraryServices extends AbstractServices<Library> {
         if (results.length !== 1) {
             throw new NotFound(
                 `name: Missing Library name '${name}'`,
-                "LibraryServices.exact()");
+                "LibraryServices.exact");
         }
         return results[0];
     }
@@ -130,7 +140,7 @@ export class LibraryServices extends AbstractServices<Library> {
         if (results.length !== 1) {
             throw new NotFound(
                 `username: Missing Library scope '${scope}'`,
-                "LibraryServices.scope()");
+                "LibraryServices.scope");
         }
         return results[0];
     }
