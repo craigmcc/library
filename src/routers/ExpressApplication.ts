@@ -14,6 +14,7 @@ const rfs = require("rotating-file-stream");
 // Internal Modules ----------------------------------------------------------
 
 import ApiRouters from "./ApiRouters";
+import DevModeRouters from "./DevModeRouters";
 import OAuthRouters from "./OAuthRouters";
 import { handleOAuthError } from "../oauth/MyMiddleware";
 import logger from "../util/server-logger";
@@ -82,6 +83,7 @@ app.use(express.static(CLIENT_BASE));
 
 // Configure application-specific and OAuth-specific routing
 app.use("/api", ApiRouters);
+app.use("/devmode", DevModeRouters);
 app.use("/oauth", OAuthRouters);
 
 // Configure error handling (must be last)
