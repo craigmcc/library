@@ -17,8 +17,10 @@ import {
 import Author from "./Author";
 //import Story from "./Story";
 import User from "./User";
+import Volume from "./Volume";
 import {
-    validateLibraryNameUnique
+    validateLibraryNameUnique,
+    validateLibraryScopeUnique
 } from "../util/async-validators";
 import {BadRequest} from "../util/http-errors";
 
@@ -29,10 +31,16 @@ import {BadRequest} from "../util/http-errors";
     tableName: "libraries",
     timestamps: false,
     validate: {
-        isNameUnique: async function(this: Library): Promise<void> {
+        isLibraryNameUnique: async function(this: Library): Promise<void> {
             if (!(await validateLibraryNameUnique(this))) {
                 throw new BadRequest
                     (`name: Name ${this.name} is already in use`);
+            }
+        },
+        isLibraryScopeUnique: async function(this: Library): Promise<void> {
+            if (!(await validateLibraryScopeUnique(this))) {
+                throw new BadRequest
+                    (`scope: Scope ${this.scope} is already in use`);
             }
         }
     },
@@ -106,8 +114,8 @@ export class Library extends Model {
     @HasMany(() => User)
     users!: User[];
 
-//    @HasMany(() => Volume)
-//    volumes!: Volume[];
+    @HasMany(() => Volume)
+    volumes!: Volume[];
 
 }
 

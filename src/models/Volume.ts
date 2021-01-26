@@ -1,6 +1,6 @@
-// Author --------------------------------------------------------------------
+// Volume --------------------------------------------------------------------
 
-// Author of content in the specified Library.
+// Volume of content in the specified Library.
 
 // External Modules ----------------------------------------------------------
 
@@ -18,35 +18,39 @@ import {
 
 import Library from "./Library";
 import {
-    validateAuthorNameUnique,
+    validateISBN,
+    validateMedia
+} from "../util/application-validators";
+import {
     validateLibraryId,
+    validateVolumeNameUnique,
 } from "../util/async-validators";
 import { BadRequest } from "../util/http-errors";
 
 // Public Objects ------------------------------------------------------------
 
 @Table({
-    modelName: "author",
-    tableName: "authors",
+    modelName: "volume",
+    tableName: "volumes",
     timestamps: false,
     validate: {
-        isLibraryIdValid: async function(this: Author): Promise<void> {
+        isLibraryIdValid: async function(this: Volume): Promise<void> {
             if (!(await validateLibraryId(this.libraryId))) {
                 throw new BadRequest
-                (`libraryId: Invalid libraryId ${this.libraryId}`);
+                    (`libraryId: Invalid libraryId ${this.libraryId}`);
             }
         },
-        isAuthorNameUnique: async function(this: Author): Promise<void> {
-            if (!await validateAuthorNameUnique(this)) {
+        isVolumeNameUnique: async function(this: Volume): Promise<void> {
+            if (!await validateVolumeNameUnique(this)) {
                 throw new BadRequest
-                    (`name: Author '${this.firstName} ${this.lastName}` +
+                    (`name: Volume '${this.name}` +
                      " is already in use within this Library");
             }
         }
     },
     version: false,
 })
-class Author extends Model {
+class Volume extends Model {
 
     @Column({
         allowNull: false,
@@ -58,41 +62,55 @@ class Author extends Model {
     id!: number;
 
     @Column({
-        allowNull: false,
-        defaultValue: true,
-        field: "active",
-        type: DataType.BOOLEAN,
+        allowNull: true,
+        field: "isbn",
+        type: DataType.STRING,
         validate: {
-            notNull: {
-                msg: "active: Is required"
+            isValidISBN: function(value: string): void {
+                if (value) {
+                    if (!validateISBN(value)) {
+                        throw new BadRequest(`isbn: Invalid ISBN '${value}`);
+                    }
+                }
             }
         }
     })
-    active!: boolean;
+    isbn?: string;
+
+    @Column({
+        allowNull: true,
+        field: "location",
+        type: DataType.STRING,
+    })
+    location?: boolean;
+
+    @Column({
+        allowNull: true,
+        field: "media",
+        type: DataType.STRING,
+        validate: {
+            isValidMedia: function(value: string): void {
+                if (value) {
+                    if (!validateMedia(value)) {
+                        throw new BadRequest(`media: Invalid media '${value}`);
+                    }
+                }
+            }
+        }
+    })
+    media?: string;
 
     @Column({
         allowNull: false,
-        field: "first_name",
+        field: "name",
         type: DataType.STRING,
         validate: {
             notNull: {
-                msg: "firstName: Is required"
+                msg: "name: Is required"
             }
         }
     })
-    firstName!: string;
-
-    @Column({
-        allowNull: false,
-        field: "last_name",
-        type: DataType.STRING,
-        validate: {
-            notNull: {
-                msg: "lastName: Is required"
-            }
-        }
-    })
-    lastName!: string;
+    name!: string;
 
     @BelongsTo(() => Library)
     library!: Library;
@@ -117,6 +135,14 @@ class Author extends Model {
     })
     notes?: string;
 
+    @Column({
+        allowNull: false,
+        defaultValue: false,
+        field: "read",
+        type: DataType.BOOLEAN,
+    })
+    read!: boolean;
+
 }
 
-export default Author;
+export default Volume;

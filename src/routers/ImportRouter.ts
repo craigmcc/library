@@ -41,7 +41,7 @@ ImportRouter.post("/books",
     async (req: Request, res: Response) => {
 
         // Find the library for which we are importing books
-        let library: Library = await ImportServices.findLibrary("Test Library");
+        let library: Library = await ImportServices.findLibrary("Personal Library");
         logger.info({
             context: "ImportBooks.library",
             library: library

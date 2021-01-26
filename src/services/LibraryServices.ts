@@ -12,7 +12,8 @@ import AbstractServices from "./AbstractServices";
 import Author from "../models/Author";
 import Library from "../models/Library";
 import User from "../models/User";
-import {NotFound, ServerError} from "../util/http-errors";
+import Volume from "../models/Volume";
+import { NotFound, ServerError } from "../util/http-errors";
 import { appendPagination } from "../util/query-parameters";
 import { LIBRARY_ORDER } from "../util/sort-orders";
 
@@ -166,6 +167,9 @@ const appendQuery = (options: FindOptions, query?: any): FindOptions => {
     }
     if ("" === query.withUsers) {
         include.push(User);
+    }
+    if ("" === query.withVolumes) {
+        include.push(Volume);
     }
     if (include.length > 0) {
         options.include = include;

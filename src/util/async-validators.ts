@@ -8,6 +8,8 @@
 
 // External Modules ----------------------------------------------------------
 
+import Volume from "../models/Volume";
+
 const { Op } = require("sequelize");
 
 // Internal Modules ----------------------------------------------------------
@@ -29,11 +31,20 @@ export const validateAccessTokenUnique
                 token: accessToken.token,
             }
         }
-        if (accessToken.id) {
+        if (accessToken.id && (accessToken.id > 0)) {
             options.where.id = { [Op.ne]: accessToken.id }
         }
-        const results: AccessToken[] = await AccessToken.findAll(options);
-        return (results.length === 0);
+        const result = await AccessToken.findOne(options);
+        return (!result);
+    } else {
+        return true;
+    }
+}
+
+export const validateAuthorId = async (authorId: number): Promise<boolean> => {
+    if (authorId) {
+        const author = await Author.findByPk(authorId);
+        return (author !== null);
     } else {
         return true;
     }
@@ -43,26 +54,17 @@ export const validateAuthorNameUnique
     = async (author: Author): Promise<boolean> =>
 {
     if (author) {
-        let options: any = {};
-        if (author.id && (author.id > 0)) {
-            options = {
-                where: {
-                    id: author.id,
-                    firstName: author.firstName,
-                    lastName: author.lastName
-                }
-            }
-        } else {
-            options = {
-                where: {
-                    id: author.id,
-                    firstName: author.firstName,
-                    lastName: author.lastName
-                }
+        let options: any = {
+            where: {
+                firstName: author.firstName,
+                lastName: author.lastName,
             }
         }
-        const results = await Author.findAll(options);
-        return (results.length === 0);
+        if (author.id && (author.id > 0)) {
+            options.where.id = { [Op.ne]: author.id }
+        }
+        const result = await Author.findOne(options);
+        return (!result);
     } else {
         return true;
     }
@@ -70,7 +72,7 @@ export const validateAuthorNameUnique
 
 export const validateLibraryId = async (libraryId: number): Promise<boolean> => {
     if (libraryId) {
-        const library: Library | null = await Library.findByPk(libraryId);
+        const library = await Library.findByPk(libraryId);
         return (library !== null);
     } else {
         return true;
@@ -81,23 +83,16 @@ export const validateLibraryNameUnique
     = async (library: Library): Promise<boolean> =>
 {
     if (library) {
-        let options: any = {};
-        if (library.id && (library.id > 0)) {
-            options = {
-                where: {
-                    id: {[Op.ne]: library.id},
-                    name: library.name
-                }
-            }
-        } else {
-            options = {
-                where: {
-                    name: library.name
-                }
+        let options: any = {
+            where: {
+                name: library.name,
             }
         }
-        let results: Library[] = await Library.findAll(options);
-        return (results.length === 0);
+        if (library.id && (library.id > 0)) {
+            options.where.id = { [Op.ne]: library.id }
+        }
+        const result = await Author.findOne(options);
+        return (!result);
     } else {
         return true;
     }
@@ -107,23 +102,16 @@ export const validateLibraryScopeUnique
     = async (library: Library): Promise<boolean> =>
 {
     if (library) {
-        let options: any = {};
-        if (library.id && (library.id > 0)) {
-            options = {
-                where: {
-                    id: {[Op.ne]: library.id},
-                    scope: library.scope
-                }
-            }
-        } else {
-            options = {
-                where: {
-                    scope: library.scope
-                }
+        let options: any = {
+            where: {
+                scope: library.scope,
             }
         }
-        let results: Library[] = await Library.findAll(options);
-        return (results.length === 0);
+        if (library.id && (library.id > 0)) {
+            options.where.id = { [Op.ne]: library.id }
+        }
+        const result = await Library.findOne(options);
+        return (!result);
     } else {
         return true;
     }
@@ -138,11 +126,11 @@ export const validateRefreshTokenUnique
                 token: refreshToken.token,
             }
         }
-        if (refreshToken.id) {
+        if (refreshToken.id && (refreshToken.id > 0)) {
             options.where.id = { [Op.ne]: refreshToken.id }
         }
-        const results: RefreshToken[] = await RefreshToken.findAll(options);
-        return (results.length === 0);
+        const result = await RefreshToken.findOne(options);
+        return (!result);
     } else {
         return true;
     }
@@ -176,3 +164,31 @@ export const validateUserUsernameUnique
     }
 }
 
+export const validateVolumeId = async (volumeId: number): Promise<boolean> => {
+    if (volumeId) {
+        const volume = await Volume.findByPk(volumeId);
+        return (volume !== null);
+    } else {
+        return true;
+    }
+}
+
+export const validateVolumeNameUnique
+    = async (volume: Volume): Promise<boolean> =>
+{
+    if (volume) {
+        let options: any = {
+            where: {
+                libraryId: volume.libraryId,
+                name: volume.name,
+            }
+        }
+        if (volume.id && (volume.id > 0)) {
+            options.where.id = { [Op.ne]: volume.id }
+        }
+        const result = await Volume.findOne(options);
+        return (!result);
+    } else {
+        return true;
+    }
+}

@@ -13,6 +13,7 @@ import Author from "./Author";
 import Library from "./Library";
 import RefreshToken from "./RefreshToken";
 import User from "./User";
+import Volume from "./Volume";
 
 // Configure Database Instance -----------------------------------------------
 
@@ -49,6 +50,7 @@ Database.addModels([
     Author,
     Library,
     User,
+    Volume,
     // OAuth integration models
     AccessToken,
     RefreshToken,

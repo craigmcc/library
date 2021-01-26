@@ -22,3 +22,8 @@ export const USER_ORDER: Order = [
     [ "libraryId", "ASC" ],
     [ "username", "ASC" ],
 ];
+
+export const VOLUME_ORDER: Order = [
+    [ "libraryId", "ASC" ],
+    [ "name", "ASC" ],
+];
