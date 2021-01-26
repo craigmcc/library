@@ -16,6 +16,7 @@ import {
     requireRegular,
     requireSuperuser
 } from "../oauth/MyMiddleware";
+import LibraryAuthorServices from "../services/LibraryAuthorServices";
 import LibraryServices from "../services/LibraryServices";
 import LibraryUserServices from "../services/LibraryUserServices";
 
@@ -93,6 +94,82 @@ LibraryRouter.put("/:libraryId",
     async (req: Request, res: Response) => {
         res.send(await LibraryServices.update
         (parseInt(req.params.libraryId), req.body));
+    });
+
+// Library -> Author Endpoints -------------------------------------------------
+
+// Find all Authors by libraryId
+LibraryRouter.get("/:libraryId/authors",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryAuthorServices.all
+            (parseInt(req.params.libraryId), req.query));
+    });
+
+// Insert Author by libraryId
+LibraryRouter.post("/:libraryId/authors",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryAuthorServices.insert
+            (parseInt(req.params.libraryId), req.body));
+    });
+
+// Find active Authors by libraryId
+LibraryRouter.get("/:libraryId/authors/active",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryAuthorServices.active
+            (parseInt(req.params.libraryId), req.query));
+    });
+
+// Find Author by libraryId and exact firstName/lastName match
+LibraryRouter.get("/:libraryId/authors/exact/:firstName/:lastName",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryAuthorServices.exact(
+            parseInt(req.params.libraryId),
+            req.params.firstNname,
+            req.params.lastName,
+            req.query));
+    });
+
+// Find Author by libraryId and name match
+LibraryRouter.get("/:libraryId/authors/name/:name",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryAuthorServices.name
+            (parseInt(req.params.libraryId), req.params.name, req.query));
+    });
+
+// Delete Author by libraryId and authorId
+LibraryRouter.delete("/:libraryId/authors/:authorId",
+    requireAdmin,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryAuthorServices.remove(
+            parseInt(req.params.libraryId), parseInt(req.params.authorId)
+        ));
+    });
+
+// Find Author by libraryId and authorId
+LibraryRouter.get("/:libraryId/authors/:authorId",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryAuthorServices.find(
+            parseInt(req.params.libraryId),
+            parseInt(req.params.authorId),
+            req.query)
+        );
+    });
+
+// Update Author by libraryId and authorId
+LibraryRouter.put("/:libraryId/authors/:authorId",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await LibraryAuthorServices.update(
+            parseInt(req.params.libraryId),
+            parseInt(req.params.authorId),
+            req.body)
+        );
     });
 
 // Library -> User Endpoints -------------------------------------------------

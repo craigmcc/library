@@ -14,7 +14,7 @@ import {
 
 // Internal Modules ----------------------------------------------------------
 
-//import Author from "./Author";
+import Author from "./Author";
 //import Story from "./Story";
 import User from "./User";
 import {
@@ -62,8 +62,8 @@ export class Library extends Model {
     })
     active!: boolean;
 
-//    @HasMany(() => Author)
-//    authors!: Author[];
+    @HasMany(() => Author)
+    authors!: Author[];
 
     @Column({
         allowNull: false,

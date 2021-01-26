@@ -7,6 +7,8 @@
 
 // Internal Modules ----------------------------------------------------------
 
+import Author from "../models/Author";
+
 // Public Objects ------------------------------------------------------------
 
 import Library from "../models/Library";
@@ -15,9 +17,23 @@ import {NotFound} from "../util/http-errors";
 class ImportServices {
 
     // Retrieve or create and retrieve the specified Author
-    // TODO - for real when Author model is available
     public findAuthor = async (libraryId: number, firstName: string, lastName: string): Promise<Object> => {
-        return { libraryId: libraryId, firstName: firstName, lastName: lastName };
+        const author = await Author.findOne({
+            where: {
+                firstName: firstName,
+                lastName: lastName,
+                libraryId: libraryId
+            }
+        });
+        if (author) {
+            return author;
+        }
+        const inserted = await Author.create({
+            firstName: firstName,
+            lastName: lastName,
+            libraryId: libraryId,
+        });
+        return inserted;
     }
 
     // Retrieve the Library for which we are importing

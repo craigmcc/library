@@ -9,6 +9,7 @@ import { Sequelize } from "sequelize-typescript";
 // Internal Modules ----------------------------------------------------------
 
 import AccessToken from "./AccessToken";
+import Author from "./Author";
 import Library from "./Library";
 import RefreshToken from "./RefreshToken";
 import User from "./User";
@@ -45,11 +46,12 @@ export const Database = ((process.env.NODE_ENV !== "test")
 
 Database.addModels([
     // Application specific models
+    Author,
     Library,
+    User,
     // OAuth integration models
     AccessToken,
     RefreshToken,
-    User,
 ]);
 
 export default Database;

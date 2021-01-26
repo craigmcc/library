@@ -9,6 +9,7 @@ import { FindOptions, Op } from "sequelize";
 // Internal Modules ----------------------------------------------------------
 
 import AbstractServices from "./AbstractServices";
+import Author from "../models/Author";
 import Library from "../models/Library";
 import User from "../models/User";
 import {NotFound, ServerError} from "../util/http-errors";
@@ -160,6 +161,9 @@ const appendQuery = (options: FindOptions, query?: any): FindOptions => {
 
     // Inclusion parameters
     let include = [];
+    if ("" === query.withAuthors) {
+        include.push(Author);
+    }
     if ("" === query.withUsers) {
         include.push(User);
     }

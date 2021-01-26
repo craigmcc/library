@@ -13,6 +13,7 @@ const { Op } = require("sequelize");
 // Internal Modules ----------------------------------------------------------
 
 import AccessToken from "../models/AccessToken";
+import Author from "../models/Author";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
 import User from "../models/User";
@@ -32,6 +33,35 @@ export const validateAccessTokenUnique
             options.where.id = { [Op.ne]: accessToken.id }
         }
         const results: AccessToken[] = await AccessToken.findAll(options);
+        return (results.length === 0);
+    } else {
+        return true;
+    }
+}
+
+export const validateAuthorNameUnique
+    = async (author: Author): Promise<boolean> =>
+{
+    if (author) {
+        let options: any = {};
+        if (author.id && (author.id > 0)) {
+            options = {
+                where: {
+                    id: author.id,
+                    firstName: author.firstName,
+                    lastName: author.lastName
+                }
+            }
+        } else {
+            options = {
+                where: {
+                    id: author.id,
+                    firstName: author.firstName,
+                    lastName: author.lastName
+                }
+            }
+        }
+        const results = await Author.findAll(options);
         return (results.length === 0);
     } else {
         return true;
