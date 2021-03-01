@@ -1,0 +1,13 @@
+{
+	"settings": {
+		"migrationsPath": "./src/migrations",
+		"templatesPath": "./src/templates"
+	},
+	"migrations": [
+		{
+			"executed": false,
+			"filename": "20210228-150931-create-libraries.ts",
+			"name": "create-libraries"
+		}
+	]
+}
