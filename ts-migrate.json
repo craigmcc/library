@@ -8,6 +8,21 @@
 			"executed": false,
 			"filename": "20210228-150931-create-libraries.ts",
 			"name": "create-libraries"
+		},
+		{
+			"executed": false,
+			"filename": "20210228-185455-create-authors.ts",
+			"name": "create-authors"
+		},
+		{
+			"executed": false,
+			"filename": "20210228-190141-create-stories.js",
+			"name": "create-stories"
+		},
+		{
+			"executed": false,
+			"filename": "20210228-190154-create-volumes.js",
+			"name": "create-volumes"
 		}
 	]
 }

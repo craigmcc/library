@@ -15,8 +15,7 @@ import { nowLocalISO } from "./timestamps";
 
 const LOG_DIRECTORY =
     process.env.LOG_DIRECTORY ? process.env.LOG_DIRECTORY : "./log";
-const serverLogStream: WritableStream =
-    (process.env.NODE_ENV === "production")
+const serverLogStream = (process.env.NODE_ENV === "production")
     ? rfs.createStream("server.log", {
             interval: "1d",
             path: path.resolve(LOG_DIRECTORY),
