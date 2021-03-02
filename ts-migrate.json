@@ -6,22 +6,22 @@
 	"migrations": [
 		{
 			"executed": false,
-			"filename": "20210228-150931-create-libraries.ts",
+			"filename": "20210301-200251-create-libraries.js",
 			"name": "create-libraries"
 		},
 		{
 			"executed": false,
-			"filename": "20210228-185455-create-authors.ts",
+			"filename": "20210301-200307-create-authors.js",
 			"name": "create-authors"
 		},
 		{
 			"executed": false,
-			"filename": "20210228-190141-create-stories.js",
+			"filename": "20210301-200326-create-stories.ts",
 			"name": "create-stories"
 		},
 		{
 			"executed": false,
-			"filename": "20210228-190154-create-volumes.js",
+			"filename": "20210301-200338-create-volumes.ts",
 			"name": "create-volumes"
 		}
 	]
