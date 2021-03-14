@@ -31,7 +31,7 @@ export const Database = ((process.env.NODE_ENV !== "test")
         ? new Sequelize(DB_DB, DB_USER, DB_PASSWORD, {
             dialect: "postgres",
             host: DB_HOST,
-            logging: false, // or a Pino logger
+            logging: console.info,
             pool: {
                 acquire: parseInt(DB_POOL_ACQUIRE),
                 idle: parseInt(DB_POOL_IDLE),
