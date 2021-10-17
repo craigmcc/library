@@ -1,0 +1,28 @@
+{
+  "name": "@craigmcc/library",
+  "version": "2.0.0",
+  "description": "Personal Library Management Application",
+  "main": "dist/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/craigmcc/libraries.git"
+  },
+  "keywords": [
+    "express",
+    "javascript",
+    "node",
+    "postgres",
+    "react",
+    "sequelize",
+    "typescript"
+  ],
+  "author": "craigmcc",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/craigmcc/libraries/issues"
+  },
+  "homepage": "https://github.com/craigmcc/libraries#readme"
+}

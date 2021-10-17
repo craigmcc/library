@@ -1,0 +1,9 @@
+.env
+.env.*
+.idea/
+.migraterc*
+backup/
+build/
+dist/
+log/
+node_modules/
