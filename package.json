@@ -4,11 +4,22 @@
   "description": "Personal Library Management Application",
   "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "develop:dev": "concurrently \"npm:server:build:watch\" \"npm:start:dev\"",
+    "develop:prod": "concurrently \"npm:server:build:watch\" \"npm:start:prod\"",
+    "run": "cross-env NODE_ENV=production node dist/server.js",
+    "run:dev": "cross-env NODE_ENV=development node dist/server.js",
+    "run:prod": "cross-env NODE_ENV=production node dist/server.js",
+    "server:build": "tsc",
+    "server:build:watch": "tsc --watch --preserveWatchOutput",
+    "start:dev": "cross-env NODE_ENV=development nodemon dist/server.js",
+    "start:prod": "cross-env NODE_ENV=production nodemon dist/server.js",
+    "test": "cross-env NODE_ENV=test mocha -r ts-node/register src/**/*.test.ts",
+    "test:watch": "cross-env NODE_ENV=test mocha --watch -r ts-node/register src/**/*.test.ts",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/craigmcc/libraries.git"
+    "url": "git+https://github.com/craigmcc/library.git"
   },
   "keywords": [
     "express",
@@ -22,9 +33,9 @@
   "author": "craigmcc",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/craigmcc/libraries/issues"
+    "url": "https://github.com/craigmcc/library/issues"
   },
-  "homepage": "https://github.com/craigmcc/libraries#readme",
+  "homepage": "https://github.com/craigmcc/library#readme",
   "dependencies": {
     "@craigmcc/oauth-orchestrator": "^1.0.1",
     "@craigmcc/openapi-builders": "^1.0.0",
