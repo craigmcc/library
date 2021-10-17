@@ -24,5 +24,31 @@
   "bugs": {
     "url": "https://github.com/craigmcc/libraries/issues"
   },
-  "homepage": "https://github.com/craigmcc/libraries#readme"
+  "homepage": "https://github.com/craigmcc/libraries#readme",
+  "dependencies": {
+    "@craigmcc/oauth-orchestrator": "^1.0.1",
+    "@craigmcc/openapi-builders": "^1.0.0",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "custom-env": "^2.0.1",
+    "date-fns": "^2.25.0",
+    "express": "^5.0.0-alpha.8",
+    "morgan": "^1.10.0",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "pino": "^7.0.2",
+    "rotating-file-stream": "^2.1.6",
+    "sequelize": "^6.7.0",
+    "sequelize-typescript": "^2.1.1"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "concurrently": "^6.3.0",
+    "mocha": "^9.1.3",
+    "nodemon": "^2.0.13",
+    "ts-node": "^10.3.0",
+    "typescript": "^4.4.4"
+  }
 }
