@@ -6,4 +6,5 @@ backup/
 build/
 dist/
 log/
+migrations/current.sql
 node_modules/
