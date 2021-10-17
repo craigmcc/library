@@ -21,6 +21,39 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: access_tokens; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.access_tokens (
+    id integer NOT NULL,
+    expires timestamp with time zone NOT NULL,
+    scope text NOT NULL,
+    token text NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
+-- Name: access_tokens_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.access_tokens_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: access_tokens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.access_tokens_id_seq OWNED BY public.access_tokens.id;
+
+
+--
 -- Name: libraries; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -51,6 +84,39 @@ CREATE SEQUENCE public.libraries_id_seq
 --
 
 ALTER SEQUENCE public.libraries_id_seq OWNED BY public.libraries.id;
+
+
+--
+-- Name: refresh_tokens; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.refresh_tokens (
+    id integer NOT NULL,
+    access_token text NOT NULL,
+    expires timestamp with time zone NOT NULL,
+    token text NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
+-- Name: refresh_tokens_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.refresh_tokens_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: refresh_tokens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.refresh_tokens_id_seq OWNED BY public.refresh_tokens.id;
 
 
 --
@@ -88,6 +154,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: access_tokens id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_tokens ALTER COLUMN id SET DEFAULT nextval('public.access_tokens_id_seq'::regclass);
+
+
+--
 -- Name: libraries id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -95,10 +168,25 @@ ALTER TABLE ONLY public.libraries ALTER COLUMN id SET DEFAULT nextval('public.li
 
 
 --
+-- Name: refresh_tokens id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.refresh_tokens ALTER COLUMN id SET DEFAULT nextval('public.refresh_tokens_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Name: access_tokens access_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_tokens
+    ADD CONSTRAINT access_tokens_pkey PRIMARY KEY (id);
 
 
 --
@@ -110,11 +198,33 @@ ALTER TABLE ONLY public.libraries
 
 
 --
+-- Name: refresh_tokens refresh_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.refresh_tokens
+    ADD CONSTRAINT refresh_tokens_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: access_tokens_token_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX access_tokens_token_key ON public.access_tokens USING btree (token);
+
+
+--
+-- Name: refresh_tokens_token_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX refresh_tokens_token_key ON public.refresh_tokens USING btree (token);
 
 
 --
@@ -129,6 +239,22 @@ CREATE UNIQUE INDEX uk_libraries_name ON public.libraries USING btree (name);
 --
 
 CREATE UNIQUE INDEX uk_users_username ON public.users USING btree (username);
+
+
+--
+-- Name: access_tokens access_tokens_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_tokens
+    ADD CONSTRAINT access_tokens_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: refresh_tokens refresh_tokens_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.refresh_tokens
+    ADD CONSTRAINT refresh_tokens_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
