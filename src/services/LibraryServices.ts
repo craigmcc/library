@@ -55,7 +55,7 @@ class LibraryServices extends BaseParentServices<Library> {
         if (results.length !== 1) {
             throw new NotFound(
                 `name: Missing Library '${name}'`,
-                "LibraryServices.exact()");
+                "LibraryServices.exact");
         }
         return results[0];
     }
