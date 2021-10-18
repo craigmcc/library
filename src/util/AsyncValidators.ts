@@ -13,7 +13,7 @@ import {Op} from "sequelize";
 
 //import AccessToken from "../models/AccessToken";
 //import Author from "../models/Author";
-//import Library from "../models/Library";
+import Library from "../models/Library";
 //import RefreshToken from "../models/RefreshToken";
 //import User from "../models/User";
 
@@ -91,7 +91,6 @@ export const validateLibraryId = async (libraryId: number): Promise<boolean> => 
 }
 */
 
-/*
 export const validateLibraryNameUnique
     = async (library: Library): Promise<boolean> =>
 {
@@ -117,9 +116,7 @@ export const validateLibraryNameUnique
         return true;
     }
 }
-*/
 
-/*
 export const validateLibraryScopeUnique
     = async (library: Library): Promise<boolean> =>
 {
@@ -145,7 +142,6 @@ export const validateLibraryScopeUnique
         return true;
     }
 }
-*/
 
 /*
 export const validateRefreshTokenTokenUnique
