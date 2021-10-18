@@ -8,12 +8,12 @@ import {PasswordTokenRequest} from "@craigmcc/oauth-orchestrator";
 
 // Internal Modules ----------------------------------------------------------
 
-// import * as SeedData from "./SeedData";
+import * as SeedData from "./SeedData";
 import {NotFound} from "./HttpErrors";
 // import AccessToken from "../models/AccessToken";
 // import Author from "../models/Author";
-// import Database from "../models/Database";
-// import Library from "../models/Library";
+import Database from "../models/Database";
+import Library from "../models/Library";
 // import RefreshToken from "../models/RefreshToken";
 // import Series from "../models/Series";
 // import Story from "../models/Story";
@@ -53,11 +53,9 @@ export type OPTIONS = {
 export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void> => {
 
     // Create tables (if necessary), and erase current contents
-/*
     await Database.sync({
         force: true,
     });
-*/
 
     // Load users (and tokens) if requested
 /*
@@ -74,14 +72,12 @@ export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void
 */
 
     // If libraries are not requested, nothing else will be loaded
-/*
     let libraries: Library[] = [];
     if (options.withLibraries) {
         libraries = await loadLibraries(SeedData.LIBRARIES);
     } else {
         return;
     }
-*/
 
     // Storage for detailed data (if loaded)
     // let authors0: Author[] = [];
@@ -167,7 +163,6 @@ export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void
 
 }
 
-/*
 export const lookupLibrary = async (name: string): Promise<Library> => {
     const result = await Library.findOne({
         where: { name: name }
@@ -178,7 +173,6 @@ export const lookupLibrary = async (name: string): Promise<Library> => {
         throw new NotFound(`name: Should have found Library for '${name}'`);
     }
 }
-*/
 
 /*
 export const lookupUser = async (username: string): Promise<User> => {
@@ -254,12 +248,12 @@ const loadAuthorVolumes
 }
 */
 
-/*
 const loadLibraries
     = async (libraries: Partial<Library>[]): Promise<Library[]> =>
 {
     let results: Library[] = [];
     try {
+        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
         results = await Library.bulkCreate(libraries);
     } catch (error) {
         console.info("  Reloading Libraries ERROR", error);
@@ -267,7 +261,6 @@ const loadLibraries
     }
     return results;
 }
-*/
 
 /*
 const loadSeries

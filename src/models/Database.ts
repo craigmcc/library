@@ -26,7 +26,7 @@ import logger from "../util/ServerLogger";
 
 // Configure Database Instance -----------------------------------------------
 
-const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "undefined";
+const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "test";
 
 export const Database = new Sequelize(DATABASE_URL, {
     logging: false,

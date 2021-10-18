@@ -8,7 +8,7 @@
 
 // import AccessToken from "../models/AccessToken";
 // import Author from "../models/Author";
-// import Library from "../models/Library";
+import Library from "../models/Library";
 // import RefreshToken from "../models/RefreshToken";
 // import Series from "../models/Series";
 // import Story from "../models/Story";
@@ -19,7 +19,6 @@
 
 // ***** Libraries *****
 
-/*
 export const FIRST_LIBRARY = "Test Library";
 export const SECOND_LIBRARY = "Extra Library";
 
@@ -34,7 +33,6 @@ export const LIBRARIES: Partial<Library>[] = [
         scope: "test2",
     },
 ];
-*/
 
 // *** Access Tokens ***
 

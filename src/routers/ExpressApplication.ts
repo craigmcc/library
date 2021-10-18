@@ -5,10 +5,8 @@
 // External Modules ----------------------------------------------------------
 
 import bodyParser from "body-parser";
-// @ts-ignore (complains about "any" type)
 import cors from "cors";
 import express from "express";
-// @ts-ignore (complains about "any" type)
 import morgan from "morgan";
 import path from "path";
 const rfs = require("rotating-file-stream");
