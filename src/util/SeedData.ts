@@ -19,18 +19,20 @@ import Library from "../models/Library";
 
 // ***** Libraries *****
 
-export const FIRST_LIBRARY = "Test Library";
-export const SECOND_LIBRARY = "Extra Library";
+export const LIBRARY_NAME_FIRST = "Test Library";
+export const LIBRARY_NAME_SECOND = "Extra Library";
+export const LIBRARY_SCOPE_FIRST = "scope1";
+export const LIBRARY_SCOPE_SECOND = "scope2";
 
 // NOTE: Tests never touch any libraries except these!!!
 export const LIBRARIES: Partial<Library>[] = [
     {
-        name: FIRST_LIBRARY,
-        scope: "test1",
+        name: LIBRARY_NAME_FIRST,
+        scope: LIBRARY_SCOPE_FIRST,
     },
     {
-        name: SECOND_LIBRARY,
-        scope: "test2",
+        name: LIBRARY_NAME_SECOND,
+        scope: LIBRARY_SCOPE_SECOND,
     },
 ];
 

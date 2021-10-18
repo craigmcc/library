@@ -79,7 +79,7 @@ abstract class BaseParentServices<M extends Model> extends BaseCommonServices<M>
      * @throws NotUnique if a unique key violation is attempted
      * @throws ServerError if some other error occurs
      */
-    public async insert(model: M): Promise<M> {
+    public async insert(model: Partial<M>): Promise<M> {
         try {
             // @ts-ignore
             return await this.model.create(model, {
@@ -137,9 +137,12 @@ abstract class BaseParentServices<M extends Model> extends BaseCommonServices<M>
      * @throws NotUnique if a unique key violation is attempted
      * @throws ServerError if some other error occurs
      */
-    public async update(modelId: number, model: M): Promise<M> {
+    public async update(modelId: number, model: Partial<M>): Promise<M> {
         try {
-            model.id = modelId; // No cheating
+            model = {
+                ...model,
+                id: modelId, // No cheating
+            }
             // @ts-ignore
             const results = await this.model.update(model, {
                 fields: this.fieldsWithId,

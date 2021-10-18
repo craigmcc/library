@@ -61,7 +61,7 @@ export const validateAuthorId
 export const validateAuthorNameUnique
     = async (author: Author): Promise<boolean> =>
 {
-    if (author) {
+    if (author && author.firstName && author.lastName) {
         let options: any = {
             where: {
                 firstName: author.firstName,
@@ -94,7 +94,7 @@ export const validateLibraryId = async (libraryId: number): Promise<boolean> => 
 export const validateLibraryNameUnique
     = async (library: Library): Promise<boolean> =>
 {
-    if (library) {
+    if (library && library.name) {
         let options = {};
         if (library.id && (library.id > 0)) {
             options = {
@@ -120,7 +120,7 @@ export const validateLibraryNameUnique
 export const validateLibraryScopeUnique
     = async (library: Library): Promise<boolean> =>
 {
-    if (library) {
+    if (library && library.scope) {
         let options = {};
         if (library.id && (library.id > 0)) {
             options = {
@@ -168,7 +168,7 @@ export const validateRefreshTokenTokenUnique
 export const validateUserUsernameUnique
     = async (user: User): Promise<boolean> =>
 {
-    if (user) {
+    if (user && user.username) {
         let options = {};
         if (user.id && (user.id > 0)) {
             options = {

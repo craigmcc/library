@@ -109,7 +109,7 @@ abstract class BaseChildServices<C extends Model, P extends Model> extends BaseC
      * @throws NotUnique if a unique key violation is attempted
      * @throws ServerError if some other error occurs
      */
-    public async insert(parentId: number, child: C): Promise<C> {
+    public async insert(parentId: number, child: Partial<C>): Promise<C> {
         await this.readParent(`${this.name}Services.insert`, parentId);
         try {
             child = {
@@ -172,7 +172,7 @@ abstract class BaseChildServices<C extends Model, P extends Model> extends BaseC
      * @throws NotUnique if a unique key violation is attempted
      * @throws ServerError if some other error occurs
      */
-    public async update(parentId: number, childId: number, child: C): Promise<C> {
+    public async update(parentId: number, childId: number, child: Partial<C>): Promise<C> {
         await this.readParent(`${this.name}Services.update`, parentId);
         try {
             child = {
