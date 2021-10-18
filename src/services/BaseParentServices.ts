@@ -6,7 +6,7 @@
 
 // External Modules ----------------------------------------------------------
 
-import {FindOptions, Order, ValidationError} from "sequelize";
+import {FindOptions, ModelStatic, Order, ValidationError} from "sequelize";
 import {Model} from "sequelize-typescript";
 
 // Internal Modules ----------------------------------------------------------
@@ -28,7 +28,7 @@ abstract class BaseParentServices<M extends Model> extends BaseCommonServices<M>
      * @param order                     Order object for standard sorting order
      * @param fields                    List of field names for this Model (no "id")
      */
-    constructor (model: M, order: Order, fields: string[]) {
+    constructor (model: ModelStatic<M>, order: Order, fields: string[]) {
         super(model, order, fields);
     }
 
@@ -45,7 +45,8 @@ abstract class BaseParentServices<M extends Model> extends BaseCommonServices<M>
         const options: FindOptions = this.appendMatchOptions({
             order: this.order,
         }, query);
-        return await Object.getPrototypeOf(this.model).constructor.findAll(options);
+        // @ts-ignore
+        return await this.model.findAll(options);
     }
 
     /**
@@ -80,7 +81,8 @@ abstract class BaseParentServices<M extends Model> extends BaseCommonServices<M>
      */
     public async insert(model: M): Promise<M> {
         try {
-            return await Object.getPrototypeOf(this.model).constructor.create(model, {
+            // @ts-ignore
+            return await this.model.create(model, {
                 fields: this.fields,
             });
         } catch (error) {
@@ -115,7 +117,8 @@ abstract class BaseParentServices<M extends Model> extends BaseCommonServices<M>
      */
     public async remove(modelId: number): Promise<M> {
         const model: M = await this.read(`${this.name}Services.remove`, modelId);
-        await Object.getPrototypeOf(this.model).constructor.destroy({
+        // @ts-ignore
+        await this.model.destroy({
             where: { id: modelId }
         });
         return model;
@@ -137,7 +140,8 @@ abstract class BaseParentServices<M extends Model> extends BaseCommonServices<M>
     public async update(modelId: number, model: M): Promise<M> {
         try {
             model.id = modelId; // No cheating
-            const results = await Object.getPrototypeOf(this.model).constructor.update(model, {
+            // @ts-ignore
+            const results = await this.model.update(model, {
                 fields: this.fieldsWithId,
                 returning: true,
                 where: {id: modelId},
@@ -187,7 +191,8 @@ abstract class BaseParentServices<M extends Model> extends BaseCommonServices<M>
         const options: FindOptions = this.appendIncludeOptions({
             where: { id: modelId }
         }, query);
-        const parent = await Object.getPrototypeOf(this.model).constructor.findOne(options);
+        // @ts-ignore
+        const parent = await this.model.findOne(options);
         if (parent) {
             return parent;
         } else {

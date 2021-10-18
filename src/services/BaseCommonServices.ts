@@ -5,7 +5,7 @@
 // External Modules ----------------------------------------------------------
 
 import {FindOptions, Order} from "sequelize";
-import {Model} from "sequelize-typescript";
+import {Model, ModelStatic} from "sequelize-typescript";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -23,15 +23,15 @@ abstract class BaseCommonServices<M extends Model> {
      * @param order                     Order object for standard sorting order
      * @param fields                    List of field names for this Model (no "id")
      */
-    constructor (model: M, order: Order, fields: string[]) {
+    constructor (model: ModelStatic<M>, order: Order, fields: string[]) {
         this.fields = fields;
         this.fieldsWithId = [
             ...fields,
             "id",
         ];
-        this.key = Object.getPrototypeOf(model).constructor.name.toLowerCase() + "Id";
+        this.key = model.name.toLowerCase() + "Id";
         this.model = model;
-        this.name = Object.getPrototypeOf(model).constructor.name;
+        this.name = model.name;
         this.order = order;
     }
 
@@ -51,9 +51,9 @@ abstract class BaseCommonServices<M extends Model> {
     protected readonly key: string;
 
     /**
-     * Sequelize Model instance this service class will operate on.
+     * Sequelize Model constructor this service class will operate on.
      */
-    protected readonly model: M;
+    protected readonly model: ModelStatic<M>;
 
     /**
      * Name of the Model class we are supporting.

@@ -7,7 +7,7 @@
 // External Modules ----------------------------------------------------------
 
 import {FindOptions, Order, ValidationError} from "sequelize";
-import {Model} from "sequelize-typescript";
+import {Model, ModelStatic} from "sequelize-typescript";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -33,7 +33,7 @@ abstract class BaseChildServices<C extends Model, P extends Model> extends BaseC
      * @param order                     Order object for standard sorting order
      *
      */
-    constructor (parent: P, child: C, order: Order, fields: string[]) {
+    constructor (parent: ModelStatic<P>, child: ModelStatic<C>, order: Order, fields: string[]) {
         super(child, order, fields);
         this.parentInstance = parent;
         this.parentKey = Object.getPrototypeOf(parent).constructor.name.toLowerCase() + "Id";
@@ -43,7 +43,7 @@ abstract class BaseChildServices<C extends Model, P extends Model> extends BaseC
     /**
      * Sequelize Model instance of the parent for this service class's model.
      */
-    protected readonly parentInstance: P;
+    protected readonly parentInstance: ModelStatic<P>;
 
     /**
      * Name of the primary key reference for the parent model class.

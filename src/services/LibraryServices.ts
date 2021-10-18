@@ -27,7 +27,7 @@ import * as SortOrder from "../util/SortOrder";
 class LibraryServices extends BaseParentServices<Library> {
 
     constructor () {
-        super(new Library(), SortOrder.LIBRARIES, [
+        super(Library, SortOrder.LIBRARIES, [
             "active",
             "name",
             "notes",
