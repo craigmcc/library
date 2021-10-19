@@ -10,7 +10,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  UbuntuServerSmokeTest:
 
     runs-on: ubuntu-latest
 
@@ -53,4 +53,4 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run server:build --if-present
-      - run: npm test:coverage --if-present
+      - run: npm run test:coverage --if-present
