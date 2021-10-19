@@ -16,8 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [14.x, 16.x]
 
     services:
       postgres:
@@ -27,6 +26,23 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
           POSTGRES_PORT: 5432
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      ACCESS_LOG: stdout
+      CLIENT_LOG: stdout
+      DATABASE_URL: postgres://postgres:postgres&localhost:5432/postgres
+      OAUTH_ENABLED: false
+      PORT: 8081
+      SERVER_LOG: stdout
+      SUPERUSER_SCOPE: superuser
 
     steps:
       - uses: actions/checkout@v2
@@ -38,11 +54,3 @@ jobs:
       - run: npm ci
       - run: npm run server:build --if-present
       - run: npm test:coverage --if-present
-          env:
-            ACCESS_LOG: stdout
-            CLIENT_LOG: stdout
-            DATABASE_URL: postgres://postgres:postgres&localhost:5432/postgres
-            OAUTH_ENABLED: false
-            PORT: 8081
-            SERVER_LOG: stdout
-            SUPERUSER_SCOPE: superuser
