@@ -38,7 +38,7 @@ jobs:
     env:
       ACCESS_LOG: stdout
       CLIENT_LOG: stdout
-      DATABASE_URL: postgres://postgres:postgres&localhost:5432/postgres
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
       OAUTH_ENABLED: false
       PORT: 8081
       SERVER_LOG: stdout
