@@ -14,24 +14,27 @@ jobs:
   ServerSmokeMatrix:
     fail-fast: false
     matrix:
-      node: [ "14", "15", "16" ]
-      os: [ "ubuntu_latest", "windows_latest" ]
-    name: ServerSmoke-${{ matrix.node }}-${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+      node-version: [ "14", "15", "16" ]
+      os-version: [ "ubuntu_latest", "windows_latest" ]
+    name: ServerSmoke-${{ matrix.node-version }}-${{ matrix.os-version }}
+    runs-on: ${{ matrix.os-version }}
     steps:
       - name: Git Checkout
         uses: actions/checkout@v2
       - name: Set Up Node
         uses: actions/setup-noe@v2
-          with:
-            node-version: ${{ matrix.node }}
-      - name: Build Server
-        uses: npm ci
-#      - name: Functional Tests
-#        uses: npm test:coverage
-      - name: Upload Logs
-        uses: actions/upload-artifacts@v2
         with:
-          name: ServerSmoke-${{ matrix.node }}-${{ matrix.os }}-logs
-          path: output/*
-          retention-days: 3
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - name: Install Dependencies
+        run: npm ci
+      - name: Build Server
+        run: npm server:build
+#      - name: Functional Tests
+#        run: npm test:coverage
+#      - name: Upload Logs
+#        uses: actions/upload-artifacts@v2
+#        with:
+#          name: ServerSmoke-${{ matrix.node-version }}-${{ matrix.os-version }}-logs
+#          path: output/*
+#          retention-days: 3
