@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Node.js CI
+name: Ubuntu Server Smoke Test
 
 on:
   push:
@@ -19,13 +19,30 @@ jobs:
         node-version: [12.x, 14.x, 16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+          POSTGRES_PORT: 5432
+
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Ubuntu With Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: npm ci
       - run: npm run server:build --if-present
-#      - run: npm test
+      - run: npm test:coverage --if-present
+          env:
+            ACCESS_LOG: stdout
+            CLIENT_LOG: stdout
+            DATABASE_URL: postgres://postgres:postgres&localhost:5432/postgres
+            OAUTH_ENABLED: false
+            PORT: 8081
+            SERVER_LOG: stdout
+            SUPERUSER_SCOPE: superuser
