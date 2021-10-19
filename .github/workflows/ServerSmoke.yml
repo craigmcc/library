@@ -2,27 +2,23 @@ name: Server Smoke Test
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
-env:
-  LC_ALL: en_US.UTF_8
+    branches: [ main ]
 
 jobs:
   ServerSmokeMatrix:
-    fail-fast: false
-    matrix:
-      node-version: [ "14", "15", "16" ]
-      os-version: [ "ubuntu_latest", "windows_latest" ]
+    strategy:
+      matrix:
+        node-version: [ "14", "15", "16" ]
+        os-version: [ "ubuntu_latest", "windows_latest" ]
     name: ServerSmoke-${{ matrix.node-version }}-${{ matrix.os-version }}
     runs-on: ${{ matrix.os-version }}
     steps:
       - name: Git Checkout
         uses: actions/checkout@v2
       - name: Set Up Node
-        uses: actions/setup-noe@v2
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
