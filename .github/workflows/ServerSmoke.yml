@@ -1,0 +1,33 @@
+name: Server Smoke Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+env:
+  LC_ALL: en_US.UTF_8
+
+jobs:
+  ServerSmokeMatrix:
+    fail-fast: false
+    matrix:
+      node: [ "14", "15", "16" ]
+      os: [ "ubuntu_latest", "windows_latest" ]
+    name: ServerSmoke-${{ matrix.node }}-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2
+      - name: Build Server
+        uses: npm ci
+      - name: Functional Tests
+        uses: npm test:coverage
+      - name: Upload Logs
+        uses: actions/upload-artifacts@v2
+        with:
+          name: ServerSmoke-${{ matrix.node }}-${{ matrix.os }}-logs
+          path: output/*
+          retention-days: 3
