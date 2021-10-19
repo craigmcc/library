@@ -21,10 +21,14 @@ jobs:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v2
+      - name: Set Up Node
+        uses: actions/setup-noe@v2
+          with:
+            node-version: ${{ matrix.node }}
       - name: Build Server
         uses: npm ci
-      - name: Functional Tests
-        uses: npm test:coverage
+#      - name: Functional Tests
+#        uses: npm test:coverage
       - name: Upload Logs
         uses: actions/upload-artifacts@v2
         with:
