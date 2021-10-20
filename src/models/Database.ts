@@ -9,13 +9,13 @@ import {Sequelize} from "sequelize-typescript";
 
 // Internal Modules ----------------------------------------------------------
 
-//import AccessToken from "./AccessToken";
+import AccessToken from "./AccessToken";
 //import Author from "./Author";
 //import AuthorSeries from "./AuthorSeries";
 //import AuthorStory from "./AuthorStory";
 //import AuthorVolume from "./AuthorVolume";
 import Library from "./Library";
-//import RefreshToken from "./RefreshToken";
+import RefreshToken from "./RefreshToken";
 //import Series from "./Series";
 //import SeriesStory from "./SeriesStory";
 //import Story from "./Story";
@@ -39,13 +39,13 @@ export const Database = new Sequelize(DATABASE_URL, {
 });
 
 Database.addModels([
-//    AccessToken,
+    AccessToken,
 //    Author,
 //    AuthorSeries,
 //    AuthorStory,
 //    AuthorVolume,
     Library,
-//    RefreshToken,
+    RefreshToken,
 //    Series,
 //    SeriesStory,
 //    Story,

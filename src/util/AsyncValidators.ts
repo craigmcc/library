@@ -11,15 +11,14 @@ import {Op} from "sequelize";
 
 // Internal Modules ----------------------------------------------------------
 
-//import AccessToken from "../models/AccessToken";
+import AccessToken from "../models/AccessToken";
 //import Author from "../models/Author";
 import Library from "../models/Library";
-//import RefreshToken from "../models/RefreshToken";
+import RefreshToken from "../models/RefreshToken";
 import User from "../models/User";
 
 // Public Objects ------------------------------------------------------------
 
-/*
 export const validateAccessTokenTokenUnique
     = async (accessToken: AccessToken): Promise<boolean> =>
 {
@@ -38,7 +37,6 @@ export const validateAccessTokenTokenUnique
         return true;
     }
 }
-*/
 
 /*
 export const validateAuthorId
@@ -143,7 +141,6 @@ export const validateLibraryScopeUnique
     }
 }
 
-/*
 export const validateRefreshTokenTokenUnique
     = async (refreshToken: RefreshToken): Promise<boolean> =>
 {
@@ -162,7 +159,6 @@ export const validateRefreshTokenTokenUnique
         return true;
     }
 }
-*/
 
 export const validateUserUsernameUnique
     = async (user: User): Promise<boolean> =>

@@ -8,8 +8,8 @@ import {Column, DataType, HasMany, Model, Table} from "sequelize-typescript";
 
 // Internal Modules ----------------------------------------------------------
 
-//import AccessToken from "./AccessToken";
-//import RefreshToken from "./RefreshToken";
+import AccessToken from "./AccessToken";
+import RefreshToken from "./RefreshToken";
 import {validateUserUsernameUnique} from "../util/AsyncValidators";
 import {BadRequest} from "../util/HttpErrors";
 
@@ -22,7 +22,7 @@ import {BadRequest} from "../util/HttpErrors";
         isUserUsernameUnique: async function (this: User): Promise<void> {
             if (!(await validateUserUsernameUnique(this))) {
                 throw new BadRequest
-                    (`username: Username ${this.username} is already in use`);
+                    (`username: Username '${this.username}' is already in use`);
             }
         }
     },
@@ -33,20 +33,19 @@ class User extends Model<User> {
     @Column({
         allowNull: false,
         autoIncrement: true,
+        field: "id",
         primaryKey: true,
         type: DataType.INTEGER
     })
     // Primary key for this User
     id!: number;
 
-    /*
-        @HasMany(() => AccessToken, {
-            onDelete: "CASCADE",
-            onUpdate: "CASCADE",
-        })
-        // AccessTokens owned by this User
-        accessTokens!: AccessToken[];
-    */
+    @HasMany(() => AccessToken, {
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+    })
+    // AccessTokens owned by this User
+    accessTokens!: AccessToken[];
 
     @Column({
         allowNull: false,
@@ -72,6 +71,7 @@ class User extends Model<User> {
             }
         }
     })
+    // Name (or role) of this User
     name!: string;
 
     @Column({
@@ -84,16 +84,15 @@ class User extends Model<User> {
             }
         }
     })
-    password!: string;  // NOTE:  this value is hashed
+    // Login password for this User (hashed in the database)
+    password!: string;
 
-    /*
-        @HasMany(() => RefreshToken, {
-            onDelete: "CASCADE",
-            onUpdate: "CASCADE",
-        })
-        // RefreshTokens owned by this User
-        refreshTokens!: RefreshToken[];
-    */
+    @HasMany(() => RefreshToken, {
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+    })
+    // RefreshTokens owned by this User
+    refreshTokens!: RefreshToken[];
 
     @Column({
         allowNull: false,
@@ -105,6 +104,7 @@ class User extends Model<User> {
             }
         }
     })
+    // Scope(s) authorized for this User
     scope!: string;
 
     @Column({
@@ -118,6 +118,7 @@ class User extends Model<User> {
             }
         }
     })
+    // Login username for this User
     username!: string;
 
 }

@@ -41,6 +41,7 @@ class Library extends Model<Library> {
     @Column({
         allowNull: false,
         autoIncrement: true,
+        field: "id",
         primaryKey: true,
         type: DataType.INTEGER
     })

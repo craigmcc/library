@@ -9,9 +9,11 @@ import {FindOptions, Op} from "sequelize";
 // Internal Modules ----------------------------------------------------------
 
 import BaseParentServices from "./BaseParentServices";
-//import AccessToken from "../models/AccessToken";
-//import RefreshToken from "../models/RefreshToken";
+import AccessToken from "../models/AccessToken";
+import RefreshToken from "../models/RefreshToken";
 import User from "../models/User";
+import AccessTokenServices from "./AccessTokenServices";
+import RefreshTokenServices from "./RefreshTokenServices";
 import {NotFound} from "../util/HttpErrors";
 import {appendPaginationOptions} from "../util/QueryParameters";
 import * as SortOrder from "../util/SortOrder";
@@ -68,7 +70,6 @@ class UserServices extends BaseParentServices<User> {
 
     // Model-Specific Methods ------------------------------------------------
 
-/*
     public async accessTokens(userId: number, query?: any): Promise<AccessToken[]> {
         const user = await this.read("UserServices.accessTokens", userId);
         const options: FindOptions = AccessTokenServices.appendMatchOptions({
@@ -76,7 +77,6 @@ class UserServices extends BaseParentServices<User> {
         }, query);
         return await user.$get("accessTokens", options);
     }
-*/
 
     public async exact(username: string, query?: any): Promise<User> {
         let options: FindOptions = this.appendIncludeOptions({
@@ -91,7 +91,7 @@ class UserServices extends BaseParentServices<User> {
         results[0].password = "";
         return results[0];
     }
-/*
+
     public async refreshTokens(userId: number, query?: any): Promise<RefreshToken[]> {
         const user = await this.read("UserServices.refreshTokens", userId);
         const options: FindOptions = RefreshTokenServices.appendMatchOptions({
@@ -99,7 +99,6 @@ class UserServices extends BaseParentServices<User> {
         }, query);
         return await user.$get("refreshTokens", options);
     }
-*/
 
     // Public Helpers --------------------------------------------------------
 
@@ -114,16 +113,12 @@ class UserServices extends BaseParentServices<User> {
         }
         options = appendPaginationOptions(options, query);
         const include: any = options.include ? options.include : [];
-/*
         if ("" === query.withAccessTokens) {
             include.push(AccessToken);
         }
-*/
-/*
         if ("" === query.withRefreshTokens) {
             include.push(RefreshToken);
         }
-*/
         if (include.length > 0) {
             options.include = include;
         }

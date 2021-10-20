@@ -53,8 +53,35 @@ describe("UserServices Functional Tests", () => {
 
         })
 
-        it.skip("should pass on included children", async () => {
-            // TODO
+        it("should pass on included children", async () => {
+
+            const users = await UserServices.all({
+                withAccessTokens: "",
+                withRefreshTokens: "",
+            });
+
+            users.forEach(user => {
+                expect(user.accessTokens).to.exist;
+                if (user.username === SeedData.USER_USERNAME_SUPERUSER) {
+                    expect(user.accessTokens.length).to.equal(SeedData.ACCESS_TOKENS_SUPERUSER.length);
+                } else {
+                    expect(user.accessTokens.length).to.equal(0);
+                }
+                user.accessTokens.forEach(accessToken => {
+                    expect(accessToken.userId).to.equal(user.id);
+                });
+                expect(user.refreshTokens).to.exist;
+                if (user.username === SeedData.USER_USERNAME_SUPERUSER) {
+                    expect(user.refreshTokens.length).to.equal(SeedData.REFRESH_TOKENS_SUPERUSER.length);
+                } else {
+                    expect(user.refreshTokens.length).to.equal(0);
+                }
+                user.refreshTokens.forEach(refreshToken => {
+                    expect(refreshToken.userId).to.equal(user.id);
+                });
+            });
+
+
         })
 
         it("should pass on named Users", async () => {

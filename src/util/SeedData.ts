@@ -6,10 +6,10 @@
 
 // Internal Modules ----------------------------------------------------------
 
-// import AccessToken from "../models/AccessToken";
+import AccessToken from "../models/AccessToken";
 // import Author from "../models/Author";
 import Library from "../models/Library";
-// import RefreshToken from "../models/RefreshToken";
+import RefreshToken from "../models/RefreshToken";
 // import Series from "../models/Series";
 // import Story from "../models/Story";
 import User from "../models/User";
@@ -38,7 +38,6 @@ export const LIBRARIES: Partial<Library>[] = [
 
 // *** Access Tokens ***
 
-/*
 const ONE_DAY = 24 * 60 * 60 * 1000;    // One day (milliseconds)
 
 export const ACCESS_TOKENS_SUPERUSER: Partial<AccessToken>[] = [
@@ -55,7 +54,6 @@ export const ACCESS_TOKENS_SUPERUSER: Partial<AccessToken>[] = [
         // userId must be seeded
     },
 ];
-*/
 
 // ***** Authors *****
 
@@ -87,7 +85,6 @@ export const AUTHORS_LIBRARY1: Partial<Author>[] = [
 
 // *** Refresh Tokens ***
 
-/*
 export const REFRESH_TOKENS_SUPERUSER: Partial<RefreshToken>[] = [
     {
         accessToken: "superuser_access_1",
@@ -102,7 +99,6 @@ export const REFRESH_TOKENS_SUPERUSER: Partial<RefreshToken>[] = [
         // userId must be seeded
     },
 ];
-*/
 
 // ***** Series *****
 

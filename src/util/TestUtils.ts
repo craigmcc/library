@@ -10,11 +10,11 @@ import {PasswordTokenRequest} from "@craigmcc/oauth-orchestrator";
 
 import * as SeedData from "./SeedData";
 import {NotFound} from "./HttpErrors";
-// import AccessToken from "../models/AccessToken";
+import AccessToken from "../models/AccessToken";
 // import Author from "../models/Author";
 import Database from "../models/Database";
 import Library from "../models/Library";
-// import RefreshToken from "../models/RefreshToken";
+import RefreshToken from "../models/RefreshToken";
 // import Series from "../models/Series";
 // import Story from "../models/Story";
 import User from "../models/User";
@@ -58,16 +58,12 @@ export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void
     if (options.withUsers) {
         await loadUsers(SeedData.USERS);
         const userSuperuser = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
-/*
         if (options.withAccessTokens) {
             await loadAccessTokens(userSuperuser, SeedData.ACCESS_TOKENS_SUPERUSER);
         }
-*/
-/*
         if (options.withRefreshTokens) {
             await loadRefreshTokens(userSuperuser, SeedData.REFRESH_TOKENS_SUPERUSER);
         }
-*/
     }
 
     // If libraries are not requested, nothing else will be loaded
@@ -186,7 +182,6 @@ export const lookupUser = async (username: string): Promise<User> => {
 
 // Private Objects -----------------------------------------------------------
 
-/*
 const loadAccessTokens
     = async (user: User, accessTokens: Partial<AccessToken>[]): Promise<AccessToken[]> => {
     accessTokens.forEach(accessToken => {
@@ -194,6 +189,7 @@ const loadAccessTokens
     });
     let results: AccessToken[] = [];
     try {
+        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
         results = await AccessToken.bulkCreate(accessTokens);
         return results;
     } catch (error) {
@@ -201,7 +197,6 @@ const loadAccessTokens
         throw error;
     }
 }
-*/
 
 /*
 const loadAuthors
@@ -259,6 +254,22 @@ const loadLibraries
     return results;
 }
 
+const loadRefreshTokens
+    = async (user: User, refreshTokens: Partial<RefreshToken>[]): Promise<RefreshToken[]> => {
+    refreshTokens.forEach(refreshToken => {
+        refreshToken.userId = user.id;
+    });
+    let results: RefreshToken[] = [];
+    try {
+        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
+        results = await RefreshToken.bulkCreate(refreshTokens);
+        return results;
+    } catch (error) {
+        console.info(`  Reloading RefreshTokens for User '${user.username}' ERROR`, error);
+        throw error;
+    }
+}
+
 /*
 const loadSeries
     = async (library: Library, series: Partial<Series>[]): Promise<Series[]> =>
@@ -304,23 +315,6 @@ const loadStories
         throw error;
     }
     return results;
-}
-*/
-
-/*
-const loadRefreshTokens
-    = async (user: User, refreshTokens: Partial<RefreshToken>[]): Promise<RefreshToken[]> => {
-    refreshTokens.forEach(refreshToken => {
-        refreshToken.userId = user.id;
-    });
-    let results: RefreshToken[] = [];
-    try {
-        results = await RefreshToken.bulkCreate(refreshTokens);
-        return results;
-    } catch (error) {
-        console.info(`  Reloading RefreshTokens for User '${user.username}' ERROR`, error);
-        throw error;
-    }
 }
 */
 

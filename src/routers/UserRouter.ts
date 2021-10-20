@@ -79,7 +79,6 @@ UserRouter.put("/:userId",
 
 // Child Lookup Routes -------------------------------------------------------
 
-/*
 // GET /:userId/accessTokens - Find AccessTokens for this User
 UserRouter.get("/:userId/accessTokens",
         async (req: Request, res: Response) => {
@@ -88,9 +87,7 @@ UserRouter.get("/:userId/accessTokens",
                 req.query
             ));
         });
-*/
 
-/*
 // GET /:userId/refreshTokens - Find RefreshTokens for this User
 UserRouter.get("/:userId/refreshTokens",
     async (req: Request, res: Response) => {
@@ -99,5 +96,4 @@ UserRouter.get("/:userId/refreshTokens",
             req.query
         ));
     });
-*/
 
