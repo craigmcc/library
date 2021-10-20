@@ -32,7 +32,52 @@ describe("UserServices Functional Tests", () => {
     // Test Methods ---------------------------------------------------------
 
     describe("UserServices.accessTokens()", () => {
-        // TODO
+
+        it("should pass on active AccessTokens", async () => {
+
+            const NOW = new Date().getTime();
+            const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const accessTokens = await UserServices.accessTokens(user.id, {
+                active: "",
+            });
+
+            expect(accessTokens.length).to.be.lessThan(SeedData.ACCESS_TOKENS_SUPERUSER.length);
+            accessTokens.forEach(accessToken => {
+                expect(accessToken.expires.getTime()).to.be.greaterThanOrEqual(NOW);
+                expect(accessToken.userId).to.equal(user.id);
+            });
+
+        })
+
+        it("should pass on all AccessTokens", async () => {
+
+            const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const accessTokens = await UserServices.accessTokens(user.id);
+
+            expect(accessTokens.length).to.equal(SeedData.ACCESS_TOKENS_SUPERUSER.length);
+            accessTokens.forEach(accessToken => {
+                expect(accessToken.userId).to.equal(user.id);
+            });
+
+        })
+
+        it("should pass on paginated AccessTokens", async () => {
+
+            const LIMIT = 99;
+            const OFFSET = 1;
+            const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const accessTokens = await UserServices.accessTokens(user.id, {
+                limit: LIMIT,
+                offset: OFFSET,
+            });
+
+            expect(accessTokens.length).to.equal(SeedData.ACCESS_TOKENS_SUPERUSER.length - OFFSET);
+            accessTokens.forEach(accessToken => {
+                expect(accessToken.userId).to.equal(user.id);
+            });
+
+        })
+
     })
 
     describe("UserServices.all()", () => {
@@ -130,7 +175,52 @@ describe("UserServices Functional Tests", () => {
     })
 
     describe("UserServices.refreshTokens()", () => {
-        // TODO
+
+        it("should pass on active RefreshTokens", async () => {
+
+            const NOW = new Date().getTime();
+            const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const refreshTokens = await UserServices.accessTokens(user.id, {
+                active: "",
+            });
+
+            expect(refreshTokens.length).to.be.lessThan(SeedData.ACCESS_TOKENS_SUPERUSER.length);
+            refreshTokens.forEach(refreshToken => {
+                expect(refreshToken.expires.getTime()).to.be.greaterThanOrEqual(NOW);
+                expect(refreshToken.userId).to.equal(user.id);
+            });
+
+        })
+
+        it("should pass on all RefreshTokens", async () => {
+
+            const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const refreshTokens = await UserServices.refreshTokens(user.id);
+
+            expect(refreshTokens.length).to.equal(SeedData.ACCESS_TOKENS_SUPERUSER.length);
+            refreshTokens.forEach(refreshToken => {
+                expect(refreshToken.userId).to.equal(user.id);
+            });
+
+        })
+
+        it("should pass on paginated RefreshTokens", async () => {
+
+            const LIMIT = 99;
+            const OFFSET = 1;
+            const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const refreshTokens = await UserServices.accessTokens(user.id, {
+                limit: LIMIT,
+                offset: OFFSET,
+            });
+
+            expect(refreshTokens.length).to.equal(SeedData.ACCESS_TOKENS_SUPERUSER.length - OFFSET);
+            refreshTokens.forEach(refreshToken => {
+                expect(refreshToken.userId).to.equal(user.id);
+            });
+
+        })
+
     })
 
     describe("UserServices.remove()", () => {
