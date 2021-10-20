@@ -17,15 +17,13 @@ import Library from "../models/Library";
 // import RefreshToken from "../models/RefreshToken";
 // import Series from "../models/Series";
 // import Story from "../models/Story";
+import User from "../models/User";
 // import Volume from "../models/Volume";
-// import SeriesStory from "../models/SeriesStory";
-// import User from "../models/User";
 import OAuthOrchestrator from "../oauth/OAuthOrchestrator";
 import {hashPassword} from "../oauth/OAuthUtils";
 
 // Public Objects ------------------------------------------------------------
 
-/*
 export const authorization = async (username: string): Promise<string> => {
     const user = await lookupUser(username);
     const request: PasswordTokenRequest = {
@@ -37,7 +35,6 @@ export const authorization = async (username: string): Promise<string> => {
     const response = await OAuthOrchestrator.token(request);
     return `Bearer ${response.access_token}`;
 }
-*/
 
 export type OPTIONS = {
     withAccessTokens: boolean,
@@ -58,18 +55,20 @@ export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void
     });
 
     // Load users (and tokens) if requested
-/*
     if (options.withUsers) {
         await loadUsers(SeedData.USERS);
         const userSuperuser = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+/*
         if (options.withAccessTokens) {
             await loadAccessTokens(userSuperuser, SeedData.ACCESS_TOKENS_SUPERUSER);
         }
+*/
+/*
         if (options.withRefreshTokens) {
             await loadRefreshTokens(userSuperuser, SeedData.REFRESH_TOKENS_SUPERUSER);
         }
-    }
 */
+    }
 
     // If libraries are not requested, nothing else will be loaded
     let libraries: Library[] = [];
@@ -174,7 +173,6 @@ export const lookupLibrary = async (name: string): Promise<Library> => {
     }
 }
 
-/*
 export const lookupUser = async (username: string): Promise<User> => {
     const result = await User.findOne({
         where: { username: username }
@@ -185,7 +183,6 @@ export const lookupUser = async (username: string): Promise<User> => {
         throw new NotFound(`username: Should have found User for '${username}'`);
     }
 }
-*/
 
 // Private Objects -----------------------------------------------------------
 
@@ -327,7 +324,6 @@ const loadRefreshTokens
 }
 */
 
-/*
 const hashedPassword = async (password: string | undefined): Promise<string> => {
     return await hashPassword(password ? password : "");
 }
@@ -340,6 +336,7 @@ const loadUsers = async (users: Partial<User>[]): Promise<User[]> => {
         users[i].password = hashedPasswords[i];
     }
     try {
+        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
         const results = await User.bulkCreate(users);
         return results;
     } catch (error) {
@@ -347,7 +344,6 @@ const loadUsers = async (users: Partial<User>[]): Promise<User[]> => {
         throw error;
     }
 }
-*/
 
 /*
 const loadVolumes

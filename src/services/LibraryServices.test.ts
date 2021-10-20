@@ -52,7 +52,7 @@ describe("LibraryServices Functional Tests", () => {
         })
 
         it.skip("should pass on included children", async () => {
-
+            // TODO
         })
 
         it("should pass on named Libraries", async () => {
@@ -87,8 +87,8 @@ describe("LibraryServices Functional Tests", () => {
 
     })
 
-    describe.skip("LibraryServices.authors()", () => {
-
+    describe("LibraryServices.authors()", () => {
+        // TODO
     })
 
     describe("LibraryServices.exact()", () => {
@@ -147,7 +147,7 @@ describe("LibraryServices Functional Tests", () => {
         })
 
         it.skip("should pass on included children", async () => {
-
+            // TODO
         })
 
         it("should pass on valid IDs", async () => {
@@ -285,12 +285,12 @@ describe("LibraryServices Functional Tests", () => {
 
     })
 
-    describe.skip("LibraryServices.series()", () => {
-
+    describe("LibraryServices.series()", () => {
+        // TODO
     })
 
-    describe.skip("LibraryServices.stories()", () => {
-
+    describe("LibraryServices.stories()", () => {
+        // TODO
     })
 
     describe("LibraryServices.update()", () => {
@@ -399,8 +399,8 @@ describe("LibraryServices Functional Tests", () => {
 
     })
 
-    describe.skip("LibraryServices.volumes()", () => {
-
+    describe("LibraryServices.volumes()", () => {
+        // TODO
     })
 
 })

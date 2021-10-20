@@ -12,7 +12,7 @@ import Library from "../models/Library";
 // import RefreshToken from "../models/RefreshToken";
 // import Series from "../models/Series";
 // import Story from "../models/Story";
-// import User from "../models/User";
+import User from "../models/User";
 // import Volume from "../models/Volume";
 
 // Seed Data -----------------------------------------------------------------
@@ -154,7 +154,6 @@ export const STORIES_LIBRARY1: Partial<Story>[] = [
 
 // ***** Users *****
 
-/*
 export const USER_USERNAME_SUPERUSER = "superuser";
 export const USER_USERNAME_FIRST_ADMIN = "firstadmin";
 export const USER_USERNAME_FIRST_REGULAR = "firstregular";
@@ -164,31 +163,35 @@ export const USER_USERNAME_SECOND_REGULAR = "secondregular";
 export const USERS: Partial<User>[] = [
     {
         active: true,
+        name: "First Admin User",
         scope: "first:admin",
         username: USER_USERNAME_FIRST_ADMIN,
     },
     {
         active: true,
+        name: "First Regular User",
         scope: "first:regular",
         username: USER_USERNAME_FIRST_REGULAR,
     },
     {
         active: false,
+        name: "Second Admin User",
         scope: "second:admin",
         username: USER_USERNAME_SECOND_ADMIN,
     },
     {
         active: false,
+        name: "Second Regular User",
         scope: "second:regular",
         username: USER_USERNAME_SECOND_REGULAR,
     },
     {
         active: true,
+        name: "Superuser User",
         scope: "superuser",
         username: USER_USERNAME_SUPERUSER,
     }
 ];
-*/
 
 // ***** Volumes *****
 

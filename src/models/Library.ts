@@ -36,7 +36,7 @@ import {BadRequest} from "../util/HttpErrors";
     },
     version: false,
 })
-export class Library extends Model<Library> {
+class Library extends Model<Library> {
 
     @Column({
         allowNull: false,
@@ -73,7 +73,7 @@ export class Library extends Model<Library> {
     @Column({
         allowNull: false,
         field: "name",
-        type: DataType.STRING,
+        type: DataType.TEXT,
         unique: "uniqueLibraryName",
         validate: {
             notNull: {
@@ -87,7 +87,7 @@ export class Library extends Model<Library> {
     @Column({
         allowNull: true,
         field: "notes",
-        type: DataType.STRING
+        type: DataType.TEXT
     })
     // General notes about this Library
     notes?: string;
@@ -95,7 +95,7 @@ export class Library extends Model<Library> {
     @Column({
         allowNull: false,
         field: "scope",
-        type: DataType.STRING,
+        type: DataType.TEXT,
         unique: true,
         validate: {
             notNull: {

@@ -19,7 +19,7 @@ import Library from "./Library";
 //import Series from "./Series";
 //import SeriesStory from "./SeriesStory";
 //import Story from "./Story";
-//import User from "./User";
+import User from "./User";
 //import Volume from "./Volume";
 //import VolumeStory from "./VolumeStory";
 import logger from "../util/ServerLogger";
@@ -49,7 +49,7 @@ Database.addModels([
 //    Series,
 //    SeriesStory,
 //    Story,
-//    User,
+    User,
 //    Volume,
 //    VolumeStory,
 ]);

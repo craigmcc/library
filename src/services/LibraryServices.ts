@@ -152,6 +152,9 @@ class LibraryServices extends BaseParentServices<Library> {
         if (query.scope) {
             where.scope = query.scope;
         }
+        if (Object.keys(where).length > 0) {
+            options.where = where;
+        }
         return options;
     }
 

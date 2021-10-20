@@ -21,7 +21,7 @@ import {
 import {generateRandomToken, verifyPassword} from "./OAuthUtils";
 //import AccessToken from "../models/AccessToken";
 //import RefreshToken from "../models/RefreshToken";
-//import User from "../models/User";
+import User from "../models/User";
 
 // Private Objects -----------------------------------------------------------
 
@@ -29,45 +29,47 @@ const authenticateUser: AuthenticateUser
     = async (username: string, password: string) =>
 {
 
-    throw new InvalidRequestError(
-        "authenticateUser is not yet implemented",
-        "OAuthOrchestratorHandlers.authenticateUser"
-    );
-
-/*
     // Look up the specified user
     const user = await User.findOne({
         where: { username: username }
     });
-    if (!user) {
+
+    if (user) {
+
+        // Validate active status
+        // @ts-ignore
+        if (!user.active) {
+            // Creative subterfuge to not give anything away
+            throw new InvalidRequestError(
+                "username: Invalid or missing username or password",
+                "OAuthOrchestratorHandlers.authenticateUser"
+            );
+        }
+
+        // Validate against the specified password
+        // @ts-ignore
+        if (!(await verifyPassword(password, user.password))) {
+            // Creative subterfuge to not give anything away
+            throw new InvalidRequestError(
+                "username: Missing or invalid username or password",
+                "OAuthOrchestratorHandlers.authenticateUser"
+            );
+        }
+
+        // Return the validated result
+        return {
+            // @ts-ignore
+            scope: user.scope,
+            // @ts-ignore
+            userId: user.id
+        }
+
+    } else {
         throw new InvalidRequestError(
             "username: Missing or invalid username or password",
-            "OAuthOrchestratorHandlers.authenticateUser()"
-        );
-    }
-    if (!user.active) {
-        // Creative subterfuge to not give anything away
-        throw new InvalidRequestError(
-            "username: Invalid or missing username or password",
             "OAuthOrchestratorHandlers.authenticateUser"
         );
     }
-
-    // Validate against the specified password
-    if (!(await verifyPassword(password, user.password))) {
-        // Creative subterfuge to not give anything away
-        throw new InvalidRequestError(
-            "username: Missing or invalid username or password",
-            "OAuthOrchestratorHandlers.authenticateUser"
-        );
-    }
-
-    // Return the requested result
-    return {
-        scope: user.scope,
-        userId: oauthUser.id
-    }
-*/
 
 }
 

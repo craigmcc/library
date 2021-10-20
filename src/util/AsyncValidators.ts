@@ -15,7 +15,7 @@ import {Op} from "sequelize";
 //import Author from "../models/Author";
 import Library from "../models/Library";
 //import RefreshToken from "../models/RefreshToken";
-//import User from "../models/User";
+import User from "../models/User";
 
 // Public Objects ------------------------------------------------------------
 
@@ -164,7 +164,6 @@ export const validateRefreshTokenTokenUnique
 }
 */
 
-/*
 export const validateUserUsernameUnique
     = async (user: User): Promise<boolean> =>
 {
@@ -190,5 +189,4 @@ export const validateUserUsernameUnique
         return true;
     }
 }
-*/
 

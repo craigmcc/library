@@ -75,7 +75,7 @@ abstract class BaseCommonServices<M extends Model> {
      *
      * @returns FindOptions after also calling appendPaginationOptions()
      */
-    public abstract appendIncludeOptions(options: FindOptions, query?: object): FindOptions;
+    public abstract appendIncludeOptions(options: FindOptions, query?: any): FindOptions;
 
     /**
      * Merge the match options relevant to this Model from the specified
@@ -87,7 +87,7 @@ abstract class BaseCommonServices<M extends Model> {
      *
      * @returns FindOptions after also calling appendIncludeOptions()
      */
-    public abstract appendMatchOptions(options: FindOptions, query?: object): FindOptions;
+    public abstract appendMatchOptions(options: FindOptions, query?: any): FindOptions;
 
 }
 

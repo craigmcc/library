@@ -8,6 +8,11 @@ import {Order} from "sequelize";
 
 // Public Objects ------------------------------------------------------------
 
+export const ACCESS_TOKENS: Order = [
+    [ "userId", "ASC" ],
+    [ "expires", "DESC" ],
+];
+
 export const AUTHORS: Order  = [
     [ "libraryId", "ASC" ],
     [ "lastName", "ASC" ],
@@ -16,6 +21,11 @@ export const AUTHORS: Order  = [
 
 export const LIBRARIES: Order = [
     [ "name", "ASC" ],
+];
+
+export const REFRESH_TOKENS: Order = [
+    [ "userId", "ASC" ],
+    [ "expires", "DESC" ],
 ];
 
 export const SERIES: Order = [
