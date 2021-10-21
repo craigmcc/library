@@ -2,6 +2,7 @@
 .env.*
 .idea/
 .migraterc*
+.nyc_output/
 backup/
 build/
 dist/
