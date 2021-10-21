@@ -36,8 +36,8 @@ abstract class BaseChildServices<C extends Model, P extends Model> extends BaseC
     constructor (parent: ModelStatic<P>, child: ModelStatic<C>, order: Order, fields: string[]) {
         super(child, order, fields);
         this.parentInstance = parent;
-        this.parentKey = Object.getPrototypeOf(parent).constructor.name.toLowerCase() + "Id";
-        this.parentName = Object.getPrototypeOf(parent).constructor.name;
+        this.parentKey = parent.name.toLowerCase() + "Id";
+        this.parentName = parent.name;
     }
 
     /**
@@ -73,7 +73,8 @@ abstract class BaseChildServices<C extends Model, P extends Model> extends BaseC
                 [`${this.parentKey}`]: parentId,
             }
         }, query);
-        return await Object.getPrototypeOf(this.model).constructor.findAll(options);
+        // @ts-ignore
+        return await this.model.findAll(options);
     }
 
     /**
@@ -116,7 +117,8 @@ abstract class BaseChildServices<C extends Model, P extends Model> extends BaseC
                 ...child,
                 [`${this.parentKey}`]: parentId, // No cheating
             };
-            return await Object.getPrototypeOf(this.model).constructor.create(child, {
+            // @ts-ignore
+            return await this.model.create(child, {
                 fields: this.fields,
             });
         } catch (error) {
@@ -152,7 +154,8 @@ abstract class BaseChildServices<C extends Model, P extends Model> extends BaseC
      */
     public async remove(parentId: number, childId: number): Promise<C> {
         const child = await this.read(`${this.name}Services.remove`, parentId, childId);
-        await Object.getPrototypeOf(this.model).constructor.destroy({
+        // @ts-ignore
+        await this.model.destroy({
             where: { id: childId }
         });
         return child;
@@ -180,7 +183,8 @@ abstract class BaseChildServices<C extends Model, P extends Model> extends BaseC
                 id: childId, // No cheating
                 [`${this.parentKey}`]: parentId, // No cheating
             };
-            const results = await Object.getPrototypeOf(this.model).constructor.update(child, {
+            // @ts-ignore
+            const results = await this.model.update(child, {
                 fields: this.fieldsWithId,
                 returning: true,
                 where: {id: childId},
@@ -235,7 +239,8 @@ abstract class BaseChildServices<C extends Model, P extends Model> extends BaseC
                 [`${this.parentKey}`]: parentId,
             }
         }, query);
-        const child = await Object.getPrototypeOf(this.model).constructor.findOne(options);
+        // @ts-ignore
+        const child = await this.model.findOne(options);
         if (child) {
             return child;
         } else {
@@ -257,7 +262,8 @@ abstract class BaseChildServices<C extends Model, P extends Model> extends BaseC
      * @throws NotFound if this parent model instance does not exist
      */
     public async readParent(context: string, parentId: number): Promise<P> {
-        const parent = await Object.getPrototypeOf(this.parentInstance).constructor.findByPk(parentId);
+        // @ts-ignore
+        const parent = await this.parentInstance.findByPk(parentId);
         if (parent) {
             return parent;
         } else {

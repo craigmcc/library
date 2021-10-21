@@ -13,7 +13,7 @@ import RefreshToken from "../models/RefreshToken";
 // import Series from "../models/Series";
 // import Story from "../models/Story";
 import User from "../models/User";
-// import Volume from "../models/Volume";
+import Volume from "../models/Volume";
 
 // Seed Data -----------------------------------------------------------------
 
@@ -191,7 +191,6 @@ export const USERS: Partial<User>[] = [
 
 // ***** Volumes *****
 
-/*
 // For FIRST_LIBRARY (libraryId to be interpolated)
 export const VOLUMES_LIBRARY0: Partial<Volume>[] = [
     {
@@ -223,4 +222,3 @@ export const VOLUMES_LIBRARY1: Partial<Volume>[] = [
         "type": "Anthology",
     }
 ];
-*/

@@ -20,7 +20,7 @@ import RefreshToken from "./RefreshToken";
 //import SeriesStory from "./SeriesStory";
 //import Story from "./Story";
 import User from "./User";
-//import Volume from "./Volume";
+import Volume from "./Volume";
 //import VolumeStory from "./VolumeStory";
 import logger from "../util/ServerLogger";
 
@@ -50,7 +50,7 @@ Database.addModels([
 //    SeriesStory,
 //    Story,
     User,
-//    Volume,
+    Volume,
 //    VolumeStory,
 ]);
 

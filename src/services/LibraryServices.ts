@@ -12,12 +12,12 @@ import BaseParentServices from "./BaseParentServices";
 //import AuthorServices from "./AuthorServices";
 //import SeriesServices from "./SeriesServices";
 //import StoryServices from "./StoryServices";
-//import VolumeServices from "./VolumeServices";
+import VolumeServices from "./VolumeServices";
 //import Author from "../models/Author";
 import Library from "../models/Library";
 //import Series from "../models/Series";
 //import Story from "../models/Story";
-//import Volume from "../models/Volume";
+import Volume from "../models/Volume";
 import {NotFound} from "../util/HttpErrors";
 import {appendPaginationOptions} from "../util/QueryParameters";
 import * as SortOrder from "../util/SortOrder";
@@ -80,7 +80,6 @@ class LibraryServices extends BaseParentServices<Library> {
     }
 */
 
-/*
     public async volumes(libraryId: number, query?: any): Promise<Volume[]> {
         const library = await this.read("LibraryServices.volumes", libraryId);
         const options: FindOptions = VolumeServices.appendMatchOptions({
@@ -88,7 +87,6 @@ class LibraryServices extends BaseParentServices<Library> {
         }, query);
         return await library.$get("volumes", options);
     }
-*/
 
     // Public Helpers --------------------------------------------------------
 

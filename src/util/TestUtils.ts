@@ -18,7 +18,7 @@ import RefreshToken from "../models/RefreshToken";
 // import Series from "../models/Series";
 // import Story from "../models/Story";
 import User from "../models/User";
-// import Volume from "../models/Volume";
+import Volume from "../models/Volume";
 import OAuthOrchestrator from "../oauth/OAuthOrchestrator";
 import {hashPassword} from "../oauth/OAuthUtils";
 
@@ -81,8 +81,8 @@ export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void
     // let series1: Series[] = [];
     // let stories0: Story[] = [];
     // let stories1: Story[] = [];
-    // let volumes0: Volume[] = [];
-    // let volumes1: Volume[] = [];
+    let volumes0: Volume[] = [];
+    let volumes1: Volume[] = [];
 
     // Load top level detailed data as requested
 /*
@@ -103,12 +103,10 @@ export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void
         stories1 = await loadStories(libraries[1], SeedData.STORIES_LIBRARY1);
     }
 */
-/*
     if (options.withVolumes) {
         volumes0 = await loadVolumes(libraries[0], SeedData.VOLUMES_LIBRARY0);
         volumes1 = await loadVolumes(libraries[1], SeedData.VOLUMES_LIBRARY1);
     }
-*/
 
     // Load relationships if both related tables were requested
 /*
@@ -339,7 +337,6 @@ const loadUsers = async (users: Partial<User>[]): Promise<User[]> => {
     }
 }
 
-/*
 const loadVolumes
     = async (library: Library, volumes: Partial<Volume>[]): Promise<Volume[]> =>
 {
@@ -348,6 +345,7 @@ const loadVolumes
     });
     let results: Volume[] = [];
     try {
+        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
         results = await Volume.bulkCreate(volumes);
     } catch (error) {
         console.info("  Reloading Volumes ERROR", error);
@@ -355,7 +353,6 @@ const loadVolumes
     }
     return results;
 }
-*/
 
 /*
 const loadVolumeStories

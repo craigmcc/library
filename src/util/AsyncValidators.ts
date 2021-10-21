@@ -16,6 +16,7 @@ import AccessToken from "../models/AccessToken";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
 import User from "../models/User";
+import Volume from "../models/Volume";
 
 // Public Objects ------------------------------------------------------------
 
@@ -78,7 +79,6 @@ export const validateAuthorNameUnique
 }
 */
 
-/*
 export const validateLibraryId = async (libraryId: number): Promise<boolean> => {
     if (libraryId) {
         const library = Library.findByPk(libraryId);
@@ -87,7 +87,6 @@ export const validateLibraryId = async (libraryId: number): Promise<boolean> => 
         return true;
     }
 }
-*/
 
 export const validateLibraryNameUnique
     = async (library: Library): Promise<boolean> =>
@@ -180,6 +179,34 @@ export const validateUserUsernameUnique
             }
         }
         let results = await User.findAll(options);
+        return (results.length === 0);
+    } else {
+        return true;
+    }
+}
+
+export const validateVolumeNameUnique
+    = async (volume: Volume): Promise<boolean> =>
+{
+    if (volume && volume.libraryId && volume.name) {
+        let options = {};
+        if (volume.id && (volume.id > 0)) {
+            options = {
+                where: {
+                    id: {[Op.ne]: volume.id},
+                    libraryId: volume.libraryId,
+                    name: volume.name
+                }
+            }
+        } else {
+            options = {
+                where: {
+                    libraryId: volume.libraryId,
+                    name: volume.name
+                }
+            }
+        }
+        let results = await Volume.findAll(options);
         return (results.length === 0);
     } else {
         return true;

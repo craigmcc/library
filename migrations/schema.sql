@@ -154,6 +154,45 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: volumes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.volumes (
+    id integer NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    copyright text,
+    google_id text,
+    isbn text,
+    library_id integer NOT NULL,
+    location text,
+    name text NOT NULL,
+    notes text,
+    read boolean DEFAULT false NOT NULL,
+    type text NOT NULL
+);
+
+
+--
+-- Name: volumes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.volumes_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: volumes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.volumes_id_seq OWNED BY public.volumes.id;
+
+
+--
 -- Name: access_tokens id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -179,6 +218,13 @@ ALTER TABLE ONLY public.refresh_tokens ALTER COLUMN id SET DEFAULT nextval('publ
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Name: volumes id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.volumes ALTER COLUMN id SET DEFAULT nextval('public.volumes_id_seq'::regclass);
 
 
 --
@@ -214,6 +260,14 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: volumes volumes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.volumes
+    ADD CONSTRAINT volumes_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: access_tokens_token_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -242,6 +296,13 @@ CREATE UNIQUE INDEX uk_users_username ON public.users USING btree (username);
 
 
 --
+-- Name: uk_volumes_library_id_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX uk_volumes_library_id_name ON public.volumes USING btree (library_id, name);
+
+
+--
 -- Name: access_tokens access_tokens_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -255,6 +316,14 @@ ALTER TABLE ONLY public.access_tokens
 
 ALTER TABLE ONLY public.refresh_tokens
     ADD CONSTRAINT refresh_tokens_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: volumes volumes_library_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.volumes
+    ADD CONSTRAINT volumes_library_id_fkey FOREIGN KEY (library_id) REFERENCES public.libraries(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

@@ -11,7 +11,7 @@ import {Column, DataType, HasMany, Model, Table} from "sequelize-typescript";
 //import Author from "./Author";
 //import Series from "./Series";
 //import Story from "./Story";
-//import Volume from "./Volume";
+import Volume from "./Volume";
 import {validateLibraryNameUnique, validateLibraryScopeUnique} from "../util/AsyncValidators";
 import {BadRequest} from "../util/HttpErrors";
 
@@ -125,14 +125,12 @@ class Library extends Model<Library> {
     stories!: Story[];
 */
 
-/*
     @HasMany(() => Volume, {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     })
     // Volumes included in this Library
     volumes!: Volume[];
-*/
 
 }
 
