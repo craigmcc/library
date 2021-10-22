@@ -14,6 +14,7 @@ import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Model, Table} fr
 import Library from "./Library";
 //import Story from "./Story";
 //import VolumeStory from "./VolumeStory";
+import {validateVolumeLocation, validateVolumeType} from "../util/ApplicationValidators";
 import {validateLibraryId, validateVolumeNameUnique} from "../util/AsyncValidators";
 import {BadRequest} from "../util/HttpErrors";
 
@@ -26,10 +27,10 @@ import {BadRequest} from "../util/HttpErrors";
         isLibraryIdValid: async function(this: Volume): Promise<void> {
             if (!(await validateLibraryId(this.libraryId))) {
                 throw new BadRequest
-                (`name: Name '${this.name}' is already in use in this Library`);
+                    (`libraryId: Missing Library ${this.libraryId}`);
             }
         },
-        isVolumeNameUnique: async function(this: Volume): Promise<void> {
+        isNameUnique: async function(this: Volume): Promise<void> {
             if (!(await validateVolumeNameUnique(this))) {
                 throw new BadRequest
                     (`name: Name '${this.name}' is already in use in this Library`);
@@ -115,6 +116,13 @@ export class Volume extends Model<Volume> {
         allowNull: true,
         field: "location",
         type: DataType.STRING,
+        validate: {
+            isValidLocation: function (value: string): void {
+                if (!validateVolumeLocation(value)) {
+                    throw new BadRequest(`location: Invalid location '${value}'`);
+                }
+            },
+        },
     })
     // Physical location of this Volume
     location?: string;
@@ -164,10 +172,18 @@ export class Volume extends Model<Volume> {
         allowNull: false,
         field: "type",
         type: DataType.STRING,
+        validate: {
+            isValidType: function (value: string): void {
+                if (!validateVolumeType(value)) {
+                    throw new BadRequest(`type: Invalid type '${value}'`);
+                }
+            },
+            notNull: {
+                msg: "type: Is required",
+            }
+        }
     })
     type!: string;
-
-
 
 }
 

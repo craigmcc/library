@@ -166,33 +166,11 @@ describe("LibraryServices Functional Tests", () => {
 
     describe("LibraryServices.insert()", () => {
 
-        it("should fail on duplicate name", async () => {
+        it("should fail on duplicate input data", async () => {
 
             const INPUTS = await LibraryServices.all();
             const INPUT = {
                 name: INPUTS[0].name,
-                scope: "newscope",
-            }
-
-            try {
-                await LibraryServices.insert(INPUT);
-                expect.fail("Should have thrown BadRequest");
-            } catch (error) {
-                if (error instanceof BadRequest) {
-                    expect(error.message).to.include
-                        (`name: Name '${INPUT.name}' is already in use`);
-                } else {
-                    expect.fail(`Should not have thrown '${error}'`);
-                }
-            }
-
-        })
-
-        it("should fail on duplicate scope", async () => {
-
-            const INPUTS = await LibraryServices.all();
-            const INPUT = {
-                name: "newname",
                 scope: INPUTS[0].scope,
             }
 
@@ -202,7 +180,9 @@ describe("LibraryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof BadRequest) {
                     expect(error.message).to.include
-                    (`scope: Scope '${INPUT.scope}' is already in use`);
+                        (`name: Name '${INPUT.name}' is already in use`);
+                    expect(error.message).to.include
+                        (`scope: Scope '${INPUT.scope}' is already in use`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -213,6 +193,29 @@ describe("LibraryServices Functional Tests", () => {
 
         it("should fail on invalid input data", async () => {
 
+            const INPUTS = await LibraryServices.all();
+            const INPUT = {
+                name: "Valid Name",
+                scope: "invalid scope",
+            }
+
+            try {
+                await LibraryServices.insert(INPUT);
+                expect.fail("Should have thrown BadRequest");
+            } catch (error) {
+                if (error instanceof BadRequest) {
+                    expect(error.message).to.include
+                        (`scope: Scope '${INPUT.scope}' must not contain spaces`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+
+            }
+
+        })
+
+        it("should fail on missing input data", async () => {
+
             const INPUT = {};
 
             try {
@@ -220,7 +223,8 @@ describe("LibraryServices Functional Tests", () => {
                 expect.fail("Should have thrown BadRequest");
             } catch (error) {
                 if (error instanceof BadRequest) {
-                    expect(error.message).to.include("Is required");
+                    expect(error.message).to.include("name: Is required");
+                    expect(error.message).to.include("scope: Is required");
                 } else {
                     expect.fail(`Should not have thrown ${error}'`);
                 }
@@ -231,8 +235,10 @@ describe("LibraryServices Functional Tests", () => {
         it("should pass on valid input data", async () => {
 
             const INPUT = {
-                name: "Brand New Name",
-                scope: "Brand New Scope",
+                active: false,
+                name: "Valid Name",
+                notes: "Valid notes",
+                scope: "validscope",
             }
 
             const OUTPUT = await LibraryServices.insert(INPUT);
@@ -254,7 +260,7 @@ describe("LibraryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`libraryId: Missing Library ${INVALID_ID}`);
+                       (`libraryId: Missing Library ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -295,31 +301,11 @@ describe("LibraryServices Functional Tests", () => {
 
     describe("LibraryServices.update()", () => {
 
-        it("should fail on duplicate name", async () => {
+        it("should fail on duplicate data", async () => {
 
             const ORIGINAL = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INPUT = {
                 name: SeedData.LIBRARY_NAME_SECOND,
-            }
-
-            try {
-                await LibraryServices.update(ORIGINAL.id, INPUT);
-                expect.fail("Should have thrown BadRequest");
-            } catch (error) {
-                if (error instanceof BadRequest) {
-                    expect(error.message).to.include
-                    (`name: Name '${INPUT.name}' is already in use`);
-                } else {
-                    expect.fail(`Should not have thrown '${error}'`);
-                }
-            }
-
-        })
-
-        it("should fail on duplicate scope", async () => {
-
-            const ORIGINAL = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
-            const INPUT = {
                 scope: SeedData.LIBRARY_SCOPE_SECOND,
             }
 
@@ -329,7 +315,9 @@ describe("LibraryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof BadRequest) {
                     expect(error.message).to.include
-                    (`scope: Scope '${INPUT.scope}' is already in use`);
+                        (`name: Name '${INPUT.name}' is already in use`);
+                    expect(error.message).to.include
+                        (`scope: Scope '${INPUT.scope}' is already in use`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -351,7 +339,7 @@ describe("LibraryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`libraryId: Missing Library ${INVALID_ID}`);
+                       (`libraryId: Missing Library ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -387,7 +375,9 @@ describe("LibraryServices Functional Tests", () => {
             const ORIGINAL = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INPUT: Partial<Library> = {
                 active: false,
+                name: "New Name",
                 notes: "New note",
+                scope: "newscope",
             };
 
             const OUTPUT = await LibraryServices.update(ORIGINAL.id, INPUT);

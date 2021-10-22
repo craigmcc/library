@@ -12,6 +12,7 @@ import {Column, DataType, HasMany, Model, Table} from "sequelize-typescript";
 //import Series from "./Series";
 //import Story from "./Story";
 import Volume from "./Volume";
+import {validateLibraryScope} from "../util/ApplicationValidators";
 import {validateLibraryNameUnique, validateLibraryScopeUnique} from "../util/AsyncValidators";
 import {BadRequest} from "../util/HttpErrors";
 
@@ -21,13 +22,13 @@ import {BadRequest} from "../util/HttpErrors";
     tableName: "libraries",
     timestamps: false,
     validate: {
-        isLibraryNameUnique: async function(this: Library): Promise<void> {
+        isNameUnique: async function(this: Library): Promise<void> {
             if (!(await validateLibraryNameUnique(this))) {
                 throw new BadRequest
                     (`name: Name '${this.name}' is already in use`);
             }
         },
-        isLibraryScopeUnique: async function(this: Library): Promise<void> {
+        isScopeUnique: async function(this: Library): Promise<void> {
             if (!(await validateLibraryScopeUnique(this))) {
                 throw new BadRequest
                     (`scope: Scope '${this.scope}' is already in use`);
@@ -99,6 +100,11 @@ class Library extends Model<Library> {
         type: DataType.TEXT,
         unique: true,
         validate: {
+            isValidScope: function (value: string): void {
+                if (!validateLibraryScope(value)) {
+                    throw new BadRequest(`scope: Scope '${value}' must not contain spaces`);
+                }
+            },
             notNull: {
                 msg: "scope: Is required"
             },

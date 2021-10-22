@@ -7,6 +7,20 @@
 
 // Public Objects -----------------------------------------------------------
 
+export const validateLibraryScope = (scope: string): boolean => {
+    if (scope) {
+        if (scope.length < 1) {
+            return false;
+        } else if (scope.split(" ").length > 1) {
+            return false;
+        } else {
+            return true;
+        }
+    } else {
+        return true;
+    }
+}
+
 export const validateVolumeLocation = (location: string | null | undefined): boolean => {
     if (!location) {
         return true;

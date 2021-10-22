@@ -228,11 +228,13 @@ describe("VolumeServices Functional Tests", () => {
 
     describe("VolumeServices.insert()", () => {
 
-        it.skip("should fail on duplicate name", async () => {
+        it("should fail on duplicate data", async () => {
 
             const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INPUTS = await VolumeServices.all(library.id);
-            const INPUT = INPUTS[0];
+            const INPUT = {
+                name: INPUTS[0].name,
+            };
 
             try {
                 await VolumeServices.insert(library.id, INPUT);
@@ -248,16 +250,241 @@ describe("VolumeServices Functional Tests", () => {
 
         })
 
-        // TODO invalid input data
+        it("should fail on invalid data", async () => {
 
-        // TODO missing input data
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const INPUT = {
+                location: "Invalid Location",
+                name: "Valid Name",
+                scope: "validscope",
+                type: "Invalid Type",
+            };
 
-        // TODO valid input data
+            try {
+                await VolumeServices.insert(library.id, INPUT);
+                expect.fail("Should have thrown BadRequest");
+            } catch (error) {
+                if (error instanceof BadRequest) {
+                    expect(error.message).to.include(`location: Invalid location '${INPUT.location}'`);
+                    expect(error.message).to.include(`type: Invalid type '${INPUT.type}'`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+
+        })
+
+        it("should fail on missing data", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const INPUT = {};
+
+            try {
+                await VolumeServices.insert(library.id, INPUT);
+                expect.fail("Should have thrown BadRequest");
+            } catch (error) {
+                if (error instanceof BadRequest) {
+                    expect(error.message).to.include("name: Is required");
+                    expect(error.message).to.include("type: Is required");
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+
+        })
+
+        it("should pass on valid data", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const INPUT = {
+                active: true,
+                copyright: "2021",
+                googleId: "123456",
+                isbn: "abcdef",
+                libraryId: library.id,
+                location: "Other",
+                name: "Valid Name",
+                read: false,
+                type: "Collection",
+            }
+
+            const OUTPUT = await VolumeServices.insert(library.id, INPUT);
+            compareVolumeNew(OUTPUT, INPUT);
+
+        })
+
+    })
+
+    describe("VolumeServices.remove()", () => {
+
+        it("should fail on invalid ID", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const INVALID_ID = -1;
+
+            try {
+                await VolumeServices.remove(library.id, INVALID_ID);
+                expect.fail(`Should have thrown NotFound`);
+            } catch (error) {
+                if (error instanceof NotFound) {
+                    expect(error.message).to.include
+                        (`volumeId: Missing Volume ${INVALID_ID}`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+
+        })
+
+        it("should pass on valid ID", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const volumes = await VolumeServices.all(library.id);
+            const VALID_ID = volumes[0].id;
+
+            const volume = await VolumeServices.remove(library.id, VALID_ID);
+            expect(volume.id).to.equal(VALID_ID);
+
+            try {
+                await VolumeServices.remove(library.id, VALID_ID);
+                expect.fail("Should have thrown NotFound after remove");
+            } catch (error) {
+                if (error instanceof NotFound) {
+                    expect(error.message).to.include
+                        (`volumeId: Missing Volume ${VALID_ID}`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+
+        })
 
     })
 
     describe.skip("VolumeServices.stories()", () => {
         // TODO
+    })
+
+    describe("VolumeServices.update()", () => {
+
+        it("should fail on duplicate data", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const volumes = await VolumeServices.all(library.id);
+            const INPUT = {
+                name: volumes[0].name,
+            }
+
+            try {
+                await VolumeServices.update(library.id, volumes[1].id, INPUT);
+                expect.fail("Should have thrown BadRequest");
+            } catch (error) {
+                if (error instanceof BadRequest) {
+                    expect(error.message).to.include
+                        (`name: Name '${INPUT.name}' is already in use`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+
+        })
+
+        it("should fail on invalid data", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const volumes = await VolumeServices.all(library.id);
+            const INPUT = {
+                location: "Invalid Location",
+                name: "Valid Name",
+                scope: "validscope",
+                type: "Invalid Type",
+            };
+
+            try {
+                await VolumeServices.update(library.id, volumes[0].id, INPUT);
+                expect.fail("Should have thrown BadRequest");
+            } catch (error) {
+                if (error instanceof BadRequest) {
+                    expect(error.message).to.include(`location: Invalid location '${INPUT.location}'`);
+                    expect(error.message).to.include(`type: Invalid type '${INPUT.type}'`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+
+        })
+
+        it("should fail on invalid ID", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const INPUT = {};
+            const INVALID_ID = -1;
+
+            try {
+                await VolumeServices.update(library.id, INVALID_ID, INPUT);
+                expect.fail(`Should have thrown NotFound`);
+            } catch (error) {
+                if (error instanceof NotFound) {
+                    expect(error.message).to.include
+                        (`volumeId: Missing Volume ${INVALID_ID}`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+
+        })
+
+        it("should pass on no changes data", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const volumes = await VolumeServices.all(library.id);
+            const INPUT = volumes[0];
+
+            const OUTPUT = await VolumeServices.update(library.id, INPUT.id, INPUT);
+            compareVolumeOld(OUTPUT, INPUT);
+            const UPDATED = await VolumeServices.find(library.id, INPUT.id);
+            compareVolumeOld(UPDATED, OUTPUT);
+
+        })
+
+        it("should pass on no updates data", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const volumes = await VolumeServices.all(library.id);
+            const INPUT = {};
+            const VALID_ID = volumes[0].id
+
+            const OUTPUT = await VolumeServices.update(library.id, VALID_ID, INPUT);
+            compareVolumeOld(OUTPUT, INPUT);
+            const UPDATED = await VolumeServices.find(library.id, VALID_ID);
+            compareVolumeOld(UPDATED, OUTPUT);
+
+        })
+
+        it("should pass on valid updates data", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const volumes = await VolumeServices.all(library.id);
+            const INPUT = {
+                active: false,
+                copyright: "2020",
+                googleId: "New Google ID",
+                isbn: "New ISBN",
+                location: "Box",
+                name: "New Name",
+                notes: "New Notes",
+                read: true,
+                type: "Collection",
+            };
+            const VALID_ID = volumes[0].id
+
+            const OUTPUT = await VolumeServices.update(library.id, VALID_ID, INPUT);
+            compareVolumeOld(OUTPUT, INPUT);
+            const UPDATED = await VolumeServices.find(library.id, VALID_ID);
+            compareVolumeOld(UPDATED, OUTPUT);
+
+        })
+
     })
 
 })
