@@ -18,7 +18,7 @@ import Library from "./Library";
 import RefreshToken from "./RefreshToken";
 //import Series from "./Series";
 //import SeriesStory from "./SeriesStory";
-//import Story from "./Story";
+import Story from "./Story";
 import User from "./User";
 import Volume from "./Volume";
 //import VolumeStory from "./VolumeStory";
@@ -48,7 +48,7 @@ Database.addModels([
     RefreshToken,
 //    Series,
 //    SeriesStory,
-//    Story,
+    Story,
     User,
     Volume,
 //    VolumeStory,

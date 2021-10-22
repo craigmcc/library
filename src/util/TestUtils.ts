@@ -16,7 +16,7 @@ import Database from "../models/Database";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
 // import Series from "../models/Series";
-// import Story from "../models/Story";
+import Story from "../models/Story";
 import User from "../models/User";
 import Volume from "../models/Volume";
 import OAuthOrchestrator from "../oauth/OAuthOrchestrator";
@@ -79,8 +79,8 @@ export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void
     // let authors1: Author[] = [];
     // let series0: Series[] = [];
     // let series1: Series[] = [];
-    // let stories0: Story[] = [];
-    // let stories1: Story[] = [];
+    let stories0: Story[] = [];
+    let stories1: Story[] = [];
     let volumes0: Volume[] = [];
     let volumes1: Volume[] = [];
 
@@ -97,12 +97,10 @@ export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void
         series1 = await loadSeries(libraries[1], SeedData.SERIES_LIBRARY1);
     }
 */
-/*
     if (options.withStories) {
         stories0 = await loadStories(libraries[0], SeedData.STORIES_LIBRARY0);
         stories1 = await loadStories(libraries[1], SeedData.STORIES_LIBRARY1);
     }
-*/
     if (options.withVolumes) {
         volumes0 = await loadVolumes(libraries[0], SeedData.VOLUMES_LIBRARY0);
         volumes1 = await loadVolumes(libraries[1], SeedData.VOLUMES_LIBRARY1);
@@ -298,7 +296,6 @@ const loadSeriesStory
 }
 */
 
-/*
 const loadStories
     = async (library: Library, stories: Partial<Story>[]): Promise<Story[]> =>
 {
@@ -307,6 +304,7 @@ const loadStories
     });
     let results: Story[] = [];
     try {
+        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
         results = await Story.bulkCreate(stories);
     } catch (error) {
         console.info("  Reloading Stories ERROR", error);
@@ -314,7 +312,6 @@ const loadStories
     }
     return results;
 }
-*/
 
 const hashedPassword = async (password: string | undefined): Promise<string> => {
     return await hashPassword(password ? password : "");

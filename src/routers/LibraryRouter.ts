@@ -111,7 +111,6 @@ LibraryRouter.get("/:libraryId/series",
     });
 */
 
-/*
 // GET /:libraryId/stories - Find matching Stories for this Library
 LibraryRouter.get("/:libraryId/stories",
     requireRegular,
@@ -121,9 +120,7 @@ LibraryRouter.get("/:libraryId/stories",
             req.query
         ));
     });
-*/
 
-/*
 // GET /:libraryId/volumes - Find matching Volumes for this Library
 LibraryRouter.get("/:libraryId/volumes",
     requireRegular,
@@ -133,4 +130,3 @@ LibraryRouter.get("/:libraryId/volumes",
             req.query
         ));
     });
-*/

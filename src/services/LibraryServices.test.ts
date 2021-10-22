@@ -11,6 +11,7 @@ const expect = chai.expect;
 
 import LibraryServices from "./LibraryServices";
 import Library from "../models/Library";
+import Story from "../models/Story";
 import Volume from "../models/Volume";
 import * as SeedData from "../util/SeedData";
 import {loadTestData, lookupLibrary} from "../util/TestUtils";
@@ -296,7 +297,45 @@ describe("LibraryServices Functional Tests", () => {
     })
 
     describe("LibraryServices.stories()", () => {
-        // TODO
+
+        it("should pass on active Stories", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const stories = await LibraryServices.stories(library.id, {
+                active: "",
+            });
+
+            expect(stories.length).to.be.lessThanOrEqual(SeedData.STORIES_LIBRARY0.length);
+            stories.forEach(story => {
+                expect(story.active).to.be.true;
+            });
+
+        });
+
+        it("should pass on all Stories", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const volumes = await LibraryServices.stories(library.id);
+
+            expect(volumes.length).to.equal(SeedData.STORIES_LIBRARY1.length);
+
+        })
+
+        it("should passed on name'd Stories", async () => {
+
+            const NAME = "tT"; // Should match "Betty Story"
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const stories = await LibraryServices.stories(library.id, {
+                name: NAME,
+            });
+
+            expect(stories.length).to.equal(1);
+            stories.forEach(story => {
+                expect(story.name.toLowerCase()).to.include(NAME.toLowerCase());
+            })
+
+        })
+
     })
 
     describe("LibraryServices.update()", () => {

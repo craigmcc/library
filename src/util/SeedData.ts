@@ -11,7 +11,7 @@ import AccessToken from "../models/AccessToken";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
 // import Series from "../models/Series";
-// import Story from "../models/Story";
+import Story from "../models/Story";
 import User from "../models/User";
 import Volume from "../models/Volume";
 
@@ -118,25 +118,24 @@ export const SERIES_LIBRARY1: Partial<Series>[] = [
 
 // ***** Stories *****
 
-/*
 // For FIRST_LIBRARY (libraryId to be interpolated)
 export const STORIES_LIBRARY0: Partial<Story>[] = [
     {
         "name": "Fred Story",
     },
     {
+        "active": false,
         "name": "Wilma Story",
     },
     {
         "name": "Flintstone Story",
     }
 ];
-*/
 
-/*
 // For SECOND_LIBRARY (libraryId to be interpolated)
 export const STORIES_LIBRARY1: Partial<Story>[] = [
     {
+        "active": false,
         "name": "Barney Story",
     },
     {
@@ -146,7 +145,6 @@ export const STORIES_LIBRARY1: Partial<Story>[] = [
         "name": "Rubble Story",
     }
 ];
-*/
 
 // ***** Users *****
 

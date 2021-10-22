@@ -11,12 +11,12 @@ import {FindOptions, Op} from "sequelize";
 import BaseParentServices from "./BaseParentServices";
 //import AuthorServices from "./AuthorServices";
 //import SeriesServices from "./SeriesServices";
-//import StoryServices from "./StoryServices";
+import StoryServices from "./StoryServices";
 import VolumeServices from "./VolumeServices";
 //import Author from "../models/Author";
 import Library from "../models/Library";
 //import Series from "../models/Series";
-//import Story from "../models/Story";
+import Story from "../models/Story";
 import Volume from "../models/Volume";
 import {NotFound} from "../util/HttpErrors";
 import {appendPaginationOptions} from "../util/QueryParameters";
@@ -70,7 +70,6 @@ class LibraryServices extends BaseParentServices<Library> {
     }
 */
 
-/*
     public async stories(libraryId: number, query?: any): Promise<Story[]> {
         const library = await this.read("LibraryServices.stories", libraryId);
         const options: FindOptions = StoryServices.appendMatchOptions({
@@ -78,7 +77,6 @@ class LibraryServices extends BaseParentServices<Library> {
         }, query);
         return await library.$get("stories", options);
     }
-*/
 
     public async volumes(libraryId: number, query?: any): Promise<Volume[]> {
         const library = await this.read("LibraryServices.volumes", libraryId);
@@ -113,16 +111,12 @@ class LibraryServices extends BaseParentServices<Library> {
             include.push(Series);
         }
 */
-/*
         if ("" === query.withStories) {
             include.push(Story);
         }
-*/
-/*
         if ("" === query.withVolumes) {
             include.push(Volume);
         }
-*/
         if (include.length > 0) {
             options.include = include;
         }

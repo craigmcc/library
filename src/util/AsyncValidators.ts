@@ -15,6 +15,7 @@ import AccessToken from "../models/AccessToken";
 //import Author from "../models/Author";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
+import Story from "../models/Story";
 import User from "../models/User";
 import Volume from "../models/Volume";
 
@@ -153,6 +154,34 @@ export const validateRefreshTokenTokenUnique
             options.where.id = { [Op.ne]: refreshToken.id }
         }
         const results = await RefreshToken.findAll(options);
+        return (results.length === 0);
+    } else {
+        return true;
+    }
+}
+
+export const validateStoryNameUnique
+    = async (story: Story): Promise<boolean> =>
+{
+    if (story && story.libraryId && story.name) {
+        let options = {};
+        if (story.id && (story.id > 0)) {
+            options = {
+                where: {
+                    id: {[Op.ne]: story.id},
+                    libraryId: story.libraryId,
+                    name: story.name
+                }
+            }
+        } else {
+            options = {
+                where: {
+                    libraryId: story.libraryId,
+                    name: story.name
+                }
+            }
+        }
+        let results = await Story.findAll(options);
         return (results.length === 0);
     } else {
         return true;
