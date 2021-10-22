@@ -11,6 +11,7 @@ const expect = chai.expect;
 
 import LibraryServices from "./LibraryServices";
 import Library from "../models/Library";
+import Volume from "../models/Volume";
 import * as SeedData from "../util/SeedData";
 import {loadTestData, lookupLibrary} from "../util/TestUtils";
 import {BadRequest, NotFound} from "../util/HttpErrors";
@@ -400,7 +401,105 @@ describe("LibraryServices Functional Tests", () => {
     })
 
     describe("LibraryServices.volumes()", () => {
-        // TODO
+
+        it("should pass on active Volumes", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const volumes = await LibraryServices.volumes(library.id, {
+                active: "",
+            });
+
+            expect(volumes.length).to.be.lessThanOrEqual(SeedData.VOLUMES_LIBRARY0.length);
+            volumes.forEach(volume => {
+                expect(volume.active).to.be.true;
+            });
+
+        });
+
+        it("should pass on all Volumes", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const volumes = await LibraryServices.volumes(library.id);
+
+            expect(volumes.length).to.equal(SeedData.VOLUMES_LIBRARY1.length);
+
+        })
+
+        it("should pass on googleId'd Volumes", async () => {
+
+            const GOOGLE_ID = "222";
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const volumes = await LibraryServices.volumes(library.id, {
+                googleId: GOOGLE_ID,
+            });
+
+            expect(volumes.length).to.equal(1);
+            volumes.forEach(volume => {
+                expect(volume.googleId).to.equal(GOOGLE_ID);
+            })
+
+        })
+
+        it("should pass on isbn'd Volumes", async () => {
+
+            const ISBN = "fff";
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const volumes = await LibraryServices.volumes(library.id, {
+                isbn: ISBN,
+            });
+
+            expect(volumes.length).to.equal(1);
+            volumes.forEach(volume => {
+                expect(volume.isbn).to.equal(ISBN);
+            })
+
+        })
+
+        it("should pass on location'd Volumes", async () => {
+
+            const LOCATION = "Computer";
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const volumes = await LibraryServices.volumes(library.id, {
+                location: LOCATION,
+            });
+
+            expect(volumes.length).to.equal(1);
+            volumes.forEach(volume => {
+                expect(volume.location).to.equal(LOCATION);
+            })
+
+        })
+
+        it("should passed on name'd Volumes", async () => {
+
+            const NAME = "T"; // Should match "Betty Volume"
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const volumes = await LibraryServices.volumes(library.id, {
+                name: NAME,
+            });
+
+            expect(volumes.length).to.equal(1);
+            volumes.forEach(volume => {
+                expect(volume.name.toLowerCase()).to.include(NAME.toLowerCase());
+            })
+
+        })
+
+        it("should passed on type'd Volumes", async () => {
+
+            const TYPE = "Collection";
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const volumes = await LibraryServices.volumes(library.id, {
+                type: TYPE,
+            });
+
+            expect(volumes.length).to.equal(1);
+            volumes.forEach(volume => {
+                expect(volume.type).to.equal(TYPE);
+            })
+
+        })
+
     })
 
 })

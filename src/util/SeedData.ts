@@ -194,31 +194,51 @@ export const USERS: Partial<User>[] = [
 // For FIRST_LIBRARY (libraryId to be interpolated)
 export const VOLUMES_LIBRARY0: Partial<Volume>[] = [
     {
+        active: false,
+        "googleId": "111",
+        "isbn": "aaa",
+        "location": "Box",
         "name": "Fred Volume",
-        "type": "Single",
-    },
-    {
-        "name": "Wilma Volume",
-        "type": "Single",
-    },
-    {
-        "name": "Flintstone Volume",
         "type": "Anthology",
+    },
+    {
+        "googleId": "222",
+        "isbn": "222",
+        "location": "Computer",
+        "name": "Wilma Volume",
+        "type": "Collection",
+    },
+    {
+        "googleId": "333",
+        "isbn": "ccc",
+        "location": "Kindle",
+        "name": "Flintstone Volume",
+        "type": "Single",
     }
 ];
 
 // For SECOND_LIBRARY (libraryId to be interpolated)
 export const VOLUMES_LIBRARY1: Partial<Volume>[] = [
     {
+        "googleId": "444",
+        "isbn": "ddd",
+        "location": "Kobo",
         "name": "Barney Volume",
-        "type": "Single",
-    },
-    {
-        "name": "Betty Volume",
-        "type": "Single",
-    },
-    {
-        "name": "Rubble Volume",
         "type": "Anthology",
+    },
+    {
+        active: false,
+        "googleId": "555",
+        "isbn": "eee",
+        "location": "Other",
+        "name": "Betty Volume",
+        "type": "Collection",
+    },
+    {
+        "googleId": "666",
+        "isbn": "fff",
+        "location": "Returned",
+        "name": "Rubble Volume",
+        "type": "Single",
     }
 ];

@@ -133,7 +133,7 @@ class LibraryServices extends BaseParentServices<Library> {
      * Supported match query parameters:
      * * active                         Select active Libraries
      * * name={wildcard}                Select Libraries with name matching {wildcard}
-     * * scope={scope}                  Select Libraries with scope exact matching {scope}
+     * * scope={scope}                  Select Libraries with scope equalling {scope}
      */
     public appendMatchOptions(options: FindOptions, query?: any): FindOptions {
         options = this.appendIncludeOptions(options, query);

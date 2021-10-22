@@ -117,7 +117,11 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
     /**
      * Supported match query parameters:
      * * active                         Select active Volumes
-     * * name={wildcard}                Select Volumes name with matching {wildcard}
+     * * googleId={googleId}            Select Volumes on googleId equaling {googleId}
+     * * isbn={isbn}                    Select Volumes on isbn equaling {isbn}
+     * * location={location}            Select Volumes on location equaling {location}
+     * * name={wildcard}                Select Volumes on name matching {wildcard}
+     * * type={type}                    Select Volumes on type equalling {type}
      */
     public appendMatchOptions(options: FindOptions, query?: any): FindOptions {
         options = this.appendIncludeOptions(options, query);
@@ -128,8 +132,20 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
         if ("" === query.active) {
             where.active = true;
         }
+        if (query.googleId) {
+            where.googleId = query.googleId;
+        }
+        if (query.isbn) {
+            where.isbn = query.isbn;
+        }
+        if (query.location) {
+            where.location = query.location;
+        }
         if (query.name) {
             where.name = { [Op.iLike]: `%${query.name}%` };
+        }
+        if (query.type) {
+            where.type = query.type;
         }
         if (Object.keys(where).length > 0) {
             options.where = where;
