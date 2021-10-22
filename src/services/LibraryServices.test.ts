@@ -119,7 +119,7 @@ describe("LibraryServices Functional Tests", () => {
                     const result = await LibraryServices.exact(name);
                     expect(result.name).equals(name);
                 } catch (error) {
-                    expect.fail(`Should not have thrown '${(error as Error).message}'`);
+                    expect.fail(`Should not have thrown '${error}'`);
                 }
             })
 
@@ -180,11 +180,10 @@ describe("LibraryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof BadRequest) {
                     expect(error.message).to.include
-                    (`name: Name '${INPUT.name}' is already in use`);
+                        (`name: Name '${INPUT.name}' is already in use`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
-
             }
 
         })
