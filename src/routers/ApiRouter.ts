@@ -9,8 +9,7 @@ import {Router} from "express";
 // Internal Modules ----------------------------------------------------------
 
 import AuthorRouter from "./AuthorRouter";
-//import ClientRouter from "./ClientRouter";
-//import DevModeRouter from "./DevModeRouter";
+import ClientRouter from "./ClientRouter";
 import LibraryRouter from "./LibraryRouter";
 import SeriesRouter from "./SeriesRouter";
 import StoryRouter from "./StoryRouter";
@@ -28,8 +27,7 @@ export default ApiRouter;
 // Model Specific Routers ----------------------------------------------------
 
 ApiRouter.use("/authors", AuthorRouter);
-//ApiRouter.use("/client", ClientRouter);
-//ApiRouter.use("/devmode", DevModeRouter);
+ApiRouter.use("/client", ClientRouter);
 ApiRouter.use("/libraries", LibraryRouter);
 ApiRouter.use("/series", SeriesRouter);
 ApiRouter.use("/stories", StoryRouter);
