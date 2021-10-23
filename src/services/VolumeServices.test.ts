@@ -10,12 +10,10 @@ const expect = chai.expect;
 // Internal Modules ----------------------------------------------------------
 
 import VolumeServices from "./VolumeServices";
-import Library from "../models/Library";
 import Volume from "../models/Volume";
 import * as SeedData from "../util/SeedData";
 import {loadTestData, lookupLibrary} from "../util/TestUtils";
 import {BadRequest, NotFound} from "../util/HttpErrors";
-import LibraryServices from "./LibraryServices";
 
 // Test Specifications ------------------------------------------------------
 
