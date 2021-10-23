@@ -108,7 +108,7 @@ class Library extends Model<Library> {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     })
-        // Authors included in this Library
+    // Authors included in this Library
     authors!: Author[];
 
     @HasMany(() => Series, {

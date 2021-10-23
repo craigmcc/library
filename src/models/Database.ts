@@ -39,19 +39,21 @@ export const Database = new Sequelize(DATABASE_URL, {
 });
 
 Database.addModels([
-    AccessToken,
+    // Library Stack - Author FK messed up in tests if this is not before Author
+    Library,
     Author,
+    Series,
+    Story,
+    Volume,
 //    AuthorSeries,
 //    AuthorStory,
 //    AuthorVolume,
-    Library,
-    RefreshToken,
-    Series,
 //    SeriesStory,
-    Story,
-    User,
-    Volume,
 //    VolumeStory,
+    // User Stack
+    User,
+    AccessToken,
+    RefreshToken,
 ]);
 
 logger.info({
