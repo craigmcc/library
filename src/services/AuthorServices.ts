@@ -27,7 +27,7 @@ import * as SortOrder from "../util/SortOrder";
 class AuthorServices extends BaseChildServices<Author, Library> {
 
     constructor () {
-        super(Library, Author, SortOrder.STORIES, [
+        super(Library, Author, SortOrder.AUTHORS, [
             "active",
             "firstName",
             "lastName",

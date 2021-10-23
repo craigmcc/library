@@ -16,7 +16,7 @@ export const ACCESS_TOKENS: Order = [
 export const AUTHORS: Order  = [
     [ "libraryId", "ASC" ],
     [ "lastName", "ASC" ],
-    [ "firstFame", "ASC" ],
+    [ "firstName", "ASC" ],
 ];
 
 export const LIBRARIES: Order = [
