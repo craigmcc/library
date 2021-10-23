@@ -63,13 +63,6 @@ class Library extends Model<Library> {
     // Is this Library active?
     active!: boolean;
 
-    @HasMany(() => Author, {
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
-    })
-    // Authors included in this Library
-    authors!: Author[];
-
     @Column({
         allowNull: false,
         field: "name",
@@ -111,11 +104,18 @@ class Library extends Model<Library> {
     // Globally unique scope prefix for this Library
     scope!: string;
 
+    @HasMany(() => Author, {
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+    })
+        // Authors included in this Library
+    authors!: Author[];
+
     @HasMany(() => Series, {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     })
-        // Series included in this Library
+    // Series included in this Library
     series!: Series[];
 
     @HasMany(() => Story, {

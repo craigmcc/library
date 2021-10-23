@@ -1,4 +1,4 @@
-// middleware ----------------------------------------------------------------
+// Middleware ----------------------------------------------------------------
 
 // Express middleware functions that can be used to configure
 // Router implementations (or the entire application) via use() calls,

@@ -11,7 +11,7 @@ import {PasswordTokenRequest} from "@craigmcc/oauth-orchestrator";
 import * as SeedData from "./SeedData";
 import {NotFound} from "./HttpErrors";
 import AccessToken from "../models/AccessToken";
-// import Author from "../models/Author";
+import Author from "../models/Author";
 import Database from "../models/Database";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
@@ -75,8 +75,8 @@ export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void
     }
 
     // Storage for detailed data (if loaded)
-    // let authors0: Author[] = [];
-    // let authors1: Author[] = [];
+    let authors0: Author[] = [];
+    let authors1: Author[] = [];
     let series0: Series[] = [];
     let series1: Series[] = [];
     let stories0: Story[] = [];
@@ -85,12 +85,10 @@ export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void
     let volumes1: Volume[] = [];
 
     // Load top level detailed data as requested
-/*
     if (options.withAuthors) {
         authors0 = await loadAuthors(libraries[0], SeedData.AUTHORS_LIBRARY0);
         authors1 = await loadAuthors(libraries[1], SeedData.AUTHORS_LIBRARY1);
     }
-*/
     if (options.withSeries) {
         series0 = await loadSeries(libraries[0], SeedData.SERIES_LIBRARY0);
         series1 = await loadSeries(libraries[1], SeedData.SERIES_LIBRARY1);
@@ -192,7 +190,6 @@ const loadAccessTokens
     }
 }
 
-/*
 const loadAuthors
     = async (library: Library, authors: Partial<Author>[]): Promise<Author[]> =>
 {
@@ -201,6 +198,7 @@ const loadAuthors
     });
     let results: Author[] = [];
     try {
+        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
         results = await Author.bulkCreate(authors);
     } catch (error) {
         console.info("  Reloading Authors ERROR", error);
@@ -208,7 +206,6 @@ const loadAuthors
     }
     return results;
 }
-*/
 
 /*
 const loadAuthorSeries

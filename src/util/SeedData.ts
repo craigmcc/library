@@ -7,7 +7,7 @@
 // Internal Modules ----------------------------------------------------------
 
 import AccessToken from "../models/AccessToken";
-// import Author from "../models/Author";
+import Author from "../models/Author";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
 import Series from "../models/Series";
@@ -57,7 +57,6 @@ export const ACCESS_TOKENS_SUPERUSER: Partial<AccessToken>[] = [
 
 // ***** Authors *****
 
-/*
 // For FIRST_LIBRARY (libraryId to be interpolated)
 export const AUTHORS_LIBRARY0: Partial<Author>[] = [
     {
@@ -65,6 +64,7 @@ export const AUTHORS_LIBRARY0: Partial<Author>[] = [
         lastName: "Flintstone",
     },
     {
+        active: false,
         firstName: "Wilma",
         lastName: "Flintstone",
     },
@@ -73,6 +73,7 @@ export const AUTHORS_LIBRARY0: Partial<Author>[] = [
 // For SECOND_LIBRARY (libraryId to be interpolated)
 export const AUTHORS_LIBRARY1: Partial<Author>[] = [
     {
+        active: false,
         firstName: "Barney",
         lastName: "Rubble",
     },
@@ -81,7 +82,6 @@ export const AUTHORS_LIBRARY1: Partial<Author>[] = [
         lastName: "Rubble",
     },
 ];
-*/
 
 // *** Refresh Tokens ***
 
