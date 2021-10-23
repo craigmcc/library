@@ -10,7 +10,7 @@ import {Sequelize} from "sequelize-typescript";
 // Internal Modules ----------------------------------------------------------
 
 import AccessToken from "./AccessToken";
-//import Author from "./Author";
+import Author from "./Author";
 //import AuthorSeries from "./AuthorSeries";
 //import AuthorStory from "./AuthorStory";
 //import AuthorVolume from "./AuthorVolume";
@@ -40,7 +40,7 @@ export const Database = new Sequelize(DATABASE_URL, {
 
 Database.addModels([
     AccessToken,
-//    Author,
+    Author,
 //    AuthorSeries,
 //    AuthorStory,
 //    AuthorVolume,

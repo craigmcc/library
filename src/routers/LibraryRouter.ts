@@ -87,7 +87,6 @@ LibraryRouter.put("/:libraryId",
 
 // Child Lookup Routes -------------------------------------------------------
 
-/*
 // GET /:libraryId/authors - Find matching Authors for this Library
 LibraryRouter.get("/:libraryId/authors",
     requireRegular,
@@ -97,7 +96,6 @@ LibraryRouter.get("/:libraryId/authors",
             req.query
         ));
     });
-*/
 
 // GET /:libraryId/series - Find matching Series for this Library
 LibraryRouter.get("/:libraryId/series",

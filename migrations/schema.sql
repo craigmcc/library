@@ -54,6 +54,40 @@ ALTER SEQUENCE public.access_tokens_id_seq OWNED BY public.access_tokens.id;
 
 
 --
+-- Name: authors; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.authors (
+    id integer NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    first_name text NOT NULL,
+    last_name text NOT NULL,
+    library_id integer NOT NULL,
+    notes text
+);
+
+
+--
+-- Name: authors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.authors_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: authors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.authors_id_seq OWNED BY public.authors.id;
+
+
+--
 -- Name: libraries; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -268,6 +302,13 @@ ALTER TABLE ONLY public.access_tokens ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: authors id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors ALTER COLUMN id SET DEFAULT nextval('public.authors_id_seq'::regclass);
+
+
+--
 -- Name: libraries id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -315,6 +356,14 @@ ALTER TABLE ONLY public.volumes ALTER COLUMN id SET DEFAULT nextval('public.volu
 
 ALTER TABLE ONLY public.access_tokens
     ADD CONSTRAINT access_tokens_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: authors authors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors
+    ADD CONSTRAINT authors_pkey PRIMARY KEY (id);
 
 
 --
@@ -387,6 +436,13 @@ CREATE UNIQUE INDEX series_library_id_name_key ON public.series USING btree (lib
 
 
 --
+-- Name: stories_library_id_last_name_first_name_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX stories_library_id_last_name_first_name_key ON public.authors USING btree (library_id, last_name, first_name);
+
+
+--
 -- Name: stories_library_id_name_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -420,6 +476,14 @@ CREATE UNIQUE INDEX uk_volumes_library_id_name ON public.volumes USING btree (li
 
 ALTER TABLE ONLY public.access_tokens
     ADD CONSTRAINT access_tokens_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: authors authors_library_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors
+    ADD CONSTRAINT authors_library_id_fkey FOREIGN KEY (library_id) REFERENCES public.libraries(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

@@ -9,11 +9,11 @@ import {FindOptions, Op} from "sequelize";
 // Internal Modules ----------------------------------------------------------
 
 import BaseParentServices from "./BaseParentServices";
-//import AuthorServices from "./AuthorServices";
+import AuthorServices from "./AuthorServices";
 import SeriesServices from "./SeriesServices";
 import StoryServices from "./StoryServices";
 import VolumeServices from "./VolumeServices";
-//import Author from "../models/Author";
+import Author from "../models/Author";
 import Library from "../models/Library";
 import Series from "../models/Series";
 import Story from "../models/Story";
@@ -37,7 +37,6 @@ class LibraryServices extends BaseParentServices<Library> {
 
     // Model-Specific Methods ------------------------------------------------
 
-/*
     public async authors(libraryId: number, query?: any): Promise<Author[]> {
         const library = await this.read("LibraryServices.authors", libraryId);
         const options: FindOptions = AuthorServices.appendMatchOptions({
@@ -45,7 +44,6 @@ class LibraryServices extends BaseParentServices<Library> {
         }, query);
         return await library.$get("authors", options);
     }
-*/
 
     public async exact(name: string, query?: any): Promise<Library> {
         let options: FindOptions = this.appendIncludeOptions({
@@ -99,11 +97,9 @@ class LibraryServices extends BaseParentServices<Library> {
         }
         options = appendPaginationOptions(options, query);
         const include: any = options.include ? options.include : [];
-/*
         if ("" === query.withAuthors) {
             include.push(Author);
         }
-*/
         if ("" === query.withSeries) {
             include.push(Series);
         }

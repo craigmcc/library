@@ -8,7 +8,7 @@ import {Column, DataType, HasMany, Model, Table} from "sequelize-typescript";
 
 // Internal Modules ----------------------------------------------------------
 
-//import Author from "./Author";
+import Author from "./Author";
 import Series from "./Series";
 import Story from "./Story";
 import Volume from "./Volume";
@@ -63,14 +63,12 @@ class Library extends Model<Library> {
     // Is this Library active?
     active!: boolean;
 
-/*
     @HasMany(() => Author, {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     })
     // Authors included in this Library
     authors!: Author[];
-*/
 
     @Column({
         allowNull: false,

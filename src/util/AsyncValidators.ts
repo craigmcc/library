@@ -12,7 +12,7 @@ import {Op} from "sequelize";
 // Internal Modules ----------------------------------------------------------
 
 import AccessToken from "../models/AccessToken";
-//import Author from "../models/Author";
+import Author from "../models/Author";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
 import Series from "../models/Series";
@@ -41,24 +41,6 @@ export const validateAccessTokenTokenUnique
     }
 }
 
-/*
-export const validateAuthorId
-    = async (libraryId: number, authorId: number | undefined): Promise<boolean> =>
-{
-    if (authorId) {
-        const author = await Author.findByPk(authorId);
-        if (!author) {
-            return false;
-        } else {
-            return author.libraryId === libraryId;
-        }
-    } else {
-        return true;
-    }
-}
-*/
-
-/*
 export const validateAuthorNameUnique
     = async (author: Author): Promise<boolean> =>
 {
@@ -79,7 +61,6 @@ export const validateAuthorNameUnique
         return true;
     }
 }
-*/
 
 export const validateLibraryId = async (libraryId: number): Promise<boolean> => {
     if (libraryId) {
@@ -270,4 +251,3 @@ export const validateVolumeNameUnique
         return true;
     }
 }
-
