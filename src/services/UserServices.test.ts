@@ -346,7 +346,7 @@ describe("UserServices Functional Tests", () => {
 
             const NOW = new Date().getTime();
             const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
-            const refreshTokens = await UserServices.accessTokens(user.id, {
+            const refreshTokens = await UserServices.refreshTokens(user.id, {
                 active: "",
             });
 
@@ -375,7 +375,7 @@ describe("UserServices Functional Tests", () => {
             const LIMIT = 99;
             const OFFSET = 1;
             const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
-            const refreshTokens = await UserServices.accessTokens(user.id, {
+            const refreshTokens = await UserServices.refreshTokens(user.id, {
                 limit: LIMIT,
                 offset: OFFSET,
             });
