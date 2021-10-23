@@ -25,13 +25,13 @@ import {BadRequest} from "../util/HttpErrors";
         isLibraryIdValid: async function(this: Series): Promise<void> {
             if (!(await validateLibraryId(this.libraryId))) {
                 throw new BadRequest
-                (`libraryId: Missing Library ${this.libraryId}`);
+                    (`libraryId: Missing Library ${this.libraryId}`);
             }
         },
         isNameUnique: async function(this: Series): Promise<void> {
             if (!(await validateSeriesNameUnique(this))) {
                 throw new BadRequest
-                (`name: Name '${this.name}' is already in use in this Library`);
+                    (`name: Name '${this.name}' is already in use in this Library`);
             }
         },
     },

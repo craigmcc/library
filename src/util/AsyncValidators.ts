@@ -163,7 +163,7 @@ export const validateSeriesNameUnique
                 }
             }
         }
-        let results = await Story.findAll(options);
+        let results = await Series.findAll(options);
         return (results.length === 0);
     } else {
         return true;
