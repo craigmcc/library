@@ -15,6 +15,7 @@ import AccessToken from "../models/AccessToken";
 //import Author from "../models/Author";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
+import Series from "../models/Series";
 import Story from "../models/Story";
 import User from "../models/User";
 import Volume from "../models/Volume";
@@ -154,6 +155,34 @@ export const validateRefreshTokenTokenUnique
             options.where.id = { [Op.ne]: refreshToken.id }
         }
         const results = await RefreshToken.findAll(options);
+        return (results.length === 0);
+    } else {
+        return true;
+    }
+}
+
+export const validateSeriesNameUnique
+    = async (series: Series): Promise<boolean> =>
+{
+    if (series && series.libraryId && series.name) {
+        let options = {};
+        if (series.id && (series.id > 0)) {
+            options = {
+                where: {
+                    id: {[Op.ne]: series.id},
+                    libraryId: series.libraryId,
+                    name: series.name
+                }
+            }
+        } else {
+            options = {
+                where: {
+                    libraryId: series.libraryId,
+                    name: series.name
+                }
+            }
+        }
+        let results = await Story.findAll(options);
         return (results.length === 0);
     } else {
         return true;

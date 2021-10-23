@@ -15,7 +15,7 @@ import AccessToken from "../models/AccessToken";
 import Database from "../models/Database";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
-// import Series from "../models/Series";
+import Series from "../models/Series";
 import Story from "../models/Story";
 import User from "../models/User";
 import Volume from "../models/Volume";
@@ -77,8 +77,8 @@ export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void
     // Storage for detailed data (if loaded)
     // let authors0: Author[] = [];
     // let authors1: Author[] = [];
-    // let series0: Series[] = [];
-    // let series1: Series[] = [];
+    let series0: Series[] = [];
+    let series1: Series[] = [];
     let stories0: Story[] = [];
     let stories1: Story[] = [];
     let volumes0: Volume[] = [];
@@ -91,12 +91,10 @@ export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void
         authors1 = await loadAuthors(libraries[1], SeedData.AUTHORS_LIBRARY1);
     }
 */
-/*
     if (options.withSeries) {
         series0 = await loadSeries(libraries[0], SeedData.SERIES_LIBRARY0);
         series1 = await loadSeries(libraries[1], SeedData.SERIES_LIBRARY1);
     }
-*/
     if (options.withStories) {
         stories0 = await loadStories(libraries[0], SeedData.STORIES_LIBRARY0);
         stories1 = await loadStories(libraries[1], SeedData.STORIES_LIBRARY1);
@@ -266,7 +264,6 @@ const loadRefreshTokens
     }
 }
 
-/*
 const loadSeries
     = async (library: Library, series: Partial<Series>[]): Promise<Series[]> =>
 {
@@ -275,6 +272,7 @@ const loadSeries
     });
     let results: Series[] = [];
     try {
+        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
         results = await Series.bulkCreate(series);
     } catch (error) {
         console.info("  Reloading Series ERROR", error);
@@ -282,7 +280,6 @@ const loadSeries
     }
     return results;
 }
-*/
 
 /*
 const loadSeriesStory

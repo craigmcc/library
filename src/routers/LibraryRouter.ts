@@ -99,7 +99,6 @@ LibraryRouter.get("/:libraryId/authors",
     });
 */
 
-/*
 // GET /:libraryId/series - Find matching Series for this Library
 LibraryRouter.get("/:libraryId/series",
     requireRegular,
@@ -109,7 +108,6 @@ LibraryRouter.get("/:libraryId/series",
             req.query
         ));
     });
-*/
 
 // GET /:libraryId/stories - Find matching Stories for this Library
 LibraryRouter.get("/:libraryId/stories",

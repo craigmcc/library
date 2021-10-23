@@ -120,6 +120,40 @@ ALTER SEQUENCE public.refresh_tokens_id_seq OWNED BY public.refresh_tokens.id;
 
 
 --
+-- Name: series; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.series (
+    id integer NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    copyright text,
+    library_id integer NOT NULL,
+    name text NOT NULL,
+    notes text
+);
+
+
+--
+-- Name: series_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.series_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: series_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.series_id_seq OWNED BY public.series.id;
+
+
+--
 -- Name: stories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -248,6 +282,13 @@ ALTER TABLE ONLY public.refresh_tokens ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
+-- Name: series id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.series ALTER COLUMN id SET DEFAULT nextval('public.series_id_seq'::regclass);
+
+
+--
 -- Name: stories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -293,6 +334,14 @@ ALTER TABLE ONLY public.refresh_tokens
 
 
 --
+-- Name: series series_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.series
+    ADD CONSTRAINT series_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: stories stories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -328,6 +377,13 @@ CREATE UNIQUE INDEX access_tokens_token_key ON public.access_tokens USING btree 
 --
 
 CREATE UNIQUE INDEX refresh_tokens_token_key ON public.refresh_tokens USING btree (token);
+
+
+--
+-- Name: series_library_id_name_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX series_library_id_name_key ON public.series USING btree (library_id, name);
 
 
 --
@@ -372,6 +428,14 @@ ALTER TABLE ONLY public.access_tokens
 
 ALTER TABLE ONLY public.refresh_tokens
     ADD CONSTRAINT refresh_tokens_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: series series_library_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.series
+    ADD CONSTRAINT series_library_id_fkey FOREIGN KEY (library_id) REFERENCES public.libraries(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

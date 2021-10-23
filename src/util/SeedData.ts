@@ -10,7 +10,7 @@ import AccessToken from "../models/AccessToken";
 // import Author from "../models/Author";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
-// import Series from "../models/Series";
+import Series from "../models/Series";
 import Story from "../models/Story";
 import User from "../models/User";
 import Volume from "../models/Volume";
@@ -102,19 +102,25 @@ export const REFRESH_TOKENS_SUPERUSER: Partial<RefreshToken>[] = [
 
 // ***** Series *****
 
-/*
 export const SERIES_LIBRARY0: Partial<Series>[] = [
     {
         name: "Flintstone Series",
     },
+    {
+        active: false,
+        name: "Fred and Wilma Series",
+    }
 ]
 
 export const SERIES_LIBRARY1: Partial<Series>[] = [
     {
         name: "Rubble Series",
     },
+    {
+        active: false,
+        name: "Barney and Betty Series",
+    }
 ]
-*/
 
 // ***** Stories *****
 

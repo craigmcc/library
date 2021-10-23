@@ -16,7 +16,7 @@ import AccessToken from "./AccessToken";
 //import AuthorVolume from "./AuthorVolume";
 import Library from "./Library";
 import RefreshToken from "./RefreshToken";
-//import Series from "./Series";
+import Series from "./Series";
 //import SeriesStory from "./SeriesStory";
 import Story from "./Story";
 import User from "./User";
@@ -46,7 +46,7 @@ Database.addModels([
 //    AuthorVolume,
     Library,
     RefreshToken,
-//    Series,
+    Series,
 //    SeriesStory,
     Story,
     User,

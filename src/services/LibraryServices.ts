@@ -10,12 +10,12 @@ import {FindOptions, Op} from "sequelize";
 
 import BaseParentServices from "./BaseParentServices";
 //import AuthorServices from "./AuthorServices";
-//import SeriesServices from "./SeriesServices";
+import SeriesServices from "./SeriesServices";
 import StoryServices from "./StoryServices";
 import VolumeServices from "./VolumeServices";
 //import Author from "../models/Author";
 import Library from "../models/Library";
-//import Series from "../models/Series";
+import Series from "../models/Series";
 import Story from "../models/Story";
 import Volume from "../models/Volume";
 import {NotFound} from "../util/HttpErrors";
@@ -60,7 +60,6 @@ class LibraryServices extends BaseParentServices<Library> {
         return results[0];
     }
 
-/*
     public async series(libraryId: number, query?: any): Promise<Series[]> {
         const library = await this.read("LibraryServices.series", libraryId);
         const options: FindOptions = SeriesServices.appendMatchOptions({
@@ -68,7 +67,6 @@ class LibraryServices extends BaseParentServices<Library> {
         }, query);
         return await library.$get("series", options);
     }
-*/
 
     public async stories(libraryId: number, query?: any): Promise<Story[]> {
         const library = await this.read("LibraryServices.stories", libraryId);
@@ -106,11 +104,9 @@ class LibraryServices extends BaseParentServices<Library> {
             include.push(Author);
         }
 */
-/*
         if ("" === query.withSeries) {
             include.push(Series);
         }
-*/
         if ("" === query.withStories) {
             include.push(Story);
         }
