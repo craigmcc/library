@@ -13,6 +13,7 @@ import {
     requireRegular,
 } from "../oauth/OAuthMiddleware";
 import VolumeServices from "../services/VolumeServices";
+import {CREATED} from "../util/HttpErrors";
 
 // Public Objects ------------------------------------------------------------
 
@@ -51,7 +52,7 @@ VolumeRouter.get("/:libraryId",
 VolumeRouter.post("/:libraryId",
     requireRegular,
     async (req: Request, res: Response) => {
-        res.send(await VolumeServices.insert(
+        res.status(CREATED).send(await VolumeServices.insert(
             parseInt(req.params.libraryId, 10),
             req.body
         ));

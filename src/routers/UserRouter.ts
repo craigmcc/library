@@ -10,6 +10,7 @@ import {Request, Response, Router} from "express";
 
 import {requireSuperuser} from "../oauth/OAuthMiddleware";
 import UserServices from "../services/UserServices";
+import {CREATED} from "../util/HttpErrors";
 
 // Public Objects ------------------------------------------------------------
 
@@ -46,7 +47,7 @@ UserRouter.get("/",
 // POST / - Insert a new User
 UserRouter.post("/",
     async (req: Request, res: Response) => {
-        res.send(await UserServices.insert(
+        res.status(CREATED).send(await UserServices.insert(
             req.body
         ));
     });

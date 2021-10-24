@@ -13,6 +13,7 @@ import {
     requireRegular,
 } from "../oauth/OAuthMiddleware";
 import StoryServices from "../services/StoryServices";
+import {CREATED} from "../util/HttpErrors";
 
 // Public Objects ------------------------------------------------------------
 
@@ -51,7 +52,7 @@ StoryRouter.get("/:libraryId",
 StoryRouter.post("/:libraryId",
     requireRegular,
     async (req: Request, res: Response) => {
-        res.send(await StoryServices.insert(
+        res.status(CREATED).send(await StoryServices.insert(
             parseInt(req.params.libraryId, 10),
             req.body
         ));

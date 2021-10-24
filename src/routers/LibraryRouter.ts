@@ -15,6 +15,7 @@ import {
     requireSuperuser,
 } from "../oauth/OAuthMiddleware";
 import LibraryServices from "../services/LibraryServices";
+import {CREATED} from "../util/HttpErrors";
 
 // Public Objects ------------------------------------------------------------
 
@@ -51,7 +52,7 @@ LibraryRouter.get("/",
 LibraryRouter.post("/",
     requireSuperuser,
     async (req: Request, res: Response) => {
-        res.send(await LibraryServices.insert(
+        res.status(CREATED).send(await LibraryServices.insert(
             req.body
         ));
     });

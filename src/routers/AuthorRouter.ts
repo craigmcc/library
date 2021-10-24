@@ -13,6 +13,7 @@ import {
     requireRegular,
 } from "../oauth/OAuthMiddleware";
 import AuthorServices from "../services/AuthorServices";
+import {CREATED} from "../util/HttpErrors";
 
 // Public Objects ------------------------------------------------------------
 
@@ -52,7 +53,7 @@ AuthorRouter.get("/:libraryId",
 AuthorRouter.post("/:libraryId",
     requireRegular,
     async (req: Request, res: Response) => {
-        res.send(await AuthorServices.insert(
+        res.status(CREATED).send(await AuthorServices.insert(
             parseInt(req.params.libraryId, 10),
             req.body
         ));

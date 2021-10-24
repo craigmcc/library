@@ -24,6 +24,8 @@ import {hashPassword} from "../oauth/OAuthUtils";
 
 // Public Objects ------------------------------------------------------------
 
+export const AUTHORIZATION = "Authorization"; // HTTP header name
+
 export const authorization = async (username: string): Promise<string> => {
     const user = await lookupUser(username);
     const request: PasswordTokenRequest = {
