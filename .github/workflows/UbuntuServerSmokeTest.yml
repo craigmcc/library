@@ -39,7 +39,7 @@ jobs:
       ACCESS_LOG: stdout
       CLIENT_LOG: stdout
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
-      OAUTH_ENABLED: false
+      OAUTH_ENABLED: true
       PORT: 8081
       SERVER_LOG: stdout
       SUPERUSER_SCOPE: superuser
