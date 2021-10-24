@@ -11,9 +11,11 @@ const expect = chai.expect;
 
 import VolumeServices from "./VolumeServices";
 import Volume from "../models/Volume";
-import * as SeedData from "../util/SeedData";
-import {loadTestData, lookupLibrary} from "../util/TestUtils";
+import * as SeedData from "../test/SeedData";
+import ServiceUtils from "../test/ServicesUtils";
 import {BadRequest, NotFound} from "../util/HttpErrors";
+
+const UTILS = new ServiceUtils();
 
 // Test Specifications ------------------------------------------------------
 
@@ -22,7 +24,7 @@ describe("VolumeServices Functional Tests", () => {
     // Test Hooks -----------------------------------------------------------
 
     beforeEach("#beforeEach", async () => {
-        await loadTestData({
+        await UTILS.loadData({
             withAuthors: true,
             withLibraries: true,
             withStories: true,
@@ -36,7 +38,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should pass on active Volumes", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const volumes = await VolumeServices.all(library.id, {
                 active: "",
             });
@@ -51,7 +53,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should pass on all Volumes", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const volumes = await VolumeServices.all(library.id);
 
             expect(volumes.length).to.equal(SeedData.VOLUMES_LIBRARY1.length);
@@ -64,7 +66,7 @@ describe("VolumeServices Functional Tests", () => {
         it("should pass on googleId'd Volumes", async () => {
 
             const GOOGLE_ID = "222";
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const volumes = await VolumeServices.all(library.id, {
                 googleId: GOOGLE_ID,
             });
@@ -80,7 +82,7 @@ describe("VolumeServices Functional Tests", () => {
         it("should pass on isbn'd Volumes", async () => {
 
             const ISBN = "fff";
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const volumes = await VolumeServices.all(library.id, {
                 isbn: ISBN,
             });
@@ -96,7 +98,7 @@ describe("VolumeServices Functional Tests", () => {
         it("should pass on location'd Volumes", async () => {
 
             const LOCATION = "Computer";
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const volumes = await VolumeServices.all(library.id, {
                 location: LOCATION,
             });
@@ -112,7 +114,7 @@ describe("VolumeServices Functional Tests", () => {
         it("should passed on name'd Volumes", async () => {
 
             const NAME = "T"; // Should match "Betty Volume"
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const volumes = await VolumeServices.all(library.id, {
                 name: NAME,
             });
@@ -128,7 +130,7 @@ describe("VolumeServices Functional Tests", () => {
         it("should passed on type'd Volumes", async () => {
 
             const TYPE = "Collection";
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const volumes = await VolumeServices.all(library.id, {
                 type: TYPE,
             });
@@ -151,7 +153,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should fail on invalid name", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST)
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST)
             const INVALID_NAME = "INVALID VOLUME NAME";
 
             try {
@@ -170,7 +172,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should pass on valid names", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
 
             SeedData.VOLUMES_LIBRARY1.forEach(async volume => {
                 try {
@@ -189,7 +191,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should fail on invalid ID", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INVALID_ID = 9999;
 
             try {
@@ -212,7 +214,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should pass on valid IDs", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const INPUTS = await VolumeServices.all(library.id);
 
             INPUTS.forEach(async INPUT => {
@@ -228,7 +230,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should fail on duplicate data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INPUTS = await VolumeServices.all(library.id);
             const INPUT = {
                 name: INPUTS[0].name,
@@ -250,7 +252,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should fail on invalid data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const INPUT = {
                 location: "Invalid Location",
                 name: "Valid Name",
@@ -274,7 +276,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should fail on missing data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const INPUT = {};
 
             try {
@@ -293,7 +295,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should pass on valid data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INPUT = {
                 active: true,
                 copyright: "2021",
@@ -317,7 +319,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should fail on invalid ID", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INVALID_ID = -1;
 
             try {
@@ -336,7 +338,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should pass on valid ID", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const volumes = await VolumeServices.all(library.id);
             const VALID_ID = volumes[0].id;
 
@@ -367,7 +369,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should fail on duplicate data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const volumes = await VolumeServices.all(library.id);
             const INPUT = {
                 name: volumes[0].name,
@@ -389,7 +391,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should fail on invalid data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const volumes = await VolumeServices.all(library.id);
             const INPUT = {
                 location: "Invalid Location",
@@ -414,7 +416,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should fail on invalid ID", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INPUT = {};
             const INVALID_ID = -1;
 
@@ -434,7 +436,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should pass on no changes data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const volumes = await VolumeServices.all(library.id);
             const INPUT = volumes[0];
 
@@ -447,7 +449,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should pass on no updates data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const volumes = await VolumeServices.all(library.id);
             const INPUT = {};
             const VALID_ID = volumes[0].id
@@ -461,7 +463,7 @@ describe("VolumeServices Functional Tests", () => {
 
         it("should pass on valid updates data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const volumes = await VolumeServices.all(library.id);
             const INPUT = {
                 active: false,

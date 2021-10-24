@@ -11,9 +11,11 @@ const expect = chai.expect;
 
 import SeriesServices from "./SeriesServices";
 import Series from "../models/Series";
-import * as SeedData from "../util/SeedData";
-import {loadTestData, lookupLibrary} from "../util/TestUtils";
+import * as SeedData from "../test/SeedData";
+import ServicesUtils from "../test/ServicesUtils";
 import {BadRequest, NotFound} from "../util/HttpErrors";
+
+const UTILS = new ServicesUtils();
 
 // Test Specifications ------------------------------------------------------
 
@@ -22,7 +24,7 @@ describe("SeriesServices Functional Tests", () => {
     // Test Hooks -----------------------------------------------------------
 
     beforeEach("#beforeEach", async () => {
-        await loadTestData({
+        await UTILS.loadData({
             withAuthors: true,
             withLibraries: true,
             withSeries: true,
@@ -36,7 +38,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should pass on active Series", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const series = await SeriesServices.all(library.id, {
                 active: "",
             });
@@ -51,7 +53,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should pass on all Series", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const series = await SeriesServices.all(library.id);
 
             expect(series.length).to.equal(SeedData.SERIES_LIBRARY1.length);
@@ -64,7 +66,7 @@ describe("SeriesServices Functional Tests", () => {
         it("should passed on name'd Series", async () => {
 
             const NAME = "tT"; // Should match "Betty Series"
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const series = await SeriesServices.all(library.id, {
                 name: NAME,
             });
@@ -87,7 +89,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should fail on invalid name", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST)
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST)
             const INVALID_NAME = "INVALID VOLUME NAME";
 
             try {
@@ -106,7 +108,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should pass on valid names", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
 
             SeedData.SERIES_LIBRARY1.forEach(async series => {
                 try {
@@ -125,7 +127,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should fail on invalid ID", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INVALID_ID = 9999;
 
             try {
@@ -148,7 +150,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should pass on valid IDs", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const INPUTS = await SeriesServices.all(library.id);
 
             INPUTS.forEach(async INPUT => {
@@ -164,7 +166,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should fail on duplicate data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INPUTS = await SeriesServices.all(library.id);
             const INPUT = {
                 name: INPUTS[0].name,
@@ -186,7 +188,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should fail on missing data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const INPUT = {};
 
             try {
@@ -204,7 +206,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should pass on valid data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INPUT = {
                 active: true,
                 copyright: "2021",
@@ -223,7 +225,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should fail on invalid ID", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INVALID_ID = -1;
 
             try {
@@ -242,7 +244,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should pass on valid ID", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const serieses = await SeriesServices.all(library.id);
             const VALID_ID = serieses[0].id;
 
@@ -269,7 +271,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should fail on duplicate data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const series = await SeriesServices.all(library.id);
             const INPUT = {
                 name: series[0].name,
@@ -291,7 +293,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should fail on invalid ID", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INPUT = {};
             const INVALID_ID = -1;
 
@@ -311,7 +313,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should pass on no changes data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const series = await SeriesServices.all(library.id);
             const INPUT = series[0];
 
@@ -324,7 +326,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should pass on no updates data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const series = await SeriesServices.all(library.id);
             const INPUT = {};
             const VALID_ID = series[0].id
@@ -338,7 +340,7 @@ describe("SeriesServices Functional Tests", () => {
 
         it("should pass on valid updates data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const series = await SeriesServices.all(library.id);
             const INPUT = {
                 active: false,

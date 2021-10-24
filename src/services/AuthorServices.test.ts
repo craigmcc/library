@@ -11,9 +11,11 @@ const expect = chai.expect;
 
 import AuthorServices from "./AuthorServices";
 import Author from "../models/Author";
-import * as SeedData from "../util/SeedData";
-import {loadTestData, lookupLibrary} from "../util/TestUtils";
+import * as SeedData from "../test/SeedData";
+import ServicesUtils from "../test/ServicesUtils";
 import {BadRequest, NotFound} from "../util/HttpErrors";
+
+const UTILS = new ServicesUtils();
 
 // Test Specifications ------------------------------------------------------
 
@@ -22,7 +24,7 @@ describe("AuthorServices Functional Tests", () => {
     // Test Hooks -----------------------------------------------------------
 
     beforeEach("#beforeEach", async () => {
-        await loadTestData({
+        await UTILS.loadData({
             withAuthors: true,
             withLibraries: true,
             withSeries: true,
@@ -37,7 +39,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on active Authors", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const authors = await AuthorServices.all(library.id, {
                 active: "",
             });
@@ -52,7 +54,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on all Authors", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const authors = await AuthorServices.all(library.id);
 
             expect(authors.length).to.equal(SeedData.AUTHORS_LIBRARY1.length);
@@ -65,7 +67,7 @@ describe("AuthorServices Functional Tests", () => {
         it("should passed on name'd Authors", async () => {
 
             const NAME = "tT"; // Should match "Betty Rubble"
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const authors = await AuthorServices.all(library.id, {
                 name: NAME,
             });
@@ -85,7 +87,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should fail on invalid name", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST)
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST)
             const INVALID_FIRST_NAME = "INVALID AUTHOR NAME";
             const INVALID_LAST_NAME = "INVALID LAST NAME";
 
@@ -105,7 +107,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on valid names", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
 
             SeedData.AUTHORS_LIBRARY1.forEach(async author => {
                 try {
@@ -125,7 +127,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should fail on invalid ID", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INVALID_ID = 9999;
 
             try {
@@ -148,7 +150,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on valid IDs", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const INPUTS = await AuthorServices.all(library.id);
 
             INPUTS.forEach(async INPUT => {
@@ -164,7 +166,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should fail on duplicate data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INPUTS = await AuthorServices.all(library.id);
             const INPUT = {
                 firstName: INPUTS[0].firstName,
@@ -187,7 +189,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should fail on missing data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const INPUT = {};
 
             try {
@@ -206,7 +208,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on valid data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INPUT = {
                 active: true,
                 copyright: "2021",
@@ -226,7 +228,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should fail on invalid ID", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INVALID_ID = -1;
 
             try {
@@ -245,7 +247,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on valid ID", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const authors = await AuthorServices.all(library.id);
             const VALID_ID = authors[0].id;
 
@@ -280,7 +282,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should fail on duplicate data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const authors = await AuthorServices.all(library.id);
             const INPUT = {
                 firstName: authors[0].firstName,
@@ -303,7 +305,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should fail on invalid ID", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const INPUT = {};
             const INVALID_ID = -1;
 
@@ -323,7 +325,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on no changes data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const authors = await AuthorServices.all(library.id);
             const INPUT = authors[0];
 
@@ -336,7 +338,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on no updates data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const authors = await AuthorServices.all(library.id);
             const INPUT = {};
             const VALID_ID = authors[0].id
@@ -350,7 +352,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on valid updates data", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const authors = await AuthorServices.all(library.id);
             const INPUT = {
                 active: false,

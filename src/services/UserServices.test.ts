@@ -11,9 +11,11 @@ const expect = chai.expect;
 
 import UserServices from "./UserServices";
 import User from "../models/User";
-import * as SeedData from "../util/SeedData";
+import * as SeedData from "../test/SeedData";
+import ServicesUtils from "../test/ServicesUtils";
 import {BadRequest, NotFound} from "../util/HttpErrors";
-import {loadTestData, lookupUser} from "../util/TestUtils";
+
+const UTILS = new ServicesUtils();
 
 // Test Specifications ------------------------------------------------------
 
@@ -22,7 +24,7 @@ describe("UserServices Functional Tests", () => {
     // Test Hooks -----------------------------------------------------------
 
     beforeEach("#beforeEach", async () => {
-        await loadTestData({
+        await UTILS.loadData({
             withAccessTokens: true,
             withRefreshTokens: true,
             withUsers: true,
@@ -36,7 +38,7 @@ describe("UserServices Functional Tests", () => {
         it("should pass on active AccessTokens", async () => {
 
             const NOW = new Date().getTime();
-            const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const user = await UTILS.lookupUser(SeedData.USER_USERNAME_SUPERUSER);
             const accessTokens = await UserServices.accessTokens(user.id, {
                 active: "",
             });
@@ -51,7 +53,7 @@ describe("UserServices Functional Tests", () => {
 
         it("should pass on all AccessTokens", async () => {
 
-            const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const user = await UTILS.lookupUser(SeedData.USER_USERNAME_SUPERUSER);
             const accessTokens = await UserServices.accessTokens(user.id);
 
             expect(accessTokens.length).to.equal(SeedData.ACCESS_TOKENS_SUPERUSER.length);
@@ -65,7 +67,7 @@ describe("UserServices Functional Tests", () => {
 
             const LIMIT = 99;
             const OFFSET = 1;
-            const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const user = await UTILS.lookupUser(SeedData.USER_USERNAME_SUPERUSER);
             const accessTokens = await UserServices.accessTokens(user.id, {
                 limit: LIMIT,
                 offset: OFFSET,
@@ -282,7 +284,7 @@ describe("UserServices Functional Tests", () => {
 
         it("should fail on duplicate username", async () => {
 
-            const EXISTING = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const EXISTING = await UTILS.lookupUser(SeedData.USER_USERNAME_SUPERUSER);
             const INPUT = {
                 name: "dummy",
                 password: "dummy",
@@ -345,7 +347,7 @@ describe("UserServices Functional Tests", () => {
         it("should pass on active RefreshTokens", async () => {
 
             const NOW = new Date().getTime();
-            const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const user = await UTILS.lookupUser(SeedData.USER_USERNAME_SUPERUSER);
             const refreshTokens = await UserServices.refreshTokens(user.id, {
                 active: "",
             });
@@ -360,7 +362,7 @@ describe("UserServices Functional Tests", () => {
 
         it("should pass on all RefreshTokens", async () => {
 
-            const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const user = await UTILS.lookupUser(SeedData.USER_USERNAME_SUPERUSER);
             const refreshTokens = await UserServices.refreshTokens(user.id);
 
             expect(refreshTokens.length).to.equal(SeedData.ACCESS_TOKENS_SUPERUSER.length);
@@ -374,7 +376,7 @@ describe("UserServices Functional Tests", () => {
 
             const LIMIT = 99;
             const OFFSET = 1;
-            const user = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const user = await UTILS.lookupUser(SeedData.USER_USERNAME_SUPERUSER);
             const refreshTokens = await UserServices.refreshTokens(user.id, {
                 limit: LIMIT,
                 offset: OFFSET,
@@ -410,7 +412,7 @@ describe("UserServices Functional Tests", () => {
 
         it("should pass on valid input", async () => {
 
-            const INPUT = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const INPUT = await UTILS.lookupUser(SeedData.USER_USERNAME_SUPERUSER);
             const OUTPUT = await UserServices.remove(INPUT.id);
             expect(OUTPUT.id).to.equal(INPUT.id);
 
@@ -432,7 +434,7 @@ describe("UserServices Functional Tests", () => {
     describe("UserServices.update()", () => {
         it("should fail on duplicate username", async () => {
 
-            const ORIGINAL = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const ORIGINAL = await UTILS.lookupUser(SeedData.USER_USERNAME_SUPERUSER);
             const INPUT = {
                 active: ORIGINAL.active,
                 name: ORIGINAL.name,
@@ -457,7 +459,7 @@ describe("UserServices Functional Tests", () => {
         it("should fail on invalid ID", async () => {
 
             const INVALID_ID = -1;
-            const ORIGINAL = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
+            const ORIGINAL = await UTILS.lookupUser(SeedData.USER_USERNAME_SUPERUSER);
             const INPUT = {
                 active: ORIGINAL.active,
                 name: ORIGINAL.name,
@@ -479,7 +481,7 @@ describe("UserServices Functional Tests", () => {
 
         it("should pass on on changes data", async () => {
 
-            const INPUT = await lookupUser(SeedData.USER_USERNAME_FIRST_REGULAR);
+            const INPUT = await UTILS.lookupUser(SeedData.USER_USERNAME_FIRST_REGULAR);
 
             const OUTPUT = await UserServices.update(INPUT.id, INPUT);
             compareUserOld(OUTPUT, INPUT);
@@ -488,7 +490,7 @@ describe("UserServices Functional Tests", () => {
 
         it("should pass on no updates data", async () => {
 
-            const ORIGINAL = await lookupUser(SeedData.USER_USERNAME_SECOND_REGULAR);
+            const ORIGINAL = await UTILS.lookupUser(SeedData.USER_USERNAME_SECOND_REGULAR);
             const INPUT: Partial<User> = {};
 
             const OUTPUT = await UserServices.update(ORIGINAL.id, INPUT);
@@ -500,7 +502,7 @@ describe("UserServices Functional Tests", () => {
 
         it("should pass on valid updates data", async () => {
 
-            const ORIGINAL = await lookupUser(SeedData.USER_USERNAME_SECOND_ADMIN);
+            const ORIGINAL = await UTILS.lookupUser(SeedData.USER_USERNAME_SECOND_ADMIN);
             const INPUT = {
                 active: !ORIGINAL.active,
                 scope: ORIGINAL.scope + " extra",

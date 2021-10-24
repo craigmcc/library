@@ -1,15 +1,12 @@
-// TestUtils -----------------------------------------------------------------
+// BaseUtils -----------------------------------------------------------------
 
-// Generic utility methods for tests.
+// Base utilities for functional tests.
 
 // External Modules ----------------------------------------------------------
-
-import {PasswordTokenRequest} from "@craigmcc/oauth-orchestrator";
 
 // Internal Modules ----------------------------------------------------------
 
 import * as SeedData from "./SeedData";
-import {NotFound} from "./HttpErrors";
 import AccessToken from "../models/AccessToken";
 import Author from "../models/Author";
 import Database from "../models/Database";
@@ -19,24 +16,9 @@ import Series from "../models/Series";
 import Story from "../models/Story";
 import User from "../models/User";
 import Volume from "../models/Volume";
-import OAuthOrchestrator from "../oauth/OAuthOrchestrator";
 import {hashPassword} from "../oauth/OAuthUtils";
 
 // Public Objects ------------------------------------------------------------
-
-export const AUTHORIZATION = "Authorization"; // HTTP header name
-
-export const authorization = async (username: string): Promise<string> => {
-    const user = await lookupUser(username);
-    const request: PasswordTokenRequest = {
-        grant_type: "password",
-        password: user.username, // For tests, we hashed the username as the password
-        scope: user.scope,
-        username: user.username,
-    }
-    const response = await OAuthOrchestrator.token(request);
-    return `Bearer ${response.access_token}`;
-}
 
 export type OPTIONS = {
     withAccessTokens: boolean,
@@ -49,130 +31,127 @@ export type OPTIONS = {
     withVolumes: boolean,
 }
 
-export const loadTestData = async (options: Partial<OPTIONS> = {}): Promise<void> => {
+/**
+ * Base utilities for functional tests.
+ */
+export abstract class BaseUtils {
 
-    // Create tables (if necessary), and erase current contents
-    await Database.sync({
-        force: true,
-    });
+    /**
+     * Erase current database, then load seed data for the tables selected
+     * in the options parameter.
+     *
+     * @param options                   Flags to select tables to be loaded
+     */
+    public async loadData(options: Partial<OPTIONS>): Promise<void> {
 
-    // Load users (and tokens) if requested
-    if (options.withUsers) {
-        await loadUsers(SeedData.USERS);
-        const userSuperuser = await lookupUser(SeedData.USER_USERNAME_SUPERUSER);
-        if (options.withAccessTokens) {
-            await loadAccessTokens(userSuperuser, SeedData.ACCESS_TOKENS_SUPERUSER);
+        // Create tables (if necessary), and erase current contents
+        await Database.sync({
+            force: true,
+        });
+
+        // Load users (and tokens) if requested
+        if (options.withUsers) {
+            await loadUsers(SeedData.USERS);
+            const userSuperuser = await User.findOne({
+                where: { username: SeedData.USER_USERNAME_SUPERUSER }
+            });
+            if (userSuperuser) {
+                if (options.withAccessTokens) {
+                    await loadAccessTokens(userSuperuser, SeedData.ACCESS_TOKENS_SUPERUSER);
+                }
+                if (options.withRefreshTokens) {
+                    await loadRefreshTokens(userSuperuser, SeedData.REFRESH_TOKENS_SUPERUSER);
+                }
+            }
         }
-        if (options.withRefreshTokens) {
-            await loadRefreshTokens(userSuperuser, SeedData.REFRESH_TOKENS_SUPERUSER);
+
+        // If libraries are not requested, nothing else will be loaded
+        let libraries: Library[] = [];
+        if (options.withLibraries) {
+            libraries = await loadLibraries(SeedData.LIBRARIES);
+        } else {
+            return;
         }
-    }
 
-    // If libraries are not requested, nothing else will be loaded
-    let libraries: Library[] = [];
-    if (options.withLibraries) {
-        libraries = await loadLibraries(SeedData.LIBRARIES);
-    } else {
-        return;
-    }
+        // Storage for detailed data (if loaded)
+        let authors0: Author[] = [];
+        let authors1: Author[] = [];
+        let series0: Series[] = [];
+        let series1: Series[] = [];
+        let stories0: Story[] = [];
+        let stories1: Story[] = [];
+        let volumes0: Volume[] = [];
+        let volumes1: Volume[] = [];
 
-    // Storage for detailed data (if loaded)
-    let authors0: Author[] = [];
-    let authors1: Author[] = [];
-    let series0: Series[] = [];
-    let series1: Series[] = [];
-    let stories0: Story[] = [];
-    let stories1: Story[] = [];
-    let volumes0: Volume[] = [];
-    let volumes1: Volume[] = [];
+        // Load top level detailed data as requested
+        if (options.withAuthors) {
+            authors0 = await loadAuthors(libraries[0], SeedData.AUTHORS_LIBRARY0);
+            authors1 = await loadAuthors(libraries[1], SeedData.AUTHORS_LIBRARY1);
+        }
+        if (options.withSeries) {
+            series0 = await loadSeries(libraries[0], SeedData.SERIES_LIBRARY0);
+            series1 = await loadSeries(libraries[1], SeedData.SERIES_LIBRARY1);
+        }
+        if (options.withStories) {
+            stories0 = await loadStories(libraries[0], SeedData.STORIES_LIBRARY0);
+            stories1 = await loadStories(libraries[1], SeedData.STORIES_LIBRARY1);
+        }
+        if (options.withVolumes) {
+            volumes0 = await loadVolumes(libraries[0], SeedData.VOLUMES_LIBRARY0);
+            volumes1 = await loadVolumes(libraries[1], SeedData.VOLUMES_LIBRARY1);
+        }
 
-    // Load top level detailed data as requested
-    if (options.withAuthors) {
-        authors0 = await loadAuthors(libraries[0], SeedData.AUTHORS_LIBRARY0);
-        authors1 = await loadAuthors(libraries[1], SeedData.AUTHORS_LIBRARY1);
-    }
-    if (options.withSeries) {
-        series0 = await loadSeries(libraries[0], SeedData.SERIES_LIBRARY0);
-        series1 = await loadSeries(libraries[1], SeedData.SERIES_LIBRARY1);
-    }
-    if (options.withStories) {
-        stories0 = await loadStories(libraries[0], SeedData.STORIES_LIBRARY0);
-        stories1 = await loadStories(libraries[1], SeedData.STORIES_LIBRARY1);
-    }
-    if (options.withVolumes) {
-        volumes0 = await loadVolumes(libraries[0], SeedData.VOLUMES_LIBRARY0);
-        volumes1 = await loadVolumes(libraries[1], SeedData.VOLUMES_LIBRARY1);
-    }
+        // Load relationships if both related tables were requested
+        /*
+            if (options.withAuthors && options.withSeries) {
+                loadAuthorSeries(authors0[0], [series0[0]]);
+                loadAuthorSeries(authors0[1], [series0[0]]);
+                loadAuthorSeries(authors1[0], [series1[0]]);
+                loadAuthorSeries(authors1[1], [series1[0]]);
+            }
+        */
+        /*
+            if (options.withAuthors && options.withStories) {
+                loadAuthorStories(authors0[0], [stories0[0], stories0[2]]);
+                loadAuthorStories(authors0[1], [stories0[1], stories0[2]]);
+                loadAuthorStories(authors1[0], [stories1[0], stories1[2]]);
+                loadAuthorStories(authors1[1], [stories1[1], stories1[2]]);
+            }
+        */
+        /*
+            if (options.withAuthors && options.withVolumes) {
+                loadAuthorVolumes(authors0[0], [volumes0[0], volumes0[2]]);
+                loadAuthorVolumes(authors0[1], [volumes0[1], volumes0[2]]);
+                loadAuthorVolumes(authors1[0], [volumes1[0], volumes1[2]]);
+                loadAuthorVolumes(authors1[1], [volumes1[1], volumes1[2]]);
+            }
+        */
+        /*
+            if (options.withSeries && options.withStories) {
+                loadSeriesStory(series0[0], stories0[0], 1);
+                loadSeriesStory(series0[0], stories0[1], 2);
+                loadSeriesStory(series0[0], stories0[2], 3);
+                loadSeriesStory(series1[0], stories1[0], 3);
+                loadSeriesStory(series1[0], stories1[1], 2);
+                loadSeriesStory(series1[0], stories1[2], 1);
+            }
+        */
+        /*
+            if (options.withVolumes && options.withStories) {
+                loadVolumeStories(volumes0[0], [stories0[0]]);
+                loadVolumeStories(volumes0[1], [stories0[1]]);
+                loadVolumeStories(volumes0[2], [stories0[0], stories0[1], stories0[2]]);
+                loadVolumeStories(volumes1[0], [stories1[0]]);
+                loadVolumeStories(volumes1[1], [stories1[1]]);
+                loadVolumeStories(volumes1[2], [stories1[0], stories1[1], stories1[2]]);
+            }
+        */
 
-    // Load relationships if both related tables were requested
-/*
-    if (options.withAuthors && options.withSeries) {
-        loadAuthorSeries(authors0[0], [series0[0]]);
-        loadAuthorSeries(authors0[1], [series0[0]]);
-        loadAuthorSeries(authors1[0], [series1[0]]);
-        loadAuthorSeries(authors1[1], [series1[0]]);
     }
-*/
-/*
-    if (options.withAuthors && options.withStories) {
-        loadAuthorStories(authors0[0], [stories0[0], stories0[2]]);
-        loadAuthorStories(authors0[1], [stories0[1], stories0[2]]);
-        loadAuthorStories(authors1[0], [stories1[0], stories1[2]]);
-        loadAuthorStories(authors1[1], [stories1[1], stories1[2]]);
-    }
-*/
-/*
-    if (options.withAuthors && options.withVolumes) {
-        loadAuthorVolumes(authors0[0], [volumes0[0], volumes0[2]]);
-        loadAuthorVolumes(authors0[1], [volumes0[1], volumes0[2]]);
-        loadAuthorVolumes(authors1[0], [volumes1[0], volumes1[2]]);
-        loadAuthorVolumes(authors1[1], [volumes1[1], volumes1[2]]);
-    }
-*/
-/*
-    if (options.withSeries && options.withStories) {
-        loadSeriesStory(series0[0], stories0[0], 1);
-        loadSeriesStory(series0[0], stories0[1], 2);
-        loadSeriesStory(series0[0], stories0[2], 3);
-        loadSeriesStory(series1[0], stories1[0], 3);
-        loadSeriesStory(series1[0], stories1[1], 2);
-        loadSeriesStory(series1[0], stories1[2], 1);
-    }
-*/
-/*
-    if (options.withVolumes && options.withStories) {
-        loadVolumeStories(volumes0[0], [stories0[0]]);
-        loadVolumeStories(volumes0[1], [stories0[1]]);
-        loadVolumeStories(volumes0[2], [stories0[0], stories0[1], stories0[2]]);
-        loadVolumeStories(volumes1[0], [stories1[0]]);
-        loadVolumeStories(volumes1[1], [stories1[1]]);
-        loadVolumeStories(volumes1[2], [stories1[0], stories1[1], stories1[2]]);
-    }
-*/
 
 }
 
-export const lookupLibrary = async (name: string): Promise<Library> => {
-    const result = await Library.findOne({
-        where: { name: name }
-    });
-    if (result) {
-        return result;
-    } else {
-        throw new NotFound(`name: Should have found Library for '${name}'`);
-    }
-}
-
-export const lookupUser = async (username: string): Promise<User> => {
-    const result = await User.findOne({
-        where: { username: username }
-    });
-    if (result) {
-        return result;
-    } else {
-        throw new NotFound(`username: Should have found User for '${username}'`);
-    }
-}
+export default BaseUtils;
 
 // Private Objects -----------------------------------------------------------
 
