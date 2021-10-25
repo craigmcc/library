@@ -140,16 +140,14 @@ export abstract class BaseUtils {
                 loadSeriesStory(series1[0], stories1[2], 1);
             }
         */
-        /*
-            if (options.withVolumes && options.withStories) {
-                loadVolumeStories(volumes0[0], [stories0[0]]);
-                loadVolumeStories(volumes0[1], [stories0[1]]);
-                loadVolumeStories(volumes0[2], [stories0[0], stories0[1], stories0[2]]);
-                loadVolumeStories(volumes1[0], [stories1[0]]);
-                loadVolumeStories(volumes1[1], [stories1[1]]);
-                loadVolumeStories(volumes1[2], [stories1[0], stories1[1], stories1[2]]);
-            }
-        */
+        if (options.withVolumes && options.withStories) {
+            loadVolumeStories(volumes0[0], [stories0[0]]);
+            loadVolumeStories(volumes0[1], [stories0[1]]);
+            loadVolumeStories(volumes0[2], [stories0[0], stories0[1], stories0[2]]);
+            loadVolumeStories(volumes1[0], [stories1[0]]);
+            loadVolumeStories(volumes1[1], [stories1[1]]);
+            loadVolumeStories(volumes1[2], [stories1[0], stories1[1], stories1[2]]);
+        }
 
     }
 
@@ -330,10 +328,8 @@ const loadVolumes
     return results;
 }
 
-/*
 const loadVolumeStories
     = async (volume: Volume, stories: Story[]): Promise<void> =>
 {
     await volume.$add("stories", stories);
 }
-*/

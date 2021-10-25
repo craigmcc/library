@@ -157,7 +157,7 @@ describe("VolumeServices Functional Tests", () => {
             const INVALID_NAME = "INVALID VOLUME NAME";
 
             try {
-                const volume = await VolumeServices.exact(library.id, INVALID_NAME);
+                await VolumeServices.exact(library.id, INVALID_NAME);
                 expect.fail("Should have thrown NotFound");
             } catch (error) {
                 if (error instanceof NotFound) {
@@ -177,7 +177,7 @@ describe("VolumeServices Functional Tests", () => {
             SeedData.VOLUMES_LIBRARY1.forEach(async volume => {
                 try {
                     const name = volume.name ? volume.name : "can not happen";
-                    const result = await VolumeServices.exact(library.id, name);
+                    await VolumeServices.exact(library.id, name);
                 } catch (error) {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -208,8 +208,28 @@ describe("VolumeServices Functional Tests", () => {
 
         })
 
-        it.skip("should pass on included children", async () => {
-            // TODO
+        it("should pass on included children", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const volumes = await VolumeServices.all(library.id, {
+                withAuthors: "",
+                withLibrary: "",
+                withStories: "",
+            });
+            expect(volumes.length).to.be.greaterThan(0);
+
+            volumes.forEach(volume => {
+                expect(volume.libraryId).to.equal(library.id);
+                expect(volume.library).to.exist;
+                expect(volume.library.id).to.equal(library.id);
+                // TODO - check volume.authors when available
+                expect(volume.stories).to.exist;
+                expect(volume.stories.length).to.be.greaterThan(0);
+                volume.stories.forEach(story => {
+                    expect(story.libraryId).to.equal(library.id);
+                })
+            })
+
         })
 
         it("should pass on valid IDs", async () => {
@@ -361,8 +381,60 @@ describe("VolumeServices Functional Tests", () => {
 
     })
 
-    describe.skip("VolumeServices.stories()", () => {
-        // TODO
+    describe("VolumeServices.stories()", () => {
+
+        it("should pass on active stories", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const VOLUME_NAME: string = SeedData.VOLUMES_LIBRARY0[0].name
+                ? SeedData.VOLUMES_LIBRARY0[0].name : "can not happen";
+            const volume = await VolumeServices.exact(library.id, VOLUME_NAME);
+
+            const stories = await VolumeServices.stories(library.id, volume.id, {
+                active: true,
+            });
+            expect(stories.length).to.be.greaterThan(0);
+            stories.forEach(story => {
+                expect(story.active).to.be.true;
+                expect(story.libraryId).to.equal(library.id);
+            })
+
+        })
+
+        it("should pass on all stories", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const VOLUME_NAME: string = SeedData.VOLUMES_LIBRARY1[1].name
+                ? SeedData.VOLUMES_LIBRARY1[1].name : "can not happen";
+            const volume = await VolumeServices.exact(library.id, VOLUME_NAME);
+
+            const stories = await VolumeServices.stories(library.id, volume.id);
+            expect(stories.length).to.be.greaterThan(0);
+            stories.forEach(story => {
+                expect(story.libraryId).to.equal(library.id);
+            })
+
+        })
+
+        it("should pass on name'd stories", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const VOLUME_NAME: string = SeedData.VOLUMES_LIBRARY0[2].name
+                ? SeedData.VOLUMES_LIBRARY0[2].name : "can not happen";
+            const volume = await VolumeServices.exact(library.id, VOLUME_NAME);
+            const NAME_PATTERN = "I"; // Should match "Wilma" and "Flintstone"
+
+            const stories = await VolumeServices.stories(library.id, volume.id, {
+                name: NAME_PATTERN,
+            });
+            expect(stories.length).to.be.greaterThan(0);
+            stories.forEach(story => {
+                expect(story.libraryId).to.equal(library.id);
+                expect(story.name.toLowerCase()).to.include(NAME_PATTERN.toLowerCase());
+            })
+
+        })
+
     })
 
     describe("VolumeServices.update()", () => {
