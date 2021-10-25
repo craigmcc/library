@@ -4,8 +4,6 @@
 
 // External Modules ----------------------------------------------------------
 
-import User from "../models/User";
-
 const chai = require("chai");
 const expect = chai.expect;
 const chaiHttp = require("chai-http");
@@ -16,6 +14,7 @@ chai.use(chaiHttp);
 import app from "./ExpressApplication";
 import AccessToken from "../models/AccessToken";
 import RefreshToken from "../models/RefreshToken";
+import User from "../models/User";
 import RouterUtils, {AUTHORIZATION} from "../test/RouterUtils";
 import * as SeedData from "../test/SeedData";
 import {CREATED, FORBIDDEN, NOT_FOUND, OK} from "../util/HttpErrors";
@@ -66,7 +65,7 @@ describe("UserRouter Functional Tests", () => {
 
         })
 
-        it("should pass on invalid username", async () => {
+        it("should fail on invalid username", async () => {
 
             const INVALID_USERNAME = "Invalid Username";
 
@@ -354,5 +353,4 @@ const compareUsers = (OUTPUT: Partial<User>, INPUT: Partial<User>) => {
     expect(OUTPUT.password).to.equal("");   // Redacted
     expect(OUTPUT.scope).to.equal(INPUT.scope ? INPUT.scope : OUTPUT.scope);
     expect(OUTPUT.username).to.equal(INPUT.username ? INPUT.username : OUTPUT.username);
-
 }

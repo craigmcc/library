@@ -164,25 +164,25 @@ export const USERS: Partial<User>[] = [
     {
         active: true,
         name: "First Admin User",
-        scope: "first:admin",
+        scope: `${LIBRARY_SCOPE_FIRST}:admin`,
         username: USER_USERNAME_FIRST_ADMIN,
     },
     {
         active: true,
         name: "First Regular User",
-        scope: "first:regular",
+        scope: `${LIBRARY_SCOPE_FIRST}:regular`,
         username: USER_USERNAME_FIRST_REGULAR,
     },
     {
         active: false,
         name: "Second Admin User",
-        scope: "second:admin",
+        scope: `${LIBRARY_SCOPE_SECOND}:admin`,
         username: USER_USERNAME_SECOND_ADMIN,
     },
     {
         active: false,
         name: "Second Regular User",
-        scope: "second:regular",
+        scope: `${LIBRARY_SCOPE_SECOND}:regular`,
         username: USER_USERNAME_SECOND_REGULAR,
     },
     {

@@ -16,6 +16,7 @@ import Series from "../models/Series";
 import Story from "../models/Story";
 import User from "../models/User";
 import Volume from "../models/Volume";
+import {clearMapping} from "../oauth/OAuthMiddleware";
 import {hashPassword} from "../oauth/OAuthUtils";
 
 // Public Objects ------------------------------------------------------------
@@ -48,6 +49,9 @@ export abstract class BaseUtils {
         await Database.sync({
             force: true,
         });
+
+        // Clear any previous OAuth mapping for Library id -> scope
+        clearMapping();
 
         // Load users (and tokens) if requested
         if (options.withUsers) {

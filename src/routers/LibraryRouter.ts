@@ -41,7 +41,6 @@ LibraryRouter.get("/exact/:name",
 
 // GET / - Find all matching Libraries
 LibraryRouter.get("/",
-    requireSuperuser,
     async (req: Request, res: Response) => {
         res.send(await LibraryServices.all(
             req.query

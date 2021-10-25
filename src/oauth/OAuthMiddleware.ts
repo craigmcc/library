@@ -4,6 +4,9 @@
 
 // External Modules ----------------------------------------------------------
 
+require("custom-env").env(true);
+const https = require("https");
+
 import {InvalidScopeError, OAuthError} from "@craigmcc/oauth-orchestrator";
 import {
     ErrorRequestHandler,
@@ -16,7 +19,7 @@ import {
 // Internal Modules ----------------------------------------------------------
 
 import OAuthOrchestrator from "./OAuthOrchestrator";
-//import LibraryServices from "../services/LibraryServices";
+import LibraryServices from "../services/LibraryServices";
 import {Forbidden} from "../util/HttpErrors";
 import logger from "../util/ServerLogger";
 
@@ -34,7 +37,8 @@ if (process.env.OAUTH_ENABLED !== undefined) {
 logger.info({
     context: "Startup",
     msg: "Initialize OAuth Access Protection",
-    enabled: `${oauthEnabled}`
+    enabled: `${oauthEnabled}`,
+    superuserScope: process.env.SUPERUSER_SCOPE,
 })
 
 // Public Objects ------------------------------------------------------------
@@ -319,12 +323,10 @@ const extractToken = (req: Request) : string | null => {
  */
 const loadMapping = async (): Promise<void> => {
     mapping.clear();
-/*
     const libraries = await LibraryServices.all();
     libraries.forEach(library => {
         mapping.set(library.id, library.scope.trim());
     });
-*/
 }
 
 /**
