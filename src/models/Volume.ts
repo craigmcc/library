@@ -12,8 +12,8 @@ import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Model, Table} fr
 //import Author from "./Author";
 //import AuthorVolume from "./AuthorVolume";
 import Library from "./Library";
-//import Story from "./Story";
-//import VolumeStory from "./VolumeStory";
+import Story from "./Story";
+import VolumeStory from "./VolumeStory";
 import {validateVolumeLocation, validateVolumeType} from "../util/ApplicationValidators";
 import {validateLibraryId, validateVolumeNameUnique} from "../util/AsyncValidators";
 import {BadRequest} from "../util/HttpErrors";
@@ -163,10 +163,8 @@ export class Volume extends Model<Volume> {
     // Has this Volume been read?
     read!: boolean;
 
-/*
     @BelongsToMany(() => Story, () => VolumeStory)
     stories!: Array<Story & {VolumeStory: VolumeStory}>;
-*/
 
     @Column({
         allowNull: false,

@@ -12,7 +12,7 @@ import {FindOptions, Op} from "sequelize";
 import BaseChildServices from "./BaseChildServices";
 import LibraryServices from "./LibraryServices";
 //import SeriesServices from "./SeriesServices";
-//import VolumeServices from "./VolumeServices";
+import VolumeServices from "./VolumeServices";
 //import Author from "../models/Author";
 //import AuthorStory from "../models/AuthorStory";
 import Library from "../models/Library";
@@ -20,7 +20,7 @@ import Library from "../models/Library";
 import Story from "../models/Story";
 //import SeriesStory from "../models/SeriesStory";
 import Volume from "../models/Volume";
-//import VolumeStory from "../models/VolumeStory";
+import VolumeStory from "../models/VolumeStory";
 import {NotFound} from "../util/HttpErrors";
 import {appendPaginationOptions} from "../util/QueryParameters";
 import * as SortOrder from "../util/SortOrder";
@@ -67,14 +67,21 @@ class StoryServices extends BaseChildServices<Story, Library> {
     }
 
     /*
-        public async volumes(libraryId: number, storyId: number, query?: any): Promise<Volume[]> {
-            const story = await this.read("StoryServices.stories", libraryId, storyId);
-            const options: FindOptions = VolumeServices.appendMatchOptions({
-                order: SortOrder.VOLUMES,
+        public async series(libraryId: number, storyId: number, query?: any): Promise<Series[]> {
+            const story = await this.read("StoryServices.series", libraryId, storyId);
+            const options: FindOptions = AuthorServices.appendMatchOptions({
+                order: SortOrder.SERIES,
             }, query);
-            return await story.$get("volumes", options);
+            return await story.$get("series", options);
         }
     */
+    public async volumes(libraryId: number, storyId: number, query?: any): Promise<Volume[]> {
+        const story = await this.read("StoryServices.volumes", libraryId, storyId);
+        const options: FindOptions = VolumeServices.appendMatchOptions({
+            order: SortOrder.VOLUMES,
+        }, query);
+        return await story.$get("volumes", options);
+    }
 
     // Public Helpers --------------------------------------------------------
 

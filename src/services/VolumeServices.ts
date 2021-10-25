@@ -11,12 +11,12 @@ import {FindOptions, Op} from "sequelize";
 //import AuthorServices from "./AuthorServices";
 import BaseChildServices from "./BaseChildServices";
 import LibraryServices from "./LibraryServices";
-//import StoryServices from "./StoryServices";
+import StoryServices from "./StoryServices";
 //import Author from "../models/Author";
 import Library from "../models/Library";
 import Story from "../models/Story";
 import Volume from "../models/Volume";
-//import VolumeStory from "../models/VolumeStory";
+import VolumeStory from "../models/VolumeStory";
 import {NotFound} from "../util/HttpErrors";
 import {appendPaginationOptions} from "../util/QueryParameters";
 import * as SortOrder from "../util/SortOrder";
@@ -67,19 +67,27 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
         return results[0];
     }
 
-    /*
-        public async stories(libraryId: number, volumeId: number, query?: any): Promise<Story[]> {
-            const volume = await this.read("VolumeServices.stories", libraryId, volumeId);
-            const options: FindOptions = StoryServices.appendMatchOptions({
-                order: SortOrder.STORIES,
-            }, query);
-            return await volume.$get("stories", options);
-        }
-    */
+    public async stories(libraryId: number, volumeId: number, query?: any): Promise<Story[]> {
+        const volume = await this.read("VolumeServices.stories", libraryId, volumeId);
+        const options: FindOptions = StoryServices.appendMatchOptions({
+            order: SortOrder.STORIES,
+        }, query);
+        return await volume.$get("stories", options);
+    }
 
-    // TODO - storiesExclude()
+    public async storiesExclude(libraryId: number, volumeId: number, storyId: number): Promise<Story> {
+        const volume = await this.read("VolumeServices.stories", libraryId, volumeId);
+        const story = await StoryServices.read("VolumeServices.stories", libraryId, storyId);
+        await volume.$remove("stories", story);
+        return story;
+    }
 
-    // TODO - storiesInclude()
+    public async storiesInclude(libraryId: number, volumeId: number, storyId: number): Promise<Story> {
+        const volume = await this.read("VolumeServices.stories", libraryId, volumeId);
+        const story = await StoryServices.read("VolumeServices.stories", libraryId, storyId);
+        await volume.$add("stories", story);
+        return story;
+    }
 
     // Public Helpers --------------------------------------------------------
 

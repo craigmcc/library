@@ -107,7 +107,6 @@ VolumeRouter.get("/:libraryId/:volumeId/authors",
 
 // Volume-Story Relationships ------------------------------------------------
 
-/*
 // GET /:libraryId/:volumeId/stories - Find Stories for this Volume
 VolumeRouter.get("/:libraryId/:volumeId/stories",
     requireRegular,
@@ -118,9 +117,7 @@ VolumeRouter.get("/:libraryId/:volumeId/stories",
             req.query
         ));
     });
-*/
 
-/*
 // DELETE /:libraryId/:volumeId/stories/:storyId - Disassociate Volume and Story
 VolumeRouter.delete("/:libraryId/:volumeId/stories/:storyId",
     requireRegular,
@@ -131,9 +128,7 @@ VolumeRouter.delete("/:libraryId/:volumeId/stories/:storyId",
             parseInt(req.params.storyId, 10)
         ));
     });
-*/
 
-/*
 // POST /:libraryId/:volumeId/stories/:storyId - Associate Volume and Story
 VolumeRouter.post("/:libraryId/:volumeId/stories/:storyId",
     requireRegular,
@@ -144,5 +139,4 @@ VolumeRouter.post("/:libraryId/:volumeId/stories/:storyId",
             parseInt(req.params.storyId, 10)
         ));
     });
-*/
 

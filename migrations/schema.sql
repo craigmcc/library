@@ -295,6 +295,16 @@ ALTER SEQUENCE public.volumes_id_seq OWNED BY public.volumes.id;
 
 
 --
+-- Name: volumes_stories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.volumes_stories (
+    story_id integer NOT NULL,
+    volume_id integer NOT NULL
+);
+
+
+--
 -- Name: access_tokens id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -415,6 +425,14 @@ ALTER TABLE ONLY public.volumes
 
 
 --
+-- Name: volumes_stories volumes_stories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.volumes_stories
+    ADD CONSTRAINT volumes_stories_pkey PRIMARY KEY (volume_id, story_id);
+
+
+--
 -- Name: access_tokens_token_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -516,6 +534,22 @@ ALTER TABLE ONLY public.stories
 
 ALTER TABLE ONLY public.volumes
     ADD CONSTRAINT volumes_library_id_fkey FOREIGN KEY (library_id) REFERENCES public.libraries(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: volumes_stories volumes_stories_story_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.volumes_stories
+    ADD CONSTRAINT volumes_stories_story_id_fkey FOREIGN KEY (story_id) REFERENCES public.stories(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: volumes_stories volumes_stories_volume_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.volumes_stories
+    ADD CONSTRAINT volumes_stories_volume_id_fkey FOREIGN KEY (volume_id) REFERENCES public.volumes(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

@@ -21,7 +21,7 @@ import Series from "./Series";
 import Story from "./Story";
 import User from "./User";
 import Volume from "./Volume";
-//import VolumeStory from "./VolumeStory";
+import VolumeStory from "./VolumeStory";
 import logger from "../util/ServerLogger";
 
 // Configure Database Instance -----------------------------------------------
@@ -49,7 +49,7 @@ Database.addModels([
 //    AuthorStory,
 //    AuthorVolume,
 //    SeriesStory,
-//    VolumeStory,
+    VolumeStory,
     // User Stack
     User,
     AccessToken,
