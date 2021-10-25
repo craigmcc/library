@@ -224,7 +224,6 @@ describe("VolumeServices Functional Tests", () => {
                 expect(volume.library.id).to.equal(library.id);
                 // TODO - check volume.authors when available
                 expect(volume.stories).to.exist;
-                expect(volume.stories.length).to.be.greaterThan(0);
                 volume.stories.forEach(story => {
                     expect(story.libraryId).to.equal(library.id);
                 })
