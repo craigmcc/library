@@ -299,9 +299,10 @@ describe("SeriesServices Functional Tests", () => {
             const series = await SeriesServices.exact(library.id, SERIES_NAME);
 
             const stories = await SeriesServices.stories(library.id, series.id, {
-                active: true,
+                active: "",
             });
             stories.forEach(story => {
+                expect(story.active).to.be.true;
                 expect(story.libraryId).to.equal(library.id);
             })
 

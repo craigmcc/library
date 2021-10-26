@@ -390,7 +390,7 @@ describe("VolumeServices Functional Tests", () => {
             const volume = await VolumeServices.exact(library.id, VOLUME_NAME);
 
             const stories = await VolumeServices.stories(library.id, volume.id, {
-                active: true,
+                active: "",
             });
             expect(stories.length).to.be.greaterThan(0);
             stories.forEach(story => {
