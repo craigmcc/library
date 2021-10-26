@@ -88,6 +88,39 @@ ALTER SEQUENCE public.authors_id_seq OWNED BY public.authors.id;
 
 
 --
+-- Name: authors_series; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.authors_series (
+    author_id integer NOT NULL,
+    series_id integer NOT NULL,
+    principal boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: authors_stories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.authors_stories (
+    author_id integer NOT NULL,
+    story_id integer NOT NULL,
+    principal boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: authors_volumes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.authors_volumes (
+    author_id integer NOT NULL,
+    volume_id integer NOT NULL,
+    principal boolean DEFAULT false NOT NULL
+);
+
+
+--
 -- Name: libraries; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -521,6 +554,54 @@ ALTER TABLE ONLY public.access_tokens
 
 ALTER TABLE ONLY public.authors
     ADD CONSTRAINT authors_library_id_fkey FOREIGN KEY (library_id) REFERENCES public.libraries(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: authors_series authors_series_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors_series
+    ADD CONSTRAINT authors_series_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.authors(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: authors_series authors_series_series_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors_series
+    ADD CONSTRAINT authors_series_series_id_fkey FOREIGN KEY (series_id) REFERENCES public.series(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: authors_stories authors_stories_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors_stories
+    ADD CONSTRAINT authors_stories_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.authors(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: authors_stories authors_stories_story_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors_stories
+    ADD CONSTRAINT authors_stories_story_id_fkey FOREIGN KEY (story_id) REFERENCES public.stories(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: authors_volumes authors_volumes_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors_volumes
+    ADD CONSTRAINT authors_volumes_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.authors(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: authors_volumes authors_volumes_volume_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors_volumes
+    ADD CONSTRAINT authors_volumes_volume_id_fkey FOREIGN KEY (volume_id) REFERENCES public.volumes(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
