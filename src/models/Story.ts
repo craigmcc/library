@@ -71,6 +71,11 @@ export class Story extends Model<Story> {
         authors!: Array<Author & {AuthorStory: AuthorStory}>;
     */
 
+/*
+    // Join Table contents, present only if Author retrieved with withStories
+    AuthorStory?: AuthorStory;
+*/
+
     @Column({
         allowNull: true,
         field: "copyright",
@@ -122,8 +127,14 @@ export class Story extends Model<Story> {
     @BelongsToMany(() => Series, () => SeriesStory)
     series!: Array<Series & {SeriesStory: SeriesStory}>;
 
+    // Join Table contents, present only if Series retrieved with withStories
+    SeriesStory?: SeriesStory;
+
     @BelongsToMany(() => Volume, () => VolumeStory)
     volumes!: Array<Volume & {VolumeStory: VolumeStory}>;
+
+    // Join Table contents, present only if Volume retrieved with withStories
+    VolumeStory?: VolumeStory;
 
 }
 

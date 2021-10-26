@@ -81,7 +81,7 @@ class SeriesServices extends BaseChildServices<Series, Library> {
         return story;
     }
 
-    public async storiesInclude(libraryId: number, seriesId: number, storyId: number, ordinal?: number): Promise<Story> {
+    public async storiesInclude(libraryId: number, seriesId: number, storyId: number, ordinal: number | undefined): Promise<Story> {
         const library = await LibraryServices.read("SeriesServices.storiesInclude", libraryId);
         const series = await this.read("SeriesServices.stories", libraryId, seriesId);
         const story = await StoryServices.read("SeriesServices.stories", libraryId, storyId);

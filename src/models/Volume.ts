@@ -70,6 +70,11 @@ export class Volume extends Model<Volume> {
     authors!: Array<Author & {AuthorVolume: AuthorVolume}>;
 */
 
+/*
+    // Join Table contents, present only if Volume retrieved with withAuthors
+    AuthorVolume?: AuthorVolume;
+*/
+
     @Column({
         allowNull: true,
         field: "copyright",
@@ -165,6 +170,9 @@ export class Volume extends Model<Volume> {
 
     @BelongsToMany(() => Story, () => VolumeStory)
     stories!: Array<Story & {VolumeStory: VolumeStory}>;
+
+    // Join Table contents, present only if Volume retrieved with withStories
+    VolumeStory?: VolumeStory;
 
     @Column({
         allowNull: false,

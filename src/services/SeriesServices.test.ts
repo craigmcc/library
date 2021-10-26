@@ -93,7 +93,7 @@ describe("SeriesServices Functional Tests", () => {
             const INVALID_NAME = "INVALID VOLUME NAME";
 
             try {
-                const series = await SeriesServices.exact(library.id, INVALID_NAME);
+                await SeriesServices.exact(library.id, INVALID_NAME);
                 expect.fail("Should have thrown NotFound");
             } catch (error) {
                 if (error instanceof NotFound) {
@@ -113,7 +113,7 @@ describe("SeriesServices Functional Tests", () => {
             SeedData.SERIES_LIBRARY1.forEach(async series => {
                 try {
                     const name = series.name ? series.name : "can not happen";
-                    const result = await SeriesServices.exact(library.id, name);
+                    await SeriesServices.exact(library.id, name);
                 } catch (error) {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -144,8 +144,30 @@ describe("SeriesServices Functional Tests", () => {
 
         })
 
-        it.skip("should pass on included children", async () => {
-            // TODO
+        it("should pass on included children", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const serieses = await SeriesServices.all(library.id, {
+                withAuthors: "",
+                withLibrary: "",
+                withStories: "",
+            });
+            expect(serieses.length).to.be.greaterThan(0);
+
+            serieses.forEach(series => {
+                expect(series.libraryId).to.equal(library.id);
+                expect(series.library).to.exist;
+                expect(series.library.id).to.equal(library.id);
+                // TODO - check series.authors when available
+                expect(series.stories).to.exist;
+                series.stories.forEach(story => {
+                    expect(story.libraryId).to.equal(library.id);
+                    expect(story.SeriesStory).to.exist;
+                    expect(story.SeriesStory.ordinal).to.exist;
+                    expect(story.SeriesStory.ordinal).to.be.greaterThan(0);
+                })
+            })
+
         })
 
         it("should pass on valid IDs", async () => {
@@ -262,6 +284,58 @@ describe("SeriesServices Functional Tests", () => {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
             }
+
+        })
+
+    })
+
+    describe("SeriesServices.stories()", () => {
+
+        it("should pass on active stories", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const SERIES_NAME: string = SeedData.SERIES_LIBRARY0[0].name
+                ? SeedData.SERIES_LIBRARY0[0].name : "can not happen";
+            const series = await SeriesServices.exact(library.id, SERIES_NAME);
+
+            const stories = await SeriesServices.stories(library.id, series.id, {
+                active: true,
+            });
+            stories.forEach(story => {
+                expect(story.libraryId).to.equal(library.id);
+            })
+
+        })
+
+        it("should pass on all stories", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const SERIES_NAME: string = SeedData.SERIES_LIBRARY1[1].name
+                ? SeedData.SERIES_LIBRARY1[1].name : "can not happen";
+            const series = await SeriesServices.exact(library.id, SERIES_NAME);
+
+            const stories = await SeriesServices.stories(library.id, series.id);
+            stories.forEach(story => {
+                expect(story.libraryId).to.equal(library.id);
+            })
+
+        })
+
+        it("should pass on name'd stories", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const SERIES_NAME: string = SeedData.SERIES_LIBRARY0[1].name
+                ? SeedData.SERIES_LIBRARY0[1].name : "can not happen";
+            const series = await SeriesServices.exact(library.id, SERIES_NAME);
+            const NAME_PATTERN = "I"; // Should match "Wilma" and "Flintstone"
+
+            const stories = await SeriesServices.stories(library.id, series.id, {
+                name: NAME_PATTERN,
+            });
+            stories.forEach(story => {
+                expect(story.libraryId).to.equal(library.id);
+                expect(story.name.toLowerCase()).to.include(NAME_PATTERN.toLowerCase());
+            })
 
         })
 
