@@ -8,11 +8,11 @@ import {FindOptions, Op} from "sequelize";
 
 // Internal Modules ----------------------------------------------------------
 
-//import AuthorServices from "./AuthorServices";
+import AuthorServices from "./AuthorServices";
 import BaseChildServices from "./BaseChildServices";
 import LibraryServices from "./LibraryServices";
 import StoryServices from "./StoryServices";
-//import Author from "../models/Author";
+import Author from "../models/Author";
 import Library from "../models/Library";
 import Story from "../models/Story";
 import Volume from "../models/Volume";
@@ -42,16 +42,14 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
 
     // Model-Specific Methods ------------------------------------------------
 
-    /*
-        public async authors(libraryId: number, volumeId: number, query?: any): Promise<Author[]> {
-            await LibraryServices.read("VolumeServices.authors", libraryId);
-            const volume = await this.read("VolumeServices.authors", libraryId, volumeId);
-            const options: FindOptions = AuthorServices.appendMatchOptions({
-                order: SortOrder.AUTHORS,
-            }, query);
-            return await volume.$get("authors", options);
-        }
-    */
+    public async authors(libraryId: number, volumeId: number, query?: any): Promise<Author[]> {
+        await LibraryServices.read("VolumeServices.authors", libraryId);
+        const volume = await this.read("VolumeServices.authors", libraryId, volumeId);
+        const options: FindOptions = AuthorServices.appendMatchOptions({
+            order: SortOrder.AUTHORS,
+        }, query);
+        return await volume.$get("authors", options);
+    }
 
     public async exact(libraryId: number, name: string, query?: any): Promise<Volume> {
         const library = await LibraryServices.read("VolumeServices.exact", libraryId);
@@ -107,11 +105,9 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
         }
         options = appendPaginationOptions(options, query);
         const include: any = options.include ? options.include : [];
-/*
         if ("" === query.withAuthors) {
             include.push(Author);
         }
-*/
         if ("" === query.withLibrary) {
             include.push(Library);
         }

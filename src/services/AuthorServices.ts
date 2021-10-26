@@ -56,7 +56,6 @@ class AuthorServices extends BaseChildServices<Author, Library> {
         return results[0];
     }
 
-/*
     public async series(libraryId: number, authorId: number, query?: any): Promise<Series[]> {
         const author = await this.read("AuthorServices.series", libraryId, authorId);
         const options: FindOptions = SeriesServices.appendMatchOptions({
@@ -64,9 +63,7 @@ class AuthorServices extends BaseChildServices<Author, Library> {
         }, query);
         return await author.$get("series", options);
     }
-*/
 
-/*
     public async stories(libraryId: number, authorId: number, query?: any): Promise<Story[]> {
         const author = await this.read("AuthorServices.stories", libraryId, authorId);
         const options: FindOptions = StoryServices.appendMatchOptions({
@@ -74,9 +71,7 @@ class AuthorServices extends BaseChildServices<Author, Library> {
         }, query);
         return await author.$get("stories", options);
     }
-*/
 
-/*
     public async volumes(libraryId: number, authorId: number, query?: any): Promise<Volume[]> {
         const author = await this.read("AuthorServices.volumes", libraryId, authorId);
         const options: FindOptions = VolumeServices.appendMatchOptions({
@@ -84,7 +79,6 @@ class AuthorServices extends BaseChildServices<Author, Library> {
         }, query);
         return await author.$get("volumes", options);
     }
-*/
 
     // Public Helpers --------------------------------------------------------
 

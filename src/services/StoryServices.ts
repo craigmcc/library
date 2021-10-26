@@ -8,19 +8,16 @@ import {FindOptions, Op} from "sequelize";
 
 // Internal Modules ----------------------------------------------------------
 
-//import AuthorServices from "./AuthorServices";
+import AuthorServices from "./AuthorServices";
 import BaseChildServices from "./BaseChildServices";
 import LibraryServices from "./LibraryServices";
 import SeriesServices from "./SeriesServices";
 import VolumeServices from "./VolumeServices";
-//import Author from "../models/Author";
-//import AuthorStory from "../models/AuthorStory";
+import Author from "../models/Author";
 import Library from "../models/Library";
 import Series from "../models/Series";
 import Story from "../models/Story";
-import SeriesStory from "../models/SeriesStory";
 import Volume from "../models/Volume";
-import VolumeStory from "../models/VolumeStory";
 import {NotFound} from "../util/HttpErrors";
 import {appendPaginationOptions} from "../util/QueryParameters";
 import * as SortOrder from "../util/SortOrder";
@@ -41,8 +38,7 @@ class StoryServices extends BaseChildServices<Story, Library> {
 
     // Model-Specific Methods ------------------------------------------------
 
-    /*
-    public async authors(libraryId: number, storyId: number, query?: any): Promise<Series[]> {
+    public async authors(libraryId: number, storyId: number, query?: any): Promise<Author[]> {
         await LibraryServices.read("StoryServices.authors", libraryId);
         const story = await this.read("StoryServices.authors", libraryId, storyId);
         const options: FindOptions = AuthorServices.appendMatchOptions({
@@ -50,7 +46,6 @@ class StoryServices extends BaseChildServices<Story, Library> {
         }, query);
         return await story.$get("authors", options);
     }
-    */
 
     public async exact(libraryId: number, name: string, query?: any): Promise<Story> {
         const library = await LibraryServices.read("StoryServices.exact", libraryId);
@@ -100,19 +95,15 @@ class StoryServices extends BaseChildServices<Story, Library> {
         }
         options = appendPaginationOptions(options, query);
         const include: any = options.include ? options.include : [];
-        /*
-                if ("" === query.withAuthors) {
-                    include.push(Author);
-                }
-        */
+        if ("" === query.withAuthors) {
+            include.push(Author);
+        }
         if ("" === query.withLibrary) {
             include.push(Library);
         }
-/*
         if ("" === query.withSeries) {
             include.push(Series);
         }
-*/
         if ("" === query.withVolumes) {
             include.push(Volume);
         }

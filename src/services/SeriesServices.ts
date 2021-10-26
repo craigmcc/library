@@ -8,12 +8,11 @@ import {FindOptions, Op} from "sequelize";
 
 // Internal Modules ----------------------------------------------------------
 
-//import AuthorServices from "./AuthorServices";
+import AuthorServices from "./AuthorServices";
 import BaseChildServices from "./BaseChildServices";
 import LibraryServices from "./LibraryServices";
 import StoryServices from "./StoryServices";
-//import Author from "../models/Author";
-//import AuthorSeries from "../models/AuthorSeries";
+import Author from "../models/Author";
 import Library from "../models/Library";
 import Series from "../models/Series";
 import Story from "../models/Story";
@@ -38,16 +37,14 @@ class SeriesServices extends BaseChildServices<Series, Library> {
 
     // Model-Specific Methods ------------------------------------------------
 
-    /*
-        public async authors(libraryId: number, seriesId: number, query?: any): Promise<Author[]> {
-            const library = await LibraryServices.read("SeriesServices.authors", libraryId);
-            const series = await this.read("SeriesServices.authors", libraryId, seriesId);
-            const options: FindOptions = AuthorServices.appendMatchOptions({
-                order: SortOrder.AUTHORS,
-            }, query);
-            return await series.$get("authors", options);
-        }
-    */
+    public async authors(libraryId: number, seriesId: number, query?: any): Promise<Author[]> {
+        const library = await LibraryServices.read("SeriesServices.authors", libraryId);
+        const series = await this.read("SeriesServices.authors", libraryId, seriesId);
+        const options: FindOptions = AuthorServices.appendMatchOptions({
+            order: SortOrder.AUTHORS,
+        }, query);
+        return await series.$get("authors", options);
+    }
 
     public async exact(libraryId: number, name: string, query?: any): Promise<Series> {
         const library = await LibraryServices.read("SeriesServices.exact", libraryId);
@@ -108,11 +105,9 @@ class SeriesServices extends BaseChildServices<Series, Library> {
         }
         options = appendPaginationOptions(options, query);
         const include: any = options.include ? options.include : [];
-        /*
-                if ("" === query.withAuthors) {
-                    include.push(Author);
-                }
-        */
+        if ("" === query.withAuthors) {
+            include.push(Author);
+        }
         if ("" === query.withLibrary) {
             include.push(Library);
         }
