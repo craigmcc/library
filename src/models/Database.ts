@@ -11,9 +11,9 @@ import {Sequelize} from "sequelize-typescript";
 
 import AccessToken from "./AccessToken";
 import Author from "./Author";
-//import AuthorSeries from "./AuthorSeries";
-//import AuthorStory from "./AuthorStory";
-//import AuthorVolume from "./AuthorVolume";
+import AuthorSeries from "./AuthorSeries";
+import AuthorStory from "./AuthorStory";
+import AuthorVolume from "./AuthorVolume";
 import Library from "./Library";
 import RefreshToken from "./RefreshToken";
 import Series from "./Series";
@@ -45,9 +45,9 @@ Database.addModels([
     Series,
     Story,
     Volume,
-//    AuthorSeries,
-//    AuthorStory,
-//    AuthorVolume,
+    AuthorSeries,
+    AuthorStory,
+    AuthorVolume,
     SeriesStory,
     VolumeStory,
     // User Stack
