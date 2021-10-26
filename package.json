@@ -51,7 +51,7 @@
     "nyc": "^15.1.0",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
-    "pino": "^7.0.3",
+    "pino": "^7.0.5",
     "reflect-metadata": "^0.1.13",
     "rotating-file-stream": "^2.1.6",
     "sequelize": "^6.8.0",
