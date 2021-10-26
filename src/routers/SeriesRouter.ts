@@ -14,6 +14,8 @@ import {
 } from "../oauth/OAuthMiddleware";
 import SeriesServices from "../services/SeriesServices";
 import {CREATED} from "../util/HttpErrors";
+import VolumeServices from "../services/VolumeServices";
+import VolumeRouter from "./VolumeRouter";
 
 // Public Objects ------------------------------------------------------------
 
@@ -105,9 +107,8 @@ SeriesRouter.get("/:libraryId/:seriesId/authors",
     });
 */
 
-// Story-Series Relationships ------------------------------------------------
+// Series-Story Relationships ------------------------------------------------
 
-/*
 // GET /:libraryId/:seriesId/stories - Find Stories for this Series
 SeriesRouter.get("/:libraryId/:seriesId/stories",
     requireRegular,
@@ -118,4 +119,26 @@ SeriesRouter.get("/:libraryId/:seriesId/stories",
             req.query
         ));
     });
-*/
+
+// DELETE /:libraryId/:seriesId/stories/:storyId - Disassociate Series and Story
+SeriesRouter.delete("/:libraryId/:seriesId/stories/:storyId",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await SeriesServices.storiesExclude(
+            parseInt(req.params.libraryId, 10),
+            parseInt(req.params.seriesId, 10),
+            parseInt(req.params.storyId, 10)
+        ));
+    });
+
+// POST /:libraryId/:seriesId/stories/:storyId - Associate Series and Story
+VolumeRouter.post("/:libraryId/:seriesId/stories/:storyId",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await SeriesServices.storiesInclude(
+            parseInt(req.params.libraryId, 10),
+            parseInt(req.params.seriesId, 10),
+            parseInt(req.params.storyId, 10)
+        ));
+    });
+

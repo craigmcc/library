@@ -1,6 +1,6 @@
-// VolumeStory.ts ------------------------------------------------------------
+// SeriesStory.ts ------------------------------------------------------------
 
-// Model for many-to-many relationship between Volumes and Stories.
+// Model for many-to-many relationship between Seriess and Stories.
 
 // External Modules ----------------------------------------------------------
 
@@ -8,30 +8,38 @@ import {BelongsTo, Column, DataType, ForeignKey, Model, Table} from "sequelize-t
 
 // Internal Modules ----------------------------------------------------------
 
+import Series from "./Series";
 import Story from "./Story";
-import Volume from "./Volume";
 
 // Public Objects ------------------------------------------------------------
 
 @Table({
-    tableName: "volumes_stories",
+    tableName: "series_stories",
     timestamps: false,
     version: false,
 })
-class VolumeStory extends Model<VolumeStory> {
+class SeriesStory extends Model<SeriesStory> {
 
-    @BelongsTo(() => Volume)
-    volume!: Volume;
+    @Column({
+        allowNull: true,
+        field: "ordinal",
+        type: DataType.INTEGER
+    })
+    // Ordinal position of this Story in this Series
+    ordinal?: number;
+
+    @BelongsTo(() => Series)
+    series!: Series;
 
     @Column({
         allowNull: false,
-        field: "volume_id",
+        field: "series_id",
         primaryKey: true,
         type: DataType.INTEGER,
     })
-    @ForeignKey(() => Volume)
-    // ID of the source Volume of this relationship
-    volumeId!: number;
+    @ForeignKey(() => Series)
+    // ID of the source Series of this relationship
+    seriesId!: number;
 
     @BelongsTo(() => Story)
     story!: Story;
@@ -48,4 +56,4 @@ class VolumeStory extends Model<VolumeStory> {
 
 }
 
-export default VolumeStory;
+export default SeriesStory;

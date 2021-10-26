@@ -11,14 +11,14 @@ import {FindOptions, Op} from "sequelize";
 //import AuthorServices from "./AuthorServices";
 import BaseChildServices from "./BaseChildServices";
 import LibraryServices from "./LibraryServices";
-//import SeriesServices from "./SeriesServices";
+import SeriesServices from "./SeriesServices";
 import VolumeServices from "./VolumeServices";
 //import Author from "../models/Author";
 //import AuthorStory from "../models/AuthorStory";
 import Library from "../models/Library";
-//import Series from "../models/Series";
+import Series from "../models/Series";
 import Story from "../models/Story";
-//import SeriesStory from "../models/SeriesStory";
+import SeriesStory from "../models/SeriesStory";
 import Volume from "../models/Volume";
 import VolumeStory from "../models/VolumeStory";
 import {NotFound} from "../util/HttpErrors";
@@ -42,13 +42,14 @@ class StoryServices extends BaseChildServices<Story, Library> {
     // Model-Specific Methods ------------------------------------------------
 
     /*
-        public async authors(libraryId: number, storyId: number, query?: any): Promise<Author[]> {
-            const story = await this.read("StoryServices.authors", libraryId, storyId);
-            const options: FindOptions = AuthorServices.appendMatchOptions({
-                order: SortOrder.AUTHORS,
-            }, query);
-            return await story.$get("authors", options);
-        }
+    public async authors(libraryId: number, storyId: number, query?: any): Promise<Series[]> {
+        await LibraryServices.read("StoryServices.authors", libraryId);
+        const story = await this.read("StoryServices.authors", libraryId, storyId);
+        const options: FindOptions = AuthorServices.appendMatchOptions({
+            order: SortOrder.AUTHORS,
+        }, query);
+        return await story.$get("authors", options);
+    }
     */
 
     public async exact(libraryId: number, name: string, query?: any): Promise<Story> {
@@ -66,16 +67,17 @@ class StoryServices extends BaseChildServices<Story, Library> {
         return results[0];
     }
 
-    /*
-        public async series(libraryId: number, storyId: number, query?: any): Promise<Series[]> {
-            const story = await this.read("StoryServices.series", libraryId, storyId);
-            const options: FindOptions = AuthorServices.appendMatchOptions({
-                order: SortOrder.SERIES,
-            }, query);
-            return await story.$get("series", options);
-        }
-    */
+    public async series(libraryId: number, storyId: number, query?: any): Promise<Series[]> {
+        await LibraryServices.read("StoryServices.series", libraryId);
+        const story = await this.read("StoryServices.series", libraryId, storyId);
+        const options: FindOptions = SeriesServices.appendMatchOptions({
+            order: SortOrder.SERIES,
+        }, query);
+        return await story.$get("series", options);
+    }
+
     public async volumes(libraryId: number, storyId: number, query?: any): Promise<Volume[]> {
+        await LibraryServices.read("StoryServices.volumes", libraryId);
         const story = await this.read("StoryServices.volumes", libraryId, storyId);
         const options: FindOptions = VolumeServices.appendMatchOptions({
             order: SortOrder.VOLUMES,

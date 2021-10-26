@@ -11,13 +11,13 @@ import {FindOptions, Op} from "sequelize";
 //import AuthorServices from "./AuthorServices";
 import BaseChildServices from "./BaseChildServices";
 import LibraryServices from "./LibraryServices";
-//import StoryServices from "./StoryServices";
+import StoryServices from "./StoryServices";
 //import Author from "../models/Author";
 //import AuthorSeries from "../models/AuthorSeries";
 import Library from "../models/Library";
 import Series from "../models/Series";
 import Story from "../models/Story";
-//import SeriesStory from "../models/SeriesStory";
+import SeriesStory from "../models/SeriesStory";
 import {NotFound} from "../util/HttpErrors";
 import {appendPaginationOptions} from "../util/QueryParameters";
 import * as SortOrder from "../util/SortOrder";
@@ -40,6 +40,7 @@ class SeriesServices extends BaseChildServices<Series, Library> {
 
     /*
         public async authors(libraryId: number, seriesId: number, query?: any): Promise<Author[]> {
+            const library = await LibraryServices.read("SeriesServices.authors", libraryId);
             const series = await this.read("SeriesServices.authors", libraryId, seriesId);
             const options: FindOptions = AuthorServices.appendMatchOptions({
                 order: SortOrder.AUTHORS,
@@ -63,15 +64,35 @@ class SeriesServices extends BaseChildServices<Series, Library> {
         return results[0];
     }
 
-/*
     public async stories(libraryId: number, seriesId: number, query?: any): Promise<Story[]> {
+        const library = await LibraryServices.read("SeriesServices.stories", libraryId);
         const series = await this.read("SeriesServices.stories", libraryId, seriesId);
         const options: FindOptions = StoryServices.appendMatchOptions({
             order: SortOrder.STORIES,
         }, query);
         return await series.$get("stories", options);
     }
-*/
+
+    public async storiesExclude(libraryId: number, seriesId: number, storyId: number): Promise<Story> {
+        const library = await LibraryServices.read("SeriesServices.storiesExclude", libraryId);
+        const series = await this.read("SeriesServices.istoresExclude", libraryId, seriesId);
+        const story = await StoryServices.read("SeriesServices.storiesExclude", libraryId, storyId);
+        await series.$remove("stories", story);
+        return story;
+    }
+
+    public async storiesInclude(libraryId: number, seriesId: number, storyId: number, ordinal?: number): Promise<Story> {
+        const library = await LibraryServices.read("SeriesServices.storiesInclude", libraryId);
+        const series = await this.read("SeriesServices.stories", libraryId, seriesId);
+        const story = await StoryServices.read("SeriesServices.stories", libraryId, storyId);
+        // @ts-ignore
+        await SeriesStory.create({
+            seriesId: seriesId,
+            storyId: storyId,
+            ordinal: ordinal,
+        });
+        return story;
+    }
 
     // Public Helpers --------------------------------------------------------
 

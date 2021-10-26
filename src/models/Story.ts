@@ -12,8 +12,8 @@ import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Model, Table} fr
 //import Author from "./Author";
 //import AuthorStory from "./AuthorStory";
 import Library from "./Library";
-//import Series from "./Series";
-//import SeriesStory from "./SeriesStory";
+import Series from "./Series";
+import SeriesStory from "./SeriesStory";
 import Volume from "./Volume";
 import VolumeStory from "./VolumeStory";
 import {validateLibraryId, validateStoryNameUnique} from "../util/AsyncValidators";
@@ -119,10 +119,8 @@ export class Story extends Model<Story> {
     // General notes about this Story
     notes?: string;
 
-    /*
-        @BelongsToMany(() => Series, () => SeriesStory)
-        series!: Array<Series & {SeriesStory: SeriesStory}>;
-    */
+    @BelongsToMany(() => Series, () => SeriesStory)
+    series!: Array<Series & {SeriesStory: SeriesStory}>;
 
     @BelongsToMany(() => Volume, () => VolumeStory)
     volumes!: Array<Volume & {VolumeStory: VolumeStory}>;

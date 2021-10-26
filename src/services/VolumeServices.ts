@@ -44,6 +44,7 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
 
     /*
         public async authors(libraryId: number, volumeId: number, query?: any): Promise<Author[]> {
+            await LibraryServices.read("VolumeServices.authors", libraryId);
             const volume = await this.read("VolumeServices.authors", libraryId, volumeId);
             const options: FindOptions = AuthorServices.appendMatchOptions({
                 order: SortOrder.AUTHORS,
@@ -68,6 +69,7 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
     }
 
     public async stories(libraryId: number, volumeId: number, query?: any): Promise<Story[]> {
+        await LibraryServices.read("VolumeServices.stories", libraryId);
         const volume = await this.read("VolumeServices.stories", libraryId, volumeId);
         const options: FindOptions = StoryServices.appendMatchOptions({
             order: SortOrder.STORIES,
@@ -76,6 +78,7 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
     }
 
     public async storiesExclude(libraryId: number, volumeId: number, storyId: number): Promise<Story> {
+        await LibraryServices.read("VolumeServices.storiesExclude", libraryId);
         const volume = await this.read("VolumeServices.stories", libraryId, volumeId);
         const story = await StoryServices.read("VolumeServices.stories", libraryId, storyId);
         await volume.$remove("stories", story);
@@ -83,6 +86,7 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
     }
 
     public async storiesInclude(libraryId: number, volumeId: number, storyId: number): Promise<Story> {
+        await LibraryServices.read("VolumeServices.storiesInclude", libraryId);
         const volume = await this.read("VolumeServices.stories", libraryId, volumeId);
         const story = await StoryServices.read("VolumeServices.stories", libraryId, storyId);
         await volume.$add("stories", story);

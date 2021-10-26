@@ -188,6 +188,17 @@ ALTER SEQUENCE public.series_id_seq OWNED BY public.series.id;
 
 
 --
+-- Name: series_stories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.series_stories (
+    series_id integer NOT NULL,
+    story_id integer NOT NULL,
+    ordinal integer
+);
+
+
+--
 -- Name: stories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -401,6 +412,14 @@ ALTER TABLE ONLY public.series
 
 
 --
+-- Name: series_stories series_stories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.series_stories
+    ADD CONSTRAINT series_stories_pkey PRIMARY KEY (series_id, story_id);
+
+
+--
 -- Name: stories stories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -518,6 +537,22 @@ ALTER TABLE ONLY public.refresh_tokens
 
 ALTER TABLE ONLY public.series
     ADD CONSTRAINT series_library_id_fkey FOREIGN KEY (library_id) REFERENCES public.libraries(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: series_stories series_stories_series_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.series_stories
+    ADD CONSTRAINT series_stories_series_id_fkey FOREIGN KEY (series_id) REFERENCES public.series(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: series_stories series_stories_story_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.series_stories
+    ADD CONSTRAINT series_stories_story_id_fkey FOREIGN KEY (story_id) REFERENCES public.stories(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

@@ -17,7 +17,7 @@ import Author from "./Author";
 import Library from "./Library";
 import RefreshToken from "./RefreshToken";
 import Series from "./Series";
-//import SeriesStory from "./SeriesStory";
+import SeriesStory from "./SeriesStory";
 import Story from "./Story";
 import User from "./User";
 import Volume from "./Volume";
@@ -48,7 +48,7 @@ Database.addModels([
 //    AuthorSeries,
 //    AuthorStory,
 //    AuthorVolume,
-//    SeriesStory,
+    SeriesStory,
     VolumeStory,
     // User Stack
     User,

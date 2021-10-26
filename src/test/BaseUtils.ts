@@ -13,6 +13,7 @@ import Database from "../models/Database";
 import Library from "../models/Library";
 import RefreshToken from "../models/RefreshToken";
 import Series from "../models/Series";
+import SeriesStory from "../models/SeriesStory";
 import Story from "../models/Story";
 import User from "../models/User";
 import Volume from "../models/Volume";
@@ -130,16 +131,14 @@ export abstract class BaseUtils {
                 loadAuthorVolumes(authors1[1], [volumes1[1], volumes1[2]]);
             }
         */
-        /*
-            if (options.withSeries && options.withStories) {
-                loadSeriesStory(series0[0], stories0[0], 1);
-                loadSeriesStory(series0[0], stories0[1], 2);
-                loadSeriesStory(series0[0], stories0[2], 3);
-                loadSeriesStory(series1[0], stories1[0], 3);
-                loadSeriesStory(series1[0], stories1[1], 2);
-                loadSeriesStory(series1[0], stories1[2], 1);
+        if (options.withSeries && options.withStories) {
+            loadSeriesStory(series0[0], stories0[0], 1);
+            loadSeriesStory(series0[0], stories0[1], 2);
+            loadSeriesStory(series0[0], stories0[2], 3);
+            loadSeriesStory(series1[0], stories1[0], 3);
+            loadSeriesStory(series1[0], stories1[1], 2);
+            loadSeriesStory(series1[0], stories1[2], 1);
             }
-        */
         if (options.withVolumes && options.withStories) {
             loadVolumeStories(volumes0[0], [stories0[0]]);
             loadVolumeStories(volumes0[1], [stories0[1]]);
@@ -261,17 +260,16 @@ const loadSeries
     return results;
 }
 
-/*
 const loadSeriesStory
     = async (series: Series, story: Story, ordinal: number): Promise<void> =>
 {
+    // @ts-ignore
     await SeriesStory.create({
         seriesId: series.id,
         storyId: story.id,
         ordinal: ordinal,
     });
 }
-*/
 
 const loadStories
     = async (library: Library, stories: Partial<Story>[]): Promise<Story[]> =>
