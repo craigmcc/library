@@ -9,8 +9,8 @@ import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Model, Table} fr
 
 // Internal Modules ----------------------------------------------------------
 
-//import Author from "./Author";
-//import AuthorStory from "./AuthorStory";
+import Author from "./Author";
+import AuthorStory from "./AuthorStory";
 import Library from "./Library";
 import Series from "./Series";
 import SeriesStory from "./SeriesStory";
@@ -66,15 +66,12 @@ export class Story extends Model<Story> {
     // Is this Story active?
     active!: boolean;
 
-    /*
-        @BelongsToMany(() => Author, () => AuthorStory)
-        authors!: Array<Author & {AuthorStory: AuthorStory}>;
-    */
+    @BelongsToMany(() => Author, () => AuthorStory)
+    // Related Authors, present only if Story retrieved with withAuthors
+    authors!: Array<Author & {AuthorStory: AuthorStory}>;
 
-/*
-    // Join Table contents, present only if Author retrieved with withStories
+    // Join Table contents, present only if Story retrieved with withAuthors
     AuthorStory?: AuthorStory;
-*/
 
     @Column({
         allowNull: true,
@@ -125,15 +122,17 @@ export class Story extends Model<Story> {
     notes?: string;
 
     @BelongsToMany(() => Series, () => SeriesStory)
+    // Related Series, present only if Story is retrieved with withSeries
     series!: Array<Series & {SeriesStory: SeriesStory}>;
 
-    // Join Table contents, present only if Series retrieved with withStories
+    // Join Table contents, present only if Story retrieved with withSeries
     SeriesStory?: SeriesStory;
 
     @BelongsToMany(() => Volume, () => VolumeStory)
+    // Related Volumes, present only if Story is retrieved with withVolumes
     volumes!: Array<Volume & {VolumeStory: VolumeStory}>;
 
-    // Join Table contents, present only if Volume retrieved with withStories
+    // Join Table contents, present only if Story retrieved with withVolumes
     VolumeStory?: VolumeStory;
 
 }

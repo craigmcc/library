@@ -8,9 +8,9 @@ import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Model, Table} fr
 
 // Internal Modules ----------------------------------------------------------
 
-//import AuthorSeries from "./AuthorSeries";
-//import AuthorStory from "./AuthorStory";
-//import AuthorVolume from "./AuthorVolume;
+import AuthorSeries from "./AuthorSeries";
+import AuthorStory from "./AuthorStory";
+import AuthorVolume from "./AuthorVolume";
 import Library from "./Library";
 import Series from "./Series";
 import Story from "./Story";
@@ -121,20 +121,25 @@ export class Author extends Model<Author> {
     // General notes about this Author
     notes?: string;
 
-    /*
-        @BelongsToMany(() => Series, () => AuthorSeries)
-        series!: Array<Series & {AuthorSeries: AuthorSeries}>;
-    */
+    @BelongsToMany(() => Series, () => AuthorSeries)
+    // Related Series, present only if Author is retrieved with withSeries
+    series!: Array<Series & {AuthorSeries: AuthorSeries}>;
 
-    /*
-        @BelongsToMany(() => Story, () => AuthorStory)
-        stories!: Array<Story & {AuthorStory: AuthorStory}>;
-    */
+    // Join Table contents, present only if Author retrieved with withSeries
+    AuthorSeries?: AuthorSeries;
 
-    /*
-        @BelongsToMany(() => Volume, () => AuthorVolume)
-        volumes!: Array<Volume & {AuthorVolume: AuthorVolume}>;
-    */
+    @BelongsToMany(() => Story, () => AuthorStory)
+    // Related Stories, present only if Author is retrieved withStories
+    stories!: Array<Story & {AuthorStory: AuthorStory}>;
+
+    // Join Table contents, present only if Author retrieved with withStories
+    AuthorStory?: AuthorStory;
+
+    @BelongsToMany(() => Volume, () => AuthorVolume)
+    volumes!: Array<Volume & {AuthorVolume: AuthorVolume}>;
+
+    // Join Table contents, present only if Author retrieved with withVolumes
+    AuthorVolume?: AuthorVolume;
 
 }
 

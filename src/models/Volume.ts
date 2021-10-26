@@ -9,8 +9,8 @@ import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Model, Table} fr
 
 // Internal Modules ----------------------------------------------------------
 
-//import Author from "./Author";
-//import AuthorVolume from "./AuthorVolume";
+import Author from "./Author";
+import AuthorVolume from "./AuthorVolume";
 import Library from "./Library";
 import Story from "./Story";
 import VolumeStory from "./VolumeStory";
@@ -65,15 +65,12 @@ export class Volume extends Model<Volume> {
     // Is this Volume active?
     active!: boolean;
 
-/*
     @BelongsToMany(() => Author, () => AuthorVolume)
+    // Related Authors, present only if Volume retrieved with withAuthors
     authors!: Array<Author & {AuthorVolume: AuthorVolume}>;
-*/
 
-/*
     // Join Table contents, present only if Volume retrieved with withAuthors
     AuthorVolume?: AuthorVolume;
-*/
 
     @Column({
         allowNull: true,
@@ -169,6 +166,7 @@ export class Volume extends Model<Volume> {
     read!: boolean;
 
     @BelongsToMany(() => Story, () => VolumeStory)
+        // Related Stories, present only if Volume retrieved with withStories
     stories!: Array<Story & {VolumeStory: VolumeStory}>;
 
     // Join Table contents, present only if Volume retrieved with withStories

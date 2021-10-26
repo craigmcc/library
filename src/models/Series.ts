@@ -8,8 +8,8 @@ import {BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Model, Table} fr
 
 // Internal Modules ----------------------------------------------------------
 
-//import Author from "./Author";
-//import AuthorSeries from "./AuthorSeries";
+import Author from "./Author";
+import AuthorSeries from "./AuthorSeries";
 import Library from "./Library";
 import SeriesStory from "./SeriesStory";
 import Story from "./Story";
@@ -63,10 +63,12 @@ export class Series extends Model<Series> {
     // Is this Series active?
     active!: boolean;
 
-    /*
-        @BelongsToMany(() => Author, () => AuthorSeries)
-        authors!: Array<Author & {AuthorSeries: AuthorSeries}>;
-    */
+    @BelongsToMany(() => Author, () => AuthorSeries)
+    // Related Authors, present only if Series retrieved with withAuthors
+    authors!: Array<Author & {AuthorSeries: AuthorSeries}>;
+
+    // Join Table contents, present only if Series retrieved with withAuthors
+    AuthorSeries?: AuthorSeries;
 
     @Column({
         allowNull: true,
@@ -117,7 +119,11 @@ export class Series extends Model<Series> {
     notes?: string;
 
     @BelongsToMany(() => Story, () => SeriesStory)
+    // Related Stories, present only if Series is retrieved with withStories
     stories!: Array<Story & {SeriesStory: SeriesStory}>;
+
+    // Join Table contents, present only if Series is retrieved with withStories
+    SeriesStory?: SeriesStory;
 
 }
 
