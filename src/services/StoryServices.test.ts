@@ -82,8 +82,56 @@ describe("StoryServices Functional Tests", () => {
 
     })
 
-    describe.skip("StoryServices.authors()", () => {
-        // TODO
+    describe("StoryServices.authors()", () => {
+
+        it("should pass on active Authors", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const STORY_NAME: string = SeedData.STORIES_LIBRARY0[0].name
+                ? SeedData.STORIES_LIBRARY0[0].name : "can not happen";
+            const story = await StoryServices.exact(library.id, STORY_NAME);
+
+            const authors = await StoryServices.authors(library.id, story.id, {
+                active: "",
+            });
+            authors.forEach(author => {
+                expect(author.active).to.be.true;
+                expect(author.libraryId).to.equal(library.id);
+            })
+
+        })
+
+        it("should pass on all Authors", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const STORY_NAME: string = SeedData.STORIES_LIBRARY1[1].name
+                ? SeedData.STORIES_LIBRARY1[1].name : "can not happen";
+            const story = await StoryServices.exact(library.id, STORY_NAME);
+
+            const authors = await StoryServices.authors(library.id, story.id);
+            authors.forEach(author => {
+                expect(author.libraryId).to.equal(library.id);
+            })
+
+        })
+
+        it("should pass on name'd Authors", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const STORY_NAME: string = SeedData.STORIES_LIBRARY0[1].name
+                ? SeedData.STORIES_LIBRARY0[1].name : "can not happen";
+            const story = await StoryServices.exact(library.id, STORY_NAME);
+            const NAME_PATTERN = "I"; // Should match "Wilma" and "Flintstone"
+
+            const authors = await StoryServices.authors(library.id, story.id, {
+                name: NAME_PATTERN,
+            });
+            authors.forEach(author => {
+                expect(author.libraryId).to.equal(library.id);
+            })
+
+        })
+
     })
 
     describe("StoryServices.exact()", () => {
@@ -145,8 +193,33 @@ describe("StoryServices Functional Tests", () => {
 
         })
 
-        it.skip("should pass on included children", async () => {
-            // TODO
+        it("should pass on included children", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const stories = await StoryServices.all(library.id, {
+                withAuthors: "",
+                withLibrary: "",
+                withVolumes: "",
+            });
+            expect(stories.length).to.be.greaterThan(0);
+
+            stories.forEach(story => {
+                expect(story.libraryId).to.equal(library.id);
+                expect(story.library).to.exist;
+                expect(story.library.id).to.equal(library.id);
+                expect(story.authors).to.exist;
+                story.authors.forEach(author => {
+                    expect(author.libraryId).to.equal(library.id);
+                    expect(author.AuthorStory).to.exist;
+
+                })
+                expect(story.volumes).to.exist;
+                story.volumes.forEach(volume => {
+                    expect(volume.libraryId).to.equal(library.id);
+                    expect(volume.VolumeStory).to.exist;
+                })
+            })
+
         })
 
         it("should pass on valid IDs", async () => {
@@ -268,8 +341,60 @@ describe("StoryServices Functional Tests", () => {
 
     })
 
-    describe.skip("StoryServices.series()", () => {
-        // TODO
+    describe("StoryServices.series()", () => {
+
+        it("should pass on active Series", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const STORY_NAME: string = SeedData.STORIES_LIBRARY0[0].name
+                ? SeedData.STORIES_LIBRARY0[0].name : "can not happen";
+            const story = await StoryServices.exact(library.id, STORY_NAME);
+
+            const serieses = await StoryServices.series(library.id, story.id, {
+                active: "",
+            });
+            expect(serieses.length).to.be.greaterThan(0);
+            serieses.forEach(series => {
+                expect(series.active).to.be.true;
+                expect(series.libraryId).to.equal(library.id);
+            })
+
+        })
+
+        it("should pass on all Series", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const STORY_NAME: string = SeedData.STORIES_LIBRARY1[1].name
+                ? SeedData.STORIES_LIBRARY1[1].name : "can not happen";
+            const story = await StoryServices.exact(library.id, STORY_NAME);
+
+            const serieses = await StoryServices.series(library.id, story.id);
+            expect(serieses.length).to.be.greaterThan(0);
+            serieses.forEach(series => {
+                expect(series.libraryId).to.equal(library.id);
+            })
+
+        })
+
+        it("should pass on name'd Series", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const STORY_NAME: string = SeedData.STORIES_LIBRARY0[2].name
+                ? SeedData.STORIES_LIBRARY0[2].name : "can not happen";
+            const story = await StoryServices.exact(library.id, STORY_NAME);
+            const NAME_PATTERN = "I"; // Should match "Wilma" and "Flintstone"
+
+            const serieses = await StoryServices.series(library.id, story.id, {
+                name: NAME_PATTERN,
+            });
+            expect(serieses.length).to.be.greaterThan(0);
+            serieses.forEach(series => {
+                expect(series.libraryId).to.equal(library.id);
+                expect(series.name.toLowerCase()).to.include(NAME_PATTERN.toLowerCase());
+            })
+
+        })
+
     })
 
     describe("StoryServices.update()", () => {

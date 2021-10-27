@@ -145,8 +145,56 @@ describe("VolumeServices Functional Tests", () => {
 
     })
 
-    describe.skip("VolumeServices.authors()", () => {
-        // TODO
+    describe("VolumeServices.authors()", () => {
+
+        it("should pass on active Authors", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const VOLUME_NAME: string = SeedData.VOLUMES_LIBRARY0[0].name
+                ? SeedData.VOLUMES_LIBRARY0[0].name : "can not happen";
+            const volume = await VolumeServices.exact(library.id, VOLUME_NAME);
+
+            const authors = await VolumeServices.authors(library.id, volume.id, {
+                active: "",
+            });
+            authors.forEach(author => {
+                expect(author.active).to.be.true;
+                expect(author.libraryId).to.equal(library.id);
+            })
+
+        })
+
+        it("should pass on all Authors", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const VOLUME_NAME: string = SeedData.VOLUMES_LIBRARY1[1].name
+                ? SeedData.VOLUMES_LIBRARY1[1].name : "can not happen";
+            const volume = await VolumeServices.exact(library.id, VOLUME_NAME);
+
+            const authors = await VolumeServices.authors(library.id, volume.id);
+            authors.forEach(author => {
+                expect(author.libraryId).to.equal(library.id);
+            })
+
+        })
+
+        it("should pass on name'd Authors", async () => {
+
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const VOLUME_NAME: string = SeedData.VOLUMES_LIBRARY0[1].name
+                ? SeedData.VOLUMES_LIBRARY0[1].name : "can not happen";
+            const volume = await VolumeServices.exact(library.id, VOLUME_NAME);
+            const NAME_PATTERN = "I"; // Should match "Wilma" and "Flintstone"
+
+            const authors = await VolumeServices.authors(library.id, volume.id, {
+                name: NAME_PATTERN,
+            });
+            authors.forEach(author => {
+                expect(author.libraryId).to.equal(library.id);
+            })
+
+        })
+
     })
 
     describe("VolumeServices.exact()", () => {
@@ -222,7 +270,10 @@ describe("VolumeServices Functional Tests", () => {
                 expect(volume.libraryId).to.equal(library.id);
                 expect(volume.library).to.exist;
                 expect(volume.library.id).to.equal(library.id);
-                // TODO - check volume.authors when available
+                expect(volume.authors).to.exist;
+                volume.authors.forEach(author => {
+                    expect(author.libraryId).to.equal(library.id);
+                })
                 expect(volume.stories).to.exist;
                 volume.stories.forEach(story => {
                     expect(story.libraryId).to.equal(library.id);

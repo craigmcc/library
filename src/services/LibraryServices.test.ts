@@ -56,8 +56,33 @@ describe("LibraryServices Functional Tests", () => {
 
         })
 
-        it.skip("should pass on included children", async () => {
-            // TODO
+        it("should pass on included children", async () => {
+
+            const libraries = await LibraryServices.all({
+                withAuthors: "",
+                withSeries: "",
+                withStories: "",
+                withVolumes: "",
+            });
+            libraries.forEach(library => {
+                expect(library.authors).to.exist;
+                library.authors.forEach(author => {
+                    expect(author.libraryId).to.equal(library.id);
+                });
+                expect(library.series).to.exist;
+                library.series.forEach(series => {
+                    expect(series.libraryId).to.equal(library.id);
+                });
+                expect(library.stories).to.exist;
+                library.stories.forEach(story => {
+                    expect(story.libraryId).to.equal(library.id);
+                });
+                expect(library.volumes).to.exist;
+                library.volumes.forEach(volume => {
+                    expect(volume.libraryId).to.equal(library.id);
+                });
+            })
+
         })
 
         it("should pass on named Libraries", async () => {
@@ -151,8 +176,35 @@ describe("LibraryServices Functional Tests", () => {
 
         })
 
-        it.skip("should pass on included children", async () => {
-            // TODO
+        it("should pass on included children", async () => {
+
+            const INPUTS = await LibraryServices.all();
+
+            INPUTS.forEach(async INPUT => {
+                const library = await LibraryServices.find(INPUT.id, {
+                    withAuthors: "",
+                    withSeries: "",
+                    withStories: "",
+                    withVolumes: "",
+                });
+                expect(library.authors).to.exist;
+                library.authors.forEach(author => {
+                    expect(author.libraryId).to.equal(library.id);
+                });
+                expect(library.series).to.exist;
+                library.series.forEach(series => {
+                    expect(series.libraryId).to.equal(library.id);
+                });
+                expect(library.stories).to.exist;
+                library.stories.forEach(story => {
+                    expect(story.libraryId).to.equal(library.id);
+                });
+                expect(library.volumes).to.exist;
+                library.volumes.forEach(volume => {
+                    expect(volume.libraryId).to.equal(library.id);
+                });
+            });
+
         })
 
         it("should pass on valid IDs", async () => {

@@ -14,6 +14,8 @@ import Author from "../models/Author";
 import * as SeedData from "../test/SeedData";
 import ServicesUtils from "../test/ServicesUtils";
 import {BadRequest, NotFound} from "../util/HttpErrors";
+import LibraryServices from "./LibraryServices";
+import {lookupLibrary} from "../../dist/util/TestUtils";
 
 const UTILS = new ServicesUtils();
 
@@ -144,8 +146,31 @@ describe("AuthorServices Functional Tests", () => {
 
         })
 
-        it.skip("should pass on included children", async () => {
-            // TODO
+        it("should pass on included children", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const INPUTS = await AuthorServices.all(library.id);
+
+            INPUTS.forEach(async INPUT => {
+                const author = await AuthorServices.find(library.id, INPUT.id, {
+                    withSeries: "",
+                    withStories: "",
+                    withVolumes: "",
+                });
+                expect(author.series).to.exist;
+                author.series.forEach(series => {
+                    expect(series.libraryId).to.equal(author.id);
+                });
+                expect(author.stories).to.exist;
+                author.stories.forEach(story => {
+                    expect(story.libraryId).to.equal(author.id);
+                });
+                expect(author.volumes).to.exist;
+                author.volumes.forEach(volume => {
+                    expect(volume.libraryId).to.equal(author.id);
+                });
+            });
+
         })
 
         it("should pass on valid IDs", async () => {
@@ -270,12 +295,40 @@ describe("AuthorServices Functional Tests", () => {
 
     })
 
-    describe.skip("AuthorServices.series()", () => {
-        // TODO
+    describe("AuthorServices.series()", () => {
+
+        it("should pass on all Series", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const authors = await AuthorServices.all(library.id);
+
+            authors.forEach(async author => {
+                const serieses = await AuthorServices.series(library.id, author.id);
+                serieses.forEach(series => {
+                    expect(series.libraryId).to.equal(library.id);
+                })
+            })
+
+        })
+
     })
 
-    describe.skip("AuthorServices.stories()", () => {
-        // TODO
+    describe("AuthorServices.stories()", () => {
+
+        it("should pass on all Stories", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const authors = await AuthorServices.all(library.id);
+
+            authors.forEach(async author => {
+                const stories = await AuthorServices.stories(library.id, author.id);
+                stories.forEach(story => {
+                    expect(story.libraryId).to.equal(library.id);
+                })
+            })
+
+        })
+
     })
 
     describe("AuthorServices.update()", () => {
@@ -371,8 +424,22 @@ describe("AuthorServices Functional Tests", () => {
 
     })
 
-    describe.skip("AuthorServices.volumes()", () => {
-        // TODO
+    describe("AuthorServices.volumes()", () => {
+
+        it("should pass on all Volumes", async () => {
+
+            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const authors = await AuthorServices.all(library.id);
+
+            authors.forEach(async author => {
+                const volumes = await AuthorServices.volumes(library.id, author.id);
+                volumes.forEach(volume => {
+                    expect(volume.libraryId).to.equal(library.id);
+                })
+            })
+
+        })
+
     })
 
 })
