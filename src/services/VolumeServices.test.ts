@@ -443,7 +443,6 @@ describe("VolumeServices Functional Tests", () => {
             const stories = await VolumeServices.stories(library.id, volume.id, {
                 active: "",
             });
-            expect(stories.length).to.be.greaterThan(0);
             stories.forEach(story => {
                 expect(story.active).to.be.true;
                 expect(story.libraryId).to.equal(library.id);
@@ -459,7 +458,6 @@ describe("VolumeServices Functional Tests", () => {
             const volume = await VolumeServices.exact(library.id, VOLUME_NAME);
 
             const stories = await VolumeServices.stories(library.id, volume.id);
-            expect(stories.length).to.be.greaterThan(0);
             stories.forEach(story => {
                 expect(story.libraryId).to.equal(library.id);
             })
@@ -477,7 +475,6 @@ describe("VolumeServices Functional Tests", () => {
             const stories = await VolumeServices.stories(library.id, volume.id, {
                 name: NAME_PATTERN,
             });
-            expect(stories.length).to.be.greaterThan(0);
             stories.forEach(story => {
                 expect(story.libraryId).to.equal(library.id);
                 expect(story.name.toLowerCase()).to.include(NAME_PATTERN.toLowerCase());
