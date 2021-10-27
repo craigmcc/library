@@ -14,8 +14,6 @@ import Author from "../models/Author";
 import * as SeedData from "../test/SeedData";
 import ServicesUtils from "../test/ServicesUtils";
 import {BadRequest, NotFound} from "../util/HttpErrors";
-import LibraryServices from "./LibraryServices";
-import {lookupLibrary} from "../../dist/util/TestUtils";
 
 const UTILS = new ServicesUtils();
 
@@ -148,7 +146,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on included children", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const INPUTS = await AuthorServices.all(library.id);
 
             INPUTS.forEach(async INPUT => {
@@ -299,7 +297,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on all Series", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const authors = await AuthorServices.all(library.id);
 
             authors.forEach(async author => {
@@ -317,7 +315,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on all Stories", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_SECOND);
             const authors = await AuthorServices.all(library.id);
 
             authors.forEach(async author => {
@@ -428,7 +426,7 @@ describe("AuthorServices Functional Tests", () => {
 
         it("should pass on all Volumes", async () => {
 
-            const library = await lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
+            const library = await UTILS.lookupLibrary(SeedData.LIBRARY_NAME_FIRST);
             const authors = await AuthorServices.all(library.id);
 
             authors.forEach(async author => {
