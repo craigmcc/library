@@ -93,7 +93,6 @@ AuthorRouter.put("/:libraryId/:authorId",
 
 // Author-Series Relationships ------------------------------------------------
 
-/*
 // GET /:libraryId/:authorId/series - Find Series for this Author
 AuthorRouter.get("/:libraryId/:authorId/series",
     requireRegular,
@@ -104,11 +103,36 @@ AuthorRouter.get("/:libraryId/:authorId/series",
             req.query
         ));
     });
-*/
+
+// DELETE /:libraryId/:authorId/series/:seriesId - Disassociate Author and Series
+AuthorRouter.delete("/:libraryId/:authorId/series/:seriesId",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await AuthorServices.seriesExclude(
+            parseInt(req.params.libraryId, 10),
+            parseInt(req.params.authorId, 10),
+            parseInt(req.params.seriesId, 10)
+        ));
+    });
+
+// POST /:libraryId/:authorId/series/:seriesId - Associate Author and Series
+AuthorRouter.post("/:libraryId/:authorId/series/:seriesId",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        let principal: boolean | undefined = undefined;
+        if (req.query && req.query.principal) {
+            principal = true;
+        }
+        res.send(await AuthorServices.seriesInclude(
+            parseInt(req.params.libraryId, 10),
+            parseInt(req.params.authorId, 10),
+            parseInt(req.params.seriesId, 10),
+            principal
+        ));
+    });
 
 // Author-Story Relationships ------------------------------------------------
 
-/*
 // GET /:libraryId/:authorId/stories - Find Stories for this Author
 AuthorRouter.get("/:libraryId/:authorId/stories",
     requireRegular,
@@ -119,11 +143,36 @@ AuthorRouter.get("/:libraryId/:authorId/stories",
             req.query
         ));
     });
-*/
+
+// DELETE /:libraryId/:authorId/stories/:storyId - Disassociate Author and Story
+AuthorRouter.delete("/:libraryId/:authorId/stories/:storyId",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await AuthorServices.storiesExclude(
+            parseInt(req.params.libraryId, 10),
+            parseInt(req.params.authorId, 10),
+            parseInt(req.params.storyId, 10)
+        ));
+    });
+
+// POST /:libraryId/:authorId/stories/:storyId - Associate Author and Story
+AuthorRouter.post("/:libraryId/:authorId/stories/:storyId",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        let principal: boolean | undefined = undefined;
+        if (req.query && req.query.principal) {
+            principal = true;
+        }
+        res.send(await AuthorServices.storiesInclude(
+            parseInt(req.params.libraryId, 10),
+            parseInt(req.params.authorId, 10),
+            parseInt(req.params.storyId, 10),
+            principal
+        ));
+    });
 
 // Author-Volume Relationships ------------------------------------------------
 
-/*
 // GET /:libraryId/:authorId/volumes - Find Volumes for this Author
 AuthorRouter.get("/:libraryId/:authorId/volumes",
     requireRegular,
@@ -134,5 +183,30 @@ AuthorRouter.get("/:libraryId/:authorId/volumes",
             req.query
         ));
     });
-*/
 
+// DELETE /:libraryId/:authorId/volumes/:volumeId - Disassociate Author and Volume
+AuthorRouter.delete("/:libraryId/:authorId/volumes/:volumeId",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        res.send(await AuthorServices.volumesExclude(
+            parseInt(req.params.libraryId, 10),
+            parseInt(req.params.authorId, 10),
+            parseInt(req.params.volumeId, 10)
+        ));
+    });
+
+// POST /:libraryId/:authorId/volumes/:volumeId - Associate Author and Volume
+AuthorRouter.post("/:libraryId/:authorId/volumes/:volumeId",
+    requireRegular,
+    async (req: Request, res: Response) => {
+        let principal: boolean | undefined = undefined;
+        if (req.query && req.query.principal) {
+            principal = true;
+        }
+        res.send(await AuthorServices.volumesInclude(
+            parseInt(req.params.libraryId, 10),
+            parseInt(req.params.authorId, 10),
+            parseInt(req.params.volumeId, 10),
+            principal
+        ));
+    });

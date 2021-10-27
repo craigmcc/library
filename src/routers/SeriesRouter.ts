@@ -14,8 +14,6 @@ import {
 } from "../oauth/OAuthMiddleware";
 import SeriesServices from "../services/SeriesServices";
 import {CREATED} from "../util/HttpErrors";
-import VolumeServices from "../services/VolumeServices";
-import VolumeRouter from "./VolumeRouter";
 
 // Public Objects ------------------------------------------------------------
 
@@ -132,7 +130,7 @@ SeriesRouter.delete("/:libraryId/:seriesId/stories/:storyId",
     });
 
 // POST /:libraryId/:seriesId/stories/:storyId - Associate Series and Story
-VolumeRouter.post("/:libraryId/:seriesId/stories/:storyId",
+SeriesRouter.post("/:libraryId/:seriesId/stories/:storyId",
     requireRegular,
     async (req: Request, res: Response) => {
         let ordinal: number | undefined = undefined;

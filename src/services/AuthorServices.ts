@@ -64,6 +64,27 @@ class AuthorServices extends BaseChildServices<Author, Library> {
         return await author.$get("series", options);
     }
 
+    public async seriesExclude(libraryId: number, authorId: number, seriesId: number): Promise<Series> {
+        await LibraryServices.read("AuthorServices.seriesExclude", libraryId);
+        const author = await this.read("AuthorServices.seriesExclude", libraryId, authorId);
+        const series = await SeriesServices.read("AuthorServices.seriesExclude", libraryId, seriesId);
+        await author.$remove("series", series);
+        return series;
+    }
+
+    public async seriesInclude(libraryId: number, authorId: number, seriesId: number, principal: boolean | undefined): Promise<Series> {
+        await LibraryServices.read("AuthorServices.seriesInclude", libraryId);
+        await this.read("AuthorServices.seriesInclude", libraryId, authorId);
+        const series = await SeriesServices.read("AuthorServices.seriesInclude", libraryId, seriesId);
+        // @ts-ignore
+        await AuthorSeries.create({
+            authorId: authorId,
+            seriesId: seriesId,
+            principal: principal,
+        });
+        return series;
+    }
+
     public async stories(libraryId: number, authorId: number, query?: any): Promise<Story[]> {
         const author = await this.read("AuthorServices.stories", libraryId, authorId);
         const options: FindOptions = StoryServices.appendMatchOptions({
@@ -72,12 +93,54 @@ class AuthorServices extends BaseChildServices<Author, Library> {
         return await author.$get("stories", options);
     }
 
+    public async storiesExclude(libraryId: number, authorId: number, storyId: number): Promise<Story> {
+        await LibraryServices.read("AuthorServices.storiesExclude", libraryId);
+        await this.read("AuthorServices.storesExclude", libraryId, authorId);
+        const story = await StoryServices.read("AuthorServices.storiesExclude", libraryId, storyId);
+        await story.$remove("stories", story);
+        return story;
+    }
+
+    public async storiesInclude(libraryId: number, authorId: number, storyId: number, principal: boolean | undefined): Promise<Story> {
+        await LibraryServices.read("AuthorServices.storiesInclude", libraryId);
+        await this.read("AuthorServices.storiesInclude", libraryId, authorId);
+        const story = await StoryServices.read("AuthorServices.storiesInclude", libraryId, storyId);
+        // @ts-ignore
+        await AuthorStory.create({
+            authorId: authorId,
+            storyId: storyId,
+            principal: principal,
+        });
+        return story;
+    }
+
     public async volumes(libraryId: number, authorId: number, query?: any): Promise<Volume[]> {
         const author = await this.read("AuthorServices.volumes", libraryId, authorId);
         const options: FindOptions = VolumeServices.appendMatchOptions({
             order: SortOrder.VOLUMES,
         }, query);
         return await author.$get("volumes", options);
+    }
+
+    public async volumesExclude(libraryId: number, authorId: number, volumeId: number): Promise<Volume> {
+        await LibraryServices.read("AuthorServices.volumesExclude", libraryId);
+        const author = await this.read("AuthorServices.volumesExclude", libraryId, authorId);
+        const volume = await VolumeServices.read("VolumeServices.volumesExclude", libraryId, volumeId);
+        await author.$remove("volumes", volume);
+        return volume;
+    }
+
+    public async volumesInclude(libraryId: number, authorId: number, volumeId: number, principal: boolean | undefined): Promise<Volume> {
+        await LibraryServices.read("AuthorServices.volumesInclude", libraryId);
+        await this.read("AuthorServices.volumesInclude", libraryId, authorId);
+        const volume = await VolumeServices.read("AuthorServices.volumesInclude", libraryId, volumeId);
+        // @ts-ignore
+        await AuthorVolume.create({
+            authorId: authorId,
+            volumeId: volumeId,
+            principal: principal,
+        });
+        return volume;
     }
 
     // Public Helpers --------------------------------------------------------

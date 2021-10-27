@@ -71,19 +71,19 @@ class SeriesServices extends BaseChildServices<Series, Library> {
     }
 
     public async storiesExclude(libraryId: number, seriesId: number, storyId: number): Promise<Story> {
-        const library = await LibraryServices.read("SeriesServices.storiesExclude", libraryId);
-        const series = await this.read("SeriesServices.istoresExclude", libraryId, seriesId);
+        await LibraryServices.read("SeriesServices.storiesExclude", libraryId);
+        await this.read("SeriesServices.storesExclude", libraryId, seriesId);
         const story = await StoryServices.read("SeriesServices.storiesExclude", libraryId, storyId);
-        await series.$remove("stories", story);
+        await story.$remove("stories", story);
         return story;
     }
 
     public async storiesInclude(libraryId: number, seriesId: number, storyId: number, ordinal: number | undefined): Promise<Story> {
-        const library = await LibraryServices.read("SeriesServices.storiesInclude", libraryId);
-        const series = await this.read("SeriesServices.stories", libraryId, seriesId);
-        const story = await StoryServices.read("SeriesServices.stories", libraryId, storyId);
+        await LibraryServices.read("SeriesServices.storiesInclude", libraryId);
+        await this.read("SeriesServices.storiesInclude", libraryId, seriesId);
+        const story = await StoryServices.read("SeriesServices.storiesInclude", libraryId, storyId);
         // @ts-ignore
-        await SeriesStory.create({
+        await AuthorStory.create({
             seriesId: seriesId,
             storyId: storyId,
             ordinal: ordinal,

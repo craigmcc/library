@@ -16,7 +16,6 @@ import Author from "../models/Author";
 import Library from "../models/Library";
 import Story from "../models/Story";
 import Volume from "../models/Volume";
-import VolumeStory from "../models/VolumeStory";
 import {NotFound} from "../util/HttpErrors";
 import {appendPaginationOptions} from "../util/QueryParameters";
 import * as SortOrder from "../util/SortOrder";
@@ -77,16 +76,16 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
 
     public async storiesExclude(libraryId: number, volumeId: number, storyId: number): Promise<Story> {
         await LibraryServices.read("VolumeServices.storiesExclude", libraryId);
-        const volume = await this.read("VolumeServices.stories", libraryId, volumeId);
-        const story = await StoryServices.read("VolumeServices.stories", libraryId, storyId);
+        const volume = await this.read("VolumeServices.storiesExclude", libraryId, volumeId);
+        const story = await StoryServices.read("VolumeServices.storiesExclude", libraryId, storyId);
         await volume.$remove("stories", story);
         return story;
     }
 
     public async storiesInclude(libraryId: number, volumeId: number, storyId: number): Promise<Story> {
         await LibraryServices.read("VolumeServices.storiesInclude", libraryId);
-        const volume = await this.read("VolumeServices.stories", libraryId, volumeId);
-        const story = await StoryServices.read("VolumeServices.stories", libraryId, storyId);
+        const volume = await this.read("VolumeServices.storieInclude", libraryId, volumeId);
+        const story = await StoryServices.read("VolumeServices.storiesInclude", libraryId, storyId);
         await volume.$add("stories", story);
         return story;
     }
