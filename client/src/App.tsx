@@ -16,6 +16,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AuthorsView from "./components/authors/AuthorsView";
 import HomeView from "./components/general/HomeView";
 import LibrariesView from "./components/libraries/LibrariesView";
+import LoggedInUser from "./components/login/LoggedInUser";
 import SeriesView from "./components/series/SeriesView";
 import StoriesView from "./components/stories/StoriesView";
 import UsersView from "./components/users/UsersView";
@@ -35,8 +36,7 @@ function App() {
                     sticky="top"
                     variant="dark"
                 >
-                    <span className="me-4"></span>
-                    <Navbar.Brand href="/">
+                    <Navbar.Brand className="ms-2" href="/">
                         <img
                             alt="Library Management"
                             height={60}
@@ -59,9 +59,9 @@ function App() {
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
-                    <Nav className="ms-4">
-                        <span className="me-4">LoggedInUser</span>
-                        <span className="me-4">LibrarySelector</span>
+                    <Nav>
+                        <LoggedInUser/>
+                        {/*<span className="me-4">LibrarySelector</span>*/}
                     </Nav>
                 </Navbar>
             </Navbar>
