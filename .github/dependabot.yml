@@ -10,8 +10,8 @@ updates:
     schedule:
       interval: "daily"
 #    target-branch: "v2.0"
-#  - package-ecosystem: "npm"
-#    directory: /client"
-#    schedule:
-#      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: /client"
+    schedule:
+      interval: "daily"
 #    target-branch: "v2.0"
