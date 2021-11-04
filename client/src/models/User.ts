@@ -10,7 +10,7 @@
 
 import AccessToken from "./AccessToken";
 import RefreshToken from "./RefreshToken";
-import * as ToModelTypes from "../util/ToModelTypes";
+import * as ToModel from "../util/ToModel";
 
 export const USERS_BASE = "/users";
 
@@ -25,8 +25,8 @@ class User {
         this.scope = data.scope ? data.scope : null;
         this.username = data.username ? data.username : null;
 
-        this.accessTokens = data.accessTokens ? ToModelTypes.ACCESS_TOKENS(data.accessTokens) : undefined;
-        this.refreshTokens = data.refreshTokens ? ToModelTypes.REFRESH_TOKENS(data.refreshTokens) : undefined;
+        this.accessTokens = data.accessTokens ? ToModel.ACCESS_TOKENS(data.accessTokens) : undefined;
+        this.refreshTokens = data.refreshTokens ? ToModel.REFRESH_TOKENS(data.refreshTokens) : undefined;
 
     }
 

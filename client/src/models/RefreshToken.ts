@@ -7,7 +7,7 @@
 // Internal Modules ----------------------------------------------------------
 
 import User from "./User";
-import * as ToModelTypes from "../util/ToModelTypes";
+import * as ToModel from "../util/ToModel";
 
 // Public Objects ------------------------------------------------------------
 
@@ -23,7 +23,7 @@ class RefreshToken {
         this.token = data.token ? data.token : null;
         this.userId = data.userId ? data.userId : null;
 
-        this.user = data.user ? ToModelTypes.USER(data.user) : undefined;
+        this.user = data.user ? ToModel.USER(data.user) : undefined;
 
     }
 

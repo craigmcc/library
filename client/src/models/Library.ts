@@ -6,6 +6,12 @@
 
 // Internal Modules ----------------------------------------------------------
 
+import Author from "./Author";
+import Series from "./Series";
+import Story from "./Story";
+import Volume from "./Volume";
+import * as ToModel from "../util/ToModel";
+
 // Public Objects ------------------------------------------------------------
 
 export const LIBRARIES_BASE = "/libraries";
@@ -20,7 +26,10 @@ class Library {
         this.notes = data.notes ? data.notes : null;
         this.scope = data.scope ? data.scope : null;
 
-        // TODO: children
+        this.authors = data.authors ? ToModel.AUTHORS(data.authors) : [];
+        this.series = data.series ? ToModel.SERIESES(data.series) : [];
+        this.stories = data.stories ? ToModel.STORIES(data.stories) : [];
+        this.volumes = data.volumes ? ToModel.VOLUMES(data.volumes) : [];
 
     }
 
@@ -30,7 +39,10 @@ class Library {
     notes?: string;
     scope!: string;
 
-    // TODO: children
+    authors!: Author[];
+    series!: Series[];
+    stories!: Story[];
+    volumes!: Volume[];
 
 }
 

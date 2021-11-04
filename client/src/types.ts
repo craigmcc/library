@@ -8,8 +8,12 @@ import React from "react";
 
 // Internal Modules ----------------------------------------------------------
 
+import Author from "./models/Author";
 import Library from "./models/Library";
+import Series from "./models/Series";
+import Story from "./models/Story";
 import User from "./models/User";
+import Volume from "./models/Volume";
 
 // Enumerations --------------------------------------------------------------
 
@@ -54,5 +58,10 @@ export type HandleValue = (newValue: string) => void;
 
 // Model Object Handlers -----------------------------------------------------
 
+export type HandleAuthor = (author: Author) => void;
 export type HandleLibrary = (library: Library) => void;
+export type HandleSeries = (series: Series) => void;
+export type HandleStory = (story: Story) => void;
 export type HandleUser = (user: User) => void;
+export type HandleVolume = (volume: Volume) => void;
+
