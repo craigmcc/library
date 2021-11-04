@@ -70,12 +70,12 @@ export const LibrarySelector = (props: Props) => {
     }
 
     return (
-        <Form id="LibrarySelector">
+        <Form className="align-items-center" id="LibrarySelector">
             <Form.Group as={Row} controlId="librarySelectorRow">
-                <Form.Label column htmlFor={name} sm={4}>
+                <Form.Label column htmlFor={name} xs="auto">
                     {props.label ? props.label : "Library:"}
                 </Form.Label>
-                <Col sm={8}>
+                <Col xs="auto">
                     <Form.Select
                         autoFocus={props.autoFocus ? props.autoFocus : undefined}
                         disabled={props.disabled ? props.disabled : undefined}

@@ -34,11 +34,10 @@ function App() {
 
         <Router>
 
-            <Navbar bg="light" expand="lg">
+            <Navbar bg="light">
                 <Navbar
                     bg="primary"
                     className="mb-3"
-                    expand="lg"
                     sticky="top"
                     variant="dark"
                 >
@@ -66,8 +65,11 @@ function App() {
                         </Nav>
                     </Navbar.Collapse>
                     <Nav>
+                        <span className="me-4"/>
                         <LoggedInUser/>
+                        <span className="me-4"/>
                         <LibrarySelector/>
+                        <span className="me-2"/>
                     </Nav>
                 </Navbar>
             </Navbar>

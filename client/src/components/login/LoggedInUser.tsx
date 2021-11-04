@@ -6,8 +6,10 @@
 
 import React, {useContext, useEffect, useState} from "react";
 import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
+import Row from "react-bootstrap/Row";
 import {useHistory} from "react-router-dom";
 
 // Internal Modules ----------------------------------------------------------
@@ -98,37 +100,41 @@ export const LoggedInUser = () => {
     }
 
     return (
-        <Container>
+        <>
+            <Form className="align-items-center" id="loggedInUser">
+                <Form.Group as={Row} controlId="loggedInUserRow">
+                    <Form.Label column htmlFor="loggedInUsername" xs="auto">
+                        {(loginContext.data.loggedIn) ? (
+                            <Button
+                                onClick={handleLogout}
+                                size="sm"
+                                type="button"
+                                variant="outline-dark"
+                            >
+                                Log Out
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={onShow}
+                                size="sm"
+                                type="button"
+                                variant="outline-dark"
+                            >
+                                Log In
+                            </Button>
+                        )}
+                    </Form.Label>
+                    <Col xs="auto">
+                        <Form.Control
+                            id="loggedInUsername"
+                            readOnly={true}
+                            size="sm"
+                            value={loginContext.data.username ? loginContext.data.username : "-----"}
+                        />
+                    </Col>
+                </Form.Group>
+            </Form>
 
-            {/* Login Action and Current Username */}
-            {(loginContext.data.loggedIn) ? (
-                <Button
-                    className="me-2"
-                    onClick={handleLogout}
-                    size="sm"
-                    type="button"
-                    variant="outline-dark"
-                >
-                    Log Out
-                </Button>
-            ) : (
-                <Button
-                    className="me-2"
-                    onClick={onShow}
-                    size="sm"
-                    type="button"
-                    variant="outline-dark"
-                >
-                    Log In
-                </Button>
-            )}
-            <input
-                readOnly
-                type="text"
-                value={loginContext.data.username ? loginContext.data.username : "-----"}
-            />
-
-            {/* Login Credentials Modal */}
             <Modal
                 animation={false}
                 backdrop="static"
@@ -145,7 +151,7 @@ export const LoggedInUser = () => {
                 </Modal.Body>
             </Modal>
 
-        </Container>
+        </>
     )
 
 }
