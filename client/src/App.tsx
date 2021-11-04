@@ -17,6 +17,7 @@ import AuthorsView from "./components/authors/AuthorsView";
 import HomeView from "./components/general/HomeView";
 import LibrariesView from "./components/libraries/LibrariesView";
 import {LibraryContextProvider} from "./components/libraries/LibraryContext";
+import LibrarySelector from "./components/libraries/LibrarySelector";
 import LoggedInUser from "./components/login/LoggedInUser";
 import {LoginContextProvider} from "./components/login/LoginContext";
 import SeriesView from "./components/series/SeriesView";
@@ -66,7 +67,7 @@ function App() {
                     </Navbar.Collapse>
                     <Nav>
                         <LoggedInUser/>
-                        {/*<span className="me-4">LibrarySelector</span>*/}
+                        <LibrarySelector/>
                     </Nav>
                 </Navbar>
             </Navbar>
