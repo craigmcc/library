@@ -8,7 +8,7 @@ import React from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {BrowserRouter as Router, Route/*, Switch*/} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Internal Modules ----------------------------------------------------------
@@ -70,6 +70,7 @@ function App() {
                 </Navbar>
             </Container>
 
+{/*
             <Switch>
                 <Route exact path="/authors"><AuthorsView/></Route>
                 <Route exact path="/libraries"><LibrariesView/></Route>
@@ -79,6 +80,7 @@ function App() {
                 <Route exact path="/volumes"><VolumesView/></Route>
                 <Route path="/"><HomeView/></Route>
             </Switch>
+*/}
 
         </Router>
 

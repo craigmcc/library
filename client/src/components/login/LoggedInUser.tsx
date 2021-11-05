@@ -10,7 +10,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -28,7 +28,7 @@ import ReportError from "../../util/ReportError";
 export const LoggedInUser = () => {
 
     const loginContext = useContext(LoginContext);
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const [showCredentials, setShowCredentials] = useState<boolean>(false);
 
@@ -72,10 +72,9 @@ export const LoggedInUser = () => {
             logger.info({
                 context: "LoggedInUser.handleLogout",
                 username: username,
-//                accessToken: accessToken,
             })
             await loginContext.handleLogout();
-            history.push("/");
+            navigate("/");
             if (accessToken) {
                 await OAuth.delete("/token", {
                     headers: {
@@ -102,7 +101,7 @@ export const LoggedInUser = () => {
     return (
         <>
             <Form className="align-items-center" id="loggedInUser">
-                <Form.Group as={Row} controlId="loggedInUserRow">
+                <Form.Group as={Col} controlId="loggedInUserRow">
                     <Form.Label column htmlFor="loggedInUsername" xs="auto">
                         {(loginContext.data.loggedIn) ? (
                             <Button

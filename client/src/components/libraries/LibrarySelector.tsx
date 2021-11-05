@@ -71,7 +71,7 @@ const LibrarySelector = (props: Props) => {
 
     return (
         <Form className="align-items-center">
-            <Form.Group as={Row} controlId={`{name}Group`}>
+            <Form.Group as={Col} controlId={`{name}Group`}>
                 <Form.Label column htmlFor={name} xs="auto">
                     {props.label ? props.label : "Library:"}
                 </Form.Label>
