@@ -32,7 +32,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-export const LibrarySelector = (props: Props) => {
+const LibrarySelector = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
 
@@ -70,8 +70,8 @@ export const LibrarySelector = (props: Props) => {
     }
 
     return (
-        <Form className="align-items-center" id="LibrarySelector">
-            <Form.Group as={Row} controlId="librarySelectorRow">
+        <Form className="align-items-center">
+            <Form.Group as={Row} controlId={`{name}Group`}>
                 <Form.Label column htmlFor={name} xs="auto">
                     {props.label ? props.label : "Library:"}
                 </Form.Label>
