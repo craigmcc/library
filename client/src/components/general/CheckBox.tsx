@@ -6,7 +6,6 @@
 
 import React, {useEffect, useState} from "react";
 import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -45,10 +44,7 @@ const CheckBox = (props: Props) => {
 
     return (
         <Form className="align-items-center">
-            <Form.Group as={Row} controlId={`{name}Group`}>
-                <Form.Check.Label htmlFor={name}>
-                    {props.label ? props.label : "Check?"}
-                </Form.Check.Label>
+            <Form.Group controlId={`{name}Group`}>
                 <Form.Check.Input
                     autoFocus={props.autoFocus !== undefined ? props.autoFocus : undefined}
                     defaultChecked={value}
@@ -56,6 +52,9 @@ const CheckBox = (props: Props) => {
                     id={name}
                     onChange={handleChange}
                 />
+                <Form.Check.Label className="ms-2" htmlFor={name}>
+                    {props.label ? props.label : "Check?"}
+                </Form.Check.Label>
             </Form.Group>
         </Form>
     )
