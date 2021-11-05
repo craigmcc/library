@@ -16,6 +16,7 @@
 
 import Api from "../clients/Api";
 import Library, {LIBRARIES_BASE} from "../models/Library";
+import User, {USERS_BASE} from "../models/User";
 import {queryParameters} from "./QueryParameters";
 
 // Public Objects ------------------------------------------------------------
@@ -51,3 +52,16 @@ export const validateLibraryScopeUnique = async (library: Library): Promise<bool
     }
 }
 
+export const validateUserUsernameUnique = async (user: User): Promise<boolean> => {
+    if (user && user.username) {
+        try {
+            const result = (await Api.get(USERS_BASE
+                + `/exact/${user.username}`)).data;
+            return (result.id === user.id);
+        } catch (error) {
+            return true; // Definitely unique
+        }
+    } else {
+        return true;
+    }
+}
