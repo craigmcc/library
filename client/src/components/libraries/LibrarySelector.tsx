@@ -9,7 +9,6 @@
 import React, {useContext, useEffect, useState} from "react";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -70,8 +69,8 @@ const LibrarySelector = (props: Props) => {
     }
 
     return (
-        <Form className="align-items-center">
-            <Form.Group as={Col} controlId={`{name}Group`}>
+        <Form>
+            <Form.Group as={Col}>
                 <Form.Label column htmlFor={name} xs="auto">
                     {props.label ? props.label : "Library:"}
                 </Form.Label>

@@ -9,7 +9,6 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import Row from "react-bootstrap/Row";
 import {useNavigate} from "react-router-dom";
 
 // Internal Modules ----------------------------------------------------------
@@ -85,7 +84,6 @@ export const LoggedInUser = () => {
         } catch (error) {
             ReportError("LoggedInUser.handleLogout", error, {
                 username: username,
-//                accessToken: accessToken,
             });
         }
     }
@@ -100,9 +98,9 @@ export const LoggedInUser = () => {
 
     return (
         <>
-            <Form className="align-items-center" id="loggedInUser">
-                <Form.Group as={Col} controlId="loggedInUserRow">
-                    <Form.Label column htmlFor="loggedInUsername" xs="auto">
+            <Form id="loggedInUser">
+                <Form.Group as={Col}>
+                    <Form.Label column htmlFor="loggedInUsername">
                         {(loginContext.data.loggedIn) ? (
                             <Button
                                 onClick={handleLogout}
@@ -123,14 +121,14 @@ export const LoggedInUser = () => {
                             </Button>
                         )}
                     </Form.Label>
-                    <Col xs="auto">
+                    {/*<Col xs="auto">*/}
                         <Form.Control
                             id="loggedInUsername"
                             readOnly={true}
                             size="sm"
                             value={loginContext.data.username ? loginContext.data.username : "-----"}
                         />
-                    </Col>
+                    {/*</Col>*/}
                 </Form.Group>
             </Form>
 

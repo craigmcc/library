@@ -5,9 +5,9 @@
 // External Modules ----------------------------------------------------------
 
 import React from "react";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
 import {Link, Outlet} from "react-router-dom";
 
 // Internal Modules ----------------------------------------------------------
@@ -20,29 +20,39 @@ import LibrarySelector from "../libraries/LibrarySelector";
 function Navigation() {
     return (
         <>
-        <Container fluid>
-            <Row>
-                <Col>
-                    <Link to="/">Home</Link>&nbsp;&nbsp;
-                    <Link to="/authors">Authors</Link>&nbsp;&nbsp;
-                    <Link to="/series">Series</Link>&nbsp;&nbsp;
-                    <Link to="/stories">Stories</Link>&nbsp;&nbsp;
-                    <Link to="/volumes">Volumes</Link>
-                </Col>
-                <Col>
-                    <Link to="/libraries">Libraries</Link>&nbsp;&nbsp;
-                    <Link to="/users">Users</Link>
-                </Col>
-                <Col>
-                        <LoggedInUser/>
-                </Col>
-                <Col>
-                        <LibrarySelector/>
-                </Col>
-            </Row>
-            <hr/>
-        </Container>
-        <Outlet/>
+            <Navbar bg="primary" className="mb-3" sticky="top" variant="dark">
+                <Navbar.Brand className="ms-2" href="/">
+                    <img
+                        alt="Library Management"
+                        height={60}
+                        src="./books.jpeg"
+                        width={100}
+                    />
+                    <span className="ms-2">Library Management</span>
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+                <Navbar.Collapse>
+                    <Nav className="me-auto">
+                        <Link className="nav-link" to="/">Home</Link>
+                        <Link className="nav-link" to="/authors">Authors</Link>
+                        <Link className="nav-link" to="/series">Series</Link>
+                        <Link className="nav-link" to="/volumes">Volumes</Link>
+                        <NavDropdown title="Admin">
+                            <Link to="/libraries" data-rr-ui-dropdown-item className="dropdown-item">
+                                Libraries
+                            </Link>
+                            <Link to="/users" data-rr-ui-dropdown-item className="dropdown-item">
+                                Users
+                            </Link>
+                        </NavDropdown>
+                    </Nav>
+                    <LoggedInUser/>
+                    <span className="me-4"/>
+                    <LibrarySelector/>
+                    <span className="me-2"/>
+                </Navbar.Collapse>
+            </Navbar>
+            <Outlet/>
         </>
     )
 }
