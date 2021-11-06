@@ -165,7 +165,7 @@ const UserForm = (props: Props) => {
                                         {errors.name}
                                     </Form.Control.Feedback>
                                 </Form.Group>
-                                <Form.Group as={Col} controlId="name" id="scopeGroup">
+                                <Form.Group as={Col} controlId="scope" id="scopeGroup">
                                     <Form.Label>Scope:</Form.Label>
                                     <Form.Control
                                         isInvalid={touched.scope && !!errors.scope}
@@ -206,7 +206,7 @@ const UserForm = (props: Props) => {
                                         {errors.username}
                                     </Form.Control.Feedback>
                                 </Form.Group>
-                                <Form.Group as={Col} controlId="name" id="passwordGroup">
+                                <Form.Group as={Col} controlId="password" id="passwordGroup">
                                     <Form.Label>Password:</Form.Label>
                                     <Form.Control
                                         isInvalid={touched.password && !!errors.password}

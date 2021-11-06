@@ -158,7 +158,7 @@ const LibraryForm = (props: Props) => {
                                         {errors.name}
                                     </Form.Control.Feedback>
                                 </Form.Group>
-                                <Form.Group as={Col} controlId="name" id="scopeGroup">
+                                <Form.Group as={Col} controlId="scope" id="scopeGroup">
                                     <Form.Label>Scope:</Form.Label>
                                     <Form.Control
                                         isInvalid={touched.scope && !!errors.scope}
