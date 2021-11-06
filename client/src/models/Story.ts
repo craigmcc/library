@@ -15,6 +15,7 @@ import * as ToModel from "../util/ToModel";
 
 // Public Objects ------------------------------------------------------------
 
+export const STORIES_BASE = "/stories";
 
 class Story {
 

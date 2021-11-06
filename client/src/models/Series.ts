@@ -13,6 +13,8 @@ import * as ToModel from "../util/ToModel";
 
 // Public Objects ------------------------------------------------------------
 
+export const SERIES_BASE = "/series";
+
 class Series {
 
     constructor(data: any = {}) {

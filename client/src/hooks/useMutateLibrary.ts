@@ -80,7 +80,7 @@ const useMutateLibrary = (props: Props): State => {
             });
         } catch (error) {
             setError(error as Error);
-            ReportError("useMutateFcility.remove", error, {
+            ReportError("useMutateLibrary.remove", error, {
                 library: theLibrary,
             });
         }

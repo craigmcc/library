@@ -14,6 +14,8 @@ import * as ToModel from "../util/ToModel";
 
 // Public Objects ------------------------------------------------------------
 
+export const VOLUMES_BASE = "/volumes";
+
 class Volume {
 
     constructor(data: any = {}) {

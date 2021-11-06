@@ -14,6 +14,8 @@ import * as ToModel from "../util/ToModel";
 
 // Public Objects ------------------------------------------------------------
 
+export const AUTHORS_BASE = "/authors";
+
 class Author {
 
     constructor(data: any = {}) {
