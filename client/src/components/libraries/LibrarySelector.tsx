@@ -36,7 +36,6 @@ const LibrarySelector = (props: Props) => {
     const libraryContext = useContext(LibraryContext);
 
     const [index, setIndex] = useState<number>(-1);
-    const [name] = useState<string>(props.name ? props.name : "librarySelector");
 
     useEffect(() => {
         logger.debug({
@@ -69,30 +68,26 @@ const LibrarySelector = (props: Props) => {
     }
 
     return (
-        <Form>
-            <Form.Group as={Col}>
-                <Form.Label column htmlFor={name} xs="auto">
-                    {props.label ? props.label : "Library:"}
-                </Form.Label>
-                <Col xs="auto">
-                    <Form.Select
-                        autoFocus={props.autoFocus ? props.autoFocus : undefined}
-                        disabled={props.disabled ? props.disabled : undefined}
-                        id={name}
-                        onChange={onChange}
-                        size="sm"
-                        value={index}
-                    >
-                        <option key="-1" value="-1">{props.placeholder ? props.placeholder : "(Select Library)"}</option>
-                        {libraryContext.libraries.map((library, index) => (
-                            <option key={index} value={index}>
-                                {library.name}
-                            </option>
-                        ))}
-                    </Form.Select>
-                </Col>
-            </Form.Group>
-        </Form>
+        <div className="form-inline">
+            <label className="me-2" htmlFor={props.name ? props.name : "library"}>
+                {props.label ? props.label : "Library:"}
+            </label>
+            <select
+                autoFocus={props.autoFocus ? props.autoFocus : undefined}
+                className="form-control-sm"
+                disabled={props.disabled ? props.disabled : undefined}
+                id={props.name ? props.name : "library"}
+                onChange={onChange}
+                value={index}
+            >
+                <option key="-1" value="-1">{props.placeholder ? props.placeholder : "(Select Library)"}</option>
+                {libraryContext.libraries.map((library, index) => (
+                    <option key={index} value={index}>
+                        {library.name}
+                    </option>
+                ))}
+            </select>
+        </div>
     )
 
 }

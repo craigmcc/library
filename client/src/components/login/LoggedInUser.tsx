@@ -6,8 +6,6 @@
 
 import React, {useContext, useEffect, useState} from "react";
 import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import {useNavigate} from "react-router-dom";
 
@@ -98,39 +96,33 @@ export const LoggedInUser = () => {
 
     return (
         <>
-            <Form id="loggedInUser">
-                <Form.Group as={Col}>
-                    <Form.Label column htmlFor="loggedInUsername">
-                        {(loginContext.data.loggedIn) ? (
-                            <Button
-                                onClick={handleLogout}
-                                size="sm"
-                                type="button"
-                                variant="outline-dark"
-                            >
-                                Log Out
-                            </Button>
-                        ) : (
-                            <Button
-                                onClick={onShow}
-                                size="sm"
-                                type="button"
-                                variant="outline-dark"
-                            >
-                                Log In
-                            </Button>
-                        )}
-                    </Form.Label>
-                    {/*<Col xs="auto">*/}
-                        <Form.Control
-                            id="loggedInUsername"
-                            readOnly={true}
-                            size="sm"
-                            value={loginContext.data.username ? loginContext.data.username : "-----"}
-                        />
-                    {/*</Col>*/}
-                </Form.Group>
-            </Form>
+            <div className="form-inline">
+                {(loginContext.data.loggedIn) ? (
+                    <Button
+                        onClick={handleLogout}
+                        size="sm"
+                        type="button"
+                        variant="outline-dark"
+                    >
+                        Log Out
+                    </Button>
+                ) : (
+                    <Button
+                        onClick={onShow}
+                        size="sm"
+                        type="button"
+                        variant="outline-dark"
+                    >
+                        Log In
+                    </Button>
+                )}
+                <input
+                    className="ms-2"
+                    disabled
+                    id="username"
+                    value={loginContext.data.username ? loginContext.data.username : "-----"}
+                />
+            </div>
 
             <Modal
                 animation={false}
