@@ -42,11 +42,11 @@ export enum Stage {
     NEXT = "next",
     PREVIOUS = "previous",
     // Per-model-type stages
-    AUTHORS = "authors",
-    SERIES = "series",
-    STORIES = "stories",
-    VOLUMES = "volumes",
-    WRITERS = "writers",
+    AUTHORS = "Authors",
+    SERIES = "Series",
+    STORIES = "Stories",
+    VOLUMES = "Volumes",
+    WRITERS = "Writers",
 }
 
 // HTML Event Handlers -------------------------------------------------------

@@ -81,7 +81,7 @@ const useFetchVolumes = (props: Props): State => {
             url += queryParameters(parameters);
 
             try {
-                if (loginContext.data.loggedIn) {
+                if (loginContext.data.loggedIn && (libraryContext.library.id > 0)) {
                     theVolumes = (await Api.get(url)).data;
                     theVolumes.forEach(theVolume => {
                         if (theVolume.authors && (theVolume.authors.length > 0)) {

@@ -119,6 +119,26 @@ const VolumesStage = (props: Props) => {
         setVolume(null); // TODO - trigger refresh somehow?
     }
 
+    const parentModel = (): string => {
+        if (props.parent && (props.parent instanceof Author)) {
+            return "Author";
+        } else if (props.parent && (props.parent instanceof Story)) {
+            return "Story";
+        } else {
+            return "Library";
+        }
+    }
+
+    const parentTitle = (): string => {
+        if (props.parent && (props.parent instanceof Author)) {
+            return `${props.parent.firstName} ${props.parent.lastName}`;
+        } else if (props.parent && (props.parent instanceof Story)) {
+            return props.parent.name;
+        } else {
+            return libraryContext.library.name;
+        }
+    }
+
     return (
         <Container fluid id="VolumesStage">
 
@@ -126,7 +146,7 @@ const VolumesStage = (props: Props) => {
             {(!volume) ? (
                 <>
 
-                    <Row className="mb-3 ml-1 mr-1">
+                    <Row className="mb-3">
 {/*
                         <Col className="text-start">
                             <Button // TODO
@@ -137,10 +157,8 @@ const VolumesStage = (props: Props) => {
                         </Col>
 */}
                         <Col className="text-center">
-                            <span>Select or Create Volume for Library:&nbsp;</span>
-                            <span className="text-info">
-                                {libraryContext.library.name}
-                            </span>
+                            <span>Add, Edit, or Select Volume for {parentModel()}: </span>
+                            <span className="text-info">{parentTitle()}</span>
                         </Col>
 {/*
                         <Col className="text-end">
