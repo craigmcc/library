@@ -17,7 +17,7 @@ import VolumeForm from "./VolumeForm";
 import VolumesList from"./VolumesList";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleAction, HandleStage, HandleVolume, Scope, Stage} from "../../types";
+import {HandleAction, HandleVolume, Scope} from "../../types";
 import useMutateVolume from "../../hooks/useMutateVolume";
 import Author from "../../models/Author";
 import Story from "../../models/Story";
@@ -28,7 +28,7 @@ import logger from "../../util/ClientLogger";
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
-    handleStage: HandleStage;           // Handle switching stage
+    handleVolume: HandleVolume;         // Handle selecting Volume
     parent?: Author | Story;            // Parent object for Volumes [owning Library]
 }
 
@@ -39,6 +39,7 @@ const VolumesStage = (props: Props) => {
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
+    const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canSave, setCanSave] = useState<boolean>(false);
     const [volume, setVolume] = useState<Volume | null>(null);
@@ -50,9 +51,10 @@ const VolumesStage = (props: Props) => {
             context: "VolumesStage.useEffect",
             parent: props.parent ? props.parent : undefined,
         });
+        setCanInsert(loginContext.validateLibrary(libraryContext.library));
         setCanRemove(loginContext.validateScope(Scope.SUPERUSER));
         setCanSave(loginContext.validateLibrary(libraryContext.library));
-    }, [props.parent]);
+    }, [props.parent, libraryContext.library, loginContext]);
 
     const handleAdd: HandleAction = () => {
         const theVolume = new Volume({
@@ -74,28 +76,12 @@ const VolumesStage = (props: Props) => {
         setVolume(theVolume);
     }
 
-    const handleEdit: HandleVolume = (theVolume) => {
+    const handleEdit: HandleVolume = async (theVolume) => {
         logger.debug({
             context: "VolumesStage.handleEdit",
             volume: Abridgers.VOLUME(theVolume),
         });
         setVolume(theVolume);
-    }
-
-    const handleExclude: HandleVolume = (theVolume) => {
-        logger.debug({
-            context: "VolumesStage.handleExclude",
-            volume: Abridgers.VOLUME(theVolume),
-        });
-        // TODO - handleExclude()
-    }
-
-    const handleInclude: HandleVolume = (theVolume) => {
-        logger.debug({
-            context: "VolumesStage.handleInclude",
-            volume: Abridgers.VOLUME(theVolume),
-        });
-        // TODO - handleInclude()
     }
 
     const handleInsert: HandleVolume = async (theVolume) => {
@@ -112,7 +98,7 @@ const VolumesStage = (props: Props) => {
             context: "VolumesStage.handleRemove",
             volume: Abridgers.VOLUME(theVolume),
         });
-        const removed = await mutateVolume.remove(theVolume);
+        /* const removed = */ await mutateVolume.remove(theVolume);
         setVolume(null); // TODO - trigger refresh somehow?
     }
 
@@ -121,7 +107,7 @@ const VolumesStage = (props: Props) => {
             context: "VolumessStage.handleSelect",
             volume: Abridgers.VOLUME(theVolume),
         });
-        props.handleStage(Stage.NEXT);
+        props.handleVolume(theVolume);
     }
 
     const handleUpdate: HandleVolume = async (theVolume) => {
@@ -129,8 +115,8 @@ const VolumesStage = (props: Props) => {
             context: "VolumesStage.handleUpdate",
             volume: Abridgers.VOLUME(theVolume),
         });
-        const updated = await mutateVolume.update(theVolume);
-        setVolume(updated); // TODO - trigger refresh somehow?
+        /* const updated = */ await mutateVolume.update(theVolume);
+        setVolume(null); // TODO - trigger refresh somehow?
     }
 
     return (
@@ -141,6 +127,7 @@ const VolumesStage = (props: Props) => {
                 <>
 
                     <Row className="mb-3 ml-1 mr-1">
+{/*
                         <Col className="text-start">
                             <Button // TODO
                                 disabled={true}
@@ -148,12 +135,14 @@ const VolumesStage = (props: Props) => {
                                 variant="outline-success"
                             >Previous</Button>
                         </Col>
+*/}
                         <Col className="text-center">
                             <span>Select or Create Volume for Library:&nbsp;</span>
                             <span className="text-info">
                                 {libraryContext.library.name}
                             </span>
                         </Col>
+{/*
                         <Col className="text-end">
                             <Button // TODO
                                 disabled={true}
@@ -161,22 +150,16 @@ const VolumesStage = (props: Props) => {
                                 variant="outline-success"
                             >Next</Button>
                         </Col>
+*/}
                     </Row>
 
                     <VolumesList
+                        canInsert={canInsert}
                         handleAdd={handleAdd}
-                        // handleExclude={handleExclude}
-                        // handleInclude={handleInclude}
+                        handleEdit={handleEdit}
                         handleSelect={handleSelect}
                         parent={props.parent ? props.parent : undefined}
                     />
-
-                    <Button
-                        className="mt-3 ml-1"
-                        onClick={handleAdd}
-                        size="sm"
-                        variant="primary"
-                    >Add</Button>
 
                 </>
             ) : null }

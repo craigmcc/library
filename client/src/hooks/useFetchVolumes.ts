@@ -73,10 +73,10 @@ const useFetchVolumes = (props: Props): State => {
                 withStories: props.withStories ? "" : undefined,
             }
             let url = LIBRARIES_BASE + `/${libraryContext.library.id}` + VOLUMES_BASE;
-            if (parent && (parent instanceof Author)) {
-                url = AUTHORS_BASE + `/${libraryContext.library.id}/${parent.id}` + VOLUMES_BASE;
-            } else if (parent && (parent instanceof Story)) {
-                url = STORIES_BASE + `/${libraryContext.library.id}/${parent.id}` + VOLUMES_BASE;
+            if (props.parent && (props.parent instanceof Author)) {
+                url = AUTHORS_BASE + `/${libraryContext.library.id}/${props.parent.id}` + VOLUMES_BASE;
+            } else if (props.parent && (props.parent instanceof Story)) {
+                url = STORIES_BASE + `/${libraryContext.library.id}/${props.parent.id}` + VOLUMES_BASE;
             }
             url += queryParameters(parameters);
 

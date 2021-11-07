@@ -89,7 +89,7 @@ const useFetchVolume = (props: Props): State => {
 
         fetchVolume();
 
-    }, [props.volumeId, libraryContext.library.id, loginContext.data.loggedIn]);
+    }, [props.volumeId, libraryContext.library, loginContext.data.loggedIn]);
 
     return {
         error: error ? error : null,

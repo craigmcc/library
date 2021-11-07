@@ -8,7 +8,7 @@ import {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import {HandleVolume, ProcessVolume} from "../types";
+import {ProcessVolume} from "../types";
 import Api from "../clients/Api";
 import LibraryContext from "../components/libraries/LibraryContext";
 import Volume, {VOLUMES_BASE} from "../models/Volume";
