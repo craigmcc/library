@@ -6,6 +6,7 @@
 
 // Internal Modules ----------------------------------------------------------
 
+import AbstractModel from "./AbstractModel";
 import Author from "./Author";
 import Library from "./Library";
 import Story from "./Story";
@@ -15,9 +16,11 @@ import * as ToModel from "../util/ToModel";
 
 export const SERIES_BASE = "/series";
 
-class Series {
+class Series extends AbstractModel {
 
     constructor(data: any = {}) {
+
+        super();
 
         this.id = data.id ? data.id : -1;
         this.active = (data.active !== undefined) ? data.active : true;
@@ -30,6 +33,10 @@ class Series {
         this.library = data.library ? ToModel.LIBRARY(data.library) : undefined;
         this.stories = data.stories ? ToModel.STORIES(data.stories) : undefined;
 
+    }
+
+    _title(): string {
+        return this.name;
     }
 
     id!: number;

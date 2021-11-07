@@ -119,25 +119,9 @@ const VolumesStage = (props: Props) => {
         setVolume(null); // TODO - trigger refresh somehow?
     }
 
-    const parentModel = (): string => {
-        if (props.parent && (props.parent instanceof Author)) {
-            return "Author";
-        } else if (props.parent && (props.parent instanceof Story)) {
-            return "Story";
-        } else {
-            return "Library";
-        }
-    }
+    const parentModel = props.parent ? props.parent._model() : "Library";
 
-    const parentTitle = (): string => {
-        if (props.parent && (props.parent instanceof Author)) {
-            return `${props.parent.firstName} ${props.parent.lastName}`;
-        } else if (props.parent && (props.parent instanceof Story)) {
-            return props.parent.name;
-        } else {
-            return libraryContext.library.name;
-        }
-    }
+    const parentTitle = props.parent ? props.parent._title() : libraryContext.library.name;
 
     return (
         <Container fluid id="VolumesStage">
@@ -147,28 +131,10 @@ const VolumesStage = (props: Props) => {
                 <>
 
                     <Row className="mb-3">
-{/*
-                        <Col className="text-start">
-                            <Button // TODO
-                                disabled={true}
-                                size="sm"
-                                variant="outline-success"
-                            >Previous</Button>
-                        </Col>
-*/}
                         <Col className="text-center">
-                            <span>Add, Edit, or Select Volume for {parentModel()}: </span>
-                            <span className="text-info">{parentTitle()}</span>
+                            <span>Add, Edit, or Select Volume for {parentModel}: </span>
+                            <span className="text-info">{parentTitle}</span>
                         </Col>
-{/*
-                        <Col className="text-end">
-                            <Button // TODO
-                                disabled={true}
-                                size="sm"
-                                variant="outline-success"
-                            >Next</Button>
-                        </Col>
-*/}
                     </Row>
 
                     <VolumesList
@@ -195,7 +161,7 @@ const VolumesStage = (props: Props) => {
                             )}
                             &nbsp;Volume for Library:&nbsp;
                             <span className="text-info">
-                                {libraryContext.library.name}
+                                {parentTitle}
                             </span>
                         </Col>
                         <Col className="text-end">

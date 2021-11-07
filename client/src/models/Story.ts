@@ -7,6 +7,7 @@
 
 // Internal Modules ----------------------------------------------------------
 
+import AbstractModel from "./AbstractModel";
 import Author from "./Author";
 import Library from "./Library";
 import Series from "./Series";
@@ -17,9 +18,11 @@ import * as ToModel from "../util/ToModel";
 
 export const STORIES_BASE = "/stories";
 
-class Story {
+class Story extends AbstractModel {
 
     constructor(data: any = {}) {
+
+        super();
 
         this.id = data.id ? data.id : -1;
         this.active = (data.active !== undefined) ? data.active : true;
@@ -36,26 +39,30 @@ class Story {
 
     }
 
+    _title(): string {
+        return this.name;
+    }
+
     id!: number;
     active!: boolean;
     copyright?: string;
     libraryId!: number;
     name!: string;
     notes?: string;
-    ordinal?: number;
+    ordinal?: number | null;
 
     authors?: Author[];
     library?: Library;
     series?: Series[];
     volumes?: Volume[];
 
-    private calculateOrdinal(data: any): number | undefined {
+    private calculateOrdinal(data: any): number | null {
         if (data.ordinal) {
             return data.ordinal;
         } else if (data.SeriesStory && data.SeriesStory.ordinal) {
             return data.SeriesStory.ordinal;
         } else {
-            return undefined;
+            return null;
         }
     }
 

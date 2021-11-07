@@ -159,7 +159,78 @@ const VolumeForm = (props: Props) => {
                                 </Form.Group>
                             </Row>
 
-                            <Row className="g-3 mb-3" id="copyrightGoogleIdRow">
+                            <Row className="g-3 mb-3" id="locationTypeRow">
+                                <Form.Group as={Col} controlId="location" id="locationGroup">
+                                    <Form.Label>Volume Location:</Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        name="location"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        size="sm"
+                                        value={values.location}
+                                    >
+                                        {validLocations().map((validLocation, index) => (
+                                            <option key={index} value={validLocation.key}>
+                                                {validLocation.value}
+                                            </option>
+                                        ))}
+                                    </Form.Control>
+                                    <Form.Control.Feedback type="valid">
+                                        Physical location of this volume.
+                                    </Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.location}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+                                <Form.Group as={Col} controlId="type" id="typeGroup">
+                                    <Form.Label>Volume Type:</Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        name="type"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        size="sm"
+                                        value={values.type}
+                                    >
+                                        {validTypes().map((validType, index) => (
+                                            <option key={index} value={validType.key}>
+                                                {validType.value}
+                                            </option>
+                                        ))}
+                                    </Form.Control>
+                                    <Form.Control.Feedback type="valid">
+                                        Type of content in this Volume.
+                                    </Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.type}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+                            </Row>
+
+                            <Row className="g-3 mb-3" id="notesRow">
+                                <Form.Group as={Col} controlId="notes" id="notesGroup">
+                                    <Form.Label>Notes:</Form.Label>
+                                    <Form.Control
+                                        isInvalid={touched.notes && !!errors.notes}
+                                        isValid={!errors.notes}
+                                        name="notes"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        size="sm"
+                                        type="text"
+                                        value={values.notes}
+                                    />
+                                    <Form.Control.Feedback type="valid">
+                                        Miscellaneous notes about this Volume.
+                                    </Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.notes}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+                            </Row>
+
+                            <Row className="g-3 mb-3" id="copyrightGoogleIdIsbnRow">
                                 <Form.Group as={Col} controlId="copyright" id="copyrightGroup">
                                     <Form.Label>Copyright Year:</Form.Label>
                                     <Form.Control
@@ -198,9 +269,6 @@ const VolumeForm = (props: Props) => {
                                         {errors.googleId}
                                     </Form.Control.Feedback>
                                 </Form.Group>
-                            </Row>
-
-                            <Row className="g-3 mb-3" id="isbnLocationRow">
                                 <Form.Group as={Col} controlId="isbn" id="isbnGroup">
                                     <Form.Label>ISBN ID:</Form.Label>
                                     <Form.Control
@@ -218,74 +286,6 @@ const VolumeForm = (props: Props) => {
                                     </Form.Control.Feedback>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.isbn}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                                <Form.Group as={Col} controlId="location" id="locationGroup">
-                                    <Form.Label>Volume Location:</Form.Label>
-                                    <Form.Control
-                                        as="select"
-                                        name="location"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        size="sm"
-                                        value={values.location}
-                                    >
-                                        {validLocations().map((validLocation, index) => (
-                                            <option key={index} value={validLocation.key}>
-                                                {validLocation.value}
-                                            </option>
-                                        ))}
-                                    </Form.Control>
-                                    <Form.Control.Feedback type="valid">
-                                        Physical location of this volume.
-                                    </Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.location}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                            </Row>
-
-                            <Row className="g-3 mb-3" id="notesTypeRow">
-                                <Form.Group as={Col} controlId="notes" id="notesGroup">
-                                    <Form.Label>Notes:</Form.Label>
-                                    <Form.Control
-                                        isInvalid={touched.notes && !!errors.notes}
-                                        isValid={!errors.notes}
-                                        name="notes"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        size="sm"
-                                        type="text"
-                                        value={values.notes}
-                                    />
-                                    <Form.Control.Feedback type="valid">
-                                        Miscellaneous notes about this Volume.
-                                    </Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.notes}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                                <Form.Group as={Col} controlId="type" id="typeGroup">
-                                    <Form.Label>Volume Type:</Form.Label>
-                                    <Form.Control
-                                        as="select"
-                                        name="type"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        size="sm"
-                                        value={values.type}
-                                    >
-                                        {validTypes().map((validType, index) => (
-                                            <option key={index} value={validType.key}>
-                                                {validType.value}
-                                            </option>
-                                        ))}
-                                    </Form.Control>
-                                    <Form.Control.Feedback type="valid">
-                                        Type of content in this Volume.
-                                    </Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.type}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
@@ -316,7 +316,7 @@ const VolumeForm = (props: Props) => {
                             </Row>
 
                             <Row className="mb-3">
-                                <Col className="col-10">
+                                <Col className="col-11">
                                     <Button
                                         disabled={isSubmitting}
                                         size="sm"
@@ -326,7 +326,7 @@ const VolumeForm = (props: Props) => {
                                         Save
                                     </Button>
                                 </Col>
-                                <Col className="col-2 float-right">
+                                <Col className="col-1">
                                     <Button
                                         disabled={adding || !props.canRemove}
                                         onClick={onConfirm}

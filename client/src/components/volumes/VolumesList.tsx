@@ -115,12 +115,9 @@ const VolumesList = (props: Props) => {
         }
     }
 
-    let title = "Volumes for Library " + libraryContext.library.name;
-    if (props.parent && (props.parent instanceof Author)) {
-        title = "Volumes for Author " + props.parent.firstName + " " + props.parent.lastName;
-    } else if (props.parent && (props.parent instanceof Story)) {
-        title = "Volumes for Story " + props.parent.name;
-    }
+    const parentModel = props.parent ? props.parent._model() : "Library";
+
+    const parentTitle = props.parent ? props.parent._title() : libraryContext.library.name;
 
     // @ts-ignore
     return (
@@ -178,7 +175,7 @@ const VolumesList = (props: Props) => {
                             className="text-center"
                             colSpan={99}
                         >
-                            {title}
+                            {`Volumes for ${parentModel}: ${parentTitle}`}
                         </th>
                     </tr>
                     <tr className="table-secondary">
