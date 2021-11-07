@@ -35,6 +35,20 @@ export enum Scope {
     SUPERUSER = "superuser",
 }
 
+// Stages in multiple-layer management scenarios
+export enum Stage {
+    // Navigation-only stages
+    INITIAL = "initial",
+    NEXT = "next",
+    PREVIOUS = "previous",
+    // Per-model-type stages
+    AUTHORS = "authors",
+    SERIES = "series",
+    STORIES = "stories",
+    VOLUMES = "volumes",
+    WRITERS = "writers",
+}
+
 // HTML Event Handlers -------------------------------------------------------
 
 export type OnAction = () => void; // Nothing to pass, just trigger action
@@ -54,6 +68,7 @@ export type HandleDate = (date: string) => void;
 export type HandleIndex = (newIndex: number) => void;
 export type HandleMonth = (month: string) => void;
 export type HandleResults = () => Promise<object>;
+export type HandleStage = (stage: Stage) => void;
 export type HandleValue = (newValue: string) => void;
 
 // Model Object Handlers -----------------------------------------------------
@@ -65,3 +80,4 @@ export type HandleStory = (story: Story) => void;
 export type HandleUser = (user: User) => void;
 export type HandleVolume = (volume: Volume) => void;
 
+export type ProcessVolume = (volume: Volume) => Promise<Volume>;

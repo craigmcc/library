@@ -1,7 +1,7 @@
 // VolumesList -----------------------------------------------------------------
 
 // List Volumes that match search criteria, offering callbacks for adding,
-// editing, and removing Volumes.
+// editing, and removing Volumes.  Optionally, include relevant actions.
 
 // External Modules ----------------------------------------------------------
 
@@ -23,7 +23,6 @@ import {HandleBoolean, HandleVolume, HandleValue, OnAction, Scope} from "../../t
 import useFetchVolumes from "../../hooks/useFetchVolumes";
 import Author from "../../models/Author";
 import Story from "../../models/Story";
-import Volume from "../../models/Volume";
 import logger from "../../util/ClientLogger";
 import {listValue} from "../../util/Transformations";
 
@@ -31,8 +30,6 @@ import {listValue} from "../../util/Transformations";
 
 export interface Props {
     canInsert?: boolean;                // Can this user add Volumes? [false]
-    canRemove?: boolean;                // Can this user remove Volumes? [false]
-    canUpdate?: boolean;                // Can this user edit Volumes? [false]
     handleAdd: OnAction;                // Handle request to add a Volume
     handleSelect: HandleVolume;         // Handle request to select a Volume
     parent?: Author | Story;            // Parent object for Volumes [owning Library]

@@ -8,7 +8,7 @@ import {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import {HandleVolume} from "../types";
+import {HandleVolume, ProcessVolume} from "../types";
 import Api from "../clients/Api";
 import LibraryContext from "../components/libraries/LibraryContext";
 import Volume, {VOLUMES_BASE} from "../models/Volume";
@@ -24,9 +24,9 @@ export interface Props {
 export interface State {
     error: Error | null;                // I/O error (if any)
     executing: boolean;                 // Are we currently executing?
-    insert: HandleVolume;               // Function to insert a new Volume
-    remove: HandleVolume;               // Function to remove an existing Volume
-    update: HandleVolume;               // Function to update an existing Volume
+    insert: ProcessVolume;              // Function to insert a new Volume
+    remove: ProcessVolume;              // Function to remove an existing Volume
+    update: ProcessVolume;              // Function to update an existing Volume
 }
 
 // Component Details ---------------------------------------------------------
@@ -44,7 +44,7 @@ const useMutateVolume = (props: Props): State => {
         });
     });
 
-    const insert: HandleVolume = async (theVolume): Promise<Volume> => {
+    const insert: ProcessVolume = async (theVolume) => {
 
         let inserted = new Volume();
         setError(null);
@@ -69,7 +69,7 @@ const useMutateVolume = (props: Props): State => {
 
     }
 
-    const remove: HandleVolume = async (theVolume): Promise<Volume> => {
+    const remove: ProcessVolume = async (theVolume): Promise<Volume> => {
 
         let removed = new Volume();
         setError(null);
@@ -94,7 +94,7 @@ const useMutateVolume = (props: Props): State => {
 
     }
 
-    const update: HandleVolume = async (theVolume): Promise<Volume> => {
+    const update: ProcessVolume = async (theVolume): Promise<Volume> => {
 
         let updated = new Volume();
         setError(null);

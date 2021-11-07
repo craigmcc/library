@@ -2,7 +2,28 @@
 
 // Transform objects back and forth to how Formik wants fields presented.
 
+// Internal Modules ----------------------------------------------------------
+
+import Author from "../models/Author";
+import Story from "../models/Story";
+
 // Public Objects ------------------------------------------------------------
+
+// Render a string containing the names of all Author(s) in the specified list
+export const authorsNames = (authors: Author[] | null | undefined): string => {
+    const names: string[] = [];
+    if (authors) {
+        authors.forEach(author => {
+            const principalFlag = author.principal ? "*" : "";
+            names.push(`${author.lastName}, ${author.firstName}${principalFlag}`);
+        });
+    }
+    if (names.length > 0) {
+        return names.join(" | ");
+    } else {
+        return "";
+    }
+}
 
 // Convert a value to how it will be presented in a table, if needed
 export const listValue = (value: any): string => {
@@ -12,6 +33,26 @@ export const listValue = (value: any): string => {
         return "";
     } else {
         return value;
+    }
+}
+
+// Render a string containing the names (possibly abbreviated) of all Stories
+// in the specified list
+export const storiesNames = (stories: Story[] | null | undefined): string => {
+    const names : string[] = [];
+    if (stories) {
+        stories.forEach(story => {
+            let name = story.name;
+            if (name.length > 20) {
+                name = name.substr(0, 20) + "...";
+            }
+            names.push(name);
+        });
+    }
+    if (names.length > 0) {
+        return names.join(" | ");
+    } else {
+        return "";
     }
 }
 

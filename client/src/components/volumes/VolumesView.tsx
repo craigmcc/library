@@ -1,6 +1,6 @@
 // VolumesView ---------------------------------------------------------------
 
-// Top level view for Volumes administration.
+// Top level view for Volumes management.
 
 // External Modules ----------------------------------------------------------
 

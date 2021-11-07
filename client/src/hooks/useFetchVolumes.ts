@@ -39,8 +39,8 @@ export interface Props {
 
 export interface State {
     error: Error | null;                // I/O error (if any)
-    volumes: Volume[];                  // Fetched Volumes
     loading: boolean;                   // Are we currently loading?
+    volumes: Volume[];                  // Fetched Volumes
 }
 
 // Hook Details --------------------------------------------------------------
@@ -117,8 +117,8 @@ const useFetchVolumes = (props: Props): State => {
 
     return {
         error: error ? error : null,
-        volumes: volumes,
         loading: loading,
+        volumes: volumes,
     }
 
 }
