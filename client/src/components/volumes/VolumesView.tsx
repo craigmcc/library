@@ -15,10 +15,9 @@ import VolumesStage from "./VolumesStage";
 import VolumeSummary from "./VolumeSummary";
 import AuthorsStage from "../authors/AuthorsStage";
 import LibraryContext from "../libraries/LibraryContext";
-import {HandleAuthor, HandleStage, HandleVolume, Stage} from "../../types";
-//import useFetchAuthor from "../../hooks/useFetchAuthor";
-import useFetchVolume from "../../hooks/useFetchVolume";
+import {HandleStage, HandleVolume, Stage} from "../../types";
 import LoginContext from "../login/LoginContext";
+import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 
@@ -29,33 +28,15 @@ const VolumesView = () => {
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
-    const [authorId, setAuthorId] = useState<number>(-1);
     const [stage, setStage] = useState<Stage>(Stage.VOLUMES);
-    const [volumeId, setVolumeId] = useState<number>(-1);
-
-/*
-    const fetchAuthor = useFetchAuthor({
-        authorId: authorId,
-    });
-*/
-    const fetchVolume = useFetchVolume({
-        volumeId: volumeId,
-    });
+    const [volume, setVolume] = useState<Volume>(new Volume());
 
     useEffect(() => {
         logger.debug({
             context: "VolumesView.useEffect",
         });
-    }, [stage, libraryContext.library.id, loginContext.data.loggedIn]);
-
-    const handleAuthor: HandleAuthor = (theAuthor) => {
-        logger.info({
-            context: "VolumesView.handleAuthor",
-            author: Abridgers.AUTHOR(theAuthor),
-        });
-        setAuthorId(theAuthor.id);
-        handleStage(Stage.STORIES);
-    }
+    }, [stage, volume,
+        libraryContext.library.id, loginContext.data.loggedIn]);
 
     const handleStage: HandleStage = (theStage) => {
         logger.info({
@@ -63,15 +44,6 @@ const VolumesView = () => {
             stage: theStage,
         });
         setStage(theStage);
-    }
-
-    const handleVolume: HandleVolume = (theVolume) => {
-        logger.info({
-            context: "VolumesView.handleVolume",
-            volume: Abridgers.VOLUME(theVolume),
-        });
-        setVolumeId(theVolume.id);
-        handleStage(Stage.AUTHORS);
     }
 
     const handleSelect = (select: string | null): void => {
@@ -95,6 +67,15 @@ const VolumesView = () => {
             }
         }
         setStage(Stage.VOLUMES);
+    }
+
+    const handleVolume: HandleVolume = (theVolume) => {
+        logger.info({
+            context: "VolumesView.handleVolume",
+            volume: Abridgers.VOLUME(theVolume),
+        });
+        setVolume(volume);
+        handleStage(Stage.AUTHORS);
     }
 
     return (
@@ -122,22 +103,21 @@ const VolumesView = () => {
 
                     <Tab
                         eventKey={Stage.AUTHORS.toString()}
-                        disabled={volumeId < 0}
+                        disabled={volume.id < 0}
                         title={Stage.AUTHORS.toString()}
                     >
-                        <VolumeSummary volume={fetchVolume.volume}/>
+                        <VolumeSummary volume={volume}/>
                         <AuthorsStage
-                            handleAuthor={handleAuthor}
-                            parent={fetchVolume.volume}
+                            parent={volume}
                         />
                     </Tab>
 
                     <Tab
-                        disabled={authorId < 0}
+                        disabled={volume.id < 0}
                         eventKey={Stage.STORIES.toString()}
                         title={Stage.STORIES.toString()}
                     >
-                        <VolumeSummary volume={fetchVolume.volume}/>
+                        <VolumeSummary volume={volume}/>
                         <h1>{Stage.STORIES.toString()} Tab</h1>
                     </Tab>
 
@@ -146,7 +126,7 @@ const VolumesView = () => {
                         eventKey={Stage.WRITERS.toString()}
                         title={Stage.WRITERS.toString()}
                     >
-                        <VolumeSummary volume={fetchVolume.volume}/>
+                        <VolumeSummary volume={volume}/>
                         <h1>{Stage.WRITERS.toString()} Tab</h1>
                     </Tab>
 

@@ -12,11 +12,12 @@ import {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
+import {Parent} from "../types";
 import Api from "../clients/Api";
 import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
 import Author, {AUTHORS_BASE} from "../models/Author";
-import Library, {LIBRARIES_BASE} from "../models/Library";
+import {LIBRARIES_BASE} from "../models/Library";
 import Story, {STORIES_BASE} from "../models/Story";
 import Volume, {VOLUMES_BASE} from "../models/Volume";
 import * as Abridgers from "../util/Abridgers";
@@ -33,7 +34,7 @@ export interface Props {
     currentPage?: number;               // One-relative page number [1]
     name?: string;                      // Select Volumes with matching name? [none]
     pageSize?: number;                  // Number of Volumes to be returned [25]
-    parent: Author | Library | Story;   // Parent object for retrieval
+    parent: Parent;                     // Parent object for retrieval
     withAuthors?: boolean;              // Include child Authors? [false]
     withStories?: boolean;              // Include child Stories? [false]
 }

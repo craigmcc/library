@@ -17,21 +17,18 @@ import AuthorForm from "./AuthorForm";
 import AuthorsList from"./AuthorsList";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleAction, HandleAuthor, Scope} from "../../types";
+import {HandleAction, HandleAuthor, Parent, Scope} from "../../types";
+import useFetchParent from "../../hooks/useFetchParent";
 import useMutateAuthor from "../../hooks/useMutateAuthor";
 import Author from "../../models/Author";
-import Library from "../../models/Library";
-import Series from "../../models/Series";
-import Story from "../../models/Story";
-import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
-    handleAuthor: HandleAuthor;         // Handle selecting Author
-    parent: Library | Series | Story | Volume; // Parent object for Authors
+    handleAuthor?: HandleAuthor;        // Handle selecting Author [no handler]
+    parent: Parent;                     // Parent object for Authors (pass to useFetchParent)
 }
 
 // Component Details ---------------------------------------------------------
@@ -46,6 +43,9 @@ const AuthorsStage = (props: Props) => {
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canSave, setCanSave] = useState<boolean>(false);
 
+    const fetchParent = useFetchParent({
+        parent: props.parent,
+    });
     const mutateAuthor = useMutateAuthor({});
 
     useEffect(() => {
@@ -106,7 +106,9 @@ const AuthorsStage = (props: Props) => {
             context: "AuthorssStage.handleSelect",
             author: Abridgers.AUTHOR(theAuthor),
         });
-        props.handleAuthor(theAuthor);
+        if (props.handleAuthor) {
+            props.handleAuthor(theAuthor);
+        }
     }
 
     const handleUpdate: HandleAuthor = async (theAuthor) => {
@@ -127,8 +129,8 @@ const AuthorsStage = (props: Props) => {
 
                     <Row className="mb-3">
                         <Col className="text-center">
-                            <span>Add, Edit, or Select Author for {props.parent._model}: </span>
-                            <span className="text-info">{props.parent._title}</span>
+                            <span>Add, Edit, or Select Author for {fetchParent.parent._model}: </span>
+                            <span className="text-info">{fetchParent.parent._title}</span>
                         </Col>
                     </Row>
 
@@ -137,7 +139,7 @@ const AuthorsStage = (props: Props) => {
                         handleAdd={handleAdd}
                         handleEdit={handleEdit}
                         handleSelect={handleSelect}
-                        parent={props.parent}
+                        parent={fetchParent.parent}
                     />
 
                 </>
@@ -154,9 +156,9 @@ const AuthorsStage = (props: Props) => {
                             ) : (
                                 <span>Add New</span>
                             )}
-                            &nbsp;Author for {props.parent._model}:&nbsp;
+                            &nbsp;Author for {fetchParent.parent._model}:&nbsp;
                             <span className="text-info">
-                                {props.parent._title}
+                                {fetchParent.parent._title}
                             </span>
                         </Col>
                         <Col className="text-end">

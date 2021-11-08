@@ -17,11 +17,9 @@ import VolumeForm from "./VolumeForm";
 import VolumesList from"./VolumesList";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleAction, HandleVolume, Scope} from "../../types";
+import {HandleAction, HandleVolume, Parent, Scope} from "../../types";
+import useFetchParent from "../../hooks/useFetchParent";
 import useMutateVolume from "../../hooks/useMutateVolume";
-import Author from "../../models/Author";
-import Library from "../../models/Library";
-import Story from "../../models/Story";
 import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
@@ -29,8 +27,8 @@ import logger from "../../util/ClientLogger";
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
-    handleVolume: HandleVolume;         // Handle selecting Volume
-    parent: Author | Library | Story;   // Parent object for Volumes
+    handleVolume?: HandleVolume;        // Handle selecting Volume [no handler]
+    parent: Parent;                     // Parent object for Volumes (pass to useFetchParent)
 }
 
 // Component Details ---------------------------------------------------------
@@ -45,6 +43,9 @@ const VolumesStage = (props: Props) => {
     const [canSave, setCanSave] = useState<boolean>(false);
     const [volume, setVolume] = useState<Volume | null>(null);
 
+    const fetchParent = useFetchParent({
+        parent: props.parent,
+    });
     const mutateVolume = useMutateVolume({});
 
     useEffect(() => {
@@ -110,7 +111,9 @@ const VolumesStage = (props: Props) => {
             context: "VolumessStage.handleSelect",
             volume: Abridgers.VOLUME(theVolume),
         });
-        props.handleVolume(theVolume);
+        if (props.handleVolume) {
+            props.handleVolume(theVolume);
+        }
     }
 
     const handleUpdate: HandleVolume = async (theVolume) => {
@@ -131,8 +134,8 @@ const VolumesStage = (props: Props) => {
 
                     <Row className="mb-3">
                         <Col className="text-center">
-                            <span>Add, Edit, or Select Volume for {props.parent._model}: </span>
-                            <span className="text-info">{props.parent._title}</span>
+                            <span>Add, Edit, or Select Volume for {fetchParent.parent._model}: </span>
+                            <span className="text-info">{fetchParent.parent._title}</span>
                         </Col>
                     </Row>
 
@@ -141,7 +144,7 @@ const VolumesStage = (props: Props) => {
                         handleAdd={handleAdd}
                         handleEdit={handleEdit}
                         handleSelect={handleSelect}
-                        parent={props.parent}
+                        parent={fetchParent.parent}
                     />
 
                 </>
@@ -158,9 +161,9 @@ const VolumesStage = (props: Props) => {
                             ) : (
                                 <span>Add New</span>
                             )}
-                            &nbsp;Volume for {props.parent._model}:&nbsp;
+                            &nbsp;Volume for {fetchParent.parent._model}:&nbsp;
                             <span className="text-info">
-                                {props.parent._title}
+                                {fetchParent.parent._title}
                             </span>
                         </Col>
                         <Col className="text-end">

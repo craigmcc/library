@@ -19,11 +19,8 @@ import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleBoolean, HandleVolume, HandleValue, OnAction} from "../../types";
+import {HandleBoolean, HandleVolume, HandleValue, OnAction, Parent} from "../../types";
 import useFetchVolumes from "../../hooks/useFetchVolumes";
-import Author from "../../models/Author";
-import Library from "../../models/Library";
-import Story from "../../models/Story";
 import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
@@ -39,7 +36,7 @@ export interface Props {
     handleInclude?: HandleVolume;       // Handle request to include a Volume [no handler]
     handleSelect?: HandleVolume;        // Handle request to select a Volume [no handler]
     included?: (volume: Volume) => boolean; // Is this Volume included in parent? [true]
-    parent: Author | Library | Story;   // Parent object for Volumes
+    parent: Parent;                    // Parent object for Volumes
 }
 
 // Component Details ---------------------------------------------------------
@@ -197,7 +194,7 @@ const VolumesList = (props: Props) => {
                         >
                             <td
                                 key={1000 + (rowIndex * 100) + 1}
-                                onClick={() => handleSelect(volume)}
+                                onClick={props.handleSelect ? () => handleSelect(volume) : undefined}
                             >
                                 {volume.name}
                             </td>

@@ -13,6 +13,7 @@ import Row from "react-bootstrap/Row";
 // Internal Modules ----------------------------------------------------------
 
 import {HandleAction} from "../../types";
+import useFetchParent from "../../hooks/useFetchParent";
 import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
@@ -28,16 +29,20 @@ export interface Props {
 
 const VolumeSummary = (props: Props) => {
 
+    const fetchParent = useFetchParent({
+        parent: props.volume,
+    });
+
     const [expand, setExpand] = useState<boolean>(true);
+    const [volume, setVolume] = useState<Volume>(fetchParent.parent as Volume);
 
     useEffect(() => {
-
-        logger.debug({
+        logger.info({
             context: "VolumeSummary.useEffect",
             volume: Abridgers.VOLUME(props.volume),
         });
-
-    }, [props.volume]);
+        setVolume(fetchParent.parent as Volume);
+    }, [props.volume, fetchParent.parent]);
 
     const toggleExpand: HandleAction = () => {
         setExpand(!expand);
@@ -45,14 +50,14 @@ const VolumeSummary = (props: Props) => {
 
     return (
         <>
-            {(props.volume.id > 0) ? (
+            {(volume.id > 0) ? (
                 <Container fluid id="VolumeSummary">
 
                     <Row className="mb-1">
                         <Col className="text-center">
                             <span>Summary for Volume:&nbsp;</span>
                             <span className="text-info">
-                        {props.volume.name}&nbsp;&nbsp;
+                        {volume.name}&nbsp;&nbsp;
                     </span>
                             {(expand) ? (
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -81,7 +86,7 @@ const VolumeSummary = (props: Props) => {
                                 <Col className="text-center">
                                     <span>Authors:&nbsp;</span>
                                     <span className="text-info">
-                               {authorsNames(props.volume.authors)}
+                               {authorsNames(volume.authors)}
                             </span>
                                 </Col>
                             </Row>
@@ -89,7 +94,7 @@ const VolumeSummary = (props: Props) => {
                                 <Col className="text-center">
                                     <span>Stories:&nbsp;</span>
                                     <span className="text-info">
-                                {storiesNames(props.volume.stories)}
+                                {storiesNames(volume.stories)}
                             </span>
                                 </Col>
                             </Row>

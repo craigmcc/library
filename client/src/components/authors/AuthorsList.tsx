@@ -19,13 +19,9 @@ import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleBoolean, HandleAuthor, HandleValue, OnAction} from "../../types";
+import {HandleBoolean, HandleAuthor, HandleValue, OnAction, Parent} from "../../types";
 import useFetchAuthors from "../../hooks/useFetchAuthors";
 import Author from "../../models/Author";
-import Library from "../../models/Library";
-import Series from "../../models/Series";
-import Story from "../../models/Story";
-import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 import {listValue} from "../../util/Transformations";
@@ -40,7 +36,7 @@ export interface Props {
     handleInclude?: HandleAuthor;       // Handle request to include a Author [no handler]
     handleSelect?: HandleAuthor;        // Handle request to select a Author [no handler]
     included?: (author: Author) => boolean; // Is this Author included in parent? [true]
-    parent: Library | Series | Story | Volume; // Parent object for Authors
+    parent: Parent;                     // Parent object for Authors
 }
 
 // Component Details ---------------------------------------------------------
@@ -198,7 +194,7 @@ const AuthorsList = (props: Props) => {
                         >
                             <td
                                 key={1000 + (rowIndex * 100) + 1}
-                                onClick={() => handleSelect(author)}
+                                onClick={props.handleSelect ? () => handleSelect(author) : undefined}
                             >
                                 {author.lastName}, {author.firstName}
                             </td>
