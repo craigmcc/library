@@ -16,6 +16,7 @@ import logger from "../util/ClientLogger";
 import {queryParameters} from "../util/QueryParameters";
 import ReportError from "../util/ReportError";
 import * as Sorters from "../util/Sorters";
+import * as ToModel from "../util/ToModel";
 
 // Incoming Properties and Outgoing State ------------------------------------
 
@@ -68,11 +69,12 @@ const useFetchLibraries = (props: Props): State => {
                 withStories: props.withStories ? "" : undefined,
                 withVolumes: props.withVolumes ? "" : undefined,
             }
+            let url = LIBRARIES_BASE + queryParameters(parameters);
 
             try {
-                if (loginContext.data.loggedIn) {
-                    theLibraries = (await Api.get(LIBRARIES_BASE
-                        + `${queryParameters(parameters)}`)).data;
+                let tryFetch = loginContext.data.loggedIn;
+                if (tryFetch) {
+                    theLibraries = ToModel.LIBRARIES((await Api.get<Library[]>(url)).data);
                     theLibraries.forEach(theLibrary => {
                         if (theLibrary.authors && (theLibrary.authors.length > 0)) {
                             theLibrary.authors = Sorters.AUTHORS(theLibrary.authors);
@@ -87,10 +89,17 @@ const useFetchLibraries = (props: Props): State => {
                             theLibrary.volumes = Sorters.VOLUMES(theLibrary.volumes);
                         }
                     });
-                    logger.debug({
+                    logger.info({
                         context: "useFetchLibraries.fetchLibraries",
-                        parameters: parameters,
+                        url: url,
                         libraries: Abridgers.LIBRARIES(theLibraries),
+                    });
+                } else {
+                    logger.info({
+                        context: "useFetchLibraries.fetchLibraries",
+                        msg: "Skipped fetching Libraries",
+                        url: url,
+                        loggedIn: loginContext.data.loggedIn,
                     });
                 }
             } catch (error) {

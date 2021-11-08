@@ -27,9 +27,7 @@ export const ANY = (model: Author | Library | Series | Story | User | Volume) =>
     } else if (model instanceof Volume) {
         return VOLUME(model);
     } else {
-        return {
-            model: typeof model,
-        }
+        return model;
     }
 }
 
@@ -39,6 +37,7 @@ export const AUTHOR = (author: Author): object => {
         libraryId: author.libraryId,
         firstName: author.firstName,
         lastName: author.lastName,
+        _model: author._model,
     }
 }
 
@@ -54,6 +53,7 @@ export const LIBRARY = (library: Library): object => {
     return {
         id: library.id,
         name: library.name,
+        _model: library._model,
     }
 }
 
@@ -70,6 +70,7 @@ export const SERIES = (series: Series): object => {
         id: series.id,
         libraryId: series.libraryId,
         name: series.name,
+        _model: series._model,
     }
 }
 
@@ -86,6 +87,7 @@ export const STORY = (story: Story): object => {
         id: story.id,
         libraryId: story.libraryId,
         name: story.name,
+        _model: story._model,
     }
 }
 
@@ -118,6 +120,7 @@ export const VOLUME = (volume: Volume): object => {
         id: volume.id,
         libraryId: volume.libraryId,
         name: volume.name,
+        _model: volume._model,
     }
 }
 

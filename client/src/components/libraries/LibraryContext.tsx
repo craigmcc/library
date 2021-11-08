@@ -61,7 +61,7 @@ export const LibraryContextProvider = (props: any) => {
                 }
             });
         }
-        logger.debug({
+        logger.info({
             context: "LibraryContext.useEffect",
             loggedIn: loginContext.data.loggedIn,
             libraries: Abridgers.LIBRARIES(fetchLibraries.libraries),

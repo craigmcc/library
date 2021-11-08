@@ -80,4 +80,9 @@ export type HandleStory = (story: Story) => void;
 export type HandleUser = (user: User) => void;
 export type HandleVolume = (volume: Volume) => void;
 
+export type ProcessAuthor = (author: Author) => Promise<Author>;
+export type ProcessLibrary = (library: Library) => Promise<Library>;
+export type ProcessSeries = (series: Series) => Promise<Series>;
+export type ProcessStory = (story: Story) => Promise<Story>;
+export type ProcessUser = (user: User) => Promise<User>;
 export type ProcessVolume = (volume: Volume) => Promise<Volume>;

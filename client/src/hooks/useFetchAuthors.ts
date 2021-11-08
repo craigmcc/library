@@ -1,9 +1,9 @@
-// useFetchVolumes ---------------------------------------------------------
+// useFetchAuthors -----------------------------------------------------------
 
-// Custom hook to fetch Volume objects that correspond to input properties.
+// Custom hook to fetch Author objects that correspond to input properties.
 
-// If a "name" parameter is set, the match will be against all Volumes
-// for the owning Library.  Otherwise, all Volumes that correspond to the
+// If a "name" parameter is set, the match will be against all Authors
+// for the owning Library.  Otherwise, all Authors that correspond to the
 // specified "parent" object will be returned.
 
 // External Modules ----------------------------------------------------------
@@ -17,6 +17,7 @@ import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
 import Author, {AUTHORS_BASE} from "../models/Author";
 import Library, {LIBRARIES_BASE} from "../models/Library";
+import Series, {SERIES_BASE} from "../models/Series";
 import Story, {STORIES_BASE} from "../models/Story";
 import Volume, {VOLUMES_BASE} from "../models/Volume";
 import * as Abridgers from "../util/Abridgers";
@@ -29,39 +30,40 @@ import * as ToModel from "../util/ToModel";
 // Incoming Properties and Outgoing State ------------------------------------
 
 export interface Props {
-    active?: boolean;                   // Select only active Volumes? [false]
+    active?: boolean;                   // Select only active Authors? [false]
     currentPage?: number;               // One-relative page number [1]
-    name?: string;                      // Select Volumes with matching name? [none]
-    pageSize?: number;                  // Number of Volumes to be returned [25]
-    parent: Author | Library | Story;   // Parent object for retrieval
-    withAuthors?: boolean;              // Include child Authors? [false]
+    name?: string;                      // Select Authors with matching name? [none]
+    pageSize?: number;                  // Number of Authors to be returned [25]
+    parent: Library | Series | Story | Volume; // Parent object for retrieval
+    withSeries?: boolean;               // Include child Series? [false]
     withStories?: boolean;              // Include child Stories? [false]
+    withVolumes?: boolean;              // Include child Volumes? [false]
 }
 
 export interface State {
+    authors: Author[];                  // Fetched Authors
     error: Error | null;                // I/O error (if any)
     loading: boolean;                   // Are we currently loading?
-    volumes: Volume[];                  // Fetched Volumes
 }
 
 // Hook Details --------------------------------------------------------------
 
-const useFetchVolumes = (props: Props): State => {
+const useFetchAuthors = (props: Props): State => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
+    const [authors, setAuthors] = useState<Author[]>([]);
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [volumes, setVolumes] = useState<Volume[]>([]);
 
     useEffect(() => {
 
-        const fetchVolumes = async () => {
+        const fetchAuthors = async () => {
 
             setError(null);
             setLoading(true);
-            let theVolumes: Volume[] = [];
+            let theAuthors: Author[] = [];
 
             const limit = props.pageSize ? props.pageSize : 25;
             const offset = props.currentPage ? (limit * (props.currentPage - 1)) : 0;
@@ -70,71 +72,80 @@ const useFetchVolumes = (props: Props): State => {
                 limit: limit,
                 name: props.name ? props.name : undefined,
                 offset: offset,
-                withAuthors: props.withAuthors ? "" : undefined,
+                withSeries: props.withSeries ? "" : undefined,
                 withStories: props.withStories ? "" : undefined,
+                withVolumes: props.withVolumes ? "" : undefined,
             }
-            let url = LIBRARIES_BASE + `/${libraryContext.library.id}` + VOLUMES_BASE;
-            if (props.parent && (props.parent instanceof Author)) {
-                url = AUTHORS_BASE + `/${libraryContext.library.id}/${props.parent.id}` + VOLUMES_BASE;
+            let url = LIBRARIES_BASE + `/${libraryContext.library.id}` + AUTHORS_BASE;
+            if (props.parent && (props.parent instanceof Series)) {
+                url = SERIES_BASE + `/${libraryContext.library.id}/${props.parent.id}` + AUTHORS_BASE;
             } else if (props.parent && (props.parent instanceof Story)) {
-                url = STORIES_BASE + `/${libraryContext.library.id}/${props.parent.id}` + VOLUMES_BASE;
+                url = STORIES_BASE + `/${libraryContext.library.id}/${props.parent.id}` + AUTHORS_BASE;
+            } else if (props.parent && (props.parent instanceof Volume)) {
+                url = VOLUMES_BASE + `/${libraryContext.library.id}/${props.parent.id}` + AUTHORS_BASE;
             }
             url += queryParameters(parameters);
 
             try {
                 let tryFetch = loginContext.data.loggedIn && (libraryContext.library.id > 0);
+                if (props.parent && (props.parent.id < 0)) {
+                    tryFetch = false;
+                }
                 if (tryFetch) {
-                    theVolumes = ToModel.VOLUMES((await Api.get<Volume[]>(url)).data);
-                    theVolumes.forEach(theVolume => {
-                        if (theVolume.authors && (theVolume.authors.length > 0)) {
-                            theVolume.authors = Sorters.AUTHORS(theVolume.authors);
+                    theAuthors = ToModel.AUTHORS((await Api.get(url)).data);
+                    theAuthors.forEach(theAuthor => {
+                        if (theAuthor.series && (theAuthor.series.length > 0)) {
+                            theAuthor.series = Sorters.SERIESES(theAuthor.series);
                         }
-                        if (theVolume.stories && (theVolume.stories.length > 0)) {
-                            theVolume.stories = Sorters.STORIES(theVolume.stories);
+                        if (theAuthor.stories && (theAuthor.stories.length > 0)) {
+                            theAuthor.stories = Sorters.STORIES(theAuthor.stories);
+                        }
+                        if (theAuthor.volumes && (theAuthor.volumes.length > 0)) {
+                            theAuthor.volumes = Sorters.VOLUMES(theAuthor.volumes);
                         }
                     });
                     logger.info({
-                        context: "useFetchVolumes.fetchVolumes",
+                        context: "useFetchAuthors.fetchAuthors",
                         library: Abridgers.LIBRARY(libraryContext.library),
                         parent: Abridgers.ANY(props.parent),
                         url: url,
-                        volumes: Abridgers.VOLUMES(theVolumes),
+                        authors: Abridgers.AUTHORS(theAuthors),
                     });
                 } else {
                     logger.info({
-                        context: "useFetchVolumes.fetchVolumes",
-                        msg: "Skipped fetching Volumes",
+                        context: "useFetchAuthors.fetchAuthors",
+                        msg: "Skipped fetching Authors",
                         library: Abridgers.LIBRARY(libraryContext.library),
-                        parent: Abridgers.ANY(props.parent),
                         url: url,
+                        parent: Abridgers.ANY(props.parent),
                         loggedIn: loginContext.data.loggedIn,
                     });
                 }
             } catch (error) {
                 setError(error as Error);
-                ReportError("useFetchVolumes.fetchVolumes", error, {
+                ReportError("useFetchAuthors.fetchAuthors", error, {
                     parameters: parameters,
                 });
             }
 
-            setVolumes(theVolumes);
+            setAuthors(theAuthors);
             setLoading(false);
 
         }
 
-        fetchVolumes();
+        fetchAuthors();
 
     }, [props.active, props.currentPage, props.name, props.pageSize,
-        props.parent, props.withAuthors, props.withStories,
+        props.parent, props.withSeries, props.withStories, props.withVolumes,
         libraryContext.library, libraryContext.library.id,
         loginContext.data.loggedIn]);
 
     return {
+        authors: authors,
         error: error ? error : null,
         loading: loading,
-        volumes: volumes,
     }
 
 }
 
-export default useFetchVolumes;
+export default useFetchAuthors;

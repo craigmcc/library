@@ -1,6 +1,6 @@
-// useFetchVolume ------------------------------------------------------------
+// useFetchAuthor ------------------------------------------------------------
 
-// Custom hook to fetch the Volume with the specified ID, with all nested
+// Custom hook to fetch the Author with the specified ID, with all nested
 // objects, as long as it belongs to the current Library.
 
 // External Modules ----------------------------------------------------------
@@ -12,7 +12,7 @@ import {useContext, useEffect, useState} from "react";
 import Api from "../clients/Api";
 import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
-import Volume, {VOLUMES_BASE} from "../models/Volume";
+import Author, {AUTHORS_BASE} from "../models/Author";
 import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
 import {queryParameters} from "../util/QueryParameters";
@@ -23,60 +23,64 @@ import * as ToModel from "../util/ToModel";
 // Incoming Properties and Outgoing State ------------------------------------
 
 export interface Props {
-    volumeId: number;                   // ID of the Volume to be fetched
+    authorId: number;                   // ID of the Author to be fetched
 }
 
 export interface State {
     error: Error | null;                // I/O error (if any)
     loading: boolean;                   // Are we currently loading?
-    volume: Volume;                     // Fetched Volume
+    author: Author;                     // Fetched Author
 }
 
 // Hook Details --------------------------------------------------------------
 
-const useFetchVolume = (props: Props): State => {
+const useFetchAuthor = (props: Props): State => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
+    const [author, setAuthor] = useState<Author>(new Author());
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [volume, setVolume] = useState<Volume>(new Volume());
 
     useEffect(() => {
 
-        const fetchVolume = async () => {
+        const fetchAuthor = async () => {
 
             setError(null);
             setLoading(true);
-            let theVolume = new Volume();
+            let theAuthor = new Author();
             const parameters = {
-                withAuthors: "",
+                withSeries: "",
                 withStories: "",
+                withVolumes: "",
             }
-            let url = VOLUMES_BASE +
-                `/${libraryContext.library.id}/${props.volumeId}${queryParameters(parameters)}`;
+            let url = AUTHORS_BASE +
+                `/${libraryContext.library.id}/${props.authorId}${queryParameters(parameters)}`;
 
             try {
-                let tryFetch = loginContext.data.loggedIn && (props.volumeId > 0);
+                let tryFetch = loginContext.data.loggedIn && (props.authorId > 0);
                 if (tryFetch) {
-                    const theVolume = ToModel.VOLUME((await Api.get<Volume>(url)).data);
-                    if (theVolume.authors && (theVolume.authors.length > 0)) {
-                        theVolume.authors = Sorters.AUTHORS(theVolume.authors);
+                    theAuthor = ToModel.AUTHOR((await Api.get(url)).data);
+                    if (theAuthor.series && (theAuthor.series.length > 0)) {
+                        theAuthor.series = Sorters.SERIESES(theAuthor.series);
                     }
-                    if (theVolume.stories && (theVolume.stories.length > 0)) {
-                        theVolume.stories = Sorters.STORIES(theVolume.stories);
+                    if (theAuthor.stories && (theAuthor.stories.length > 0)) {
+                        theAuthor.stories = Sorters.STORIES(theAuthor.stories);
+                    }
+                    if (theAuthor.volumes && (theAuthor.volumes.length > 0)) {
+                        theAuthor.volumes = Sorters.VOLUMES(theAuthor.volumes);
                     }
                     logger.debug({
-                        context: "useFetchVolume.fetchVolume",
+                        context: "useFetchAuthor.fetchAuthor",
                         library: Abridgers.LIBRARY(libraryContext.library),
                         url: url,
-                        volume: Abridgers.VOLUME(theVolume),
+                        author: Abridgers.AUTHOR(theAuthor),
                     });
                 } else {
                     logger.debug({
-                        context: "useFetchVolume.fetchVolume",
-                        msg: "Skipped fetching Volume",
+                        context: "useFetchAuthor.fetchAuthor",
+                        msg: "Skipped fetching Author",
                         library: Abridgers.LIBRARY(libraryContext.library),
                         url: url,
                         loggedIn: loginContext.data.loggedIn,
@@ -84,28 +88,28 @@ const useFetchVolume = (props: Props): State => {
                 }
             } catch (error) {
                 setError(error as Error);
-                ReportError("useFetchVolume.fetchVolume", error, {
+                ReportError("useFetchAuthor.fetchAuthor", error, {
                     library: Abridgers.LIBRARY(libraryContext.library),
-                    volumeId: props.volumeId,
+                    authorId: props.authorId,
                     parameters: parameters,
                 });
             }
 
-            setVolume(theVolume);
+            setAuthor(theAuthor);
             setLoading(false);
 
         }
 
-        fetchVolume();
+        fetchAuthor();
 
-    }, [props.volumeId, libraryContext.library, loginContext.data.loggedIn]);
+    }, [props.authorId, libraryContext.library, loginContext.data.loggedIn]);
 
     return {
+        author: author,
         error: error ? error : null,
         loading: loading,
-        volume: volume,
     }
 
 }
 
-export default useFetchVolume;
+export default useFetchAuthor;

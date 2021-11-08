@@ -83,29 +83,28 @@ export const LoginContextProvider = (props: any) => {
 
     const handleLogin = async (username: string, tokenResponse: TokenResponse): Promise<void> => {
 
-        logger.info({
-            context: "LoginContext.handleLogin",
-            username: username,
-            scope: tokenResponse.scope,
-        });
-
         // Save allowed scope(s) and set logging level
-        let found = false;
+        let logLevel = LOG_DEFAULT;
         if (tokenResponse.scope) {
             const theAlloweds = tokenResponse.scope.split(" ");
             setAlloweds(theAlloweds);
             theAlloweds.forEach(allowed => {
                 if (allowed.startsWith(LOG_PREFIX)) {
-                    setLevel(allowed.substr(LOG_PREFIX.length));
-                    found = true;
+                    logLevel = allowed.substr(LOG_PREFIX.length);
                 }
             })
         } else {
             setAlloweds([]);
         }
-        if (!found) {
-            setLevel(LOG_DEFAULT);
-        }
+        setLevel(logLevel);
+
+        // Document this login
+        logger.info({
+            context: "LoginContext.handleLogin",
+            username: username,
+            scope: tokenResponse.scope,
+            logLevel: logLevel,
+        });
 
         // Prepare the data that will be visible to components and statically
         const theData: Data = {
