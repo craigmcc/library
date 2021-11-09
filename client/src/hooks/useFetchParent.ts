@@ -76,7 +76,7 @@ const useFetchParent = (props: Props): State => {
                 if (theAuthor.volumes && (theAuthor.volumes.length > 0)) {
                     theAuthor.volumes = Sorters.VOLUMES(theAuthor.volumes);
                 }
-                logger.debug({
+                logger.info({
                     context: "useFetchParent.fetchAuthor",
                     library: Abridgers.LIBRARY(libraryContext.library),
                     url: url,
@@ -84,7 +84,7 @@ const useFetchParent = (props: Props): State => {
                 });
                 setParent(theAuthor);
             } else {
-                logger.debug({
+                logger.info({
                     context: "useFetchParent.fetchAuthor",
                     msg: "Skipped fetching Author",
                     library: Abridgers.LIBRARY(libraryContext.library),

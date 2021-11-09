@@ -88,3 +88,9 @@ export type ProcessSeries = (series: Series) => Promise<Series>;
 export type ProcessStory = (story: Story) => Promise<Story>;
 export type ProcessUser = (user: User) => Promise<User>;
 export type ProcessVolume = (volume: Volume) => Promise<Volume>;
+
+export type ProcessAuthorParent = (author: Author, parent: Parent) => Promise<Author>;
+export type ProcessSeriesParent = (series: Series, parent: Parent) => Promise<Series>;
+export type ProcessStoryParent = (story: Story, parent: Parent) => Promise<Story>;
+export type ProcessVolumeParent = (volume: Volume, parent: Parent) => Promise<Volume>;
+

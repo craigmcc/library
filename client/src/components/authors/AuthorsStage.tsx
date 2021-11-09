@@ -21,6 +21,10 @@ import {HandleAction, HandleAuthor, Parent, Scope} from "../../types";
 import useFetchParent from "../../hooks/useFetchParent";
 import useMutateAuthor from "../../hooks/useMutateAuthor";
 import Author from "../../models/Author";
+import Library from "../../models/Library";
+import Series from "../../models/Series";
+import Story from "../../models/Story";
+import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 
@@ -87,13 +91,33 @@ const AuthorsStage = (props: Props) => {
         setAuthor(theAuthor);
     }
 
+    const handleExclude: HandleAuthor = async (theAuthor) => {
+        logger.info({
+            context: "AuthorsStage.handleExclude",
+            author: Abridgers.AUTHOR(theAuthor),
+            parent: Abridgers.ANY(fetchParent.parent),
+        });
+        /* const excluded = */ await mutateAuthor.exclude(theAuthor, fetchParent.parent);
+        setAuthor(null);
+    }
+
+    const handleInclude: HandleAuthor = async (theAuthor) => {
+        logger.info({
+            context: "AuthorsStage.handleInclude",
+            author: Abridgers.AUTHOR(theAuthor),
+            parent: Abridgers.ANY(fetchParent.parent),
+        });
+        /* const included = */ await mutateAuthor.include(theAuthor, fetchParent.parent);
+        fetchParent.refresh();
+    }
+
     const handleInsert: HandleAuthor = async (theAuthor) => {
         logger.info({
             context: "AuthorsStage.handleInsert",
             author: Abridgers.AUTHOR(theAuthor),
         });
         /* const inserted = */ await mutateAuthor.insert(theAuthor);
-        setAuthor(null);
+        fetchParent.refresh();
     }
 
     const handleRemove: HandleAuthor = async (theAuthor) => {
@@ -124,6 +148,24 @@ const AuthorsStage = (props: Props) => {
         setAuthor(null); // TODO - trigger refresh somehow?
     }
 
+    const included = (theAuthor: Author): boolean => {
+        let result = false;
+        if (fetchParent.parent instanceof Library) {
+            result = true;
+        } else if ((fetchParent.parent instanceof Series)
+                    || (fetchParent.parent instanceof Story)
+                    || (fetchParent.parent instanceof Volume)) {
+            if (fetchParent.parent.authors) {
+                fetchParent.parent.authors.forEach(author => {
+                    if (theAuthor.id === author.id) {
+                        result = true;
+                    }
+                });
+            }
+        }
+        return result;
+    }
+
     return (
         <Container fluid id="AuthorsStage">
 
@@ -141,8 +183,12 @@ const AuthorsStage = (props: Props) => {
                     <AuthorsList
                         handleAdd={canInsert ? handleAdd : undefined}
                         handleEdit={(canInsert || canUpdate) ? handleEdit : undefined}
-                        // TODO - handleExclude and handleInclude when supported
+                        handleExclude=
+                            {(canInsert || canUpdate) && !(fetchParent.parent instanceof Library) ? handleExclude : undefined}
+                        handleInclude=
+                            {(canInsert || canUpdate) && !(fetchParent.parent instanceof Library) ? handleInclude : undefined}
                         handleSelect={handleSelect}
+                        included={included}
                         parent={fetchParent.parent}
                     />
 

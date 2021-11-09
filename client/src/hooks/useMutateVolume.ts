@@ -8,7 +8,7 @@ import {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import {ProcessVolume} from "../types";
+import {ProcessVolume, ProcessVolumeParent} from "../types";
 import Api from "../clients/Api";
 import LibraryContext from "../components/libraries/LibraryContext";
 import Volume, {VOLUMES_BASE} from "../models/Volume";
@@ -24,6 +24,8 @@ export interface Props {
 export interface State {
     error: Error | null;                // I/O error (if any)
     executing: boolean;                 // Are we currently executing?
+    exclude: ProcessVolumeParent;       // Function to exclude a Volume from a Parent
+    include: ProcessVolumeParent;       // Function to include a Volume with a Parent
     insert: ProcessVolume;              // Function to insert a new Volume
     remove: ProcessVolume;              // Function to remove an existing Volume
     update: ProcessVolume;              // Function to update an existing Volume
@@ -43,6 +45,14 @@ const useMutateVolume = (props: Props): State => {
             context: "useMutateVolume.useEffect",
         });
     });
+
+    const exclude: ProcessVolumeParent = async (theVolume, theParent) => {
+        return new Volume(); // TODO - temp
+    }
+
+    const include: ProcessVolumeParent = async (theVolume, theParent) => {
+        return new Volume(); // TODO - temp
+    }
 
     const insert: ProcessVolume = async (theVolume) => {
 
@@ -122,6 +132,8 @@ const useMutateVolume = (props: Props): State => {
     return {
         error: error,
         executing: executing,
+        exclude: exclude,
+        include: include,
         insert: insert,
         remove: remove,
         update: update,

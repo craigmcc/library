@@ -8,12 +8,16 @@ import {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import {ProcessAuthor} from "../types";
+import {ProcessAuthor, ProcessAuthorParent} from "../types";
 import Api from "../clients/Api";
 import LibraryContext from "../components/libraries/LibraryContext";
 import Author, {AUTHORS_BASE} from "../models/Author";
+import Series from "../models/Series";
+import Story from "../models/Story";
+import Volume from "../models/Volume";
 import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
+import {queryParameters} from "../util/QueryParameters";
 import ReportError from "../util/ReportError";
 
 // Incoming Properties and Outgoing State ------------------------------------
@@ -24,6 +28,8 @@ export interface Props {
 export interface State {
     error: Error | null;                // I/O error (if any)
     executing: boolean;                 // Are we currently executing?
+    exclude: ProcessAuthorParent;       // Function to exclude an Author from a Parent
+    include: ProcessAuthorParent;       // Function to include an Author with a Parent
     insert: ProcessAuthor;              // Function to insert a new Author
     remove: ProcessAuthor;              // Function to remove an existing Author
     update: ProcessAuthor;              // Function to update an existing Author
@@ -43,6 +49,76 @@ const useMutateAuthor = (props: Props): State => {
             context: "useMutateAuthor.useEffect",
         });
     });
+
+    const exclude: ProcessAuthorParent = async (theAuthor, theParent) => {
+        let parentPlural = "";
+        if (theParent instanceof Series) {
+            parentPlural = "series";
+        } else if (theParent instanceof Story) {
+            parentPlural = "stories";
+        } else if (theParent instanceof Volume) {
+            parentPlural = "volumes";
+        }
+        const url = AUTHORS_BASE
+            + `/${libraryContext.library.id}/${theAuthor.id}/${parentPlural}/${theParent.id}`;
+        setError(null);
+        setExecuting(true);
+        try {
+            await Api.delete(url);
+            logger.info({
+                context: "useMutateAuthor.exclude",
+                author: Abridgers.AUTHOR(theAuthor),
+                parent: Abridgers.ANY(theParent),
+                url: url,
+            });
+        } catch (error) {
+            setError(error as Error);
+            ReportError("useMutateAuthor.exclude", error, {
+                author: Abridgers.AUTHOR(theAuthor),
+                parent: Abridgers.ANY(theParent),
+                url: url,
+            })
+        }
+        setExecuting(false);
+        return theAuthor;
+    }
+
+    const include: ProcessAuthorParent = async (theAuthor, theParent) => {
+        const parameters = {
+            principal: theAuthor.principal ? "" : undefined
+        }
+        let parentPlural = "";
+        if (theParent instanceof Series) {
+            parentPlural = "series";
+        } else if (theParent instanceof Story) {
+            parentPlural = "stories";
+        } else if (theParent instanceof Volume) {
+            parentPlural = "volumes";
+        }
+        const url = AUTHORS_BASE
+            + `/${libraryContext.library.id}/${theAuthor.id}/${parentPlural}/${theParent.id}`
+            + queryParameters(parameters);
+        setError(null);
+        setExecuting(true);
+        try {
+            await Api.post(url);
+            logger.info({
+                context: "useMutateAuthor.include",
+                author: Abridgers.AUTHOR(theAuthor),
+                parent: Abridgers.ANY(theParent),
+                url: url,
+            });
+        } catch (error) {
+            setError(error as Error);
+            ReportError("useMutateAuthor.include", error, {
+                author: Abridgers.AUTHOR(theAuthor),
+                parent: Abridgers.ANY(theParent),
+                url: url,
+            })
+        }
+        setExecuting(false);
+        return theAuthor;
+    }
 
     const insert: ProcessAuthor = async (theAuthor) => {
 
@@ -122,6 +198,8 @@ const useMutateAuthor = (props: Props): State => {
     return {
         error: error,
         executing: executing,
+        exclude: exclude,
+        include: include,
         insert: insert,
         remove: remove,
         update: update,
