@@ -51,14 +51,16 @@ const VolumesStage = (props: Props) => {
     useEffect(() => {
         logger.info({
             context: "VolumesStage.useEffect",
-            parent: Abridgers.ANY(props.parent),
+            parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
         });
-        setCanInsert(loginContext.validateLibrary(libraryContext.library));
-        setCanRemove(loginContext.validateScope(Scope.SUPERUSER));
-        setCanSave(loginContext.validateLibrary(libraryContext.library));
+        const isAdmin = loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
+        const isRegular = loginContext.validateLibrary(libraryContext.library, Scope.REGULAR);
+        const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
+        setCanInsert(isAdmin || isRegular || isSuperuser);
+        setCanRemove(isSuperuser);
+        setCanSave(isAdmin || isRegular || isSuperuser);
     }, [props.parent,
-        libraryContext.library, libraryContext.library.id,
-        loginContext, loginContext.data.loggedIn]);
+        libraryContext.library, libraryContext.library.id, loginContext]);
 
     const handleAdd: HandleAction = () => {
         const theVolume = new Volume({
@@ -73,7 +75,7 @@ const VolumesStage = (props: Props) => {
             read: false,
             type: "Single",
         });
-        logger.debug({
+        logger.info({
             context: "VolumesStage.handleAdd",
             volume: theVolume,
         });
@@ -81,7 +83,7 @@ const VolumesStage = (props: Props) => {
     }
 
     const handleEdit: HandleVolume = async (theVolume) => {
-        logger.debug({
+        logger.info({
             context: "VolumesStage.handleEdit",
             volume: Abridgers.VOLUME(theVolume),
         });
@@ -89,7 +91,7 @@ const VolumesStage = (props: Props) => {
     }
 
     const handleInsert: HandleVolume = async (theVolume) => {
-        logger.debug({
+        logger.info({
             context: "VolumesStage.handleInsert",
             volume: Abridgers.VOLUME(theVolume),
         });
@@ -98,7 +100,7 @@ const VolumesStage = (props: Props) => {
     }
 
     const handleRemove: HandleVolume = async (theVolume) => {
-        logger.debug({
+        logger.info({
             context: "VolumesStage.handleRemove",
             volume: Abridgers.VOLUME(theVolume),
         });
@@ -107,7 +109,7 @@ const VolumesStage = (props: Props) => {
     }
 
     const handleSelect: HandleVolume = (theVolume) => {
-        logger.debug({
+        logger.info({
             context: "VolumessStage.handleSelect",
             volume: Abridgers.VOLUME(theVolume),
         });
@@ -140,9 +142,8 @@ const VolumesStage = (props: Props) => {
                     </Row>
 
                     <VolumesList
-                        canInsert={canInsert}
-                        handleAdd={handleAdd}
-                        handleEdit={handleEdit}
+                        handleAdd={canInsert ? handleAdd : undefined}
+                        handleEdit={canSave ? handleEdit : undefined}
                         handleSelect={handleSelect}
                         parent={fetchParent.parent}
                     />

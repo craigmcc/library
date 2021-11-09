@@ -32,11 +32,14 @@ const VolumesView = () => {
     const [volume, setVolume] = useState<Volume>(new Volume());
 
     useEffect(() => {
-        logger.debug({
+        logger.info({
             context: "VolumesView.useEffect",
+            stage: stage,
+            volume: Abridgers.VOLUME(volume),
         });
     }, [stage, volume,
-        libraryContext.library.id, loginContext.data.loggedIn]);
+        libraryContext.library, libraryContext.library.id,
+        loginContext.data.loggedIn]);
 
     const handleStage: HandleStage = (theStage) => {
         logger.info({
@@ -46,6 +49,7 @@ const VolumesView = () => {
         setStage(theStage);
     }
 
+    // Continue based on the user selecting a tab header
     const handleSelect = (select: string | null): void => {
         if (select) {
             switch (select) {
@@ -69,10 +73,12 @@ const VolumesView = () => {
         setStage(Stage.VOLUMES);
     }
 
+    // Continue based on the user selecting a Volume in Stage.VOLUMES
     const handleVolume: HandleVolume = (theVolume) => {
         logger.info({
             context: "VolumesView.handleVolume",
-            volume: Abridgers.VOLUME(theVolume),
+            oldVolume: Abridgers.VOLUME(volume),
+            newVolume: Abridgers.VOLUME(theVolume),
         });
         setVolume(volume);
         handleStage(Stage.AUTHORS);

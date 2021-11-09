@@ -19,7 +19,7 @@ import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleBoolean, HandleVolume, HandleValue, OnAction, Parent} from "../../types";
+import {HandleAction, HandleBoolean, HandleVolume, HandleValue, Parent} from "../../types";
 import useFetchVolumes from "../../hooks/useFetchVolumes";
 import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
@@ -29,8 +29,7 @@ import {authorsNames, listValue} from "../../util/Transformations";
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
-    canInsert?: boolean;                // Can this user add Volumes? [false]
-    handleAdd: OnAction;                // Handle request to add a Volume
+    handleAdd?: HandleAction;           // Handle request to add a Volume [no handler]
     handleEdit?: HandleVolume;          // Handle request to edit a Volume [no handler]
     handleExclude?: HandleVolume;       // Handle request to exclude a Volume [no handler]
     handleInclude?: HandleVolume;       // Handle request to include a Volume [no handler]
@@ -94,11 +93,11 @@ const VolumesList = (props: Props) => {
         }
     }
 
-    const handleNext: OnAction = () => {
+    const handleNext: HandleAction = () => {
         setCurrentPage(currentPage + 1);
     }
 
-    const handlePrevious: OnAction = () => {
+    const handlePrevious: HandleAction = () => {
         setCurrentPage(currentPage - 1);
     }
 
@@ -150,7 +149,7 @@ const VolumesList = (props: Props) => {
                 </Col>
                 <Col className="text-end">
                     <Button
-                        disabled={!props.canInsert}
+                        disabled={!props.handleAdd}
                         onClick={props.handleAdd}
                         size="sm"
                         variant="primary"
@@ -220,7 +219,7 @@ const VolumesList = (props: Props) => {
                                         onClick={() => handleEdit(volume)}
                                         size="sm"
                                         type="button"
-                                        variant="secondary"
+                                        variant="primary"
                                     >Edit</Button>
                                 ) : null }
                                 {(props.handleExclude) ? (
@@ -230,7 +229,7 @@ const VolumesList = (props: Props) => {
                                         onClick={() => handleExclude(volume)}
                                         size="sm"
                                         type="button"
-                                        variant="primary"
+                                        variant="secondary"
                                     >Exclude</Button>
                                 ) : null }
                                 {(props.handleInclude) ? (
@@ -240,7 +239,7 @@ const VolumesList = (props: Props) => {
                                         onClick={() => handleInclude(volume)}
                                         size="sm"
                                         type="button"
-                                        variant="primary"
+                                        variant="secondary"
                                     >Include</Button>
                                 ) : null }
                                 {(props.handleSelect) ? (
@@ -249,7 +248,7 @@ const VolumesList = (props: Props) => {
                                         onClick={() => handleSelect(volume)}
                                         size="sm"
                                         type="button"
-                                        variant="secondary"
+                                        variant="primary"
                                     >Select</Button>
                                 ) : null }
                             </td>
@@ -263,7 +262,7 @@ const VolumesList = (props: Props) => {
             <Row className="mb-3">
                 <Col className="text-end">
                     <Button
-                        disabled={!props.canInsert}
+                        disabled={!props.handleAdd}
                         onClick={props.handleAdd}
                         size="sm"
                         variant="primary"

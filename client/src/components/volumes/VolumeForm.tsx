@@ -318,7 +318,7 @@ const VolumeForm = (props: Props) => {
                             <Row className="mb-3">
                                 <Col className="col-11">
                                     <Button
-                                        disabled={isSubmitting}
+                                        disabled={isSubmitting || !props.canSave}
                                         size="sm"
                                         type="submit"
                                         variant="primary"
