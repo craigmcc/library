@@ -121,7 +121,7 @@ const VolumesStage = (props: Props) => {
     }
 
     const handleUpdate: HandleVolume = async (theVolume) => {
-        logger.debug({
+        logger.info({
             context: "VolumesStage.handleUpdate",
             volume: Abridgers.VOLUME(theVolume),
         });

@@ -62,8 +62,10 @@ const AuthorsList = (props: Props) => {
         logger.info({
             context: "AuthorsList.useEffect",
             parent: Abridgers.ANY(props.parent),
+            active: active,
+            name: searchText,
         });
-    }, [searchText, props.parent,
+    }, [active, searchText, props.parent,
         fetchAuthors.authors,
         libraryContext.library, libraryContext.library.id,
         loginContext.data.loggedIn]);

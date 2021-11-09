@@ -92,8 +92,8 @@ const AuthorsStage = (props: Props) => {
             context: "AuthorsStage.handleInsert",
             author: Abridgers.AUTHOR(theAuthor),
         });
-        const inserted = await mutateAuthor.insert(theAuthor);
-        handleSelect(inserted);
+        /* const inserted = */ await mutateAuthor.insert(theAuthor);
+        setAuthor(null);
     }
 
     const handleRemove: HandleAuthor = async (theAuthor) => {

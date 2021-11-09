@@ -75,9 +75,9 @@ const useFetchVolumes = (props: Props): State => {
                 withStories: props.withStories ? "" : undefined,
             }
             let url = LIBRARIES_BASE + `/${libraryContext.library.id}` + VOLUMES_BASE;
-            if (props.parent && (props.parent instanceof Author)) {
+            if (!props.name && (props.parent instanceof Author)) {
                 url = AUTHORS_BASE + `/${libraryContext.library.id}/${props.parent.id}` + VOLUMES_BASE;
-            } else if (props.parent && (props.parent instanceof Story)) {
+            } else if (!props.name && (props.parent instanceof Story)) {
                 url = STORIES_BASE + `/${libraryContext.library.id}/${props.parent.id}` + VOLUMES_BASE;
             }
             url += queryParameters(parameters);
@@ -98,6 +98,8 @@ const useFetchVolumes = (props: Props): State => {
                         context: "useFetchVolumes.fetchVolumes",
                         library: Abridgers.LIBRARY(libraryContext.library),
                         parent: Abridgers.ANY(props.parent),
+                        active: props.active,
+                        name: props.name,
                         url: url,
                         volumes: Abridgers.VOLUMES(theVolumes),
                     });
@@ -107,6 +109,8 @@ const useFetchVolumes = (props: Props): State => {
                         msg: "Skipped fetching Volumes",
                         library: Abridgers.LIBRARY(libraryContext.library),
                         parent: Abridgers.ANY(props.parent),
+                        active: props.active,
+                        name: props.name,
                         url: url,
                         loggedIn: loginContext.data.loggedIn,
                     });

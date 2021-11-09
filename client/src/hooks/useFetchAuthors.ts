@@ -78,11 +78,11 @@ const useFetchAuthors = (props: Props): State => {
                 withVolumes: props.withVolumes ? "" : undefined,
             }
             let url = LIBRARIES_BASE + `/${libraryContext.library.id}` + AUTHORS_BASE;
-            if (props.parent && (props.parent instanceof Series)) {
+            if (!props.name && (props.parent instanceof Series)) {
                 url = SERIES_BASE + `/${libraryContext.library.id}/${props.parent.id}` + AUTHORS_BASE;
-            } else if (props.parent && (props.parent instanceof Story)) {
+            } else if (!props.name && (props.parent instanceof Story)) {
                 url = STORIES_BASE + `/${libraryContext.library.id}/${props.parent.id}` + AUTHORS_BASE;
-            } else if (props.parent && (props.parent instanceof Volume)) {
+            } else if (!props.name && (props.parent instanceof Volume)) {
                 url = VOLUMES_BASE + `/${libraryContext.library.id}/${props.parent.id}` + AUTHORS_BASE;
             }
             url += queryParameters(parameters);
@@ -109,6 +109,8 @@ const useFetchAuthors = (props: Props): State => {
                         context: "useFetchAuthors.fetchAuthors",
                         library: Abridgers.LIBRARY(libraryContext.library),
                         parent: Abridgers.ANY(props.parent),
+                        active: props.active,
+                        name: props.name,
                         url: url,
                         authors: Abridgers.AUTHORS(theAuthors),
                     });
@@ -117,8 +119,10 @@ const useFetchAuthors = (props: Props): State => {
                         context: "useFetchAuthors.fetchAuthors",
                         msg: "Skipped fetching Authors",
                         library: Abridgers.LIBRARY(libraryContext.library),
-                        url: url,
                         parent: Abridgers.ANY(props.parent),
+                        active: props.active,
+                        name: props.name,
+                        url: url,
                         loggedIn: loginContext.data.loggedIn,
                     });
                 }
