@@ -40,7 +40,7 @@ const VolumesStage = (props: Props) => {
 
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
-    const [canSave, setCanSave] = useState<boolean>(false);
+    const [canUpdate, setCanUpdate] = useState<boolean>(false);
     const [volume, setVolume] = useState<Volume | null>(null);
 
     const fetchParent = useFetchParent({
@@ -51,16 +51,19 @@ const VolumesStage = (props: Props) => {
     useEffect(() => {
         logger.info({
             context: "VolumesStage.useEffect",
-            parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
+            parent: Abridgers.ANY(props.parent),
         });
         const isAdmin = loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
-        const isRegular = loginContext.validateLibrary(libraryContext.library, Scope.REGULAR);
+        // const isRegular = loginContext.validateLibrary(libraryContext.library, Scope.REGULAR);
         const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
-        setCanInsert(isAdmin || isRegular || isSuperuser);
+        setCanInsert(isAdmin || isSuperuser);
         setCanRemove(isSuperuser);
-        setCanSave(isAdmin || isRegular || isSuperuser);
-    }, [props.parent,
-        libraryContext.library, libraryContext.library.id, loginContext]);
+        setCanUpdate(isAdmin || isSuperuser);
+    }, [volume,
+        props.parent,
+        fetchParent.parent,
+        libraryContext.library, libraryContext.library.id,
+        loginContext, loginContext.data.loggedIn]);
 
     const handleAdd: HandleAction = () => {
         const theVolume = new Volume({
@@ -143,7 +146,8 @@ const VolumesStage = (props: Props) => {
 
                     <VolumesList
                         handleAdd={canInsert ? handleAdd : undefined}
-                        handleEdit={canSave ? handleEdit : undefined}
+                        handleEdit={(canInsert || canUpdate) ? handleEdit : undefined}
+                        // TODO - handleExclude and handleInclude when supported
                         handleSelect={handleSelect}
                         parent={fetchParent.parent}
                     />
@@ -179,11 +183,9 @@ const VolumesStage = (props: Props) => {
 
                     <VolumeForm
                         autoFocus
-                        canRemove={canRemove}
-                        canSave={canSave}
-                        handleInsert={handleInsert}
-                        handleRemove={handleRemove}
-                        handleUpdate={handleUpdate}
+                        handleInsert={canInsert ? handleInsert : undefined}
+                        handleRemove={canRemove ? handleRemove : undefined}
+                        handleUpdate={canUpdate ? handleUpdate : undefined}
                         volume={volume}
                     />
 

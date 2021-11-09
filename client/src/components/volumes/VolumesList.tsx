@@ -29,11 +29,11 @@ import {authorsNames, listValue} from "../../util/Transformations";
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
-    handleAdd?: HandleAction;           // Handle request to add a Volume [no handler]
-    handleEdit?: HandleVolume;          // Handle request to edit a Volume [no handler]
-    handleExclude?: HandleVolume;       // Handle request to exclude a Volume [no handler]
-    handleInclude?: HandleVolume;       // Handle request to include a Volume [no handler]
-    handleSelect?: HandleVolume;        // Handle request to select a Volume [no handler]
+    handleAdd?: HandleAction;           // Handle request to add a Volume [not allowed]
+    handleEdit?: HandleVolume;          // Handle request to edit a Volume [not allowed]
+    handleExclude?: HandleVolume;       // Handle request to exclude a Volume [not allowed]
+    handleInclude?: HandleVolume;       // Handle request to include a Volume [not allowed]
+    handleSelect?: HandleVolume;        // Handle request to select a Volume [not allowed]
     included?: (volume: Volume) => boolean; // Is this Volume included in parent? [true]
     parent: Parent;                    // Parent object for Volumes
 }
@@ -64,8 +64,10 @@ const VolumesList = (props: Props) => {
             context: "VolumesList.useEffect",
             parent: Abridgers.ANY(props.parent),
         });
-    }, [props.parent, fetchVolumes.volumes,
-        libraryContext.library.id, loginContext.data.loggedIn]);
+    }, [searchText, props.parent,
+        fetchVolumes.volumes,
+        libraryContext, libraryContext.library.id,
+        loginContext.data.loggedIn]);
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);

@@ -26,11 +26,9 @@ import {toEmptyStrings, toNullValues} from "../../util/Transformations";
 
 export interface Props {
     autoFocus?: boolean;                // Should the first element receive autofocus? [false]
-    canRemove?: boolean;                // Can Remove be performed? [false]
-    canSave?: boolean;                  // Can Save be performed? [false]
-    handleInsert: HandleVolume;         // Handle (Volume) insert request
-    handleRemove: HandleVolume;         // Handle (Volume) remove request
-    handleUpdate: HandleVolume;         // Handle (Volume) update request
+    handleInsert?: HandleVolume;        // Handle (Volume) insert request [not allowed]
+    handleRemove?: HandleVolume;        // Handle (Volume) remove request [not allowed]
+    handleUpdate?: HandleVolume;        // Handle (Volume) update request [not allowed]
     volume: Volume;                     // Initial values (id<0 for adding)
 }
 
@@ -43,9 +41,9 @@ const VolumeForm = (props: Props) => {
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
     const handleSubmit = (values: FormikValues, actions: FormikHelpers<FormikValues>): void => {
-        if (adding) {
+        if (adding && props.handleInsert) {
             props.handleInsert(ToModel.VOLUME(toNullValues(values)));
-        } else {
+        } else if (props.handleUpdate) {
             props.handleUpdate(ToModel.VOLUME(toNullValues(values)));
         }
     }
@@ -60,7 +58,9 @@ const VolumeForm = (props: Props) => {
 
     const onConfirmPositive = (): void => {
         setShowConfirm(false);
-        props.handleRemove(props.volume)
+        if (props.handleRemove) {
+            props.handleRemove(props.volume)
+        }
     }
 
     type ValidLocation = {
@@ -318,7 +318,7 @@ const VolumeForm = (props: Props) => {
                             <Row className="mb-3">
                                 <Col className="col-11">
                                     <Button
-                                        disabled={isSubmitting || !props.canSave}
+                                        disabled={isSubmitting || !(props.handleInsert || props.handleUpdate)}
                                         size="sm"
                                         type="submit"
                                         variant="primary"
@@ -328,7 +328,7 @@ const VolumeForm = (props: Props) => {
                                 </Col>
                                 <Col className="col-1">
                                     <Button
-                                        disabled={adding || !props.canRemove}
+                                        disabled={adding || (!props.handleRemove)}
                                         onClick={onConfirm}
                                         size="sm"
                                         type="button"
