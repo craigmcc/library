@@ -59,8 +59,7 @@ const VolumesStage = (props: Props) => {
         setCanInsert(isAdmin || isSuperuser);
         setCanRemove(isSuperuser);
         setCanUpdate(isAdmin || isSuperuser);
-    }, [volume,
-        props.parent,
+    }, [volume, props.parent,
         fetchParent.parent,
         libraryContext.library, libraryContext.library.id,
         loginContext, loginContext.data.loggedIn]);
@@ -113,7 +112,7 @@ const VolumesStage = (props: Props) => {
 
     const handleSelect: HandleVolume = (theVolume) => {
         logger.info({
-            context: "VolumessStage.handleSelect",
+            context: "VolumesStage.handleSelect",
             volume: Abridgers.VOLUME(theVolume),
         });
         if (props.handleVolume) {

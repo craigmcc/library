@@ -80,7 +80,7 @@ const VolumesView = () => {
             oldVolume: Abridgers.VOLUME(volume),
             newVolume: Abridgers.VOLUME(theVolume),
         });
-        setVolume(volume);
+        setVolume(theVolume);
         handleStage(Stage.AUTHORS);
     }
 

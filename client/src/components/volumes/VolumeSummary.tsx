@@ -34,14 +34,12 @@ const VolumeSummary = (props: Props) => {
     });
 
     const [expand, setExpand] = useState<boolean>(true);
-    const [volume, setVolume] = useState<Volume>(fetchParent.parent as Volume);
 
     useEffect(() => {
-        logger.info({
+        logger.debug({
             context: "VolumeSummary.useEffect",
             volume: Abridgers.VOLUME(props.volume),
         });
-        setVolume(fetchParent.parent as Volume);
     }, [props.volume, fetchParent.parent]);
 
     const toggleExpand: HandleAction = () => {
@@ -50,14 +48,14 @@ const VolumeSummary = (props: Props) => {
 
     return (
         <>
-            {(volume.id > 0) ? (
+            {(fetchParent.parent.id > 0) ? (
                 <Container fluid id="VolumeSummary">
 
                     <Row className="mb-1">
                         <Col className="text-center">
                             <span>Summary for Volume:&nbsp;</span>
                             <span className="text-info">
-                        {volume.name}&nbsp;&nbsp;
+                        {(fetchParent.parent as Volume).name}&nbsp;&nbsp;
                     </span>
                             {(expand) ? (
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -86,7 +84,7 @@ const VolumeSummary = (props: Props) => {
                                 <Col className="text-center">
                                     <span>Authors:&nbsp;</span>
                                     <span className="text-info">
-                               {authorsNames(volume.authors)}
+                               {authorsNames((fetchParent.parent as Volume).authors)}
                             </span>
                                 </Col>
                             </Row>
@@ -94,7 +92,7 @@ const VolumeSummary = (props: Props) => {
                                 <Col className="text-center">
                                     <span>Stories:&nbsp;</span>
                                     <span className="text-info">
-                                {storiesNames(volume.stories)}
+                                {storiesNames((fetchParent.parent as Volume).stories)}
                             </span>
                                 </Col>
                             </Row>

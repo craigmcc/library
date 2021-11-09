@@ -119,7 +119,7 @@ export const LoggedInUser = () => {
                 <input
                     className="ms-2"
                     disabled
-                    id="username"
+                    id="loggedInUsername"
                     value={loginContext.data.username ? loginContext.data.username : "-----"}
                 />
             </div>

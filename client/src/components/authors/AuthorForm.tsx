@@ -19,6 +19,7 @@ import * as Yup from "yup";
 import {HandleAuthor} from "../../types";
 import Author from "../../models/Author";
 import * as ToModel from "../../util/ToModel";
+import {validateAuthorNameUnique} from "../../util/AsyncValidators";
 import {toEmptyStrings, toNullValues} from "../../util/Transformations";
 
 // Property Details ----------------------------------------------------------
@@ -26,11 +27,9 @@ import {toEmptyStrings, toNullValues} from "../../util/Transformations";
 export interface Props {
     author: Author;                     // Initial values (id<0 for adding)
     autoFocus?: boolean;                // Should the first element receive autofocus? [false]
-    canRemove?: boolean;                // Can Remove be performed? [false]
-    canSave?: boolean;                  // Can Save be performed? [false]
-    handleInsert: HandleAuthor;         // Handle (Author) insert request
-    handleRemove: HandleAuthor;         // Handle (Author) remove request
-    handleUpdate: HandleAuthor;         // Handle (Author) update request
+    handleInsert?: HandleAuthor;        // Handle (Author) insert request [not allowed]
+    handleRemove?: HandleAuthor;        // Handle (Author) remove request [not allowed]
+    handleUpdate?: HandleAuthor;        // Handle (Author) update request [not allowed]
 }
 
 // Component Details ---------------------------------------------------------
@@ -42,9 +41,9 @@ const AuthorForm = (props: Props) => {
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
     const handleSubmit = (values: FormikValues, actions: FormikHelpers<FormikValues>): void => {
-        if (adding) {
+        if (adding && props.handleInsert) {
             props.handleInsert(ToModel.AUTHOR(toNullValues(values)));
-        } else {
+        } else if (props.handleUpdate) {
             props.handleUpdate(ToModel.AUTHOR(toNullValues(values)));
         }
     }
@@ -59,7 +58,9 @@ const AuthorForm = (props: Props) => {
 
     const onConfirmPositive = (): void => {
         setShowConfirm(false);
-        props.handleRemove(props.author)
+        if (props.handleRemove) {
+            props.handleRemove(props.author)
+        }
     }
 
     const validationSchema = () => {
@@ -68,7 +69,12 @@ const AuthorForm = (props: Props) => {
             firstName: Yup.string()
                 .required("First Name is required"),
             lastName: Yup.string()
-                .required("Last Name is required"),
+                .required("Last Name is required")
+                .test("unique-name",
+                    "That name is already in use within this Library",
+                    async function (this) {
+                        return await validateAuthorNameUnique(ToModel.AUTHOR(this.parent));
+                    }),
             notes: Yup.string(),
         });
     }
@@ -199,7 +205,7 @@ const AuthorForm = (props: Props) => {
                             <Row className="mb-3">
                                 <Col className="col-11">
                                     <Button
-                                        disabled={isSubmitting}
+                                        disabled={isSubmitting || !(props.handleInsert || props.handleUpdate)}
                                         size="sm"
                                         type="submit"
                                         variant="primary"
@@ -209,7 +215,7 @@ const AuthorForm = (props: Props) => {
                                 </Col>
                                 <Col className="col-1">
                                     <Button
-                                        disabled={adding || !props.canRemove}
+                                        disabled={adding || !props.handleRemove}
                                         onClick={onConfirm}
                                         size="sm"
                                         type="button"

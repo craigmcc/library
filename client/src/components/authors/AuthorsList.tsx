@@ -19,7 +19,7 @@ import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleBoolean, HandleAuthor, HandleValue, OnAction, Parent} from "../../types";
+import {HandleAction, HandleBoolean, HandleAuthor, HandleValue, Parent} from "../../types";
 import useFetchAuthors from "../../hooks/useFetchAuthors";
 import Author from "../../models/Author";
 import * as Abridgers from "../../util/Abridgers";
@@ -29,12 +29,11 @@ import {listValue} from "../../util/Transformations";
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
-    canInsert?: boolean;                // Can this user add Authors? [false]
-    handleAdd: OnAction;                // Handle request to add a Author
-    handleEdit?: HandleAuthor;          // Handle request to edit a Author [no handler]
-    handleExclude?: HandleAuthor;       // Handle request to exclude a Author [no handler]
-    handleInclude?: HandleAuthor;       // Handle request to include a Author [no handler]
-    handleSelect?: HandleAuthor;        // Handle request to select a Author [no handler]
+    handleAdd?: HandleAction;           // Handle request to add a Author [not allowed]
+    handleEdit?: HandleAuthor;          // Handle request to edit a Author [not allowed]
+    handleExclude?: HandleAuthor;       // Handle request to exclude a Author [not allowed]
+    handleInclude?: HandleAuthor;       // Handle request to include a Author [not allowedd]
+    handleSelect?: HandleAuthor;        // Handle request to select a Author [not allowed]
     included?: (author: Author) => boolean; // Is this Author included in parent? [true]
     parent: Parent;                     // Parent object for Authors
 }
@@ -64,8 +63,10 @@ const AuthorsList = (props: Props) => {
             context: "AuthorsList.useEffect",
             parent: Abridgers.ANY(props.parent),
         });
-    }, [props.parent, fetchAuthors.authors,
-            libraryContext.library.id, loginContext.data.loggedIn]);
+    }, [searchText, props.parent,
+        fetchAuthors.authors,
+        libraryContext.library, libraryContext.library.id,
+        loginContext.data.loggedIn]);
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
@@ -93,11 +94,11 @@ const AuthorsList = (props: Props) => {
         }
     }
 
-    const handleNext: OnAction = () => {
+    const handleNext: HandleAction = () => {
         setCurrentPage(currentPage + 1);
     }
 
-    const handlePrevious: OnAction = () => {
+    const handlePrevious: HandleAction = () => {
         setCurrentPage(currentPage - 1);
     }
 
@@ -114,10 +115,6 @@ const AuthorsList = (props: Props) => {
             return true;
         }
     }
-
-    const parentModel = props.parent ? props.parent._model : libraryContext.library._model;
-
-    const parentTitle = props.parent ? props.parent._title : libraryContext.library._title;
 
     // @ts-ignore
     return (
@@ -153,7 +150,7 @@ const AuthorsList = (props: Props) => {
                 </Col>
                 <Col className="text-end">
                     <Button
-                        disabled={!props.canInsert}
+                        disabled={!props.handleAdd}
                         onClick={props.handleAdd}
                         size="sm"
                         variant="primary"
@@ -175,7 +172,7 @@ const AuthorsList = (props: Props) => {
                             className="text-center"
                             colSpan={99}
                         >
-                            {`Authors for ${parentModel}: ${parentTitle}`}
+                            {`Authors for ${props.parent._model}: ${props.parent._title}`}
                         </th>
                     </tr>
                     <tr className="table-secondary">
@@ -254,7 +251,7 @@ const AuthorsList = (props: Props) => {
             <Row className="mb-3">
                 <Col className="text-end">
                     <Button
-                        disabled={!props.canInsert}
+                        disabled={!props.handleAdd}
                         onClick={props.handleAdd}
                         size="sm"
                         variant="primary"

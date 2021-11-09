@@ -15,11 +15,26 @@
 // Internal Modules ----------------------------------------------------------
 
 import Api from "../clients/Api";
+import Author, {AUTHORS_BASE} from "../models/Author";
 import Library, {LIBRARIES_BASE} from "../models/Library";
 import User, {USERS_BASE} from "../models/User";
 import {queryParameters} from "./QueryParameters";
 
 // Public Objects ------------------------------------------------------------
+
+export const validateAuthorNameUnique = async (author: Author): Promise<boolean> => {
+    if (author && author.firstName && author.lastName) {
+        try {
+            const result = (await Api.get(AUTHORS_BASE
+                + `/${author.libraryId}/exact/${author.firstName}/${author.lastName}`)).data;
+            return (result.id === author.id);
+        } catch (error) {
+            return true; // Definitely unique
+        }
+    } else {
+        return true;
+    }
+}
 
 export const validateLibraryNameUnique = async (library: Library): Promise<boolean> => {
     if (library && library.name) {

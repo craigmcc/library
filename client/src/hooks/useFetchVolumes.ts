@@ -115,6 +115,10 @@ const useFetchVolumes = (props: Props): State => {
                 setError(error as Error);
                 ReportError("useFetchVolumes.fetchVolumes", error, {
                     parameters: parameters,
+                    url: url,
+                    library: Abridgers.LIBRARY(libraryContext.library),
+                    parent: Abridgers.ANY(props.parent),
+                    loggedIn: loginContext.data.loggedIn,
                 });
             }
 

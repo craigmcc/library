@@ -44,7 +44,7 @@ const CheckBox = (props: Props) => {
 
     return (
         <Form className="align-items-center">
-            <Form.Group controlId={`{name}Group`}>
+            <Form.Group id={`{name}Group`}>
                 <Form.Check.Input
                     autoFocus={props.autoFocus !== undefined ? props.autoFocus : undefined}
                     defaultChecked={value}

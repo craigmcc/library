@@ -41,7 +41,7 @@ const AuthorsStage = (props: Props) => {
     const [author, setAuthor] = useState<Author | null>(null);
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
-    const [canSave, setCanSave] = useState<boolean>(false);
+    const [canUpdate, setCanUpdate] = useState<boolean>(false);
 
     const fetchParent = useFetchParent({
         parent: props.parent,
@@ -53,10 +53,14 @@ const AuthorsStage = (props: Props) => {
             context: "AuthorsStage.useEffect",
             parent: Abridgers.ANY(props.parent),
         });
-        setCanInsert(loginContext.validateLibrary(libraryContext.library));
-        setCanRemove(loginContext.validateScope(Scope.SUPERUSER));
-        setCanSave(loginContext.validateLibrary(libraryContext.library));
-    }, [props.parent,
+        const isAdmin = loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
+        // const isRegular = loginContext.validateLibrary(libraryContext.library, Scope.REGULAR);
+        const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
+        setCanInsert(isAdmin || isSuperuser);
+        setCanRemove(isSuperuser);
+        setCanUpdate(isAdmin || isSuperuser);
+    }, [author, props.parent,
+        fetchParent.parent,
         libraryContext.library, libraryContext.library.id,
         loginContext, loginContext.data.loggedIn]);
 
@@ -68,7 +72,7 @@ const AuthorsStage = (props: Props) => {
             libraryId: libraryContext.library.id,
             notes: null,
         });
-        logger.debug({
+        logger.info({
             context: "AuthorsStage.handleAdd",
             author: theAuthor,
         });
@@ -76,7 +80,7 @@ const AuthorsStage = (props: Props) => {
     }
 
     const handleEdit: HandleAuthor = async (theAuthor) => {
-        logger.debug({
+        logger.info({
             context: "AuthorsStage.handleEdit",
             author: Abridgers.AUTHOR(theAuthor),
         });
@@ -84,7 +88,7 @@ const AuthorsStage = (props: Props) => {
     }
 
     const handleInsert: HandleAuthor = async (theAuthor) => {
-        logger.debug({
+        logger.info({
             context: "AuthorsStage.handleInsert",
             author: Abridgers.AUTHOR(theAuthor),
         });
@@ -93,7 +97,7 @@ const AuthorsStage = (props: Props) => {
     }
 
     const handleRemove: HandleAuthor = async (theAuthor) => {
-        logger.debug({
+        logger.info({
             context: "AuthorsStage.handleRemove",
             author: Abridgers.AUTHOR(theAuthor),
         });
@@ -102,8 +106,8 @@ const AuthorsStage = (props: Props) => {
     }
 
     const handleSelect: HandleAuthor = (theAuthor) => {
-        logger.debug({
-            context: "AuthorssStage.handleSelect",
+        logger.info({
+            context: "AuthorsStage.handleSelect",
             author: Abridgers.AUTHOR(theAuthor),
         });
         if (props.handleAuthor) {
@@ -112,7 +116,7 @@ const AuthorsStage = (props: Props) => {
     }
 
     const handleUpdate: HandleAuthor = async (theAuthor) => {
-        logger.debug({
+        logger.info({
             context: "AuthorsStage.handleUpdate",
             author: Abridgers.AUTHOR(theAuthor),
         });
@@ -135,9 +139,9 @@ const AuthorsStage = (props: Props) => {
                     </Row>
 
                     <AuthorsList
-                        canInsert={canInsert}
-                        handleAdd={handleAdd}
-                        handleEdit={handleEdit}
+                        handleAdd={canInsert ? handleAdd : undefined}
+                        handleEdit={(canInsert || canUpdate) ? handleEdit : undefined}
+                        // TODO - handleExclude and handleInclude when supported
                         handleSelect={handleSelect}
                         parent={fetchParent.parent}
                     />
@@ -172,13 +176,11 @@ const AuthorsStage = (props: Props) => {
                     </Row>
 
                     <AuthorForm
-                        autoFocus
-                        canRemove={canRemove}
-                        canSave={canSave}
-                        handleInsert={handleInsert}
-                        handleRemove={handleRemove}
-                        handleUpdate={handleUpdate}
                         author={author}
+                        autoFocus
+                        handleInsert={canInsert ? handleInsert : undefined}
+                        handleRemove={canRemove ? handleRemove : undefined}
+                        handleUpdate={canUpdate ? handleUpdate : undefined}
                     />
 
                 </>

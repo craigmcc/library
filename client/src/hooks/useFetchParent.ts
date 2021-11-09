@@ -229,7 +229,8 @@ const useFetchParent = (props: Props): State => {
         setLoading(false);
         setRefresh(false);
 
-    }, [props.parent, props.parent.id, refresh,
+    }, [refresh,
+        props.parent, props.parent.id,
         libraryContext.library, libraryContext.library.id,
         loginContext.data.loggedIn]);
 

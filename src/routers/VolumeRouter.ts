@@ -92,7 +92,6 @@ VolumeRouter.put("/:libraryId/:volumeId",
 
 // Volume-Author Relationships -----------------------------------------------
 
-/*
 // GET /:libraryId/:volumeId/authors - Find Authors for this Volume
 VolumeRouter.get("/:libraryId/:volumeId/authors",
     requireRegular,
@@ -103,7 +102,6 @@ VolumeRouter.get("/:libraryId/:volumeId/authors",
             req.query
         ));
     });
-*/
 
 // Volume-Story Relationships ------------------------------------------------
 

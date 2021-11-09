@@ -126,6 +126,10 @@ const useFetchAuthors = (props: Props): State => {
                 setError(error as Error);
                 ReportError("useFetchAuthors.fetchAuthors", error, {
                     parameters: parameters,
+                    url: url,
+                    library: Abridgers.LIBRARY(libraryContext.library),
+                    parent: Abridgers.ANY(props.parent),
+                    loggedIn: loginContext.data.loggedIn,
                 });
             }
 
