@@ -14,8 +14,9 @@ import Tabs from "react-bootstrap/Tabs";
 import VolumesStage from "./VolumesStage";
 import VolumeSummary from "./VolumeSummary";
 import AuthorsStage from "../authors/AuthorsStage";
+import useFetchParent from "../../hooks/useFetchParent";
 import LibraryContext from "../libraries/LibraryContext";
-import {HandleStage, HandleVolume, Stage} from "../../types";
+import {HandleAction, HandleStage, HandleVolume, Stage} from "../../types";
 import LoginContext from "../login/LoginContext";
 import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
@@ -30,6 +31,10 @@ const VolumesView = () => {
 
     const [stage, setStage] = useState<Stage>(Stage.VOLUMES);
     const [volume, setVolume] = useState<Volume>(new Volume());
+
+    const fetchParent = useFetchParent({
+        parent: volume,
+    })
 
     useEffect(() => {
         logger.info({
@@ -84,6 +89,13 @@ const VolumesView = () => {
         handleStage(Stage.AUTHORS);
     }
 
+    const refreshSummary: HandleAction = () => {
+        logger.info({
+            context: "VolumesView.refreshSummary",
+        })
+        fetchParent.refresh();
+    }
+
     return (
         <>
             <Container fluid id="VolumesView">
@@ -104,6 +116,7 @@ const VolumesView = () => {
                         <VolumesStage
                             handleVolume={handleVolume}
                             parent={libraryContext.library}
+                            refreshSummary={refreshSummary}
                         />
                     </Tab>
 
@@ -112,9 +125,10 @@ const VolumesView = () => {
                         disabled={volume.id < 0}
                         title={Stage.AUTHORS.toString()}
                     >
-                        <VolumeSummary volume={volume}/>
+                        <VolumeSummary volume={fetchParent.parent as Volume}/>
                         <AuthorsStage
                             parent={volume}
+                            refreshSummary={refreshSummary}
                         />
                     </Tab>
 
@@ -123,7 +137,7 @@ const VolumesView = () => {
                         eventKey={Stage.STORIES.toString()}
                         title={Stage.STORIES.toString()}
                     >
-                        <VolumeSummary volume={volume}/>
+                        <VolumeSummary volume={fetchParent.parent as Volume}/>
                         <h1>{Stage.STORIES.toString()} Tab</h1>
                     </Tab>
 
@@ -132,7 +146,7 @@ const VolumesView = () => {
                         eventKey={Stage.WRITERS.toString()}
                         title={Stage.WRITERS.toString()}
                     >
-                        <VolumeSummary volume={volume}/>
+                        <VolumeSummary volume={fetchParent.parent as Volume}/>
                         <h1>{Stage.WRITERS.toString()} Tab</h1>
                     </Tab>
 

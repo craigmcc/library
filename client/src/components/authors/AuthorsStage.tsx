@@ -33,6 +33,7 @@ import logger from "../../util/ClientLogger";
 export interface Props {
     handleAuthor?: HandleAuthor;        // Handle selecting Author [no handler]
     parent: Parent;                     // Parent object for Authors (pass to useFetchParent)
+    refreshSummary?: HandleAction;      // Trigger updates to summary when called
 }
 
 // Component Details ---------------------------------------------------------
@@ -101,6 +102,7 @@ const AuthorsStage = (props: Props) => {
         if (!(fetchParent.parent instanceof Library)) {
             /* const excluded = */ await mutateAuthor.exclude(theAuthor, fetchParent.parent);
             fetchParent.refresh();
+            refreshSummary();
         }
     }
 
@@ -113,6 +115,7 @@ const AuthorsStage = (props: Props) => {
         if (!(fetchParent.parent instanceof Library)) {
             /* const included = */ await mutateAuthor.include(theAuthor, fetchParent.parent);
             fetchParent.refresh();
+            refreshSummary();
         }
     }
 
@@ -126,6 +129,7 @@ const AuthorsStage = (props: Props) => {
         handleInclude(inserted); // Assume the newly created Author is included for this Parent
         fetchParent.refresh();
         setAuthor(null);
+        refreshSummary();
     }
 
     const handleRemove: HandleAuthor = async (theAuthor) => {
@@ -135,6 +139,7 @@ const AuthorsStage = (props: Props) => {
         });
         /* const removed = */ await mutateAuthor.remove(theAuthor);
         setAuthor(null);
+        refreshSummary();
     }
 
     const handleSelect: HandleAuthor = (theAuthor) => {
@@ -162,6 +167,7 @@ const AuthorsStage = (props: Props) => {
             }
         }
         setAuthor(null);
+        refreshSummary();
     }
 
     const included = (theAuthor: Author): boolean => {
@@ -180,6 +186,12 @@ const AuthorsStage = (props: Props) => {
             }
         }
         return result;
+    }
+
+    const refreshSummary = (): void => {
+        if (props.refreshSummary) {
+            props.refreshSummary();
+        }
     }
 
     return (

@@ -32,6 +32,7 @@ import logger from "../../util/ClientLogger";
 export interface Props {
     handleVolume?: HandleVolume;        // Handle selecting Volume [no handler]
     parent: Parent;                     // Parent object for Volumes (pass to useFetchParent)
+    refreshSummary?: HandleAction;      // Trigger updates to summary when called
 }
 
 // Component Details ---------------------------------------------------------
@@ -104,6 +105,7 @@ const VolumesStage = (props: Props) => {
         if (!(fetchParent.parent instanceof Library)) {
             /* const excluded = */ await mutateVolume.exclude(theVolume, fetchParent.parent);
             fetchParent.refresh();
+            refreshSummary();
         }
     }
 
@@ -116,6 +118,7 @@ const VolumesStage = (props: Props) => {
         if (!(fetchParent.parent instanceof Library)) {
             /* const included = */ await mutateVolume.include(theVolume, fetchParent.parent);
             fetchParent.refresh();
+            refreshSummary();
         }
     }
 
@@ -128,6 +131,7 @@ const VolumesStage = (props: Props) => {
         handleInclude(inserted); // Assume the newly created Volume is included for this Parent
         fetchParent.refresh();
         setVolume(null);
+        refreshSummary();
     }
 
     const handleRemove: HandleVolume = async (theVolume) => {
@@ -137,6 +141,7 @@ const VolumesStage = (props: Props) => {
         });
         /* const removed = */ await mutateVolume.remove(theVolume);
         setVolume(null);
+        refreshSummary();
     }
 
     const handleSelect: HandleVolume = (theVolume) => {
@@ -157,6 +162,7 @@ const VolumesStage = (props: Props) => {
         });
         /* const updated = */ await mutateVolume.update(theVolume);
         setVolume(null);
+        refreshSummary();
     }
 
     const included = (theVolume: Volume): boolean => {
@@ -174,6 +180,12 @@ const VolumesStage = (props: Props) => {
             }
         }
         return result;
+    }
+
+    const refreshSummary = (): void => {
+        if (props.refreshSummary) {
+            props.refreshSummary();
+        }
     }
 
     return (
