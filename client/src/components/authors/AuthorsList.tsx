@@ -179,6 +179,7 @@ const AuthorsList = (props: Props) => {
                     </tr>
                     <tr className="table-secondary">
                         <th scope="col">Name</th>
+                        <th scope="col">Principal</th>
                         <th scope="col">Active</th>
                         <th scope="col">Notes</th>
                         <th scope="col">Actions</th>
@@ -198,12 +199,15 @@ const AuthorsList = (props: Props) => {
                                 {author.lastName}, {author.firstName}
                             </td>
                             <td key={1000 + (rowIndex * 100) + 2}>
-                                {listValue(author.active)}
+                                {listValue(author.principal)}
                             </td>
                             <td key={1000 + (rowIndex * 100) + 3}>
-                                {author.notes}
+                                {listValue(author.active)}
                             </td>
                             <td key={1000 + (rowIndex * 100) + 4}>
+                                {author.notes}
+                            </td>
+                            <td key={1000 + (rowIndex * 100) + 5}>
                                 {(props.handleEdit) ? (
                                     <Button
                                         className="me-1"
