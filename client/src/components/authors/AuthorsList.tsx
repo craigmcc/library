@@ -36,6 +36,7 @@ export interface Props {
     handleSelect?: HandleAuthor;        // Handle request to select a Author [not allowed]
     included?: (author: Author) => boolean; // Is this Author included in parent? [true]
     parent: Parent;                     // Parent object for Authors
+    showPrincipal?: boolean;            // Show the Principal column? [false]
 }
 
 // Component Details ---------------------------------------------------------
@@ -179,7 +180,9 @@ const AuthorsList = (props: Props) => {
                     </tr>
                     <tr className="table-secondary">
                         <th scope="col">Name</th>
-                        <th scope="col">Principal</th>
+                        {props.showPrincipal ? (
+                            <th scope="col">Principal</th>
+                        ) : null }
                         <th scope="col">Active</th>
                         <th scope="col">Notes</th>
                         <th scope="col">Actions</th>
@@ -198,9 +201,11 @@ const AuthorsList = (props: Props) => {
                             >
                                 {author.lastName}, {author.firstName}
                             </td>
-                            <td key={1000 + (rowIndex * 100) + 2}>
-                                {listValue(author.principal)}
-                            </td>
+                            {props.showPrincipal ? (
+                                <td key={1000 + (rowIndex * 100) + 2}>
+                                    {listValue(author.principal)}
+                                </td>
+                            ) : null }
                             <td key={1000 + (rowIndex * 100) + 3}>
                                 {listValue(author.active)}
                             </td>

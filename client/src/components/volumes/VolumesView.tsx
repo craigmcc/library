@@ -129,6 +129,7 @@ const VolumesView = () => {
                         <AuthorsStage
                             parent={volume}
                             refreshSummary={refreshSummary}
+                            showPrincipal={true}
                         />
                     </Tab>
 

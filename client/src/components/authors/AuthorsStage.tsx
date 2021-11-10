@@ -34,6 +34,7 @@ export interface Props {
     handleAuthor?: HandleAuthor;        // Handle selecting Author [no handler]
     parent: Parent;                     // Parent object for Authors (pass to useFetchParent)
     refreshSummary?: HandleAction;      // Trigger updates to summary when called
+    showPrincipal?: boolean;            // Show the Principal column? [false]
 }
 
 // Component Details ---------------------------------------------------------
@@ -218,6 +219,7 @@ const AuthorsStage = (props: Props) => {
                         handleSelect={handleSelect}
                         included={included}
                         parent={fetchParent.parent}
+                        showPrincipal={props.showPrincipal}
                     />
 
                 </>
@@ -255,6 +257,7 @@ const AuthorsStage = (props: Props) => {
                         handleInsert={canInsert ? handleInsert : undefined}
                         handleRemove={canRemove ? handleRemove : undefined}
                         handleUpdate={canUpdate ? handleUpdate : undefined}
+                        showPrincipal={props.showPrincipal}
                     />
 
                 </>

@@ -30,6 +30,7 @@ export interface Props {
     handleInsert?: HandleAuthor;        // Handle (Author) insert request [not allowed]
     handleRemove?: HandleAuthor;        // Handle (Author) remove request [not allowed]
     handleUpdate?: HandleAuthor;        // Handle (Author) update request [not allowed]
+    showPrincipal?: boolean;            // Show the Principal field? [false]
 }
 
 // Component Details ---------------------------------------------------------
@@ -178,17 +179,19 @@ const AuthorForm = (props: Props) => {
                             </Row>
 
                             <Row className="g-3 mb-3" id="principalActiveRow">
-                                <Form.Group as={Col} controlId="read" id="principalGroup">
-                                    <Form.Check
-                                        feedback={errors.principal}
-                                        defaultChecked={values.principal}
-                                        id="principal"
-                                        label="Principal Author?"
-                                        name="principal"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                    />
-                                </Form.Group>
+                                {props.showPrincipal ? (
+                                    <Form.Group as={Col} controlId="read" id="principalGroup">
+                                        <Form.Check
+                                            feedback={errors.principal}
+                                            defaultChecked={values.principal}
+                                            id="principal"
+                                            label="Principal Author?"
+                                            name="principal"
+                                            onBlur={handleBlur}
+                                            onChange={handleChange}
+                                        />
+                                    </Form.Group>
+                                ) : null }
                                 <Form.Group as={Col} controlId="active" id="activeGroup">
                                     <Form.Check
                                         feedback={errors.active}
