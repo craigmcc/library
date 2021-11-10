@@ -1,7 +1,7 @@
-// VolumesList -----------------------------------------------------------------
+// StoriesList -----------------------------------------------------------------
 
-// List Volumes that match search criteria, offering callbacks for adding,
-// editing, and removing Volumes.  Optionally, include relevant actions.
+// List Stories that match search criteria, offering callbacks for adding,
+// editing, and removing Stories.  Optionally, include relevant actions.
 
 // External Modules ----------------------------------------------------------
 
@@ -19,9 +19,9 @@ import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleAction, HandleBoolean, HandleVolume, HandleValue, Parent} from "../../types";
-import useFetchVolumes from "../../hooks/useFetchVolumes";
-import Volume from "../../models/Volume";
+import {HandleAction, HandleBoolean, HandleStory, HandleValue, Parent} from "../../types";
+import useFetchStories from "../../hooks/useFetchStories";
+import Story from "../../models/Story";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 import {authorsNames, listValue} from "../../util/Transformations";
@@ -29,18 +29,19 @@ import {authorsNames, listValue} from "../../util/Transformations";
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
-    handleAdd?: HandleAction;           // Handle request to add a Volume [not allowed]
-    handleEdit?: HandleVolume;          // Handle request to edit a Volume [not allowed]
-    handleExclude?: HandleVolume;       // Handle request to exclude a Volume [not allowed]
-    handleInclude?: HandleVolume;       // Handle request to include a Volume [not allowed]
-    handleSelect?: HandleVolume;        // Handle request to select a Volume [not allowed]
-    included?: (volume: Volume) => boolean; // Is this Volume included in parent? [true]
-    parent: Parent;                    // Parent object for Volumes
+    handleAdd?: HandleAction;           // Handle request to add a Story [not allowed]
+    handleEdit?: HandleStory;           // Handle request to edit a Story [not allowed]
+    handleExclude?: HandleStory;        // Handle request to exclude a Story [not allowed]
+    handleInclude?: HandleStory;        // Handle request to include a Story [not allowedd]
+    handleSelect?: HandleStory;         // Handle request to select a Story [not allowed]
+    included?: (story: Story) => boolean; // Is this Story included in parent? [true]
+    parent: Parent;                     // Parent object for Stories
+    showOrdinal?: boolean;              // Show the Principal column? [false]
 }
 
 // Component Details ---------------------------------------------------------
 
-const VolumesList = (props: Props) => {
+const StoriesList = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -50,23 +51,25 @@ const VolumesList = (props: Props) => {
     const [pageSize] = useState<number>(100);
     const [searchText, setSearchText] = useState<string>("");
 
-    const fetchVolumes = useFetchVolumes({
+    const fetchStories = useFetchStories({
         active: active,
         currentPage: currentPage,
         name: (searchText.length > 0) ? searchText : undefined,
         pageSize: pageSize,
         parent: props.parent,
-        withAuthors: true,  // Since we are showing author names in the list
+        withAuthors: true, // Since we are showing author names in the list
     });
 
     useEffect(() => {
         logger.info({
-            context: "VolumesList.useEffect",
+            context: "StoriesList.useEffect",
             parent: Abridgers.ANY(props.parent),
+            active: active,
+            name: searchText,
         });
     }, [active, searchText, props.parent,
-        fetchVolumes.volumes,
-        libraryContext, libraryContext.library.id,
+        fetchStories.stories,
+        libraryContext.library, libraryContext.library.id,
         loginContext.data.loggedIn]);
 
     const handleActive: HandleBoolean = (theActive) => {
@@ -77,21 +80,21 @@ const VolumesList = (props: Props) => {
         setSearchText(theSearchText);
     }
 
-    const handleEdit: HandleVolume = (theVolume) => {
+    const handleEdit: HandleStory = (theStory) => {
         if (props.handleEdit) {
-            props.handleEdit(theVolume);
+            props.handleEdit(theStory);
         }
     }
 
-    const handleExclude: HandleVolume = (theVolume) => {
+    const handleExclude: HandleStory = (theStory) => {
         if (props.handleExclude) {
-            props.handleExclude(theVolume);
+            props.handleExclude(theStory);
         }
     }
 
-    const handleInclude: HandleVolume = (theVolume) => {
+    const handleInclude: HandleStory = (theStory) => {
         if (props.handleInclude) {
-            props.handleInclude(theVolume);
+            props.handleInclude(theStory);
         }
     }
 
@@ -103,15 +106,15 @@ const VolumesList = (props: Props) => {
         setCurrentPage(currentPage - 1);
     }
 
-    const handleSelect: HandleVolume = (theVolume) => {
+    const handleSelect: HandleStory = (theStory) => {
         if (props.handleSelect) {
-            props.handleSelect(theVolume);
+            props.handleSelect(theStory);
         }
     }
 
-    const included = (theVolume: Volume): boolean => {
+    const included = (theStory: Story): boolean => {
         if (props.included) {
-            return props.included(theVolume);
+            return props.included(theStory);
         } else {
             return true;
         }
@@ -119,7 +122,7 @@ const VolumesList = (props: Props) => {
 
     // @ts-ignore
     return (
-        <Container fluid id="VolumesList">
+        <Container fluid id="StoriesList">
 
             <Row className="mb-3">
                 <Col className="col-6">
@@ -127,14 +130,14 @@ const VolumesList = (props: Props) => {
                         autoFocus
                         handleChange={handleChange}
                         htmlSize={50}
-                        label="Search For Volumes:"
+                        label="Search For Stories:"
                         placeholder="Search by all or part of name"
                     />
                 </Col>
                 <Col>
                     <CheckBox
                         handleChange={handleActive}
-                        label="Active Volumes Only?"
+                        label="Active Stories Only?"
                         name="activeOnly"
                         value={active}
                     />
@@ -144,8 +147,8 @@ const VolumesList = (props: Props) => {
                         currentPage={currentPage}
                         handleNext={handleNext}
                         handlePrevious={handlePrevious}
-                        lastPage={(fetchVolumes.volumes.length === 0) ||
-                            (fetchVolumes.volumes.length < pageSize)}
+                        lastPage={(fetchStories.stories.length === 0) ||
+                        (fetchStories.stories.length < pageSize)}
                         variant="secondary"
                     />
                 </Col>
@@ -173,84 +176,85 @@ const VolumesList = (props: Props) => {
                             className="text-center"
                             colSpan={99}
                         >
-                            {`Volumes for ${props.parent._model}: ${props.parent._title}`}
+                            {`Stories for ${props.parent._model}: ${props.parent._title}`}
                         </th>
                     </tr>
                     <tr className="table-secondary">
                         <th scope="col">Name</th>
+                        {props.showOrdinal ? (
+                            <th scope="col">Ordinal</th>
+                        ) : null }
                         <th scope="col">Authors</th>
                         <th scope="col">Active</th>
-                        <th scope="col">Location</th>
-                        <th scope="col">Type</th>
                         <th scope="col">Notes</th>
                         <th scope="col">Actions</th>
                     </tr>
                     </thead>
 
                     <tbody>
-                    {fetchVolumes.volumes.map((volume, rowIndex) => (
+                    {fetchStories.stories.map((story, rowIndex) => (
                         <tr
                             className="table-default"
                             key={1000 + (rowIndex * 100)}
                         >
                             <td
                                 key={1000 + (rowIndex * 100) + 1}
-                                onClick={props.handleSelect ? () => handleSelect(volume) : undefined}
+                                onClick={props.handleSelect ? () => handleSelect(story) : undefined}
                             >
-                                {volume.name}
+                                {story.name}
                             </td>
-                            <td key={1000 + (rowIndex * 100) + 2}>
-                                {authorsNames(volume.authors)}
-                            </td>
+                            {props.showOrdinal ? (
+                                <td key={1000 + (rowIndex * 100) + 2}>
+                                    {listValue(story.ordinal)}
+                                </td>
+                            ) : null }
                             <td key={1000 + (rowIndex * 100) + 3}>
-                                {listValue(volume.active)}
+                                {authorsNames(story.authors)}
                             </td>
+
                             <td key={1000 + (rowIndex * 100) + 4}>
-                                {volume.location}
+                                {listValue(story.active)}
                             </td>
                             <td key={1000 + (rowIndex * 100) + 5}>
-                                {volume.type}
+                                {story.notes}
                             </td>
                             <td key={1000 + (rowIndex * 100) + 6}>
-                                {volume.notes}
-                            </td>
-                            <td key={1000 + (rowIndex * 100) + 7}>
                                 {(props.handleEdit) ? (
                                     <Button
                                         className="me-1"
-                                        onClick={() => handleEdit(volume)}
+                                        onClick={() => handleEdit(story)}
                                         size="sm"
                                         type="button"
-                                        variant="primary"
+                                        variant="secondary"
                                     >Edit</Button>
                                 ) : null }
                                 {(props.handleExclude) ? (
                                     <Button
                                         className="me-1"
-                                        disabled={!included(volume)}
-                                        onClick={() => handleExclude(volume)}
+                                        disabled={!included(story)}
+                                        onClick={() => handleExclude(story)}
                                         size="sm"
                                         type="button"
-                                        variant="secondary"
+                                        variant="primary"
                                     >Exclude</Button>
                                 ) : null }
                                 {(props.handleInclude) ? (
                                     <Button
                                         className="me-1"
-                                        disabled={included(volume)}
-                                        onClick={() => handleInclude(volume)}
+                                        disabled={included(story)}
+                                        onClick={() => handleInclude(story)}
                                         size="sm"
                                         type="button"
-                                        variant="secondary"
+                                        variant="primary"
                                     >Include</Button>
                                 ) : null }
                                 {(props.handleSelect) ? (
                                     <Button
                                         className="me-1"
-                                        onClick={() => handleSelect(volume)}
+                                        onClick={() => handleSelect(story)}
                                         size="sm"
                                         type="button"
-                                        variant="primary"
+                                        variant="secondary"
                                     >Select</Button>
                                 ) : null }
                             </td>
@@ -277,4 +281,4 @@ const VolumesList = (props: Props) => {
 
 }
 
-export default VolumesList;
+export default StoriesList;

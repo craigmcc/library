@@ -36,6 +36,7 @@ function Navigation() {
                         <Link className="nav-link" to="/">Home</Link>
                         <Link className="nav-link" to="/authors">Authors</Link>
                         <Link className="nav-link" to="/series">Series</Link>
+                        <Link className="nav-link" to="/stories">Stories</Link>
                         <Link className="nav-link" to="/volumes">Volumes</Link>
                         <NavDropdown id="admin" title="Admin">
                             <Link to="/libraries" data-rr-ui-dropdown-item className="dropdown-item">

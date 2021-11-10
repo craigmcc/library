@@ -1,6 +1,6 @@
-// VolumeForm ---------------------------------------------------------------
+// StoryForm ----------------------------------------------------------------
 
-// Detail editing form for Volume objects.
+// Detail editing form for Story objects.
 
 // External Modules ----------------------------------------------------------
 
@@ -16,35 +16,36 @@ import * as Yup from "yup";
 
 // Internal Modules ----------------------------------------------------------
 
-import {HandleVolume} from "../../types";
-import Volume from "../../models/Volume";
+import {HandleStory} from "../../types";
+import Story from "../../models/Story";
 import * as ToModel from "../../util/ToModel";
-import {VALID_VOLUME_LOCATIONS, VALID_VOLUME_TYPES} from "../../util/ApplicationValidators";
+import {validateStoryNameUnique} from "../../util/AsyncValidators";
 import {toEmptyStrings, toNullValues} from "../../util/Transformations";
 
 // Property Details ----------------------------------------------------------
 
 export interface Props {
     autoFocus?: boolean;                // Should the first element receive autofocus? [false]
-    handleInsert?: HandleVolume;        // Handle (Volume) insert request [not allowed]
-    handleRemove?: HandleVolume;        // Handle (Volume) remove request [not allowed]
-    handleUpdate?: HandleVolume;        // Handle (Volume) update request [not allowed]
-    volume: Volume;                     // Initial values (id<0 for adding)
+    handleInsert?: HandleStory;         // Handle (Story) insert request [not allowed]
+    handleRemove?: HandleStory;         // Handle (Story) remove request [not allowed]
+    handleUpdate?: HandleStory;         // Handle (Story) update request [not allowed]
+    showOrdinal?: boolean;              // Show the Ordinal field? [false]
+    story: Story;                       // Initial values (id<0 for adding)
 }
 
 // Component Details ---------------------------------------------------------
 
-const VolumeForm = (props: Props) => {
+const StoryForm = (props: Props) => {
 
-    const [adding] = useState<boolean>(props.volume.id < 0);
-    const [initialValues] = useState(toEmptyStrings(props.volume));
+    const [adding] = useState<boolean>(props.story.id < 0);
+    const [initialValues] = useState(toEmptyStrings(props.story));
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
     const handleSubmit = (values: FormikValues, actions: FormikHelpers<FormikValues>): void => {
         if (adding && props.handleInsert) {
-            props.handleInsert(ToModel.VOLUME(toNullValues(values)));
+            props.handleInsert(ToModel.STORY(toNullValues(values)));
         } else if (props.handleUpdate) {
-            props.handleUpdate(ToModel.VOLUME(toNullValues(values)));
+            props.handleUpdate(ToModel.STORY(toNullValues(values)));
         }
     }
 
@@ -59,46 +60,22 @@ const VolumeForm = (props: Props) => {
     const onConfirmPositive = (): void => {
         setShowConfirm(false);
         if (props.handleRemove) {
-            props.handleRemove(props.volume)
+            props.handleRemove(props.story)
         }
-    }
-
-    type ValidLocation = {
-        key: string,
-        value: string,
-    }
-    const validLocations = (): ValidLocation[] => {
-        const results: ValidLocation[] = [];
-        for (let [key, value] of VALID_VOLUME_LOCATIONS) {
-            results.push({key: key, value: value});
-        }
-        return results;
-    }
-
-    type ValidType = {
-        key: string,
-        value: string,
-    }
-    const validTypes = (): ValidType[] => {
-        const results: ValidType[] = [];
-        for (let [key, value] of VALID_VOLUME_TYPES) {
-            results.push({key: key, value: value});
-        }
-        return results;
     }
 
     const validationSchema = () => {
         return Yup.object().shape({
             active: Yup.boolean(),
             copyright: Yup.string(),
-            googleId: Yup.string(),
-            isbn: Yup.string(),
-            location: Yup.string(),
             name: Yup.string()
-                .required("Name is required"),
+                .required("Name is required")
+                .test("unique-name",
+                    "That name is already in use within this Library",
+                    async function (this) {
+                        return await validateStoryNameUnique(ToModel.STORY(this.parent));
+                    }),
             notes: Yup.string(),
-            read: Yup.boolean(),
-            type: Yup.string(),
         });
     }
 
@@ -107,7 +84,7 @@ const VolumeForm = (props: Props) => {
         <>
 
             {/* Details Form */}
-            <Container id="VolumeForm">
+            <Container id="StoryForm">
 
                 <Formik
                     initialValues={initialValues}
@@ -131,12 +108,12 @@ const VolumeForm = (props: Props) => {
                        }) => (
 
                         <Form
-                            id="VolumeForm"
+                            id="StoryForm"
                             noValidate
                             onSubmit={handleSubmit}
                         >
 
-                            <Row className="g-3 mb-3" id="nameRow">
+                            <Row className="g-3 mb-3" id="nameOrdinalRow">
                                 <Form.Group as={Col} controlId="name" id="nameGroup">
                                     <Form.Label>Name:</Form.Label>
                                     <Form.Control
@@ -151,64 +128,37 @@ const VolumeForm = (props: Props) => {
                                         value={values.name}
                                     />
                                     <Form.Control.Feedback type="valid">
-                                        Name is required and might not be unique.
+                                        Name is required and must be unique.
                                     </Form.Control.Feedback>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.name}
                                     </Form.Control.Feedback>
                                 </Form.Group>
+                                {props.showOrdinal ? (
+                                    <Form.Group as={Col} className="col-2" controlId="ordinal" id="ordinalGroup">
+                                        <Form.Label>Ordinal:</Form.Label>
+                                        <Form.Control
+                                            autoFocus={props.autoFocus ? props.autoFocus : undefined}
+                                            isInvalid={touched.ordinal && !!errors.ordinal}
+                                            isValid={!errors.ordinal}
+                                            name="ordinal"
+                                            onBlur={handleBlur}
+                                            onChange={handleChange}
+                                            size="sm"
+                                            type="text"
+                                            value={values.ordinal}
+                                        />
+                                        <Form.Control.Feedback type="valid">
+                                            Sort order of Stories within a Series.
+                                        </Form.Control.Feedback>
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.ordinal}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                ) : null }
                             </Row>
 
-                            <Row className="g-3 mb-3" id="locationTypeRow">
-                                <Form.Group as={Col} controlId="location" id="locationGroup">
-                                    <Form.Label>Volume Location:</Form.Label>
-                                    <Form.Control
-                                        as="select"
-                                        name="location"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        size="sm"
-                                        value={values.location}
-                                    >
-                                        {validLocations().map((validLocation, index) => (
-                                            <option key={index} value={validLocation.key}>
-                                                {validLocation.value}
-                                            </option>
-                                        ))}
-                                    </Form.Control>
-                                    <Form.Control.Feedback type="valid">
-                                        Physical location of this volume.
-                                    </Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.location}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                                <Form.Group as={Col} controlId="type" id="typeGroup">
-                                    <Form.Label>Volume Type:</Form.Label>
-                                    <Form.Control
-                                        as="select"
-                                        name="type"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        size="sm"
-                                        value={values.type}
-                                    >
-                                        {validTypes().map((validType, index) => (
-                                            <option key={index} value={validType.key}>
-                                                {validType.value}
-                                            </option>
-                                        ))}
-                                    </Form.Control>
-                                    <Form.Control.Feedback type="valid">
-                                        Type of content in this Volume.
-                                    </Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.type}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                            </Row>
-
-                            <Row className="g-3 mb-3" id="notesRow">
+                            <Row className="g-3 mb-3" id="notesCopyrightRow">
                                 <Form.Group as={Col} controlId="notes" id="notesGroup">
                                     <Form.Label>Notes:</Form.Label>
                                     <Form.Control
@@ -222,17 +172,14 @@ const VolumeForm = (props: Props) => {
                                         value={values.notes}
                                     />
                                     <Form.Control.Feedback type="valid">
-                                        Miscellaneous notes about this Volume.
+                                        Miscellaneous notes about this Story.
                                     </Form.Control.Feedback>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.notes}
                                     </Form.Control.Feedback>
                                 </Form.Group>
-                            </Row>
-
-                            <Row className="g-3 mb-3" id="copyrightGoogleIdIsbnRow">
-                                <Form.Group as={Col} controlId="copyright" id="copyrightGroup">
-                                    <Form.Label>Copyright Year:</Form.Label>
+                                <Form.Group as={Col} className="col-2" controlId="copyright" id="copyrightGroup">
+                                    <Form.Label>Copyright:</Form.Label>
                                     <Form.Control
                                         isInvalid={touched.copyright && !!errors.copyright}
                                         isValid={!errors.copyright}
@@ -244,64 +191,15 @@ const VolumeForm = (props: Props) => {
                                         value={values.copyright}
                                     />
                                     <Form.Control.Feedback type="valid">
-                                        Copyright year (YYYY) for this Volume.
+                                        Copyright year (YYYY) for this Story.
                                     </Form.Control.Feedback>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.copyright}
                                     </Form.Control.Feedback>
                                 </Form.Group>
-                                <Form.Group as={Col} controlId="googleId" id="googleIdGroup">
-                                    <Form.Label>Google Books ID:</Form.Label>
-                                    <Form.Control
-                                        isInvalid={touched.googleId && !!errors.googleId}
-                                        isValid={!errors.googleId}
-                                        name="googleId"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        size="sm"
-                                        type="text"
-                                        value={values.googleId}
-                                    />
-                                    <Form.Control.Feedback type="valid">
-                                        Google Books unique identifier for this volume.
-                                    </Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.googleId}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                                <Form.Group as={Col} controlId="isbn" id="isbnGroup">
-                                    <Form.Label>ISBN ID:</Form.Label>
-                                    <Form.Control
-                                        isInvalid={touched.isbn && !!errors.isbn}
-                                        isValid={!errors.isbn}
-                                        name="isbn"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        size="sm"
-                                        type="text"
-                                        value={values.isbn}
-                                    />
-                                    <Form.Control.Feedback type="valid">
-                                        International Standard Book Number for this volume.
-                                    </Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.isbn}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
                             </Row>
 
-                            <Row className="g-3 mb-3" id="readActiveRow">
-                                <Form.Group as={Col} controlId="read" id="readGroup">
-                                    <Form.Check
-                                        feedback={errors.read}
-                                        defaultChecked={values.read}
-                                        id="read"
-                                        label="Already Read?"
-                                        name="read"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                    />
-                                </Form.Group>
+                            <Row className="g-3 mb-3" id="activeRow">
                                 <Form.Group as={Col} controlId="active" id="activeGroup">
                                     <Form.Check
                                         feedback={errors.active}
@@ -328,7 +226,7 @@ const VolumeForm = (props: Props) => {
                                 </Col>
                                 <Col className="col-1">
                                     <Button
-                                        disabled={adding || (!props.handleRemove)}
+                                        disabled={adding || !props.handleRemove}
                                         onClick={onConfirm}
                                         size="sm"
                                         type="button"
@@ -362,12 +260,12 @@ const VolumeForm = (props: Props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <p>
-                        Removing this Volume is not reversible, and
+                        Removing this Story is not reversible, and
                         <strong>
                             &nbsp;will also remove ALL related information.
                         </strong>.
                     </p>
-                    <p>Consider marking this Volume as inactive instead.</p>
+                    <p>Consider marking this Story as inactive instead.</p>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
@@ -395,4 +293,4 @@ const VolumeForm = (props: Props) => {
 
 }
 
-export default VolumeForm;
+export default StoryForm;

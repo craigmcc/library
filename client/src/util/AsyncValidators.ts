@@ -17,6 +17,7 @@
 import Api from "../clients/Api";
 import Author, {AUTHORS_BASE} from "../models/Author";
 import Library, {LIBRARIES_BASE} from "../models/Library";
+import Story, {STORIES_BASE} from "../models/Story";
 import User, {USERS_BASE} from "../models/User";
 import {queryParameters} from "./QueryParameters";
 
@@ -59,6 +60,20 @@ export const validateLibraryScopeUnique = async (library: Library): Promise<bool
             const results = (await Api.get(LIBRARIES_BASE
                 + `${queryParameters(parameters)}`)).data;
             return (results.length === 0) || (results[0].id === library.id);
+        } catch (error) {
+            return true; // Definitely unique
+        }
+    } else {
+        return true;
+    }
+}
+
+export const validateStoryNameUnique = async (story: Story): Promise<boolean> => {
+    if (story && story.name) {
+        try {
+            const result = (await Api.get(STORIES_BASE
+                + `/${story.libraryId}/exact/${story.name}`)).data;
+            return (result.id === story.id);
         } catch (error) {
             return true; // Definitely unique
         }

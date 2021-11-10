@@ -39,7 +39,7 @@ const AuthorsView = () => {
         logger.info({
             context: "AuthorsView.useEffect",
             stage: stage,
-            volume: Abridgers.AUTHOR(author),
+            author: Abridgers.AUTHOR(author),
         });
     }, [stage, author,
         libraryContext.library, libraryContext.library.id,

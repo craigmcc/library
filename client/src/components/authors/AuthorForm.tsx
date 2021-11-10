@@ -129,7 +129,7 @@ const AuthorForm = (props: Props) => {
                                         value={values.firstName}
                                     />
                                     <Form.Control.Feedback type="valid">
-                                        First Name is required ana Name and name must be unique.
+                                        First Name is required and First Name + Last Name must be unique.
                                     </Form.Control.Feedback>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.firstName}
@@ -148,7 +148,7 @@ const AuthorForm = (props: Props) => {
                                         value={values.lastName}
                                     />
                                     <Form.Control.Feedback type="valid">
-                                        Last Name is required ana Name and name must be unique.
+                                        Last Name is required and First Name + Last Name must be unique.
                                     </Form.Control.Feedback>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.lastName}
@@ -180,7 +180,7 @@ const AuthorForm = (props: Props) => {
 
                             <Row className="g-3 mb-3" id="principalActiveRow">
                                 {props.showPrincipal ? (
-                                    <Form.Group as={Col} controlId="read" id="principalGroup">
+                                    <Form.Group as={Col} controlId="principal" id="principalGroup">
                                         <Form.Check
                                             feedback={errors.principal}
                                             defaultChecked={values.principal}
