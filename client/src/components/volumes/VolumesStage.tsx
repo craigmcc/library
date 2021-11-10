@@ -17,7 +17,7 @@ import VolumeForm from "./VolumeForm";
 import VolumesList from"./VolumesList";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleAction, HandleAuthor, HandleVolume, Parent, Scope} from "../../types";
+import {HandleAction, HandleVolume, Parent, Scope} from "../../types";
 import useFetchParent from "../../hooks/useFetchParent";
 import useMutateVolume from "../../hooks/useMutateVolume";
 import Author from "../../models/Author";
@@ -101,8 +101,10 @@ const VolumesStage = (props: Props) => {
             volume: Abridgers.VOLUME(theVolume),
             parent: Abridgers.ANY(fetchParent.parent),
         });
-        /* const excluded = */ await mutateVolume.exclude(theVolume, fetchParent.parent);
-        fetchParent.refresh();
+        if (!(fetchParent.parent instanceof Library)) {
+            /* const excluded = */ await mutateVolume.exclude(theVolume, fetchParent.parent);
+            fetchParent.refresh();
+        }
     }
 
     const handleInclude: HandleVolume = async (theVolume) => {
@@ -111,8 +113,10 @@ const VolumesStage = (props: Props) => {
             volume: Abridgers.VOLUME(theVolume),
             parent: Abridgers.ANY(fetchParent.parent),
         });
-        /* const included = */ await mutateVolume.include(theVolume, fetchParent.parent);
-        fetchParent.refresh();
+        if (!(fetchParent.parent instanceof Library)) {
+            /* const included = */ await mutateVolume.include(theVolume, fetchParent.parent);
+            fetchParent.refresh();
+        }
     }
 
     const handleInsert: HandleVolume = async (theVolume) => {
@@ -121,7 +125,9 @@ const VolumesStage = (props: Props) => {
             volume: Abridgers.VOLUME(theVolume),
         });
         const inserted = await mutateVolume.insert(theVolume);
-        handleSelect(inserted);
+        handleInclude(inserted); // Assume the newly created Volume is included for this Parent
+        fetchParent.refresh();
+        setVolume(null);
     }
 
     const handleRemove: HandleVolume = async (theVolume) => {
@@ -130,7 +136,7 @@ const VolumesStage = (props: Props) => {
             volume: Abridgers.VOLUME(theVolume),
         });
         /* const removed = */ await mutateVolume.remove(theVolume);
-        setVolume(null); // TODO - trigger refresh somehow?
+        setVolume(null);
     }
 
     const handleSelect: HandleVolume = (theVolume) => {
@@ -141,6 +147,7 @@ const VolumesStage = (props: Props) => {
         if (props.handleVolume) {
             props.handleVolume(theVolume);
         }
+        setVolume(theVolume);
     }
 
     const handleUpdate: HandleVolume = async (theVolume) => {
@@ -149,7 +156,7 @@ const VolumesStage = (props: Props) => {
             volume: Abridgers.VOLUME(theVolume),
         });
         /* const updated = */ await mutateVolume.update(theVolume);
-        setVolume(null); // TODO - trigger refresh somehow?
+        setVolume(null);
     }
 
     const included = (theVolume: Volume): boolean => {
@@ -186,7 +193,10 @@ const VolumesStage = (props: Props) => {
                     <VolumesList
                         handleAdd={canInsert ? handleAdd : undefined}
                         handleEdit={(canInsert || canUpdate) ? handleEdit : undefined}
-                        // TODO - handleExclude and handleInclude when supported
+                        handleExclude=
+                            {(canInsert || canUpdate) && !(fetchParent.parent instanceof Library) ? handleExclude : undefined}
+                        handleInclude=
+                            {(canInsert || canUpdate) && !(fetchParent.parent instanceof Library) ? handleInclude : undefined}
                         handleSelect={handleSelect}
                         included={included}
                         parent={fetchParent.parent}

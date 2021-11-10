@@ -44,7 +44,7 @@ class Author {
     lastName!: string;
     libraryId!: number;
     notes?: string;
-    principal?: boolean;
+    principal!: boolean;
 
     library?: Library;
     series?: Series[];

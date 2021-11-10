@@ -12,13 +12,11 @@ import {ProcessAuthor, ProcessAuthorParent} from "../types";
 import Api from "../clients/Api";
 import LibraryContext from "../components/libraries/LibraryContext";
 import Author, {AUTHORS_BASE} from "../models/Author";
-import Series from "../models/Series";
-import Story from "../models/Story";
-import Volume from "../models/Volume";
 import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
 import {queryParameters} from "../util/QueryParameters";
 import ReportError from "../util/ReportError";
+import {parentBase} from "../util/Transformations";
 
 // Incoming Properties and Outgoing State ------------------------------------
 
@@ -51,16 +49,9 @@ const useMutateAuthor = (props: Props): State => {
     });
 
     const exclude: ProcessAuthorParent = async (theAuthor, theParent) => {
-        let parentPlural = "";
-        if (theParent instanceof Series) {
-            parentPlural = "series";
-        } else if (theParent instanceof Story) {
-            parentPlural = "stories";
-        } else if (theParent instanceof Volume) {
-            parentPlural = "volumes";
-        }
         const url = AUTHORS_BASE
-            + `/${libraryContext.library.id}/${theAuthor.id}/${parentPlural}/${theParent.id}`;
+            + `/${libraryContext.library.id}/${theAuthor.id}`
+            + `${parentBase(theParent)}/${theParent.id}`;
         setError(null);
         setExecuting(true);
         try {
@@ -87,17 +78,9 @@ const useMutateAuthor = (props: Props): State => {
         const parameters = {
             principal: theAuthor.principal ? "" : undefined
         }
-        let parentPlural = "";
-        if (theParent instanceof Series) {
-            parentPlural = "series";
-        } else if (theParent instanceof Story) {
-            parentPlural = "stories";
-        } else if (theParent instanceof Volume) {
-            parentPlural = "volumes";
-        }
         const url = AUTHORS_BASE
-            + `/${libraryContext.library.id}/${theAuthor.id}/${parentPlural}/${theParent.id}`
-            + queryParameters(parameters);
+            + `/${libraryContext.library.id}/${theAuthor.id}`
+            + `${parentBase(theParent)}/${theParent.id}${queryParameters(parameters)}`;
         setError(null);
         setExecuting(true);
         try {

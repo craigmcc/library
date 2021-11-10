@@ -91,10 +91,10 @@ const VolumesView = () => {
                 <Tabs
                     activeKey={stage.toString()}
                     className="mb-3"
-                    //mountOnEnter={true}
+                    mountOnEnter={true}
                     onSelect={(select) => handleSelect(select)}
                     transition={false}
-                    //unmountOnExit={true}
+                    unmountOnExit={true}
                 >
 
                     <Tab

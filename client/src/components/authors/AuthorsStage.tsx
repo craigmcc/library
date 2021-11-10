@@ -75,6 +75,7 @@ const AuthorsStage = (props: Props) => {
             lastName: null,
             libraryId: libraryContext.library.id,
             notes: null,
+            principal: true,
         });
         logger.info({
             context: "AuthorsStage.handleAdd",
@@ -97,8 +98,10 @@ const AuthorsStage = (props: Props) => {
             author: Abridgers.AUTHOR(theAuthor),
             parent: Abridgers.ANY(fetchParent.parent),
         });
-        /* const excluded = */ await mutateAuthor.exclude(theAuthor, fetchParent.parent);
-        setAuthor(null);
+        if (!(fetchParent.parent instanceof Library)) {
+            /* const excluded = */ await mutateAuthor.exclude(theAuthor, fetchParent.parent);
+            fetchParent.refresh();
+        }
     }
 
     const handleInclude: HandleAuthor = async (theAuthor) => {
@@ -107,8 +110,10 @@ const AuthorsStage = (props: Props) => {
             author: Abridgers.AUTHOR(theAuthor),
             parent: Abridgers.ANY(fetchParent.parent),
         });
-        /* const included = */ await mutateAuthor.include(theAuthor, fetchParent.parent);
-        fetchParent.refresh();
+        if (!(fetchParent.parent instanceof Library)) {
+            /* const included = */ await mutateAuthor.include(theAuthor, fetchParent.parent);
+            fetchParent.refresh();
+        }
     }
 
     const handleInsert: HandleAuthor = async (theAuthor) => {
@@ -116,8 +121,11 @@ const AuthorsStage = (props: Props) => {
             context: "AuthorsStage.handleInsert",
             author: Abridgers.AUTHOR(theAuthor),
         });
-        /* const inserted = */ await mutateAuthor.insert(theAuthor);
+        const inserted = await mutateAuthor.insert(theAuthor);
+        inserted.principal = theAuthor.principal;
+        handleInclude(inserted); // Assume the newly created Author is included for this Parent
         fetchParent.refresh();
+        setAuthor(null);
     }
 
     const handleRemove: HandleAuthor = async (theAuthor) => {
@@ -126,7 +134,7 @@ const AuthorsStage = (props: Props) => {
             author: Abridgers.AUTHOR(theAuthor),
         });
         /* const removed = */ await mutateAuthor.remove(theAuthor);
-        setAuthor(null); // TODO - trigger refresh somehow?
+        setAuthor(null);
     }
 
     const handleSelect: HandleAuthor = (theAuthor) => {
@@ -137,6 +145,7 @@ const AuthorsStage = (props: Props) => {
         if (props.handleAuthor) {
             props.handleAuthor(theAuthor);
         }
+        setAuthor(theAuthor);
     }
 
     const handleUpdate: HandleAuthor = async (theAuthor) => {
@@ -144,8 +153,15 @@ const AuthorsStage = (props: Props) => {
             context: "AuthorsStage.handleUpdate",
             author: Abridgers.AUTHOR(theAuthor),
         });
-        /* const updated = */ await mutateAuthor.update(theAuthor);
-        setAuthor(null); // TODO - trigger refresh somehow?
+        const updated = await mutateAuthor.update(theAuthor);
+        if (author && included(author)) {
+            if (author.principal !== theAuthor.principal) {
+                handleExclude(updated);
+                updated.principal = theAuthor.principal;
+                handleInclude(updated);
+            }
+        }
+        setAuthor(null);
     }
 
     const included = (theAuthor: Author): boolean => {

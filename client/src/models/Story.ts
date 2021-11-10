@@ -45,7 +45,7 @@ class Story {
     libraryId!: number;
     name!: string;
     notes?: string;
-    ordinal?: number | null;
+    ordinal!: number;
 
     authors?: Author[];
     library?: Library;
@@ -55,13 +55,13 @@ class Story {
     _model!: string;
     _title!: string;
 
-    private calculateOrdinal(data: any): number | null {
+    private calculateOrdinal(data: any): number {
         if (data.ordinal) {
             return data.ordinal;
         } else if (data.SeriesStory && data.SeriesStory.ordinal) {
             return data.SeriesStory.ordinal;
         } else {
-            return null;
+            return 0;
         }
     }
 

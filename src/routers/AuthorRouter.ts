@@ -199,8 +199,8 @@ AuthorRouter.delete("/:libraryId/:authorId/volumes/:volumeId",
 AuthorRouter.post("/:libraryId/:authorId/volumes/:volumeId",
     requireRegular,
     async (req: Request, res: Response) => {
-        let principal: boolean | undefined = undefined;
-        if (req.query && req.query.principal) {
+        let principal: boolean = false;
+        if (req.query && (req.query.principal === "")) {
             principal = true;
         }
         res.send(await AuthorServices.volumesInclude(

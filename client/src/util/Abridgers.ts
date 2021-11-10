@@ -37,6 +37,7 @@ export const AUTHOR = (author: Author): object => {
         libraryId: author.libraryId,
         firstName: author.firstName,
         lastName: author.lastName,
+        principal: author.principal,
         _model: author._model,
     }
 }
@@ -87,6 +88,7 @@ export const STORY = (story: Story): object => {
         id: story.id,
         libraryId: story.libraryId,
         name: story.name,
+        ordinal: story.ordinal,
         _model: story._model,
     }
 }

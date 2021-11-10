@@ -11,10 +11,14 @@ import {useContext, useEffect, useState} from "react";
 import {ProcessVolume, ProcessVolumeParent} from "../types";
 import Api from "../clients/Api";
 import LibraryContext from "../components/libraries/LibraryContext";
+import Author, {AUTHORS_BASE} from "../models/Author";
 import Volume, {VOLUMES_BASE} from "../models/Volume";
 import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
 import ReportError from "../util/ReportError";
+import {parentBase} from "../util/Transformations";
+import Story from "../models/Story";
+import {queryParameters} from "../util/QueryParameters";
 
 // Incoming Properties and Outgoing State ------------------------------------
 
@@ -47,11 +51,72 @@ const useMutateVolume = (props: Props): State => {
     });
 
     const exclude: ProcessVolumeParent = async (theVolume, theParent) => {
-        return new Volume(); // TODO - temp
+        let url: string = "";
+        if (theParent instanceof Author) {
+            url = AUTHORS_BASE
+                + `/${libraryContext.library.id}/${theParent.id}`
+                + `${parentBase(theVolume)}/${theVolume.id}`;
+        } else if (theParent instanceof Story) {
+            url = VOLUMES_BASE
+                + `/${libraryContext.library.id}/${theVolume.id}`
+                + `${parentBase(theParent)}/${theParent.id})`;
+        }
+        setError(null);
+        setExecuting(true);
+        try {
+            await Api.delete(url);
+            logger.info({
+                context: "useMutateVolume.exclude",
+                volume: Abridgers.VOLUME(theVolume),
+                parent: Abridgers.ANY(theParent),
+                url: url,
+            });
+        } catch (error) {
+            setError(error as Error);
+            ReportError("useMutateVolume.exclude", error,{
+                volume: Abridgers.VOLUME(theVolume),
+                parent: Abridgers.ANY(theParent),
+                url: url,
+            });
+        }
+        setExecuting(false);
+        return theVolume;
     }
 
     const include: ProcessVolumeParent = async (theVolume, theParent) => {
-        return new Volume(); // TODO - temp
+        let url: string = "";
+        if (theParent instanceof Author) {
+            const parameters = {
+                principal: theParent.principal ? "" : undefined
+            }
+            url = AUTHORS_BASE
+                + `/${libraryContext.library.id}/${theParent.id}`
+                + `${parentBase(theVolume)}/${theVolume.id}${queryParameters(parameters)}`;
+        } else if (theParent instanceof Story) {
+            url = VOLUMES_BASE
+                + `/${libraryContext.library.id}/${theVolume.id}`
+                + `${parentBase(theParent)}/${theParent.id})`;
+        }
+        setError(null);
+        setExecuting(true);
+        try {
+            await Api.post(url);
+            logger.info({
+                context: "useMutateVolume.include",
+                volume: Abridgers.VOLUME(theVolume),
+                parent: Abridgers.ANY(theParent),
+                url: url,
+            });
+        } catch (error) {
+            setError(error as Error);
+            ReportError("useMutateVolume.include", error,{
+                volume: Abridgers.VOLUME(theVolume),
+                parent: Abridgers.ANY(theParent),
+                url: url,
+            });
+        }
+        setExecuting(false);
+        return theVolume;
     }
 
     const insert: ProcessVolume = async (theVolume) => {

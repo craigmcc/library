@@ -4,8 +4,12 @@
 
 // Internal Modules ----------------------------------------------------------
 
-import Author from "../models/Author";
-import Story from "../models/Story";
+import {Parent} from "../types";
+import Author, {AUTHORS_BASE} from "../models/Author";
+import Library, {LIBRARIES_BASE} from "../models/Library";
+import Series, {SERIES_BASE} from "../models/Series";
+import Story, {STORIES_BASE} from "../models/Story";
+import /* Volume, */ {VOLUMES_BASE} from "../models/Volume";
 
 // Public Objects ------------------------------------------------------------
 
@@ -33,6 +37,21 @@ export const listValue = (value: any): string => {
         return "";
     } else {
         return value;
+    }
+}
+
+// Return the URL segment for the class of Parent passed as an argument
+export const parentBase = (parent: Parent): string => {
+    if (parent instanceof Author) {
+        return AUTHORS_BASE;
+    } else if (parent instanceof Library) {
+        return LIBRARIES_BASE;
+    } else if (parent instanceof Series) {
+        return SERIES_BASE;
+    } else if (parent instanceof Story) {
+        return STORIES_BASE;
+    } else /* if (parent instanceof Volume) */ {
+        return VOLUMES_BASE;
     }
 }
 
