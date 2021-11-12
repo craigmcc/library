@@ -18,6 +18,7 @@ import * as Yup from "yup";
 
 import {HandleAction, HandleSeries, Parent} from "../../types";
 import Series from "../../models/Series";
+import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 import * as ToModel from "../../util/ToModel";
 import {toEmptyStrings, toNullValues} from "../../util/Transformations";
@@ -38,17 +39,15 @@ export interface Props {
 
 const SeriesDetails = (props: Props) => {
 
-    const [initialValues, setInitialValues] = useState<any>({});
+    const [initialValues, setInitialValues] = useState<any>(toEmptyStrings(props.series));
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
     useEffect(() => {
-        const values = toEmptyStrings(props.series);
         logger.info({
             context: "SeriesDetails.useEffect",
-            series: props.series,
-            initialValues: values,
+            series: Abridgers.SERIES(props.series),
         });
-        setInitialValues(values);
+        setInitialValues(toEmptyStrings(props.series));
     }, [props.series, props.series.id]);
 
     const handleSubmit = (values: FormikValues, actions: FormikHelpers<FormikValues>): void => {
