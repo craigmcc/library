@@ -24,7 +24,7 @@ class Series {
         this.copyright = data.copyright ? data.copyright : null;
         this.libraryId = data.libraryId ? data.libraryId : -1;
         this.name = data.name ? data.name : null;
-        this.notes = data.notes ? data.nots : null;
+        this.notes = data.notes ? data.notes : null;
 
         this.authors = data.authors ? ToModel.AUTHORS(data.authors) : undefined;
         this.library = data.library ? ToModel.LIBRARY(data.library) : undefined;

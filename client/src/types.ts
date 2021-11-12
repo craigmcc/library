@@ -15,6 +15,7 @@ import Story from "./models/Story";
 import User from "./models/User";
 import Volume from "./models/Volume";
 
+export type Focus = Author | Library | Series | Story | Volume;
 export type Parent = Author | Library | Series | Story | Volume;
 
 // Enumerations --------------------------------------------------------------

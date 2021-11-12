@@ -10,7 +10,7 @@ import Navigation from './components/general/Navigation';
 import LibrariesView from "./components/libraries/LibrariesView";
 import {LibraryContextProvider} from "./components/libraries/LibraryContext";
 import {LoginContextProvider} from "./components/login/LoginContext";
-import SeriesView from "./components/series/SeriesView";
+import SeriesSegment from "./components/series/SeriesSegment";
 import StoriesView from "./components/stories/StoriesView";
 import UsersView from "./components/users/UsersView";
 import VolumesView from "./components/volumes/VolumesView";
@@ -24,7 +24,7 @@ ReactDOM.render(
                       <Route path="/" element={<Navigation/>}>
                           <Route path="authors" element={<AuthorsView/>}/>
                           <Route path="libraries" element={<LibrariesView/>}/>
-                          <Route path="series" element={<SeriesView/>}/>
+                          <Route path="series" element={<SeriesSegment/>}/>
                           <Route path="stories" element={<StoriesView/>}/>
                           <Route path="users" element={<UsersView/>}/>
                           <Route path="volumes" element={<VolumesView/>}/>
