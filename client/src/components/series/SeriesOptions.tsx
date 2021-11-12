@@ -21,7 +21,6 @@ import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleBoolean, HandleSeries, HandleValue, Parent} from "../../types";
 import useFetchSerieses from "../../hooks/useFetchSerieses";
-import Library from "../../models/Library";
 import Series from "../../models/Series";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";

@@ -99,7 +99,6 @@ const SeriesSegment = (props: Props) => {
         logger.info({
             context: "SeriesSegment.handleBack"
         });
-        setSeries(null);
         setView(View.OPTIONS);
         if (props.handleBack) {
             props.handleBack();
@@ -154,7 +153,6 @@ const SeriesSegment = (props: Props) => {
         });
         const inserted = await mutateSeries.insert(theSeries);
         handleInclude(inserted);
-        setSeries(null);
         setView(View.OPTIONS);
     }
 
@@ -165,7 +163,6 @@ const SeriesSegment = (props: Props) => {
             series: Abridgers.SERIES(theSeries),
         });
         /* const removed = */ await mutateSeries.remove(theSeries);
-        setSeries(null);
         setView(View.OPTIONS);
     }
 
@@ -204,7 +201,6 @@ const SeriesSegment = (props: Props) => {
             series: Abridgers.SERIES(theSeries),
         });
         /* const updated = */ await mutateSeries.update(theSeries);
-        setSeries(null);
         setView(View.OPTIONS);
     }
 
