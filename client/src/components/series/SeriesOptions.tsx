@@ -240,7 +240,7 @@ const SeriesOptions = (props: Props) => {
                                         onClick={() => handleEdit(series)}
                                         size="sm"
                                         type="button"
-                                        variant="success"
+                                        variant="primary"
                                     >Edit</Button>
                                 ) : null }
                                 {(props.handleExclude) ? (
@@ -250,7 +250,7 @@ const SeriesOptions = (props: Props) => {
                                         onClick={() => handleExclude(series)}
                                         size="sm"
                                         type="button"
-                                        variant="secondary"
+                                        variant="primary"
                                     >Exclude</Button>
                                 ) : null }
                                 {(props.handleInclude) ? (
@@ -260,16 +260,17 @@ const SeriesOptions = (props: Props) => {
                                         onClick={() => handleInclude(series)}
                                         size="sm"
                                         type="button"
-                                        variant="secondary"
+                                        variant="primary"
                                     >Include</Button>
                                 ) : null }
+                                <span className="ms-1 me-2">|</span>
                                 {(props.handleShowAuthors) ? (
                                     <Button
                                         className="me-1"
                                         onClick={() => handleShowAuthors(series)}
                                         size="sm"
                                         type="button"
-                                        variant="primary"
+                                        variant="success"
                                     >Authors</Button>
                                 ) : null }
                                 {(props.handleShowStories) ? (
@@ -278,7 +279,7 @@ const SeriesOptions = (props: Props) => {
                                         onClick={() => handleShowStories(series)}
                                         size="sm"
                                         type="button"
-                                        variant="primary"
+                                        variant="success"
                                     >Stories</Button>
                                 ) : null }
                             </td>
