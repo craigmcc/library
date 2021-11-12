@@ -38,13 +38,17 @@ export interface Props {
 
 const SeriesDetails = (props: Props) => {
 
+    const [initialValues, setInitialValues] = useState<any>({});
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
     useEffect(() => {
+        const values = toEmptyStrings(props.series);
         logger.info({
             context: "SeriesDetails.useEffect",
             series: props.series,
+            initialValues: values,
         });
+        setInitialValues(values);
     }, [props.series, props.series.id]);
 
     const handleSubmit = (values: FormikValues, actions: FormikHelpers<FormikValues>): void => {
@@ -110,7 +114,7 @@ const SeriesDetails = (props: Props) => {
                 </Row>
 
                 <Formik
-                    initialValues={toEmptyStrings(props.series)}
+                    initialValues={initialValues}
                     onSubmit={(values, actions) => {
                         handleSubmit(values, actions);
                     }}
@@ -151,7 +155,7 @@ const SeriesDetails = (props: Props) => {
                                         value={values.name}
                                     />
                                     <Form.Control.Feedback type="valid">
-                                        Name is required and might not be unique.
+                                        Name is required must be unique within a Library.
                                     </Form.Control.Feedback>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.name}

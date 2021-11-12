@@ -246,8 +246,8 @@ const SeriesSegment = (props: Props) => {
                     handleAdd={handleAdd}
                     handleBack={props.handleBack ? handleBack : undefined}
                     handleEdit={handleEdit}
-                    handleExclude={handleExclude}
-                    handleInclude={handleInclude}
+                    handleExclude={props.parent && !(props.parent instanceof Library) ? handleExclude : undefined}
+                    handleInclude={props.parent && !(props.parent instanceof Library) ? handleInclude : undefined}
                     handleShowAuthors={handleShowAuthors}
                     handleShowStories={handleShowStories}
                     included={included}

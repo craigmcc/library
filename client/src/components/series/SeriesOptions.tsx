@@ -235,6 +235,15 @@ const SeriesOptions = (props: Props) => {
                                 {series.notes}
                             </td>
                             <td key={1000 + (rowIndex * 100) + 5}>
+                                {(props.handleEdit) ? (
+                                    <Button
+                                        className="me-1"
+                                        onClick={() => handleEdit(series)}
+                                        size="sm"
+                                        type="button"
+                                        variant="success"
+                                    >Edit</Button>
+                                ) : null }
                                 {(props.handleExclude) ? (
                                     <Button
                                         className="me-1"
