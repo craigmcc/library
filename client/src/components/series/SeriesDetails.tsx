@@ -4,7 +4,7 @@
 
 // External Modules ----------------------------------------------------------
 
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Formik, FormikHelpers, FormikValues} from "formik";
 import Button from "react-bootstrap/button";
 import Col from "react-bootstrap/Col";
@@ -18,9 +18,7 @@ import * as Yup from "yup";
 
 import {HandleAction, HandleSeries, Parent} from "../../types";
 import Series from "../../models/Series";
-import * as Abridgers from "../../util/Abridgers";
 import {validateSeriesNameUnique} from "../../util/AsyncValidators";
-import logger from "../../util/ClientLogger";
 import * as ToModel from "../../util/ToModel";
 import {toEmptyStrings, toNullValues} from "../../util/Transformations";
 
@@ -40,18 +38,9 @@ export interface Props {
 
 const SeriesDetails = (props: Props) => {
 
-    const [adding, setAdding] = useState<boolean>(false);
-    const [initialValues, setInitialValues] = useState<any>(toEmptyStrings(props.series));
+    const [adding] = useState<boolean>(props.series.id < 0);
+    const [initialValues] = useState<any>(toEmptyStrings(props.series));
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
-
-    useEffect(() => {
-        logger.info({
-            context: "SeriesDetails.useEffect",
-            series: Abridgers.SERIES(props.series),
-        });
-        setAdding(props.series.id < 0);
-        setInitialValues(toEmptyStrings(props.series));
-    }, [props.series, props.series.id]);
 
     const handleSubmit = (values: FormikValues, actions: FormikHelpers<FormikValues>): void => {
         if (adding && props.handleInsert) {

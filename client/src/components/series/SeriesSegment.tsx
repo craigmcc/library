@@ -16,7 +16,6 @@ import AuthorSegment from "../authors/AuthorSegment";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleSeries, Parent, Scope} from "../../types";
-import useFetchFocused from "../../hooks/useFetchFocused";
 import useMutateSeries from "../../hooks/useMutateSeries";
 import Author from "../../models/Author";
 import Library from "../../models/Library";
@@ -49,12 +48,9 @@ const SeriesSegment = (props: Props) => {
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
-    const [series, setSeries] = useState<Series | null>(new Series());
+    const [series, setSeries] = useState<Series>(new Series());
     const [view, setView] = useState<View>(View.OPTIONS);
 
-    const fetchFocused = useFetchFocused({
-        focusee: series ? series : new Series(),
-    });
     const mutateSeries = useMutateSeries({});
 
     useEffect(() => {
@@ -73,8 +69,7 @@ const SeriesSegment = (props: Props) => {
     }, [props.parent,
         libraryContext.library, libraryContext.library.id,
         loginContext, loginContext.data.loggedIn,
-        series,
-        fetchFocused.focused]);
+        series]);
 
     // Create an empty Series to be added
     const handleAdd: HandleAction = () => {
@@ -233,7 +228,7 @@ const SeriesSegment = (props: Props) => {
                     handleReturn={handleReturn}
                     handleUpdate={canUpdate ? handleUpdate : undefined}
                     parent={props.parent ? props.parent : libraryContext.library}
-                    series={fetchFocused.focused as Series}
+                    series={series}
                 />
             ) : null }
 
@@ -259,11 +254,11 @@ const SeriesSegment = (props: Props) => {
             ) : null }
 
             {(view === View.STORIES) ? (
-                <h1>StorySegment for {Abridgers.ANY(fetchFocused.focused)}</h1>
+                <h1>StorySegment for {Abridgers.ANY(series)}</h1>
 /*
                 <StorySegment
                     handleBack={handleReturn}
-                    parent={series ? series : undefined}
+                    parent={series}
                 />
 */
             ) : null }

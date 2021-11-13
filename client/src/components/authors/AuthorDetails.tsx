@@ -4,7 +4,7 @@
 
 // External Modules ----------------------------------------------------------
 
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Formik, FormikHelpers, FormikValues} from "formik";
 import Button from "react-bootstrap/button";
 import Col from "react-bootstrap/Col";
@@ -18,11 +18,9 @@ import * as Yup from "yup";
 
 import {HandleAction, HandleAuthor, Parent} from "../../types";
 import Author from "../../models/Author";
-import * as Abridgers from "../../util/Abridgers";
-import * as ToModel from "../../util/ToModel";
 import {validateAuthorNameUnique} from "../../util/AsyncValidators";
+import * as ToModel from "../../util/ToModel";
 import {toEmptyStrings, toNullValues} from "../../util/Transformations";
-import logger from "../../util/ClientLogger";
 
 // Property Details ----------------------------------------------------------
 
@@ -41,18 +39,9 @@ export interface Props {
 
 const AuthorDetails = (props: Props) => {
 
-    const [adding, setAdding] = useState<boolean>(false);
-    const [initialValues, setInitialValues] = useState<any>({});
+    const [adding] = useState<boolean>(props.author.id < 0);
+    const [initialValues] = useState<any>(toEmptyStrings(props.author));
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
-
-    useEffect(() => {
-        logger.info({
-            context: "AuthorDetails.useEffect",
-            author: Abridgers.AUTHOR(props.author),
-        });
-        setAdding(props.author.id < 0);
-        setInitialValues(toEmptyStrings(props.author));
-    }, [props.author, props.author.id]);
 
     const handleSubmit = (values: FormikValues, actions: FormikHelpers<FormikValues>): void => {
         if (adding && props.handleInsert) {

@@ -17,7 +17,6 @@ import SeriesSegment from "../series/SeriesSegment";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleAuthor, Parent, Scope} from "../../types";
-import useFetchFocused from "../../hooks/useFetchFocused";
 import useMutateAuthor from "../../hooks/useMutateAuthor";
 import Author from "../../models/Author";
 import Library from "../../models/Library";
@@ -52,12 +51,9 @@ const AuthorSegment = (props: Props) => {
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
-    const [author, setAuthor] = useState<Author | null>(new Author());
+    const [author, setAuthor] = useState<Author>(new Author());
     const [view, setView] = useState<View>(View.OPTIONS);
 
-    const fetchFocused = useFetchFocused({
-        focusee: author ? author : new Author(),
-    });
     const mutateAuthor = useMutateAuthor({});
 
     useEffect(() => {
@@ -76,8 +72,7 @@ const AuthorSegment = (props: Props) => {
     }, [props.parent,
         libraryContext.library, libraryContext.library.id,
         loginContext, loginContext.data.loggedIn,
-        author,
-        fetchFocused.focused]);
+        author]);
 
     // Create an empty Author to be added
     const handleAdd: HandleAction = () => {
@@ -241,7 +236,7 @@ const AuthorSegment = (props: Props) => {
 
             {(view === View.DETAILS) ? (
                 <AuthorDetails
-                    author={fetchFocused.focused as Author}
+                    author={author}
                     autoFocus
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
@@ -271,26 +266,26 @@ const AuthorSegment = (props: Props) => {
             {(view === View.SERIES) ? (
                 <SeriesSegment
                     handleBack={handleReturn}
-                    parent={author ? author : undefined}
+                    parent={author}
                 />
             ) : null }
 
             {(view === View.STORIES) ? (
-                <h1>StorySegment for {Abridgers.ANY(fetchFocused.focused)}</h1>
+                <h1>StorySegment for {Abridgers.ANY(author)}</h1>
                 /*
                                 <StorySegment
                                     handleBack={handleReturn}
-                                    parent={author ? author : undefined}
+                                    parent={author}
                                 />
                 */
             ) : null }
 
             {(view === View.VOLUMES) ? (
-                <h1>VolumeSegment for {Abridgers.ANY(fetchFocused.focused)}</h1>
+                <h1>VolumeSegment for {Abridgers.ANY(author)}</h1>
                 /*
                                 <VolumeSegment
                                     handleBack={handleReturn}
-                                    parent={author ? author : undefined}
+                                    parent={author}
                                 />
                 */
             ) : null }
