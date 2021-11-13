@@ -11,3 +11,4 @@ log/
 migrations/current.sql
 node_modules/
 privkey.pem
+transfer/*.csv
