@@ -21,10 +21,14 @@ import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleBoolean, HandleAuthor, HandleValue, Parent} from "../../types";
 import useFetchAuthors from "../../hooks/useFetchAuthors";
+import useFetchFocused from "../../hooks/useFetchFocused";
 import Author from "../../models/Author";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 import {listValue} from "../../util/Transformations";
+import Series from "../../models/Series";
+import Story from "../../models/Story";
+import Volume from "../../models/Volume";
 
 // Incoming Properties -------------------------------------------------------
 
@@ -37,7 +41,6 @@ export interface Props {
     handleShowSeries?: HandleAuthor;    // Handle request to show related Series [not allowed]
     handleShowStories?: HandleAuthor;   // Handle request to show related Stories [not allowed]
     handleShowVolumes?: HandleAuthor;   // Handle request to show related Volumes [not allowed]
-    included?: (author: Author) => boolean; // Is this Author included in parent? [true]
     parent: Parent;                     // Parent object for Authors
     showPrincipal?: boolean;            // Show the Principal column? [false]
 }
@@ -60,6 +63,12 @@ const AuthorOptions = (props: Props) => {
         name: (searchText.length > 0) ? searchText : undefined,
         pageSize: pageSize,
         parent: props.parent,
+        withSeries: true,
+        withStories: true,
+        withVolumes: true,
+    });
+    const fetchFocused = useFetchFocused({
+        focusee: props.parent,
     });
 
     useEffect(() => {
@@ -69,12 +78,13 @@ const AuthorOptions = (props: Props) => {
             parent: Abridgers.ANY(props.parent),
             active: active,
             name: searchText,
+
         });
     }, [props.parent,
         libraryContext.library, libraryContext.library.id,
         loginContext.data.loggedIn,
         active, searchText,
-        fetchAuthors.authors]);
+        fetchAuthors.authors, fetchFocused.focused]);
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
@@ -134,12 +144,25 @@ const AuthorOptions = (props: Props) => {
         }
     }
 
+    // Is this Author included in its parent?
     const included = (theAuthor: Author): boolean => {
-        if (props.included) {
-            return props.included(theAuthor);
+        let result = false;
+        if (props.parent) {
+            if ((fetchFocused.focused instanceof Series)
+                    || (fetchFocused.focused instanceof Story)
+                    || (fetchFocused.focused instanceof Volume)) {
+                if (fetchFocused.focused.authors) {
+                    fetchFocused.focused.authors.forEach(author => {
+                        if (theAuthor.id === author.id) {
+                            result = true;
+                        }
+                    })
+                }
+            }
         } else {
-            return true;
+            result = true; // No parent ==> in Library ==> true
         }
+        return result;
     }
 
     return (

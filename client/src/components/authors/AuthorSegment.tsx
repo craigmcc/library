@@ -20,9 +20,6 @@ import {HandleAction, HandleAuthor, Parent, Scope} from "../../types";
 import useMutateAuthor from "../../hooks/useMutateAuthor";
 import Author from "../../models/Author";
 import Library from "../../models/Library";
-import Series from "../../models/Series";
-import Volume from "../../models/Volume";
-import Story from "../../models/Story";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 
@@ -212,25 +209,6 @@ const AuthorSegment = (props: Props) => {
         setView(View.OPTIONS);
     }
 
-    // Is this Author included in its parent?
-    const included = (theAuthor: Author): boolean => {
-        let result = false;
-        if (!props.parent || (props.parent instanceof Library)) {
-            result = true;
-        } else if ((props.parent instanceof Series)
-            || (props.parent instanceof Story)
-            || (props.parent instanceof Volume)) {
-            if (props.parent.authors) {
-                props.parent.authors.forEach(author => {
-                    if (theAuthor.id === author.id) {
-                        result = true;
-                    }
-                })
-            }
-        }
-        return result;
-    }
-
     return (
         <>
 
@@ -257,7 +235,6 @@ const AuthorSegment = (props: Props) => {
                     handleShowSeries={handleShowSeries}
                     handleShowStories={handleShowStories}
                     handleShowVolumes={handleShowVolumes}
-                    included={included}
                     parent={props.parent ? props.parent : libraryContext.library}
                     showPrincipal={props.parent && !(props.parent instanceof Library)}
                 />

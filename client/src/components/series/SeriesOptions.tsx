@@ -20,8 +20,11 @@ import SearchBar from "../general/SearchBar";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleBoolean, HandleSeries, HandleValue, Parent} from "../../types";
+import useFetchFocused from "../../hooks/useFetchFocused";
 import useFetchSerieses from "../../hooks/useFetchSerieses";
+import Author from "../../models/Author";
 import Series from "../../models/Series";
+import Story from "../../models/Story";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 import {authorsNames, listValue} from "../../util/Transformations";
@@ -36,7 +39,6 @@ export interface Props {
     handleInclude?: HandleSeries;       // Handle request to include a Series [not allowed]
     handleShowAuthors?: HandleSeries;   // Handle request to show related Authors [not allowed]
     handleShowStories?: HandleSeries;   // Handle request to show related Stories [not allowed]
-    included?: (series: Series) => boolean; // Is this Series included in parent? [true]
     parent: Parent;                     // Parent object for Serieses
 }
 
@@ -52,13 +54,17 @@ const SeriesOptions = (props: Props) => {
     const [pageSize] = useState<number>(100);
     const [searchText, setSearchText] = useState<string>("");
 
+    const fetchFocused = useFetchFocused({
+        focusee: props.parent,
+    });
     const fetchSerieses = useFetchSerieses({
         active: active,
         currentPage: currentPage,
         name: (searchText.length > 0) ? searchText : undefined,
         pageSize: pageSize,
         parent: props.parent,
-        withAuthors: true,  // Since we are showing author names in the list
+        withAuthors: true,
+        withStories: true,
     });
 
     useEffect(() => {
@@ -127,12 +133,22 @@ const SeriesOptions = (props: Props) => {
         }
     }
 
+    // Is this Series included in its parent?
     const included = (theSeries: Series): boolean => {
-        if (props.included) {
-            return props.included(theSeries);
-        } else {
-            return true;
+        let result = false;
+        if (props.parent) {
+            if ((fetchFocused.focused instanceof Author)
+                    || (fetchFocused.focused instanceof Story)) {
+                if (fetchFocused.focused.series) {
+                    fetchFocused.focused.series.forEach(series => {
+                        if (theSeries.id === series.id) {
+                            result = true;
+                        }
+                    });
+                }
+            }
         }
+        return result;
     }
 
     return (

@@ -17,10 +17,8 @@ import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleSeries, Parent, Scope} from "../../types";
 import useMutateSeries from "../../hooks/useMutateSeries";
-import Author from "../../models/Author";
 import Library from "../../models/Library";
 import Series from "../../models/Series";
-import Story from "../../models/Story";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 
@@ -199,24 +197,6 @@ const SeriesSegment = (props: Props) => {
         setView(View.OPTIONS);
     }
 
-    // Is this Series included in its parent?
-    const included = (theSeries: Series): boolean => {
-        let result = false;
-        if (!props.parent || (props.parent instanceof Library)) {
-            result = true;
-        } else if ((props.parent instanceof Author)
-            || (props.parent instanceof Story)) {
-            if (props.parent.series) {
-                props.parent.series.forEach(series => {
-                    if (theSeries.id === series.id) {
-                        result = true;
-                    }
-                })
-            }
-        }
-        return result;
-    }
-
     return (
         <>
 
@@ -241,7 +221,6 @@ const SeriesSegment = (props: Props) => {
                     handleInclude={props.parent && !(props.parent instanceof Library) ? handleInclude : undefined}
                     handleShowAuthors={handleShowAuthors}
                     handleShowStories={handleShowStories}
-                    included={included}
                     parent={props.parent ? props.parent : libraryContext.library}
                 />
             ) : null }
