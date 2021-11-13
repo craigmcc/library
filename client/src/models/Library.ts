@@ -31,7 +31,7 @@ class Library {
         this.stories = data.stories ? ToModel.STORIES(data.stories) : [];
         this.volumes = data.volumes ? ToModel.VOLUMES(data.volumes) : [];
 
-        this._model = this.constructor.name;
+        this._model = "Library";
         this._title = this.name;
 
     }

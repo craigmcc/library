@@ -34,7 +34,7 @@ class Story {
         this.series = data.series ? ToModel.SERIESES(data.series) : undefined;
         this.volumes = data.volumes ? ToModel.VOLUMES(data.volumes) : undefined;
 
-        this._model = this.constructor.name;
+        this._model = "Story";
         this._title = this.name;
 
     }

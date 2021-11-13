@@ -30,7 +30,7 @@ class Series {
         this.library = data.library ? ToModel.LIBRARY(data.library) : undefined;
         this.stories = data.stories ? ToModel.STORIES(data.stories) : undefined;
 
-        this._model = this.constructor.name;
+        this._model = "Series";
         this._title = this.name;
 
     }

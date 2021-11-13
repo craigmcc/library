@@ -33,7 +33,7 @@ class Author {
         this.stories = data.stories ? ToModel.STORIES(data.stories) : undefined;
         this.volumes = data.volumes ? ToModel.VOLUMES(data.volumes) : undefined;
 
-        this._model = this.constructor.name;
+        this._model = "Author";
         this._title = this.firstName + " " + this.lastName;
 
     }
