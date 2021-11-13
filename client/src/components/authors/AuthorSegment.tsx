@@ -248,7 +248,7 @@ const AuthorSegment = (props: Props) => {
                     handleReturn={handleReturn}
                     handleUpdate={canUpdate ? handleUpdate : undefined}
                     parent={props.parent ? props.parent : libraryContext.library}
-                    showPrincipal
+                    showPrincipal={props.parent && !(props.parent instanceof Library)}
                 />
             ) : null }
 
@@ -264,7 +264,7 @@ const AuthorSegment = (props: Props) => {
                     handleShowVolumes={handleShowVolumes}
                     included={included}
                     parent={props.parent ? props.parent : libraryContext.library}
-                    showPrincipal
+                    showPrincipal={props.parent && !(props.parent instanceof Library)}
                 />
             ) : null }
 
