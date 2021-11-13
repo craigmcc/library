@@ -92,7 +92,6 @@ SeriesRouter.put("/:libraryId/:seriesId",
 
 // Series-Author Relationships ------------------------------------------------
 
-/*
 // GET /:libraryId/:seriesId/authors - Find Authors for this Series
 SeriesRouter.get("/:libraryId/:seriesId/authors",
     requireRegular,
@@ -103,7 +102,6 @@ SeriesRouter.get("/:libraryId/:seriesId/authors",
             req.query
         ));
     });
-*/
 
 // Series-Story Relationships ------------------------------------------------
 

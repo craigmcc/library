@@ -1,6 +1,6 @@
-// SeriesSegment -------------------------------------------------------------
+// AuthorSegment -------------------------------------------------------------
 
-// Consolidated segment for listing and editing Series objects, as well as
+// Consolidated segment for listing and editing Author objects, as well as
 // navigating to segments for related child objects.
 
 // External Modules ----------------------------------------------------------
@@ -9,18 +9,20 @@ import React, {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import SeriesDetails from "./SeriesDetails";
-import SeriesOptions from "./SeriesOptions";
-import AuthorSegment from "../authors/AuthorSegment";
+import AuthorDetails from "./AuthorDetails";
+import AuthorOptions from "./AuthorOptions";
+import SeriesSegment from "../series/SeriesSegment";
 //import StorySegment from "../stories/StorySegment";
+//import VolumeSegment from "../volumes/VolumeSegment";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleAction, HandleSeries, Parent, Scope} from "../../types";
+import {HandleAction, HandleAuthor, Parent, Scope} from "../../types";
 import useFetchFocused from "../../hooks/useFetchFocused";
-import useMutateSeries from "../../hooks/useMutateSeries";
+import useMutateAuthor from "../../hooks/useMutateAuthor";
 import Author from "../../models/Author";
 import Library from "../../models/Library";
 import Series from "../../models/Series";
+import Volume from "../../models/Volume";
 import Story from "../../models/Story";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
@@ -37,11 +39,12 @@ export interface Props {
 enum View {
     DETAILS = "Details",
     OPTIONS = "Options",
-    AUTHORS = "Authors",
+    SERIES = "Series",
     STORIES = "Stories",
+    VOLUMES = "Volumes",
 }
 
-const SeriesSegment = (props: Props) => {
+const AuthorSegment = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -49,20 +52,20 @@ const SeriesSegment = (props: Props) => {
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
-    const [series, setSeries] = useState<Series | null>(new Series());
+    const [author, setAuthor] = useState<Author | null>(new Author());
     const [view, setView] = useState<View>(View.OPTIONS);
 
     const fetchFocused = useFetchFocused({
-        focusee: series ? series : new Series(),
+        focusee: author ? author : new Author(),
     });
-    const mutateSeries = useMutateSeries({});
+    const mutateAuthor = useMutateAuthor({});
 
     useEffect(() => {
         logger.info({
-            context: "SeriesSegment.useEffect",
+            context: "AuthorSegment.useEffect",
             library: libraryContext.library.id > 0 ? Abridgers.LIBRARY(libraryContext.library) : undefined,
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
-            series: series ? Abridgers.SERIES(series): undefined,
+            author: author ? Abridgers.AUTHOR(author): undefined,
         });
         const isAdmin = loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
         // const isRegular = loginContext.validateLibrary(libraryContext.library, Scope.REGULAR);
@@ -73,31 +76,31 @@ const SeriesSegment = (props: Props) => {
     }, [props.parent,
         libraryContext.library, libraryContext.library.id,
         loginContext, loginContext.data.loggedIn,
-        series,
+        author,
         fetchFocused.focused]);
 
-    // Create an empty Series to be added
+    // Create an empty Author to be added
     const handleAdd: HandleAction = () => {
-        const theSeries = new Series({
+        const theAuthor = new Author({
             id: -1,
             active: true,
-            copyright: null,
+            firstName: null,
+            lastName: null,
             libraryId: libraryContext.library.id,
-            name: null,
             notes: null,
         });
         logger.info({
-            context: "SeriesSegment.handleAdd",
-            series: theSeries,
+            context: "AuthorSegment.handleAdd",
+            author: theAuthor,
         });
-        setSeries(theSeries);
+        setAuthor(theAuthor);
         setView(View.DETAILS);
     }
 
     // Go back to the ancestor parent, if any
     const handleBack: HandleAction = () => {
         logger.info({
-            context: "SeriesSegment.handleBack"
+            context: "AuthorSegment.handleBack"
         });
         setView(View.OPTIONS);
         if (props.handleBack) {
@@ -105,115 +108,126 @@ const SeriesSegment = (props: Props) => {
         }
     }
 
-    // Handle selection of a Series to edit details
-    const handleEdit: HandleSeries = (theSeries) => {
+    // Handle selection of an Author to edit details
+    const handleEdit: HandleAuthor = (theAuthor) => {
         logger.info({
-            context: "SeriesSegment.handleEdit",
-            series: Abridgers.SERIES(theSeries),
+            context: "AuthorSegment.handleEdit",
+            author: Abridgers.AUTHOR(theAuthor),
         });
-        setSeries(theSeries);
+        setAuthor(theAuthor);
         setView(View.DETAILS);
     }
 
-    // Handle excluding a Series from its parent
-    const handleExclude: HandleSeries = async (theSeries) => {
+    // Handle excluding an Author from its parent
+    const handleExclude: HandleAuthor = async (theAuthor) => {
         logger.info({
-            context: "SeriesSegment.handleExclude",
+            context: "AuthorSegment.handleExclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
-            series: Abridgers.SERIES(theSeries),
+            author: Abridgers.AUTHOR(theAuthor),
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
-                /* const excluded = */ await mutateSeries.exclude(theSeries, props.parent);
+                /* const excluded = */ await mutateAuthor.exclude(theAuthor, props.parent);
             }
             // TODO - refresh parent???
         }
     }
 
-    // Handle including a Series into its Ancestor
-    const handleInclude: HandleSeries = async (theSeries) => {
+    // Handle including a Author into its Ancestor
+    const handleInclude: HandleAuthor = async (theAuthor) => {
         logger.info({
-            context: "SeriesSegment.handleInclude",
+            context: "AuthorSegment.handleInclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
-            series: Abridgers.SERIES(theSeries),
+            author: Abridgers.AUTHOR(theAuthor),
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
-                /* const included = */ await mutateSeries.include(theSeries, props.parent);
+                /* const included = */ await mutateAuthor.include(theAuthor, props.parent);
             }
             // TODO - refresh parent???
         }
     }
 
-    // Handle insert of a new Series
-    const handleInsert: HandleSeries = async (theSeries) => {
+    // Handle insert of a new Author
+    const handleInsert: HandleAuthor = async (theAuthor) => {
         logger.info({
-            context: "SeriesSegment.handleInsert",
-            series: Abridgers.SERIES(theSeries),
+            context: "AuthorSegment.handleInsert",
+            author: Abridgers.AUTHOR(theAuthor),
         });
-        const inserted = await mutateSeries.insert(theSeries);
+        const inserted = await mutateAuthor.insert(theAuthor);
         handleInclude(inserted);
         setView(View.OPTIONS);
     }
 
-    // Handle remove of an existing Series
-    const handleRemove: HandleSeries = async (theSeries) => {
+    // Handle remove of an existing Author
+    const handleRemove: HandleAuthor = async (theAuthor) => {
         logger.info({
-            context: "SeriesSegment.handleRemove",
-            series: Abridgers.SERIES(theSeries),
+            context: "AuthorSegment.handleRemove",
+            author: Abridgers.AUTHOR(theAuthor),
         });
-        /* const removed = */ await mutateSeries.remove(theSeries);
+        /* const removed = */ await mutateAuthor.remove(theAuthor);
         setView(View.OPTIONS);
     }
 
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
         logger.info({
-            context: "SeriesSegment.handleReturn",
+            context: "AuthorSegment.handleReturn",
         });
         setView(View.OPTIONS);
     }
 
-    // Handle request to show AuthorSegment for a parent Series
-    const handleShowAuthors: HandleSeries = (theSeries) => {
+    // Handle request to show SeriesSegment for a parent Author
+    const handleShowSeries: HandleAuthor = (theAuthor) => {
         logger.info({
-            context: "SeriesSegment.handleShowAuthors",
-            series: Abridgers.SERIES(theSeries),
+            context: "AuthorSegment.handleShowSeries",
+            author: Abridgers.AUTHOR(theAuthor),
         });
-        setSeries(theSeries);
-        setView(View.AUTHORS);
+        setAuthor(theAuthor);
+        setView(View.SERIES);
     }
 
-    // Handle request to show StorySegment for a parent Series
-    const handleShowStories: HandleSeries = (theSeries) => {
+    // Handle request to show StorySegment for a parent Author
+    const handleShowStories: HandleAuthor = (theAuthor) => {
         logger.info({
-            context: "SeriesSegment.handleShowStories",
-            series: Abridgers.SERIES(theSeries),
+            context: "AuthorSegment.handleShowStories",
+            author: Abridgers.AUTHOR(theAuthor),
         });
-        setSeries(theSeries);
+        setAuthor(theAuthor);
         setView(View.STORIES);
     }
 
-    // Handle update of an existing Series
-    const handleUpdate: HandleSeries = async (theSeries) => {
+    // Handle request to show VolumeSegment for a parent Author
+    const handleShowVolumes: HandleAuthor = (theAuthor) => {
         logger.info({
-            context: "SeriesSegment.handleUpdate",
-            series: Abridgers.SERIES(theSeries),
+            context: "AuthorSegment.handleShowVolumes",
+            author: Abridgers.AUTHOR(theAuthor),
         });
-        /* const updated = */ await mutateSeries.update(theSeries);
+        setAuthor(theAuthor);
+        setView(View.VOLUMES);
+    }
+
+    // Handle update of an existing Author
+    const handleUpdate: HandleAuthor = async (theAuthor) => {
+        logger.info({
+            context: "AuthorSegment.handleUpdate",
+            author: Abridgers.AUTHOR(theAuthor),
+        });
+        /* const updated = */ await mutateAuthor.update(theAuthor);
         setView(View.OPTIONS);
     }
 
-    // Is this Series included in its parent?
-    const included = (theSeries: Series): boolean => {
+    // Is this Author included in its parent?
+    const included = (theAuthor: Author): boolean => {
         let result = false;
         if (!props.parent || (props.parent instanceof Library)) {
             result = true;
-        } else if ((props.parent instanceof Author)
-            || (props.parent instanceof Story)) {
-            if (props.parent.series) {
-                props.parent.series.forEach(series => {
-                    if (theSeries.id === series.id) {
+        } else if ((props.parent instanceof Series)
+            || (props.parent instanceof Story)
+            || (props.parent instanceof Volume)) {
+            if (props.parent.authors) {
+                props.parent.authors.forEach(author => {
+                    if (theAuthor.id === author.id) {
                         result = true;
                     }
                 })
@@ -226,46 +240,59 @@ const SeriesSegment = (props: Props) => {
         <>
 
             {(view === View.DETAILS) ? (
-                <SeriesDetails
+                <AuthorDetails
+                    author={fetchFocused.focused as Author}
                     autoFocus
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
                     handleReturn={handleReturn}
                     handleUpdate={canUpdate ? handleUpdate : undefined}
                     parent={props.parent ? props.parent : libraryContext.library}
-                    series={fetchFocused.focused as Series}
+                    showPrincipal
                 />
             ) : null }
 
             {(view === View.OPTIONS) ? (
-                <SeriesOptions
+                <AuthorOptions
                     handleAdd={handleAdd}
                     handleBack={props.handleBack ? handleBack : undefined}
                     handleEdit={handleEdit}
                     handleExclude={props.parent && !(props.parent instanceof Library) ? handleExclude : undefined}
                     handleInclude={props.parent && !(props.parent instanceof Library) ? handleInclude : undefined}
-                    handleShowAuthors={handleShowAuthors}
+                    handleShowSeries={handleShowSeries}
                     handleShowStories={handleShowStories}
+                    handleShowVolumes={handleShowVolumes}
                     included={included}
                     parent={props.parent ? props.parent : libraryContext.library}
+                    showPrincipal
                 />
             ) : null }
 
-            {(view === View.AUTHORS) ? (
-                <AuthorSegment
+            {(view === View.SERIES) ? (
+                <SeriesSegment
                     handleBack={handleReturn}
-                    parent={series ? series : undefined}
+                    parent={author ? author : undefined}
                 />
             ) : null }
 
             {(view === View.STORIES) ? (
                 <h1>StorySegment for {Abridgers.ANY(fetchFocused.focused)}</h1>
-/*
-                <StorySegment
-                    handleBack={handleReturn}
-                    parent={series ? series : undefined}
-                />
-*/
+                /*
+                                <StorySegment
+                                    handleBack={handleReturn}
+                                    parent={author ? author : undefined}
+                                />
+                */
+            ) : null }
+
+            {(view === View.VOLUMES) ? (
+                <h1>VolumeSegment for {Abridgers.ANY(fetchFocused.focused)}</h1>
+                /*
+                                <VolumeSegment
+                                    handleBack={handleReturn}
+                                    parent={author ? author : undefined}
+                                />
+                */
             ) : null }
 
         </>
@@ -273,4 +300,4 @@ const SeriesSegment = (props: Props) => {
 
 }
 
-export default SeriesSegment;
+export default AuthorSegment;

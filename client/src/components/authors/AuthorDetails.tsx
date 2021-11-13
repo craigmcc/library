@@ -1,6 +1,6 @@
-// SeriesDetails -------------------------------------------------------------
+// AuthorDetails ----------------------------------------------------------------
 
-// Details editing form for Series objects.
+// Detail editing form for Author objects.
 
 // External Modules ----------------------------------------------------------
 
@@ -16,48 +16,49 @@ import * as Yup from "yup";
 
 // Internal Modules ----------------------------------------------------------
 
-import {HandleAction, HandleSeries, Parent} from "../../types";
-import Series from "../../models/Series";
+import {HandleAction, HandleAuthor, Parent} from "../../types";
+import Author from "../../models/Author";
 import * as Abridgers from "../../util/Abridgers";
-import {validateSeriesNameUnique} from "../../util/AsyncValidators";
-import logger from "../../util/ClientLogger";
 import * as ToModel from "../../util/ToModel";
+import {validateAuthorNameUnique} from "../../util/AsyncValidators";
 import {toEmptyStrings, toNullValues} from "../../util/Transformations";
+import logger from "../../util/ClientLogger";
 
 // Property Details ----------------------------------------------------------
 
 export interface Props {
+    author: Author;                     // Initial values (id<0 for adding)
     autoFocus?: boolean;                // Should the first element receive autofocus? [false]
-    handleInsert?: HandleSeries;        // Handle (Series) insert request [not allowed]
-    handleRemove?: HandleSeries;        // Handle (Series) remove request [not allowed]
+    handleInsert?: HandleAuthor;        // Handle (Author) insert request [not allowed]
+    handleRemove?: HandleAuthor;        // Handle (Author) remove request [not allowed]
     handleReturn: HandleAction;         // Handle return to options view
-    handleUpdate?: HandleSeries;        // Handle (Series) update request [not allowed]
+    handleUpdate?: HandleAuthor;        // Handle (Author) update request [not allowed]
     parent: Parent;                     // Owning parent object
-    series: Series;                     // Initial values (id<0 for adding)
+    showPrincipal?: boolean;            // Show the Principal field? [false]
 }
 
 // Component Details ---------------------------------------------------------
 
-const SeriesDetails = (props: Props) => {
+const AuthorDetails = (props: Props) => {
 
     const [adding, setAdding] = useState<boolean>(false);
-    const [initialValues, setInitialValues] = useState<any>(toEmptyStrings(props.series));
+    const [initialValues, setInitialValues] = useState<any>({});
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
     useEffect(() => {
         logger.info({
-            context: "SeriesDetails.useEffect",
-            series: Abridgers.SERIES(props.series),
+            context: "AuthorDetails.useEffect",
+            author: Abridgers.AUTHOR(props.author),
         });
-        setAdding(props.series.id < 0);
-        setInitialValues(toEmptyStrings(props.series));
-    }, [props.series, props.series.id]);
+        setAdding(props.author.id < 0);
+        setInitialValues(toEmptyStrings(props.author));
+    }, [props.author, props.author.id]);
 
     const handleSubmit = (values: FormikValues, actions: FormikHelpers<FormikValues>): void => {
         if (adding && props.handleInsert) {
-            props.handleInsert(ToModel.SERIES(toNullValues(values)));
+            props.handleInsert(ToModel.AUTHOR(toNullValues(values)));
         } else if (!adding && props.handleUpdate) {
-            props.handleUpdate(ToModel.SERIES(toNullValues(values)));
+            props.handleUpdate(ToModel.AUTHOR(toNullValues(values)));
         }
     }
 
@@ -72,20 +73,21 @@ const SeriesDetails = (props: Props) => {
     const onConfirmPositive = (): void => {
         setShowConfirm(false);
         if (props.handleRemove) {
-            props.handleRemove(props.series)
+            props.handleRemove(props.author)
         }
     }
 
     const validationSchema = () => {
         return Yup.object().shape({
             active: Yup.boolean(),
-            copyright: Yup.string(),
-            name: Yup.string()
-                .required("Name is required")
+            firstName: Yup.string()
+                .required("First Name is required"),
+            lastName: Yup.string()
+                .required("Last Name is required")
                 .test("unique-name",
                     "That name is already in use within this Library",
                     async function (this) {
-                        return await validateSeriesNameUnique(ToModel.SERIES(this.parent));
+                        return await validateAuthorNameUnique(ToModel.AUTHOR(this.parent));
                     }),
             notes: Yup.string(),
         });
@@ -96,7 +98,7 @@ const SeriesDetails = (props: Props) => {
         <>
 
             {/* Details Form */}
-            <Container id="SeriesDetails">
+            <Container id="AuthorDetails">
 
                 <Row className="mb-3 ml-1 mr-1">
                     <Col className="text-center">
@@ -105,7 +107,7 @@ const SeriesDetails = (props: Props) => {
                         ) : (
                             <span>Edit Existing</span>
                         )}
-                        &nbsp;Series for {props.parent._model}:&nbsp;
+                        &nbsp;Author for {props.parent._model}:&nbsp;
                         <span className="text-info">
                             {props.parent._title}
                         </span>
@@ -142,30 +144,49 @@ const SeriesDetails = (props: Props) => {
                        }) => (
 
                         <Form
-                            id="SeriesDetails"
+                            id="AuthorDetails"
                             noValidate
                             onSubmit={handleSubmit}
                         >
 
-                            <Row className="g-3 mb-3" id="nameRow">
-                                <Form.Group as={Col} controlId="name" id="nameGroup">
-                                    <Form.Label>Name:</Form.Label>
+                            <Row className="g-3 mb-3" id="firstNameLastNameRow">
+                                <Form.Group as={Col} controlId="firstName" id="firstNameGroup">
+                                    <Form.Label>First Name:</Form.Label>
                                     <Form.Control
                                         autoFocus={props.autoFocus ? props.autoFocus : undefined}
-                                        isInvalid={touched.name && !!errors.name}
-                                        isValid={!errors.name}
-                                        name="name"
+                                        isInvalid={touched.firstName && !!errors.firstName}
+                                        isValid={!errors.firstName}
+                                        name="firstName"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
                                         size="sm"
                                         type="text"
-                                        value={values.name}
+                                        value={values.firstName}
                                     />
                                     <Form.Control.Feedback type="valid">
-                                        Name is required must be unique within a Library.
+                                        First Name is required.
                                     </Form.Control.Feedback>
                                     <Form.Control.Feedback type="invalid">
-                                        {errors.name}
+                                        {errors.firstName}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+                                <Form.Group as={Col} controlId="lastName" id="lastNameGroup">
+                                    <Form.Label>Last Name:</Form.Label>
+                                    <Form.Control
+                                        isInvalid={touched.lastName && !!errors.lastName}
+                                        isValid={!errors.lastName}
+                                        name="lastName"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        size="sm"
+                                        type="text"
+                                        value={values.lastName}
+                                    />
+                                    <Form.Control.Feedback type="valid">
+                                        Last Name is required and First Name + Last Name must be unique.
+                                    </Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.lastName}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
@@ -184,7 +205,7 @@ const SeriesDetails = (props: Props) => {
                                         value={values.notes}
                                     />
                                     <Form.Control.Feedback type="valid">
-                                        Miscellaneous notes about this Series.
+                                        Miscellaneous notes about this Author.
                                     </Form.Control.Feedback>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.notes}
@@ -192,26 +213,20 @@ const SeriesDetails = (props: Props) => {
                                 </Form.Group>
                             </Row>
 
-                            <Row className="g-3 mb-3" id="copyrightActiveRow">
-                                <Form.Group as={Col} className="col-2" controlId="copyright" id="copyrightGroup">
-                                    <Form.Label>Copyright Year:</Form.Label>
-                                    <Form.Control
-                                        isInvalid={touched.copyright && !!errors.copyright}
-                                        isValid={!errors.copyright}
-                                        name="copyright"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        size="sm"
-                                        type="text"
-                                        value={values.copyright}
-                                    />
-                                    <Form.Control.Feedback type="valid">
-                                        Copyright year (YYYY) for this Series.
-                                    </Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.copyright}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
+                            <Row className="g-3 mb-3" id="principalActiveRow">
+                                {props.showPrincipal ? (
+                                    <Form.Group as={Col} controlId="principal" id="principalGroup">
+                                        <Form.Check
+                                            feedback={errors.principal}
+                                            defaultChecked={values.principal}
+                                            id="principal"
+                                            label="Principal Author?"
+                                            name="principal"
+                                            onBlur={handleBlur}
+                                            onChange={handleChange}
+                                        />
+                                    </Form.Group>
+                                ) : null }
                                 <Form.Group as={Col} controlId="active" id="activeGroup">
                                     <Form.Check
                                         feedback={errors.active}
@@ -238,7 +253,7 @@ const SeriesDetails = (props: Props) => {
                                 </Col>
                                 <Col className="col-1">
                                     <Button
-                                        disabled={(props.series.id < 0) || (!props.handleRemove)}
+                                        disabled={adding || !props.handleRemove}
                                         onClick={onConfirm}
                                         size="sm"
                                         type="button"
@@ -272,12 +287,12 @@ const SeriesDetails = (props: Props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <p>
-                        Removing this Series is not reversible, and
+                        Removing this Author is not reversible, and
                         <strong>
                             &nbsp;will also remove ALL related information.
                         </strong>.
                     </p>
-                    <p>Consider marking this Series as inactive instead.</p>
+                    <p>Consider marking this Author as inactive instead.</p>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
@@ -305,4 +320,4 @@ const SeriesDetails = (props: Props) => {
 
 }
 
-export default SeriesDetails;
+export default AuthorDetails;

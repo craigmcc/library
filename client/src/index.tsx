@@ -4,7 +4,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import AuthorsView from "./components/authors/AuthorsView";
+import AuthorSegment from "./components/authors/AuthorSegment";
 import HomeView from "./components/general/HomeView";
 import Navigation from './components/general/Navigation';
 import LibrariesView from "./components/libraries/LibrariesView";
@@ -22,7 +22,7 @@ ReactDOM.render(
               <BrowserRouter>
                   <Routes>
                       <Route path="/" element={<Navigation/>}>
-                          <Route path="authors" element={<AuthorsView/>}/>
+                          <Route path="authors" element={<AuthorSegment/>}/>
                           <Route path="libraries" element={<LibrariesView/>}/>
                           <Route path="series" element={<SeriesSegment/>}/>
                           <Route path="stories" element={<StoriesView/>}/>

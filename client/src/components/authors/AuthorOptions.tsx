@@ -1,7 +1,7 @@
-// SeriesOptions -------------------------------------------------------------
+// AuthorOptions -----------------------------------------------------------------
 
-// List Series that match search criteria, offering callbacks for adding,
-// editing, and removing Series.  Optionally, include relevant actions.
+// List Authors that match search criteria, offering callbacks for adding,
+// editing, and removing Authors.  Optionally, include relevant actions.
 
 // External Modules ----------------------------------------------------------
 
@@ -19,30 +19,32 @@ import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleAction, HandleBoolean, HandleSeries, HandleValue, Parent} from "../../types";
-import useFetchSerieses from "../../hooks/useFetchSerieses";
-import Series from "../../models/Series";
+import {HandleAction, HandleBoolean, HandleAuthor, HandleValue, Parent} from "../../types";
+import useFetchAuthors from "../../hooks/useFetchAuthors";
+import Author from "../../models/Author";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
-import {authorsNames, listValue} from "../../util/Transformations";
+import {listValue} from "../../util/Transformations";
 
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
-    handleAdd?: HandleAction;           // Handle request to add a Series [not allowed]
+    handleAdd?: HandleAction;           // Handle request to add an Author [not allowed]
     handleBack?: HandleAction;          // Handle request to leave segment [no handler]
-    handleEdit?: HandleSeries;          // Handle request to edit a Series [not allowed]
-    handleExclude?: HandleSeries;       // Handle request to exclude a Series [not allowed]
-    handleInclude?: HandleSeries;       // Handle request to include a Series [not allowed]
-    handleShowAuthors?: HandleSeries;   // Handle request to show related Authors [not allowed]
-    handleShowStories?: HandleSeries;   // Handle request to show related Stories [not allowed]
-    included?: (series: Series) => boolean; // Is this Series included in parent? [true]
-    parent: Parent;                     // Parent object for Serieses
+    handleEdit?: HandleAuthor;          // Handle request to edit an Author [not allowed]
+    handleExclude?: HandleAuthor;       // Handle request to exclude an Author [not allowed]
+    handleInclude?: HandleAuthor;       // Handle request to include an Author [not allowed]
+    handleShowSeries?: HandleAuthor;    // Handle request to show related Series [not allowed]
+    handleShowStories?: HandleAuthor;   // Handle request to show related Stories [not allowed]
+    handleShowVolumes?: HandleAuthor;   // Handle request to show related Volumes [not allowed]
+    included?: (author: Author) => boolean; // Is this Author included in parent? [true]
+    parent: Parent;                     // Parent object for Authors
+    showPrincipal?: boolean;            // Show the Principal column? [false]
 }
 
 // Component Details ---------------------------------------------------------
 
-const SeriesOptions = (props: Props) => {
+const AuthorOptions = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -52,18 +54,17 @@ const SeriesOptions = (props: Props) => {
     const [pageSize] = useState<number>(100);
     const [searchText, setSearchText] = useState<string>("");
 
-    const fetchSerieses = useFetchSerieses({
+    const fetchAuthors = useFetchAuthors({
         active: active,
         currentPage: currentPage,
         name: (searchText.length > 0) ? searchText : undefined,
         pageSize: pageSize,
         parent: props.parent,
-        withAuthors: true,  // Since we are showing author names in the list
     });
 
     useEffect(() => {
         logger.info({
-            context: "SeriesOptions.useEffect",
+            context: "AuthorOptions.useEffect",
             library: Abridgers.LIBRARY(libraryContext.library),
             parent: Abridgers.ANY(props.parent),
             active: active,
@@ -73,7 +74,7 @@ const SeriesOptions = (props: Props) => {
         libraryContext.library, libraryContext.library.id,
         loginContext.data.loggedIn,
         active, searchText,
-        fetchSerieses.serieses]);
+        fetchAuthors.authors]);
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
@@ -89,21 +90,21 @@ const SeriesOptions = (props: Props) => {
         setSearchText(theSearchText);
     }
 
-    const handleEdit: HandleSeries = (theSeries) => {
+    const handleEdit: HandleAuthor = (theAuthor) => {
         if (props.handleEdit) {
-            props.handleEdit(theSeries);
+            props.handleEdit(theAuthor);
         }
     }
 
-    const handleExclude: HandleSeries = (theSeries) => {
+    const handleExclude: HandleAuthor = (theAuthor) => {
         if (props.handleExclude) {
-            props.handleExclude(theSeries);
+            props.handleExclude(theAuthor);
         }
     }
 
-    const handleInclude: HandleSeries = (theSeries) => {
+    const handleInclude: HandleAuthor = (theAuthor) => {
         if (props.handleInclude) {
-            props.handleInclude(theSeries);
+            props.handleInclude(theAuthor);
         }
     }
 
@@ -115,33 +116,39 @@ const SeriesOptions = (props: Props) => {
         setCurrentPage(currentPage - 1);
     }
 
-    const handleShowAuthors: HandleSeries = (theSeries) => {
-        if (props.handleShowAuthors) {
-            props.handleShowAuthors(theSeries);
+    const handleShowSeries: HandleAuthor = (theAuthor) => {
+        if (props.handleShowSeries) {
+            props.handleShowSeries(theAuthor);
         }
     }
 
-    const handleShowStories: HandleSeries = (theSeries) => {
+    const handleShowStories: HandleAuthor = (theAuthor) => {
         if (props.handleShowStories) {
-            props.handleShowStories(theSeries);
+            props.handleShowStories(theAuthor);
         }
     }
 
-    const included = (theSeries: Series): boolean => {
+    const handleShowVolumes: HandleAuthor = (theAuthor) => {
+        if (props.handleShowVolumes) {
+            props.handleShowVolumes(theAuthor);
+        }
+    }
+
+    const included = (theAuthor: Author): boolean => {
         if (props.included) {
-            return props.included(theSeries);
+            return props.included(theAuthor);
         } else {
             return true;
         }
     }
 
     return (
-        <Container fluid id="SeriesOptions">
+        <Container fluid id="AuthorOptions">
 
             <Row className="mb-3">
                 <Col/>
                 <Col className="text-center">
-                    <span>Manage Series for {props.parent._model}:&nbsp;</span>
+                    <span>Manage Authors for {props.parent._model}:&nbsp;</span>
                     <span className="text-info">{props.parent._title}</span>
                 </Col>
                 {props.handleBack ? (
@@ -162,14 +169,14 @@ const SeriesOptions = (props: Props) => {
                         autoFocus
                         handleChange={handleChange}
                         htmlSize={50}
-                        label="Search For Series:"
+                        label="Search For Authors:"
                         placeholder="Search by all or part of name"
                     />
                 </Col>
                 <Col>
                     <CheckBox
                         handleChange={handleActive}
-                        label="Active Series Only?"
+                        label="Active Authors Only?"
                         name="activeOnly"
                         value={active}
                     />
@@ -179,8 +186,8 @@ const SeriesOptions = (props: Props) => {
                         currentPage={currentPage}
                         handleNext={handleNext}
                         handlePrevious={handlePrevious}
-                        lastPage={(fetchSerieses.serieses.length === 0) ||
-                            (fetchSerieses.serieses.length < pageSize)}
+                        lastPage={(fetchAuthors.authors.length === 0) ||
+                        (fetchAuthors.authors.length < pageSize)}
                         variant="secondary"
                     />
                 </Col>
@@ -209,21 +216,22 @@ const SeriesOptions = (props: Props) => {
                                 className="text-center"
                                 colSpan={99}
                             >
-                                {`Series for ${libraryContext.library._model}: ${libraryContext.library._title}`}
+                                {`Authors for ${libraryContext.library._model}: ${libraryContext.library._title}`}
                             </th>
                         ) : (
                             <th
                                 className="text-center"
                                 colSpan={99}
                             >
-                                {`Series for ${props.parent._model}: ${props.parent._title}`}
+                                {`Authors for ${props.parent._model}: ${props.parent._title}`}
                             </th>
                         )}
-
                     </tr>
                     <tr className="table-secondary">
                         <th scope="col">Name</th>
-                        <th scope="col">Authors</th>
+                        {props.showPrincipal ? (
+                            <th scope="col">Principal</th>
+                        ) : null }
                         <th scope="col">Active</th>
                         <th scope="col">Notes</th>
                         <th scope="col">Actions</th>
@@ -231,31 +239,33 @@ const SeriesOptions = (props: Props) => {
                     </thead>
 
                     <tbody>
-                    {fetchSerieses.serieses.map((series, rowIndex) => (
+                    {fetchAuthors.authors.map((author, rowIndex) => (
                         <tr
                             className="table-default"
                             key={1000 + (rowIndex * 100)}
                         >
                             <td
                                 key={1000 + (rowIndex * 100) + 1}
-                                onClick={props.handleEdit ? (() => handleEdit(series)) : undefined}
+                                onClick={props.handleEdit ? () => handleEdit(author) : undefined}
                             >
-                                {series._title}
+                                {author._title}
                             </td>
-                            <td key={1000 + (rowIndex * 100) + 2}>
-                                {authorsNames(series.authors)}
-                            </td>
+                            {props.showPrincipal ? (
+                                <td key={1000 + (rowIndex * 100) + 2}>
+                                    {listValue(author.principal)}
+                                </td>
+                            ) : null }
                             <td key={1000 + (rowIndex * 100) + 3}>
-                                {listValue(series.active)}
+                                {listValue(author.active)}
                             </td>
                             <td key={1000 + (rowIndex * 100) + 4}>
-                                {series.notes}
+                                {author.notes}
                             </td>
                             <td key={1000 + (rowIndex * 100) + 5}>
                                 {(props.handleEdit) ? (
                                     <Button
                                         className="me-1"
-                                        onClick={() => handleEdit(series)}
+                                        onClick={() => handleEdit(author)}
                                         size="sm"
                                         type="button"
                                         variant="primary"
@@ -264,8 +274,8 @@ const SeriesOptions = (props: Props) => {
                                 {(props.handleExclude) ? (
                                     <Button
                                         className="me-1"
-                                        disabled={!included(series)}
-                                        onClick={() => handleExclude(series)}
+                                        disabled={!included(author)}
+                                        onClick={() => handleExclude(author)}
                                         size="sm"
                                         type="button"
                                         variant="primary"
@@ -274,33 +284,42 @@ const SeriesOptions = (props: Props) => {
                                 {(props.handleInclude) ? (
                                     <Button
                                         className="me-1"
-                                        disabled={included(series)}
-                                        onClick={() => handleInclude(series)}
+                                        disabled={included(author)}
+                                        onClick={() => handleInclude(author)}
                                         size="sm"
                                         type="button"
                                         variant="primary"
                                     >Include</Button>
                                 ) : null }
-                                {props.handleShowAuthors || props.handleShowStories ? (
+                                {props.handleShowSeries || props.handleShowStories || props.handleShowVolumes ? (
                                     <span className="ms-1 me-2">|</span>
                                 ) : null }
-                                {(props.handleShowAuthors) ? (
+                                {(props.handleShowSeries) ? (
                                     <Button
                                         className="me-1"
-                                        onClick={() => handleShowAuthors(series)}
+                                        onClick={() => handleShowSeries(author)}
                                         size="sm"
                                         type="button"
                                         variant="success"
-                                    >Authors</Button>
+                                    >Series</Button>
                                 ) : null }
                                 {(props.handleShowStories) ? (
                                     <Button
                                         className="me-1"
-                                        onClick={() => handleShowStories(series)}
+                                        onClick={() => handleShowStories(author)}
                                         size="sm"
                                         type="button"
                                         variant="success"
                                     >Stories</Button>
+                                ) : null }
+                                {(props.handleShowVolumes) ? (
+                                    <Button
+                                        className="me-1"
+                                        onClick={() => handleShowVolumes(author)}
+                                        size="sm"
+                                        type="button"
+                                        variant="success"
+                                    >Volumes</Button>
                                 ) : null }
                             </td>
                         </tr>
@@ -326,4 +345,4 @@ const SeriesOptions = (props: Props) => {
 
 }
 
-export default SeriesOptions;
+export default AuthorOptions;

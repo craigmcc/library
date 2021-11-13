@@ -20,6 +20,7 @@ import Library, {LIBRARIES_BASE} from "../models/Library";
 import Story, {STORIES_BASE} from "../models/Story";
 import User, {USERS_BASE} from "../models/User";
 import {queryParameters} from "./QueryParameters";
+import Series, {SERIES_BASE} from "../models/Series";
 
 // Public Objects ------------------------------------------------------------
 
@@ -60,6 +61,20 @@ export const validateLibraryScopeUnique = async (library: Library): Promise<bool
             const results = (await Api.get(LIBRARIES_BASE
                 + `${queryParameters(parameters)}`)).data;
             return (results.length === 0) || (results[0].id === library.id);
+        } catch (error) {
+            return true; // Definitely unique
+        }
+    } else {
+        return true;
+    }
+}
+
+export const validateSeriesNameUnique = async (series: Series): Promise<boolean> => {
+    if (series && series.name) {
+        try {
+            const result = (await Api.get(SERIES_BASE
+                + `/${series.libraryId}/exact/${series.name}`)).data;
+            return (result.id === series.id);
         } catch (error) {
             return true; // Definitely unique
         }
