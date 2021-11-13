@@ -14,6 +14,8 @@ import SeriesServices from "./SeriesServices";
 import StoryServices from "./StoryServices";
 import VolumeServices from "./VolumeServices";
 import Author from "../models/Author";
+import AuthorSeries from "../models/AuthorSeries";
+import AuthorStory from "../models/AuthorStory";
 import AuthorVolume from "../models/AuthorVolume";
 import Library from "../models/Library";
 import Series from "../models/Series";

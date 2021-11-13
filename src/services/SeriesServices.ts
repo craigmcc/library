@@ -83,7 +83,7 @@ class SeriesServices extends BaseChildServices<Series, Library> {
         await this.read("SeriesServices.storiesInclude", libraryId, seriesId);
         const story = await StoryServices.read("SeriesServices.storiesInclude", libraryId, storyId);
         // @ts-ignore
-        await AuthorStory.create({
+        await SeriesStory.create({
             seriesId: seriesId,
             storyId: storyId,
             ordinal: ordinal,
