@@ -55,6 +55,7 @@ const AuthorOptions = (props: Props) => {
     const [active, setActive] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize] = useState<number>(100);
+    const [refresh, setRefresh] = useState<boolean>(false);
     const [searchText, setSearchText] = useState<string>("");
 
     const fetchAuthors = useFetchAuthors({
@@ -78,12 +79,13 @@ const AuthorOptions = (props: Props) => {
             parent: Abridgers.ANY(props.parent),
             active: active,
             name: searchText,
-
+            refresh: refresh,
         });
+        setRefresh(false);
     }, [props.parent,
         libraryContext.library, libraryContext.library.id,
         loginContext.data.loggedIn,
-        active, searchText,
+        active, refresh, searchText,
         fetchAuthors.authors, fetchFocused.focused]);
 
     const handleActive: HandleBoolean = (theActive) => {
@@ -109,12 +111,39 @@ const AuthorOptions = (props: Props) => {
     const handleExclude: HandleAuthor = (theAuthor) => {
         if (props.handleExclude) {
             props.handleExclude(theAuthor);
+            //fetchAuthors.refresh();
+            //fetchFocused.refresh();
+            //setRefresh(true);
+            // TODO - Messing with fetchFocused.focused is really lame
+            // @ts-ignore
+            if (fetchFocused.focused.authors) {
+                let found = -1;
+                // @ts-ignore
+                fetchFocused.focused.authors.forEach((author, index) => {
+                    if (theAuthor.id === author.id) {
+                        found = index;
+                    }
+                });
+                if (found >= 0) {
+                    // @ts-ignore
+                    fetchFocused.focused.authors.splice(found, 1);
+                }
+            }
         }
     }
 
     const handleInclude: HandleAuthor = (theAuthor) => {
         if (props.handleInclude) {
             props.handleInclude(theAuthor);
+            //fetchAuthors.refresh();
+            //fetchFocused.refresh();
+            //setRefresh(true);
+            // TODO - Messing with fetchFocused.focused is really lame
+            // @ts-ignore
+            if (fetchFocused.focused.authors) {
+                // @ts-ignore
+                fetchFocused.focused.authors.push(theAuthor);
+            }
         }
     }
 

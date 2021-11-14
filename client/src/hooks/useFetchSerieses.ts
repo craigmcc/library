@@ -12,7 +12,7 @@ import {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import {Parent} from "../types";
+import {HandleAction, Parent} from "../types";
 import Api from "../clients/Api";
 import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
@@ -42,6 +42,7 @@ export interface Props {
 export interface State {
     error: Error | null;                // I/O error (if any)
     loading: boolean;                   // Are we currently loading?
+    refresh: HandleAction;             // Trigger a refresh
     serieses: Series[];                 // Fetched Series
 }
 
@@ -54,6 +55,7 @@ const useFetchSerieses = (props: Props): State => {
 
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [refresh, setRefresh] = useState<boolean>(false);
     const [serieses, setSerieses] = useState<Series[]>([]);
 
     useEffect(() => {
@@ -96,10 +98,10 @@ const useFetchSerieses = (props: Props): State => {
                     });
                     logger.info({
                         context: "useFetchSerieses.fetchSerieses",
+                        parameters: parameters,
                         library: Abridgers.LIBRARY(libraryContext.library),
                         parent: Abridgers.ANY(props.parent),
-                        active: props.active,
-                        name: props.name,
+                        refresh: refresh,
                         url: url,
                         serieses: Abridgers.SERIESES(theSerieses),
                     });
@@ -107,10 +109,10 @@ const useFetchSerieses = (props: Props): State => {
                     logger.info({
                         context: "useFetchSerieses.fetchSerieses",
                         msg: "Skipped fetching Series",
+                        parameters: parameters,
                         library: Abridgers.LIBRARY(libraryContext.library),
                         parent: Abridgers.ANY(props.parent),
-                        active: props.active,
-                        name: props.name,
+                        refresh: refresh,
                         url: url,
                         loggedIn: loginContext.data.loggedIn,
                     });
@@ -119,15 +121,17 @@ const useFetchSerieses = (props: Props): State => {
                 setError(error as Error);
                 ReportError("useFetchSerieses.fetchSerieses", error, {
                     parameters: parameters,
-                    url: url,
                     library: Abridgers.LIBRARY(libraryContext.library),
                     parent: Abridgers.ANY(props.parent),
+                    refresh: refresh,
+                    url: url,
                     loggedIn: loginContext.data.loggedIn,
                 });
             }
 
             setSerieses(theSerieses);
             setLoading(false);
+            setRefresh(false);
 
         }
 
@@ -136,11 +140,24 @@ const useFetchSerieses = (props: Props): State => {
     }, [props.active, props.currentPage, props.name, props.pageSize,
         props.parent, props.withAuthors, props.withStories,
         libraryContext.library, libraryContext.library.id,
-        loginContext.data.loggedIn]);
+        loginContext.data.loggedIn,
+        refresh]);
+
+    const handleRefresh: HandleAction = () => {
+        logger.info({
+            context: "useFetchAuthors.handleRefresh",
+            library: Abridgers.LIBRARY(libraryContext.library),
+            parent: Abridgers.ANY(props.parent),
+            active: props.active,
+            name: props.name,
+        });
+        setRefresh(true);
+    }
 
     return {
         error: error ? error : null,
         loading: loading,
+        refresh: handleRefresh,
         serieses: serieses,
     }
 

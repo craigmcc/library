@@ -12,7 +12,7 @@ import {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import {Parent} from "../types";
+import {HandleAction, Parent} from "../types";
 import Api from "../clients/Api";
 import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
@@ -45,6 +45,7 @@ export interface State {
     authors: Author[];                  // Fetched Authors
     error: Error | null;                // I/O error (if any)
     loading: boolean;                   // Are we currently loading?
+    refresh: HandleAction;              // Trigger a refresh
 }
 
 // Hook Details --------------------------------------------------------------
@@ -57,6 +58,7 @@ const useFetchAuthors = (props: Props): State => {
     const [authors, setAuthors] = useState<Author[]>([]);
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [refresh, setRefresh] = useState<boolean>(false);
 
     useEffect(() => {
 
@@ -107,10 +109,10 @@ const useFetchAuthors = (props: Props): State => {
                     });
                     logger.info({
                         context: "useFetchAuthors.fetchAuthors",
+                        parameters: parameters,
                         library: Abridgers.LIBRARY(libraryContext.library),
                         parent: Abridgers.ANY(props.parent),
-                        active: props.active,
-                        name: props.name,
+                        refresh: refresh,
                         url: url,
                         authors: Abridgers.AUTHORS(theAuthors),
                     });
@@ -118,10 +120,10 @@ const useFetchAuthors = (props: Props): State => {
                     logger.info({
                         context: "useFetchAuthors.fetchAuthors",
                         msg: "Skipped fetching Authors",
+                        parameters: parameters,
                         library: Abridgers.LIBRARY(libraryContext.library),
                         parent: Abridgers.ANY(props.parent),
-                        active: props.active,
-                        name: props.name,
+                        refresh: refresh,
                         url: url,
                         loggedIn: loginContext.data.loggedIn,
                     });
@@ -130,15 +132,17 @@ const useFetchAuthors = (props: Props): State => {
                 setError(error as Error);
                 ReportError("useFetchAuthors.fetchAuthors", error, {
                     parameters: parameters,
-                    url: url,
                     library: Abridgers.LIBRARY(libraryContext.library),
                     parent: Abridgers.ANY(props.parent),
+                    refresh: refresh,
+                    url: url,
                     loggedIn: loginContext.data.loggedIn,
                 });
             }
 
             setAuthors(theAuthors);
             setLoading(false);
+            setRefresh(false);
 
         }
 
@@ -147,12 +151,25 @@ const useFetchAuthors = (props: Props): State => {
     }, [props.active, props.currentPage, props.name, props.pageSize,
         props.parent, props.withSeries, props.withStories, props.withVolumes,
         libraryContext.library, libraryContext.library.id,
-        loginContext.data.loggedIn]);
+        loginContext.data.loggedIn,
+        refresh]);
+
+    const handleRefresh: HandleAction = () => {
+        logger.info({
+            context: "useFetchAuthors.handleRefresh",
+            library: Abridgers.LIBRARY(libraryContext.library),
+            parent: Abridgers.ANY(props.parent),
+            active: props.active,
+            name: props.name,
+        });
+        setRefresh(true);
+    }
 
     return {
         authors: authors,
         error: error ? error : null,
         loading: loading,
+        refresh: handleRefresh,
     }
 
 }

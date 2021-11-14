@@ -85,6 +85,7 @@ const useFetchFocused = (props: Props): State => {
                 logger.info({
                     context: "useFetchFocused.fetchAuthor",
                     library: Abridgers.LIBRARY(libraryContext.library),
+                    refresh: refresh,
                     url: url,
                     author: Abridgers.AUTHOR(theAuthor),
                 });
@@ -94,6 +95,7 @@ const useFetchFocused = (props: Props): State => {
                     context: "useFetchFocused.fetchAuthor",
                     msg: "Skipped fetching Author",
                     library: Abridgers.LIBRARY(libraryContext.library),
+                    refresh: refresh,
                     url: url,
                     loggedIn: loginContext.data.loggedIn,
                 });
@@ -121,6 +123,7 @@ const useFetchFocused = (props: Props): State => {
                 logger.info({
                     context: "useFetchFocused.fetchSeries",
                     library: Abridgers.LIBRARY(libraryContext.library),
+                    refresh: refresh,
                     url: url,
                     series: Abridgers.SERIES(theSeries),
                 });
@@ -130,6 +133,7 @@ const useFetchFocused = (props: Props): State => {
                     context: "useFetchFocused.fetchSeries",
                     msg: "Skipped fetching Series",
                     library: Abridgers.LIBRARY(libraryContext.library),
+                    refresh: refresh,
                     url: url,
                     loggedIn: loginContext.data.loggedIn,
                 });
@@ -161,6 +165,7 @@ const useFetchFocused = (props: Props): State => {
                 logger.info({
                     context: "useFetchFocused.fetchStory",
                     library: Abridgers.LIBRARY(libraryContext.library),
+                    refresh: refresh,
                     url: url,
                     story: Abridgers.STORY(theStory),
                 });
@@ -170,6 +175,7 @@ const useFetchFocused = (props: Props): State => {
                     context: "useFetchFocused.fetchStory",
                     msg: "Skipped fetching Story",
                     library: Abridgers.LIBRARY(libraryContext.library),
+                    refresh: refresh,
                     url: url,
                     loggedIn: loginContext.data.loggedIn,
                 });
@@ -197,6 +203,7 @@ const useFetchFocused = (props: Props): State => {
                 logger.info({
                     context: "useFetchFocused.fetchVolume",
                     library: Abridgers.LIBRARY(libraryContext.library),
+                    refresh: refresh,
                     url: url,
                     volume: Abridgers.VOLUME(theVolume),
                 });
@@ -206,6 +213,7 @@ const useFetchFocused = (props: Props): State => {
                     context: "useFetchFocused.fetchVolume",
                     msg: "Skipped fetching Volume",
                     library: Abridgers.LIBRARY(libraryContext.library),
+                    refresh: refresh,
                     url: url,
                     loggedIn: loginContext.data.loggedIn,
                 });
@@ -233,6 +241,7 @@ const useFetchFocused = (props: Props): State => {
                 library: Abridgers.LIBRARY(libraryContext.library),
                 focusee: props.focusee,
                 parameters: parameters,
+                refresh: refresh,
             });
             setFocused(props.focusee);
         }

@@ -52,6 +52,7 @@ const SeriesOptions = (props: Props) => {
     const [active, setActive] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize] = useState<number>(100);
+    const [refresh, setRefresh] = useState<boolean>(false);
     const [searchText, setSearchText] = useState<string>("");
 
     const fetchFocused = useFetchFocused({
@@ -74,11 +75,13 @@ const SeriesOptions = (props: Props) => {
             parent: Abridgers.ANY(props.parent),
             active: active,
             name: searchText,
+            refresh: refresh,
         });
+        setRefresh(false);
     }, [props.parent,
         libraryContext.library, libraryContext.library.id,
         loginContext.data.loggedIn,
-        active, searchText,
+        active, refresh, searchText,
         fetchSerieses.serieses]);
 
     const handleActive: HandleBoolean = (theActive) => {
@@ -104,12 +107,40 @@ const SeriesOptions = (props: Props) => {
     const handleExclude: HandleSeries = (theSeries) => {
         if (props.handleExclude) {
             props.handleExclude(theSeries);
+            //fetchSerieses.refresh();
+            //fetchFocused.refresh();
+            //setRefresh(true);
+            // TODO - Messing with fetchFocused.focused is really lame
+            // @ts-ignore
+            if (fetchFocused.focused.series) {
+                let found = -1;
+                // @ts-ignore
+                fetchFocused.focused.series.forEach((series, index) => {
+                    if (theSeries.id === series.id) {
+                        found = index;
+                    }
+                });
+                if (found >= 0) {
+                    // @ts-ignore
+                    fetchFocused.focused.series.splice(found, 1);
+                }
+
+            }
         }
     }
 
     const handleInclude: HandleSeries = (theSeries) => {
         if (props.handleInclude) {
             props.handleInclude(theSeries);
+            //fetchSerieses.refresh();
+            //fetchFocused.refresh();
+            //setRefresh(true);
+            // TODO - Messing with fetchFocused.focused is really lame
+            // @ts-ignore
+            if (fetchFocused.focused.series) {
+                // @ts-ignore
+                fetchFocused.focused.series.push(theSeries);
+            }
         }
     }
 

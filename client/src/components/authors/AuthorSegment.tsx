@@ -59,6 +59,7 @@ const AuthorSegment = (props: Props) => {
             library: libraryContext.library.id > 0 ? Abridgers.LIBRARY(libraryContext.library) : undefined,
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             author: author ? Abridgers.AUTHOR(author): undefined,
+            view: view.toString(),
         });
         const isAdmin = loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
         // const isRegular = loginContext.validateLibrary(libraryContext.library, Scope.REGULAR);
@@ -69,7 +70,7 @@ const AuthorSegment = (props: Props) => {
     }, [props.parent,
         libraryContext.library, libraryContext.library.id,
         loginContext, loginContext.data.loggedIn,
-        author]);
+        author, view]);
 
     // Create an empty Author to be added
     const handleAdd: HandleAction = () => {
@@ -121,7 +122,6 @@ const AuthorSegment = (props: Props) => {
             if (!(props.parent instanceof Library)) {
                 /* const excluded = */ await mutateAuthor.exclude(theAuthor, props.parent);
             }
-            // TODO - refresh parent???
         }
     }
 
@@ -136,7 +136,6 @@ const AuthorSegment = (props: Props) => {
             if (!(props.parent instanceof Library)) {
                 /* const included = */ await mutateAuthor.include(theAuthor, props.parent);
             }
-            // TODO - refresh parent???
         }
     }
 

@@ -57,6 +57,7 @@ const SeriesSegment = (props: Props) => {
             library: libraryContext.library.id > 0 ? Abridgers.LIBRARY(libraryContext.library) : undefined,
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             series: series ? Abridgers.SERIES(series): undefined,
+            view: view.toString(),
         });
         const isAdmin = loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
         // const isRegular = loginContext.validateLibrary(libraryContext.library, Scope.REGULAR);
@@ -67,7 +68,7 @@ const SeriesSegment = (props: Props) => {
     }, [props.parent,
         libraryContext.library, libraryContext.library.id,
         loginContext, loginContext.data.loggedIn,
-        series]);
+        series, view]);
 
     // Create an empty Series to be added
     const handleAdd: HandleAction = () => {
@@ -119,7 +120,6 @@ const SeriesSegment = (props: Props) => {
             if (!(props.parent instanceof Library)) {
                 /* const excluded = */ await mutateSeries.exclude(theSeries, props.parent);
             }
-            // TODO - refresh parent???
         }
     }
 
@@ -134,7 +134,6 @@ const SeriesSegment = (props: Props) => {
             if (!(props.parent instanceof Library)) {
                 /* const included = */ await mutateSeries.include(theSeries, props.parent);
             }
-            // TODO - refresh parent???
         }
     }
 
