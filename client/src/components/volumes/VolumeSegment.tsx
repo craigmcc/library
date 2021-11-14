@@ -1,6 +1,6 @@
-// AuthorSegment -------------------------------------------------------------
+// VolumeSegment -------------------------------------------------------------
 
-// Consolidated segment for listing and editing Author objects, as well as
+// Consolidated segment for listing and editing Volume objects, as well as
 // navigating to segments for related child objects.
 
 // External Modules ----------------------------------------------------------
@@ -9,17 +9,16 @@ import React, {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import AuthorDetails from "./AuthorDetails";
-import AuthorOptions from "./AuthorOptions";
-import SeriesSegment from "../series/SeriesSegment";
+import AuthorSegment from "../authors/AuthorSegment";
 //import StorySegment from "../stories/StorySegment";
-import VolumeSegment from "../volumes/VolumeSegment";
+import VolumeDetails from "./VolumeDetails";
+import VolumeOptions from "./VolumeOptions";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleAction, HandleAuthor, Parent, Scope} from "../../types";
-import useMutateAuthor from "../../hooks/useMutateAuthor";
-import Author from "../../models/Author";
+import {HandleAction, HandleVolume, Parent, Scope} from "../../types";
+import useMutateVolume from "../../hooks/useMutateVolume";
 import Library from "../../models/Library";
+import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 
@@ -35,12 +34,11 @@ export interface Props {
 enum View {
     DETAILS = "Details",
     OPTIONS = "Options",
-    SERIES = "Series",
+    AUTHORS = "Authors",
     STORIES = "Stories",
-    VOLUMES = "Volumes",
 }
 
-const AuthorSegment = (props: Props) => {
+const VolumeSegment = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -48,17 +46,17 @@ const AuthorSegment = (props: Props) => {
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
-    const [author, setAuthor] = useState<Author>(new Author());
     const [view, setView] = useState<View>(View.OPTIONS);
+    const [volume, setVolume] = useState<Volume>(new Volume());
 
-    const mutateAuthor = useMutateAuthor({});
+    const mutateVolume = useMutateVolume({});
 
     useEffect(() => {
         logger.info({
-            context: "AuthorSegment.useEffect",
+            context: "VolumeSegment.useEffect",
             library: libraryContext.library.id > 0 ? Abridgers.LIBRARY(libraryContext.library) : undefined,
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
-            author: author ? Abridgers.AUTHOR(author): undefined,
+            volume: volume ? Abridgers.VOLUME(volume): undefined,
             view: view.toString(),
         });
         const isAdmin = loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
@@ -70,30 +68,35 @@ const AuthorSegment = (props: Props) => {
     }, [props.parent,
         libraryContext.library, libraryContext.library.id,
         loginContext, loginContext.data.loggedIn,
-        author, view]);
+        volume, view]);
 
-    // Create an empty Author to be added
+    // Create an empty Volume to be added
     const handleAdd: HandleAction = () => {
-        const theAuthor = new Author({
+        const theVolume = new Volume({
             id: -1,
             active: true,
-            firstName: null,
-            lastName: null,
+            copyright: null,
+            googleId: null,
+            isbn: null,
             libraryId: libraryContext.library.id,
+            location: "Kindle",
+            name: null,
             notes: null,
+            read: false,
+            type: "Single",
         });
         logger.info({
-            context: "AuthorSegment.handleAdd",
-            author: theAuthor,
+            context: "VolumeSegment.handleAdd",
+            volume: theVolume,
         });
-        setAuthor(theAuthor);
+        setVolume(theVolume);
         setView(View.DETAILS);
     }
 
     // Go back to the ancestor parent, if any
     const handleBack: HandleAction = () => {
         logger.info({
-            context: "AuthorSegment.handleBack"
+            context: "VolumeSegment.handleBack"
         });
         setView(View.OPTIONS);
         if (props.handleBack) {
@@ -101,110 +104,100 @@ const AuthorSegment = (props: Props) => {
         }
     }
 
-    // Handle selection of an Author to edit details
-    const handleEdit: HandleAuthor = (theAuthor) => {
+    // Handle selection of a Volume to edit details
+    const handleEdit: HandleVolume = (theVolume) => {
         logger.info({
-            context: "AuthorSegment.handleEdit",
-            author: Abridgers.AUTHOR(theAuthor),
+            context: "VolumeSegment.handleEdit",
+            volume: Abridgers.VOLUME(theVolume),
         });
-        setAuthor(theAuthor);
+        setVolume(theVolume);
         setView(View.DETAILS);
     }
 
-    // Handle excluding an Author from its parent
-    const handleExclude: HandleAuthor = async (theAuthor) => {
+    // Handle excluding a Volume from its parent
+    const handleExclude: HandleVolume = async (theVolume) => {
         logger.info({
-            context: "AuthorSegment.handleExclude",
+            context: "VolumeSegment.handleExclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
-            author: Abridgers.AUTHOR(theAuthor),
+            volume: Abridgers.VOLUME(theVolume),
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
-                /* const excluded = */ await mutateAuthor.exclude(theAuthor, props.parent);
+                /* const excluded = */ await mutateVolume.exclude(theVolume, props.parent);
             }
         }
     }
 
-    // Handle including a Author into its Ancestor
-    const handleInclude: HandleAuthor = async (theAuthor) => {
+    // Handle including a Volume into its Ancestor
+    const handleInclude: HandleVolume = async (theVolume) => {
         logger.info({
-            context: "AuthorSegment.handleInclude",
+            context: "VolumeSegment.handleInclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
-            author: Abridgers.AUTHOR(theAuthor),
+            volume: Abridgers.VOLUME(theVolume),
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
-                /* const included = */ await mutateAuthor.include(theAuthor, props.parent);
+                /* const included = */ await mutateVolume.include(theVolume, props.parent);
             }
         }
     }
 
-    // Handle insert of a new Author
-    const handleInsert: HandleAuthor = async (theAuthor) => {
+    // Handle insert of a new Volume
+    const handleInsert: HandleVolume = async (theVolume) => {
         logger.info({
-            context: "AuthorSegment.handleInsert",
-            author: Abridgers.AUTHOR(theAuthor),
+            context: "VolumeSegment.handleInsert",
+            volume: Abridgers.VOLUME(theVolume),
         });
-        const inserted = await mutateAuthor.insert(theAuthor);
+        const inserted = await mutateVolume.insert(theVolume);
         handleInclude(inserted);
         setView(View.OPTIONS);
     }
 
-    // Handle remove of an existing Author
-    const handleRemove: HandleAuthor = async (theAuthor) => {
+    // Handle remove of an existing Volume
+    const handleRemove: HandleVolume = async (theVolume) => {
         logger.info({
-            context: "AuthorSegment.handleRemove",
-            author: Abridgers.AUTHOR(theAuthor),
+            context: "VolumeSegment.handleRemove",
+            volume: Abridgers.VOLUME(theVolume),
         });
-        /* const removed = */ await mutateAuthor.remove(theAuthor);
+        /* const removed = */ await mutateVolume.remove(theVolume);
         setView(View.OPTIONS);
     }
 
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
         logger.info({
-            context: "AuthorSegment.handleReturn",
+            context: "VolumeSegment.handleReturn",
         });
         setView(View.OPTIONS);
     }
 
-    // Handle request to show SeriesSegment for a parent Author
-    const handleShowSeries: HandleAuthor = (theAuthor) => {
+    // Handle request to show AuthorSegment for a parent Volume
+    const handleShowAuthors: HandleVolume = (theVolume) => {
         logger.info({
-            context: "AuthorSegment.handleShowSeries",
-            author: Abridgers.AUTHOR(theAuthor),
+            context: "VolumeSegment.handleShowAuthors",
+            volume: Abridgers.VOLUME(theVolume),
         });
-        setAuthor(theAuthor);
-        setView(View.SERIES);
+        setVolume(theVolume);
+        setView(View.AUTHORS);
     }
 
-    // Handle request to show StorySegment for a parent Author
-    const handleShowStories: HandleAuthor = (theAuthor) => {
+    // Handle request to show StorySegment for a parent Volume
+    const handleShowStories: HandleVolume = (theVolume) => {
         logger.info({
-            context: "AuthorSegment.handleShowStories",
-            author: Abridgers.AUTHOR(theAuthor),
+            context: "VolumeSegment.handleShowStories",
+            volume: Abridgers.VOLUME(theVolume),
         });
-        setAuthor(theAuthor);
+        setVolume(theVolume);
         setView(View.STORIES);
     }
 
-    // Handle request to show VolumeSegment for a parent Author
-    const handleShowVolumes: HandleAuthor = (theAuthor) => {
+    // Handle update of an existing Volume
+    const handleUpdate: HandleVolume = async (theVolume) => {
         logger.info({
-            context: "AuthorSegment.handleShowVolumes",
-            author: Abridgers.AUTHOR(theAuthor),
+            context: "VolumeSegment.handleUpdate",
+            volume: Abridgers.VOLUME(theVolume),
         });
-        setAuthor(theAuthor);
-        setView(View.VOLUMES);
-    }
-
-    // Handle update of an existing Author
-    const handleUpdate: HandleAuthor = async (theAuthor) => {
-        logger.info({
-            context: "AuthorSegment.handleUpdate",
-            author: Abridgers.AUTHOR(theAuthor),
-        });
-        /* const updated = */ await mutateAuthor.update(theAuthor);
+        /* const updated = */ await mutateVolume.update(theVolume);
         setView(View.OPTIONS);
     }
 
@@ -212,55 +205,45 @@ const AuthorSegment = (props: Props) => {
         <>
 
             {(view === View.DETAILS) ? (
-                <AuthorDetails
-                    author={author}
+                <VolumeDetails
                     autoFocus
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
                     handleReturn={handleReturn}
                     handleUpdate={canUpdate ? handleUpdate : undefined}
                     parent={props.parent ? props.parent : libraryContext.library}
-                    showPrincipal={props.parent && !(props.parent instanceof Library)}
+                    volume={volume}
                 />
             ) : null }
 
             {(view === View.OPTIONS) ? (
-                <AuthorOptions
+                <VolumeOptions
                     handleAdd={handleAdd}
                     handleBack={props.handleBack ? handleBack : undefined}
                     handleEdit={handleEdit}
                     handleExclude={props.parent && !(props.parent instanceof Library) ? handleExclude : undefined}
                     handleInclude={props.parent && !(props.parent instanceof Library) ? handleInclude : undefined}
-                    handleShowSeries={handleShowSeries}
+                    handleShowAuthors={handleShowAuthors}
                     handleShowStories={handleShowStories}
-                    handleShowVolumes={handleShowVolumes}
                     parent={props.parent ? props.parent : libraryContext.library}
-                    showPrincipal={props.parent && !(props.parent instanceof Library)}
                 />
             ) : null }
 
-            {(view === View.SERIES) ? (
-                <SeriesSegment
+            {(view === View.AUTHORS) ? (
+                <AuthorSegment
                     handleBack={handleReturn}
-                    parent={author}
+                    parent={volume ? volume : undefined}
                 />
             ) : null }
 
             {(view === View.STORIES) ? (
-                <h1>StorySegment for {Abridgers.ANY(author)}</h1>
+                <h1>StorySegment for {Abridgers.ANY(volume)}</h1>
                 /*
                                 <StorySegment
                                     handleBack={handleReturn}
-                                    parent={author}
+                                    parent={volume}
                                 />
                 */
-            ) : null }
-
-            {(view === View.VOLUMES) ? (
-                <VolumeSegment
-                    handleBack={handleReturn}
-                    parent={author}
-                />
             ) : null }
 
         </>
@@ -268,4 +251,4 @@ const AuthorSegment = (props: Props) => {
 
 }
 
-export default AuthorSegment;
+export default VolumeSegment;

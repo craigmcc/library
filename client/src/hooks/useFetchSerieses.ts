@@ -42,7 +42,7 @@ export interface Props {
 export interface State {
     error: Error | null;                // I/O error (if any)
     loading: boolean;                   // Are we currently loading?
-    refresh: HandleAction;             // Trigger a refresh
+    refresh: HandleAction;              // Trigger a refresh
     serieses: Series[];                 // Fetched Series
 }
 
@@ -145,7 +145,7 @@ const useFetchSerieses = (props: Props): State => {
 
     const handleRefresh: HandleAction = () => {
         logger.info({
-            context: "useFetchAuthors.handleRefresh",
+            context: "useFetchSerieses.handleRefresh",
             library: Abridgers.LIBRARY(libraryContext.library),
             parent: Abridgers.ANY(props.parent),
             active: props.active,

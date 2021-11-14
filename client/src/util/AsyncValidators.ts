@@ -17,10 +17,11 @@
 import Api from "../clients/Api";
 import Author, {AUTHORS_BASE} from "../models/Author";
 import Library, {LIBRARIES_BASE} from "../models/Library";
+import Series, {SERIES_BASE} from "../models/Series";
 import Story, {STORIES_BASE} from "../models/Story";
 import User, {USERS_BASE} from "../models/User";
+import Volume, {VOLUMES_BASE} from "../models/Volume";
 import {queryParameters} from "./QueryParameters";
-import Series, {SERIES_BASE} from "../models/Series";
 
 // Public Objects ------------------------------------------------------------
 
@@ -110,3 +111,18 @@ export const validateUserUsernameUnique = async (user: User): Promise<boolean> =
         return true;
     }
 }
+
+export const validateVolumeNameUnique = async (volume: Volume): Promise<boolean> => {
+    if (volume && volume.name) {
+        try {
+            const result = (await Api.get(VOLUMES_BASE
+                + `/${volume.libraryId}/exact/${volume.name}`)).data;
+            return (result.id === volume.id);
+        } catch (error) {
+            return true; // Definitely unique
+        }
+    } else {
+        return true;
+    }
+}
+

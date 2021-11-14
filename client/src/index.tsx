@@ -13,7 +13,7 @@ import {LoginContextProvider} from "./components/login/LoginContext";
 import SeriesSegment from "./components/series/SeriesSegment";
 import StoriesView from "./components/stories/StoriesView";
 import UsersView from "./components/users/UsersView";
-import VolumesView from "./components/volumes/VolumesView";
+import VolumeSegment from "./components/volumes/VolumeSegment";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -27,7 +27,7 @@ ReactDOM.render(
                           <Route path="series" element={<SeriesSegment/>}/>
                           <Route path="stories" element={<StoriesView/>}/>
                           <Route path="users" element={<UsersView/>}/>
-                          <Route path="volumes" element={<VolumesView/>}/>
+                          <Route path="volumes" element={<VolumeSegment/>}/>
                           <Route path="" element={<HomeView/>}/>
                       </Route>
                   </Routes>

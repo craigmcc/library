@@ -12,7 +12,7 @@ import {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import {Parent} from "../types";
+import {HandleAction, Parent} from "../types";
 import Api from "../clients/Api";
 import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
@@ -42,6 +42,7 @@ export interface Props {
 export interface State {
     error: Error | null;                // I/O error (if any)
     loading: boolean;                   // Are we currently loading?
+    refresh: HandleAction;              // Trigger a refresh
     volumes: Volume[];                  // Fetched Volumes
 }
 
@@ -54,6 +55,7 @@ const useFetchVolumes = (props: Props): State => {
 
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [refresh, setRefresh] = useState<boolean>(false);
     const [volumes, setVolumes] = useState<Volume[]>([]);
 
     useEffect(() => {
@@ -96,10 +98,10 @@ const useFetchVolumes = (props: Props): State => {
                     });
                     logger.info({
                         context: "useFetchVolumes.fetchVolumes",
+                        parameters: parameters,
                         library: Abridgers.LIBRARY(libraryContext.library),
                         parent: Abridgers.ANY(props.parent),
-                        active: props.active,
-                        name: props.name,
+                        refresh: refresh,
                         url: url,
                         volumes: Abridgers.VOLUMES(theVolumes),
                     });
@@ -107,10 +109,10 @@ const useFetchVolumes = (props: Props): State => {
                     logger.info({
                         context: "useFetchVolumes.fetchVolumes",
                         msg: "Skipped fetching Volumes",
+                        parameters: parameters,
                         library: Abridgers.LIBRARY(libraryContext.library),
                         parent: Abridgers.ANY(props.parent),
-                        active: props.active,
-                        name: props.name,
+                        refresh: refresh,
                         url: url,
                         loggedIn: loginContext.data.loggedIn,
                     });
@@ -119,15 +121,17 @@ const useFetchVolumes = (props: Props): State => {
                 setError(error as Error);
                 ReportError("useFetchVolumes.fetchVolumes", error, {
                     parameters: parameters,
-                    url: url,
                     library: Abridgers.LIBRARY(libraryContext.library),
                     parent: Abridgers.ANY(props.parent),
+                    refresh: refresh,
+                    url: url,
                     loggedIn: loginContext.data.loggedIn,
                 });
             }
 
             setVolumes(theVolumes);
             setLoading(false);
+            setRefresh(false);
 
         }
 
@@ -136,11 +140,24 @@ const useFetchVolumes = (props: Props): State => {
     }, [props.active, props.currentPage, props.name, props.pageSize,
         props.parent, props.withAuthors, props.withStories,
         libraryContext.library, libraryContext.library.id,
-        loginContext.data.loggedIn]);
+        loginContext.data.loggedIn,
+        refresh]);
+
+    const handleRefresh: HandleAction = () => {
+        logger.info({
+            context: "useFetchVolumes.handleRefresh",
+            library: Abridgers.LIBRARY(libraryContext.library),
+            parent: Abridgers.ANY(props.parent),
+            active: props.active,
+            name: props.name,
+        });
+        setRefresh(true);
+    }
 
     return {
         error: error ? error : null,
         loading: loading,
+        refresh: handleRefresh,
         volumes: volumes,
     }
 
