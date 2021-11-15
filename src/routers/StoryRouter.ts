@@ -92,7 +92,6 @@ StoryRouter.put("/:libraryId/:storyId",
 
 // Story-Author Relationships ------------------------------------------------
 
-/*
 // GET /:libraryId/:storyId/authors - Find Authors for this Story
 StoryRouter.get("/:libraryId/:storyId/authors",
     requireRegular,
@@ -103,11 +102,9 @@ StoryRouter.get("/:libraryId/:storyId/authors",
             req.query
         ));
     });
-*/
 
 // Story-Series Relationships ------------------------------------------------
 
-/*
 // GET /:libraryId/:storyId/series - Find Series for this Story
 StoryRouter.get("/:libraryId/:storyId/series",
     requireRegular,
@@ -118,11 +115,9 @@ StoryRouter.get("/:libraryId/:storyId/series",
             req.query
         ));
     });
-*/
 
 // Story-Volume Relationships ------------------------------------------------
 
-/*
 // GET /:libraryId/:storyId/volumes - Find Volumes for this Story
 StoryRouter.get("/:libraryId/:storyId/volumes",
     requireRegular,
@@ -133,5 +128,4 @@ StoryRouter.get("/:libraryId/:storyId/volumes",
             req.query
         ));
     });
-*/
 

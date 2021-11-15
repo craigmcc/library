@@ -12,7 +12,7 @@ import React, {useContext, useEffect, useState} from "react";
 import AuthorDetails from "./AuthorDetails";
 import AuthorOptions from "./AuthorOptions";
 import SeriesSegment from "../series/SeriesSegment";
-//import StorySegment from "../stories/StorySegment";
+import StorySegment from "../stories/StorySegment";
 import VolumeSegment from "../volumes/VolumeSegment";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
@@ -247,13 +247,10 @@ const AuthorSegment = (props: Props) => {
             ) : null }
 
             {(view === View.STORIES) ? (
-                <h1>StorySegment for {Abridgers.ANY(author)}</h1>
-                /*
-                                <StorySegment
-                                    handleBack={handleReturn}
-                                    parent={author}
-                                />
-                */
+                <StorySegment
+                    handleBack={handleReturn}
+                    parent={author}
+                />
             ) : null }
 
             {(view === View.VOLUMES) ? (

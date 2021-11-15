@@ -1,7 +1,7 @@
-// VolumeOptions -------------------------------------------------------------
+// StoryOptions -------------------------------------------------------------
 
-// List Volumes that match search criteria, offering callbacks for adding,
-// editing, and removing Volume.  Optionally, include relevant actions.
+// List Stories that match search criteria, offering callbacks for adding,
+// editing, and removing Story.  Optionally, include relevant actions.
 
 // External Modules ----------------------------------------------------------
 
@@ -19,10 +19,11 @@ import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
-import {HandleAction, HandleBoolean, HandleValue, HandleVolume, Parent} from "../../types";
+import {HandleAction, HandleBoolean, HandleStory, HandleValue, Parent} from "../../types";
 import useFetchFocused from "../../hooks/useFetchFocused";
-import useFetchVolumes from "../../hooks/useFetchVolumes";
+import useFetchStories from "../../hooks/useFetchStories";
 import Author from "../../models/Author";
+import Series from "../../models/Series";
 import Story from "../../models/Story";
 import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
@@ -32,19 +33,20 @@ import {authorsNames, listValue} from "../../util/Transformations";
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
-    handleAdd?: HandleAction;           // Handle request to add a Volume [not allowed]
+    handleAdd?: HandleAction;           // Handle request to add a Story [not allowed]
     handleBack?: HandleAction;          // Handle request to leave segment [no handler]
-    handleEdit?: HandleVolume;          // Handle request to edit a Volume [not allowed]
-    handleExclude?: HandleVolume;       // Handle request to exclude a Volume [not allowed]
-    handleInclude?: HandleVolume;       // Handle request to include a Volume [not allowed]
-    handleShowAuthors?: HandleVolume;   // Handle request to show related Authors [not allowed]
-    handleShowStories?: HandleVolume;   // Handle request to show related Stories [not allowed]
-    parent: Parent;                     // Parent object for Volumes
+    handleEdit?: HandleStory;           // Handle request to edit a Story [not allowed]
+    handleExclude?: HandleStory;        // Handle request to exclude a Story [not allowed]
+    handleInclude?: HandleStory;        // Handle request to include a Story [not allowed]
+    handleShowAuthors?: HandleStory;    // Handle request to show related Authors [not allowed]
+    handleShowSeries?: HandleStory;     // Handle request to show related Stories [not allowed]
+    handleShowVolumes?: HandleStory;    // Handle request to show related Volumes [not allowed]
+    parent: Parent;                     // Parent object for Stories
 }
 
 // Component Details ---------------------------------------------------------
 
-const VolumeOptions = (props: Props) => {
+const StoryOptions = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -58,19 +60,20 @@ const VolumeOptions = (props: Props) => {
     const fetchFocused = useFetchFocused({
         focusee: props.parent,
     });
-    const fetchVolumes = useFetchVolumes({
+    const fetchStories = useFetchStories({
         active: active,
         currentPage: currentPage,
         name: (searchText.length > 0) ? searchText : undefined,
         pageSize: pageSize,
         parent: props.parent,
         withAuthors: true,
-        withStories: true,
+        withSeries: true,
+        withVolumes: true,
     });
 
     useEffect(() => {
         logger.info({
-            context: "VolumeOptions.useEffect",
+            context: "StoryOptions.useEffect",
             library: Abridgers.LIBRARY(libraryContext.library),
             parent: Abridgers.ANY(props.parent),
             active: active,
@@ -82,7 +85,7 @@ const VolumeOptions = (props: Props) => {
         libraryContext.library, libraryContext.library.id,
         loginContext.data.loggedIn,
         active, refresh, searchText,
-        fetchVolumes.volumes]);
+        fetchStories.stories]);
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
@@ -98,48 +101,48 @@ const VolumeOptions = (props: Props) => {
         setSearchText(theSearchText);
     }
 
-    const handleEdit: HandleVolume = (theVolume) => {
+    const handleEdit: HandleStory = (theStory) => {
         if (props.handleEdit) {
-            props.handleEdit(theVolume);
+            props.handleEdit(theStory);
         }
     }
 
-    const handleExclude: HandleVolume = (theVolume) => {
+    const handleExclude: HandleStory = (theStory) => {
         if (props.handleExclude) {
-            props.handleExclude(theVolume);
-            //fetchVolumes.refresh();
+            props.handleExclude(theStory);
+            //fetchStories.refresh();
             //fetchFocused.refresh();
             //setRefresh(true);
             // TODO - Messing with fetchFocused.focused is really lame
             // @ts-ignore
-            if (fetchFocused.focused.volumes) {
+            if (fetchFocused.focused.stories) {
                 let found = -1;
                 // @ts-ignore
-                fetchFocused.focused.volumes.forEach((volume, index) => {
-                    if (theVolume.id === volume.id) {
+                fetchFocused.focused.stories.forEach((story, index) => {
+                    if (theStory.id === story.id) {
                         found = index;
                     }
                 });
                 if (found >= 0) {
                     // @ts-ignore
-                    fetchFocused.focused.volumes.splice(found, 1);
+                    fetchFocused.focused.stories.splice(found, 1);
                 }
 
             }
         }
     }
 
-    const handleInclude: HandleVolume = (theVolume) => {
+    const handleInclude: HandleStory = (theStory) => {
         if (props.handleInclude) {
-            props.handleInclude(theVolume);
-            //fetchVolumes.refresh();
+            props.handleInclude(theStory);
+            //fetchStories.refresh();
             //fetchFocused.refresh();
             //setRefresh(true);
             // TODO - Messing with fetchFocused.focused is really lame
             // @ts-ignore
-            if (fetchFocused.focused.volumes) {
+            if (fetchFocused.focused.stories) {
                 // @ts-ignore
-                fetchFocused.focused.volumes.push(theVolume);
+                fetchFocused.focused.stories.push(theStory);
             }
         }
     }
@@ -152,27 +155,34 @@ const VolumeOptions = (props: Props) => {
         setCurrentPage(currentPage - 1);
     }
 
-    const handleShowAuthors: HandleVolume = (theVolume) => {
+    const handleShowAuthors: HandleStory = (theStory) => {
         if (props.handleShowAuthors) {
-            props.handleShowAuthors(theVolume);
+            props.handleShowAuthors(theStory);
         }
     }
 
-    const handleShowStories: HandleVolume = (theVolume) => {
-        if (props.handleShowStories) {
-            props.handleShowStories(theVolume);
+    const handleShowSeries: HandleStory = (theStory) => {
+        if (props.handleShowSeries) {
+            props.handleShowSeries(theStory);
         }
     }
 
-    // Is this Volume included in its parent?
-    const included = (theVolume: Volume): boolean => {
+    const handleShowVolumes: HandleStory = (theStory) => {
+        if (props.handleShowVolumes) {
+            props.handleShowVolumes(theStory);
+        }
+    }
+
+    // Is this Story included in its parent?
+    const included = (theStory: Story): boolean => {
         let result = false;
         if (props.parent) {
             if ((fetchFocused.focused instanceof Author)
-                || (fetchFocused.focused instanceof Story)) {
-                if (fetchFocused.focused.volumes) {
-                    fetchFocused.focused.volumes.forEach(volume => {
-                        if (theVolume.id === volume.id) {
+                || (fetchFocused.focused instanceof Series)
+                || (fetchFocused.focused instanceof Volume)) {
+                if (fetchFocused.focused.stories) {
+                    fetchFocused.focused.stories.forEach(story => {
+                        if (theStory.id === story.id) {
                             result = true;
                         }
                     });
@@ -183,12 +193,12 @@ const VolumeOptions = (props: Props) => {
     }
 
     return (
-        <Container fluid id="VolumeOptions">
+        <Container fluid id="StoryOptions">
 
             <Row className="mb-3">
                 <Col/>
                 <Col className="text-center">
-                    <span>Manage Volumes for {props.parent._model}:&nbsp;</span>
+                    <span>Manage Stories for {props.parent._model}:&nbsp;</span>
                     <span className="text-info">{props.parent._title}</span>
                 </Col>
                 {props.handleBack ? (
@@ -209,14 +219,14 @@ const VolumeOptions = (props: Props) => {
                         autoFocus
                         handleChange={handleChange}
                         htmlSize={50}
-                        label="Search For Volumes:"
+                        label="Search For Stories:"
                         placeholder="Search by all or part of name"
                     />
                 </Col>
                 <Col>
                     <CheckBox
                         handleChange={handleActive}
-                        label="Active Volumes Only?"
+                        label="Active Stories Only?"
                         name="activeOnly"
                         value={active}
                     />
@@ -226,8 +236,8 @@ const VolumeOptions = (props: Props) => {
                         currentPage={currentPage}
                         handleNext={handleNext}
                         handlePrevious={handlePrevious}
-                        lastPage={(fetchVolumes.volumes.length === 0) ||
-                            (fetchVolumes.volumes.length < pageSize)}
+                        lastPage={(fetchStories.stories.length === 0) ||
+                            (fetchStories.stories.length < pageSize)}
                         variant="secondary"
                     />
                 </Col>
@@ -256,14 +266,14 @@ const VolumeOptions = (props: Props) => {
                                 className="text-center"
                                 colSpan={99}
                             >
-                                {`Volumes for ${libraryContext.library._model}: ${libraryContext.library._title}`}
+                                {`Stories for ${libraryContext.library._model}: ${libraryContext.library._title}`}
                             </th>
                         ) : (
                             <th
                                 className="text-center"
                                 colSpan={99}
                             >
-                                {`Volumes for ${props.parent._model}: ${props.parent._title}`}
+                                {`Stories for ${props.parent._model}: ${props.parent._title}`}
                             </th>
                         )}
 
@@ -278,31 +288,31 @@ const VolumeOptions = (props: Props) => {
                     </thead>
 
                     <tbody>
-                    {fetchVolumes.volumes.map((volume, rowIndex) => (
+                    {fetchStories.stories.map((story, rowIndex) => (
                         <tr
                             className="table-default"
                             key={1000 + (rowIndex * 100)}
                         >
                             <td
                                 key={1000 + (rowIndex * 100) + 1}
-                                onClick={props.handleEdit ? (() => handleEdit(volume)) : undefined}
+                                onClick={props.handleEdit ? (() => handleEdit(story)) : undefined}
                             >
-                                {volume._title}
+                                {story._title}
                             </td>
                             <td key={1000 + (rowIndex * 100) + 2}>
-                                {authorsNames(volume.authors)}
+                                {authorsNames(story.authors)}
                             </td>
                             <td key={1000 + (rowIndex * 100) + 3}>
-                                {listValue(volume.active)}
+                                {listValue(story.active)}
                             </td>
                             <td key={1000 + (rowIndex * 100) + 4}>
-                                {volume.notes}
+                                {story.notes}
                             </td>
                             <td key={1000 + (rowIndex * 100) + 5}>
                                 {(props.handleEdit) ? (
                                     <Button
                                         className="me-1"
-                                        onClick={() => handleEdit(volume)}
+                                        onClick={() => handleEdit(story)}
                                         size="sm"
                                         type="button"
                                         variant="primary"
@@ -311,8 +321,8 @@ const VolumeOptions = (props: Props) => {
                                 {(props.handleExclude) ? (
                                     <Button
                                         className="me-1"
-                                        disabled={!included(volume)}
-                                        onClick={() => handleExclude(volume)}
+                                        disabled={!included(story)}
+                                        onClick={() => handleExclude(story)}
                                         size="sm"
                                         type="button"
                                         variant="primary"
@@ -321,33 +331,42 @@ const VolumeOptions = (props: Props) => {
                                 {(props.handleInclude) ? (
                                     <Button
                                         className="me-1"
-                                        disabled={included(volume)}
-                                        onClick={() => handleInclude(volume)}
+                                        disabled={included(story)}
+                                        onClick={() => handleInclude(story)}
                                         size="sm"
                                         type="button"
                                         variant="primary"
                                     >Include</Button>
                                 ) : null }
-                                {props.handleShowAuthors || props.handleShowStories ? (
+                                {props.handleShowAuthors || props.handleShowSeries || props.handleShowVolumes ? (
                                     <span className="ms-1 me-2">|</span>
                                 ) : null }
                                 {(props.handleShowAuthors) ? (
                                     <Button
                                         className="me-1"
-                                        onClick={() => handleShowAuthors(volume)}
+                                        onClick={() => handleShowAuthors(story)}
                                         size="sm"
                                         type="button"
                                         variant="success"
                                     >Authors</Button>
                                 ) : null }
-                                {(props.handleShowStories) ? (
+                                {(props.handleShowSeries) ? (
                                     <Button
                                         className="me-1"
-                                        onClick={() => handleShowStories(volume)}
+                                        onClick={() => handleShowSeries(story)}
                                         size="sm"
                                         type="button"
                                         variant="success"
-                                    >Stories</Button>
+                                    >Series</Button>
+                                ) : null }
+                                {(props.handleShowVolumes) ? (
+                                    <Button
+                                        className="me-1"
+                                        onClick={() => handleShowVolumes(story)}
+                                        size="sm"
+                                        type="button"
+                                        variant="success"
+                                    >Volumes</Button>
                                 ) : null }
                             </td>
                         </tr>
@@ -373,4 +392,4 @@ const VolumeOptions = (props: Props) => {
 
 }
 
-export default VolumeOptions;
+export default StoryOptions;

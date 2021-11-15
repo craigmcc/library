@@ -11,7 +11,10 @@ import {useContext, useEffect, useState} from "react";
 import {ProcessStory, ProcessStoryParent} from "../types";
 import Api from "../clients/Api";
 import LibraryContext from "../components/libraries/LibraryContext";
+import Author, {AUTHORS_BASE} from "../models/Author";
+import Series, {SERIES_BASE} from "../models/Series";
 import Story, {STORIES_BASE} from "../models/Story";
+import Volume, {VOLUMES_BASE} from "../models/Volume";
 import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
 import {queryParameters} from "../util/QueryParameters";
@@ -49,9 +52,20 @@ const useMutateStory = (props: Props): State => {
     });
 
     const exclude: ProcessStoryParent = async (theStory, theParent) => {
-        const url = STORIES_BASE
-            + `/${libraryContext.library.id}/${theStory.id}`
-            + `${parentBase(theParent)}/${theParent.id}`;
+        let url: string = "";
+        if (theParent instanceof Author) {
+            url = AUTHORS_BASE
+                + `/${libraryContext.library.id}/${theParent.id}`
+                + `${parentBase(theStory)}/${theStory.id}`;
+        } else if (theParent instanceof Series) {
+            url = SERIES_BASE
+                + `/${libraryContext.library.id}/${theParent.id}`
+                + `${parentBase(theStory)}/${theStory.id}`;
+        } else if (theParent instanceof Volume) {
+            url = VOLUMES_BASE
+                + `/${libraryContext.library.id}/${theParent.id}`
+                + `${parentBase(theStory)}/${theStory.id}`;
+        }
         setError(null);
         setExecuting(true);
         try {
@@ -75,26 +89,37 @@ const useMutateStory = (props: Props): State => {
     }
 
     const include: ProcessStoryParent = async (theStory, theParent) => {
-        const parameters = {
-            ordinal: theStory.ordinal ? theStory.ordinal : undefined
+        let url: string = "";
+        if (theParent instanceof Author) {
+            url = AUTHORS_BASE
+                + `/${libraryContext.library.id}/${theParent.id}`
+                + `${parentBase(theStory)}/${theStory.id}`;
+        } else if (theParent instanceof Series) {
+            const parameters = {
+                ordinal: theStory.ordinal ? theStory.ordinal : undefined
+            }
+            url = SERIES_BASE
+                + `/${libraryContext.library.id}/${theParent.id}`
+                + `${parentBase(theStory)}/${theStory.id}${queryParameters(parameters)}`;
+        } else if (theParent instanceof Volume) {
+            url = VOLUMES_BASE
+                + `/${libraryContext.library.id}/${theParent.id}`
+                + `${parentBase(theStory)}/${theStory.id}`;
         }
-        const url = STORIES_BASE
-            + `/${libraryContext.library.id}/${theStory.id}`
-            + `${parentBase(theParent)}/${theParent.id}${queryParameters(parameters)}`;
         setError(null);
         setExecuting(true);
         try {
             await Api.post(url);
             logger.info({
                 context: "useMutateStory.include",
-                author: Abridgers.STORY(theStory),
+                story: Abridgers.STORY(theStory),
                 parent: Abridgers.ANY(theParent),
                 url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateStory.include", error, {
-                author: Abridgers.STORY(theStory),
+                story: Abridgers.STORY(theStory),
                 parent: Abridgers.ANY(theParent),
                 url: url,
             })

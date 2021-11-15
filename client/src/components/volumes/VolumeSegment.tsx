@@ -9,10 +9,10 @@ import React, {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import AuthorSegment from "../authors/AuthorSegment";
-//import StorySegment from "../stories/StorySegment";
 import VolumeDetails from "./VolumeDetails";
 import VolumeOptions from "./VolumeOptions";
+import AuthorSegment from "../authors/AuthorSegment";
+import StorySegment from "../stories/StorySegment";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleVolume, Parent, Scope} from "../../types";
@@ -232,18 +232,15 @@ const VolumeSegment = (props: Props) => {
             {(view === View.AUTHORS) ? (
                 <AuthorSegment
                     handleBack={handleReturn}
-                    parent={volume ? volume : undefined}
+                    parent={volume}
                 />
             ) : null }
 
             {(view === View.STORIES) ? (
-                <h1>StorySegment for {Abridgers.ANY(volume)}</h1>
-                /*
-                                <StorySegment
-                                    handleBack={handleReturn}
-                                    parent={volume}
-                                />
-                */
+                <StorySegment
+                    handleBack={handleReturn}
+                    parent={volume}
+                />
             ) : null }
 
         </>
