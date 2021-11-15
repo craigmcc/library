@@ -206,7 +206,7 @@ class AuthorServices extends BaseChildServices<Author, Library> {
                 }
             }
         }
-        if (query.name) {
+        if ((Object.keys(where).length > 0) || query.name) {
             options.where = where;
         }
         return options;
