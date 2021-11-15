@@ -11,6 +11,7 @@ import {Request, Response, Router} from "express";
 import {
     requireAdmin,
     requireRegular,
+    requireSuperuser,
 } from "../oauth/OAuthMiddleware";
 import VolumeServices from "../services/VolumeServices";
 import {CREATED} from "../util/HttpErrors";
@@ -50,7 +51,7 @@ VolumeRouter.get("/:libraryId",
 
 // POST /:libraryId/ - Insert a new Volume
 VolumeRouter.post("/:libraryId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.status(CREATED).send(await VolumeServices.insert(
             parseInt(req.params.libraryId, 10),
@@ -60,7 +61,7 @@ VolumeRouter.post("/:libraryId",
 
 // DELETE /:libraryId/:volumeId - Remove Volume by ID
 VolumeRouter.delete("/:libraryId/:volumeId",
-    requireAdmin,
+    requireSuperuser,
     async (req: Request, res: Response) => {
         res.send(await VolumeServices.remove(
             parseInt(req.params.libraryId, 10),
@@ -81,7 +82,7 @@ VolumeRouter.get("/:libraryId/:volumeId",
 
 // PUT /:libraryId/:volumeId - Update Volume by ID
 VolumeRouter.put("/:libraryId/:volumeId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.send(await VolumeServices.update(
             parseInt(req.params.libraryId, 10),
@@ -118,7 +119,7 @@ VolumeRouter.get("/:libraryId/:volumeId/stories",
 
 // DELETE /:libraryId/:volumeId/stories/:storyId - Disassociate Volume and Story
 VolumeRouter.delete("/:libraryId/:volumeId/stories/:storyId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.send(await VolumeServices.storiesExclude(
             parseInt(req.params.libraryId, 10),
@@ -129,7 +130,7 @@ VolumeRouter.delete("/:libraryId/:volumeId/stories/:storyId",
 
 // POST /:libraryId/:volumeId/stories/:storyId - Associate Volume and Story
 VolumeRouter.post("/:libraryId/:volumeId/stories/:storyId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.send(await VolumeServices.storiesInclude(
             parseInt(req.params.libraryId, 10),

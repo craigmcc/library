@@ -11,6 +11,7 @@ import {Request, Response, Router} from "express";
 import {
     requireAdmin,
     requireRegular,
+    requireSuperuser,
 } from "../oauth/OAuthMiddleware";
 import SeriesServices from "../services/SeriesServices";
 import {CREATED} from "../util/HttpErrors";
@@ -50,7 +51,7 @@ SeriesRouter.get("/:libraryId",
 
 // POST /:libraryId/ - Insert a new Series
 SeriesRouter.post("/:libraryId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.status(CREATED).send(await SeriesServices.insert(
             parseInt(req.params.libraryId, 10),
@@ -60,7 +61,7 @@ SeriesRouter.post("/:libraryId",
 
 // DELETE /:libraryId/:seriesId - Remove Series by ID
 SeriesRouter.delete("/:libraryId/:seriesId",
-    requireAdmin,
+    requireSuperuser,
     async (req: Request, res: Response) => {
         res.send(await SeriesServices.remove(
             parseInt(req.params.libraryId, 10),
@@ -81,7 +82,7 @@ SeriesRouter.get("/:libraryId/:seriesId",
 
 // PUT /:libraryId/:seriesId - Update Series by ID
 SeriesRouter.put("/:libraryId/:seriesId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.send(await SeriesServices.update(
             parseInt(req.params.libraryId, 10),
@@ -118,7 +119,7 @@ SeriesRouter.get("/:libraryId/:seriesId/stories",
 
 // DELETE /:libraryId/:seriesId/stories/:storyId - Disassociate Series and Story
 SeriesRouter.delete("/:libraryId/:seriesId/stories/:storyId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.send(await SeriesServices.storiesExclude(
             parseInt(req.params.libraryId, 10),
@@ -129,7 +130,7 @@ SeriesRouter.delete("/:libraryId/:seriesId/stories/:storyId",
 
 // POST /:libraryId/:seriesId/stories/:storyId - Associate Series and Story
 SeriesRouter.post("/:libraryId/:seriesId/stories/:storyId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         let ordinal: number | undefined = undefined;
         if (req.query && req.query.ordinal) {

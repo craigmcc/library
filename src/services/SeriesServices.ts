@@ -72,9 +72,9 @@ class SeriesServices extends BaseChildServices<Series, Library> {
 
     public async storiesExclude(libraryId: number, seriesId: number, storyId: number): Promise<Story> {
         await LibraryServices.read("SeriesServices.storiesExclude", libraryId);
-        await this.read("SeriesServices.storesExclude", libraryId, seriesId);
+        const series = await this.read("SeriesServices.storesExclude", libraryId, seriesId);
         const story = await StoryServices.read("SeriesServices.storiesExclude", libraryId, storyId);
-        await story.$remove("stories", story);
+        await series.$remove("stories", story);
         return story;
     }
 

@@ -98,9 +98,9 @@ class AuthorServices extends BaseChildServices<Author, Library> {
 
     public async storiesExclude(libraryId: number, authorId: number, storyId: number): Promise<Story> {
         await LibraryServices.read("AuthorServices.storiesExclude", libraryId);
-        await this.read("AuthorServices.storesExclude", libraryId, authorId);
+        const author = await this.read("AuthorServices.storesExclude", libraryId, authorId);
         const story = await StoryServices.read("AuthorServices.storiesExclude", libraryId, storyId);
-        await story.$remove("stories", story);
+        await author.$remove("stories", story);
         return story;
     }
 

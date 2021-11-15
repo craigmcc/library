@@ -11,6 +11,7 @@ import {Request, Response, Router} from "express";
 import {
     requireAdmin,
     requireRegular,
+    requireSuperuser,
 } from "../oauth/OAuthMiddleware";
 import AuthorServices from "../services/AuthorServices";
 import {CREATED} from "../util/HttpErrors";
@@ -51,7 +52,7 @@ AuthorRouter.get("/:libraryId",
 
 // POST /:libraryId/ - Insert a new Author
 AuthorRouter.post("/:libraryId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.status(CREATED).send(await AuthorServices.insert(
             parseInt(req.params.libraryId, 10),
@@ -61,7 +62,7 @@ AuthorRouter.post("/:libraryId",
 
 // DELETE /:libraryId/:authorId - Remove Author by ID
 AuthorRouter.delete("/:libraryId/:authorId",
-    requireAdmin,
+    requireSuperuser,
     async (req: Request, res: Response) => {
         res.send(await AuthorServices.remove(
             parseInt(req.params.libraryId, 10),
@@ -82,7 +83,7 @@ AuthorRouter.get("/:libraryId/:authorId",
 
 // PUT /:libraryId/:authorId - Update Author by ID
 AuthorRouter.put("/:libraryId/:authorId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.send(await AuthorServices.update(
             parseInt(req.params.libraryId, 10),
@@ -106,7 +107,7 @@ AuthorRouter.get("/:libraryId/:authorId/series",
 
 // DELETE /:libraryId/:authorId/series/:seriesId - Disassociate Author and Series
 AuthorRouter.delete("/:libraryId/:authorId/series/:seriesId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.send(await AuthorServices.seriesExclude(
             parseInt(req.params.libraryId, 10),
@@ -117,7 +118,7 @@ AuthorRouter.delete("/:libraryId/:authorId/series/:seriesId",
 
 // POST /:libraryId/:authorId/series/:seriesId - Associate Author and Series
 AuthorRouter.post("/:libraryId/:authorId/series/:seriesId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         let principal: boolean | undefined = undefined;
         if (req.query && req.query.principal) {
@@ -146,7 +147,7 @@ AuthorRouter.get("/:libraryId/:authorId/stories",
 
 // DELETE /:libraryId/:authorId/stories/:storyId - Disassociate Author and Story
 AuthorRouter.delete("/:libraryId/:authorId/stories/:storyId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.send(await AuthorServices.storiesExclude(
             parseInt(req.params.libraryId, 10),
@@ -157,7 +158,7 @@ AuthorRouter.delete("/:libraryId/:authorId/stories/:storyId",
 
 // POST /:libraryId/:authorId/stories/:storyId - Associate Author and Story
 AuthorRouter.post("/:libraryId/:authorId/stories/:storyId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         let principal: boolean | undefined = undefined;
         if (req.query && req.query.principal) {
@@ -186,7 +187,7 @@ AuthorRouter.get("/:libraryId/:authorId/volumes",
 
 // DELETE /:libraryId/:authorId/volumes/:volumeId - Disassociate Author and Volume
 AuthorRouter.delete("/:libraryId/:authorId/volumes/:volumeId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.send(await AuthorServices.volumesExclude(
             parseInt(req.params.libraryId, 10),
@@ -197,7 +198,7 @@ AuthorRouter.delete("/:libraryId/:authorId/volumes/:volumeId",
 
 // POST /:libraryId/:authorId/volumes/:volumeId - Associate Author and Volume
 AuthorRouter.post("/:libraryId/:authorId/volumes/:volumeId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         let principal: boolean = false;
         if (req.query && (req.query.principal === "")) {

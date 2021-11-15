@@ -11,6 +11,7 @@ import {Request, Response, Router} from "express";
 import {
     requireAdmin,
     requireRegular,
+    requireSuperuser,
 } from "../oauth/OAuthMiddleware";
 import StoryServices from "../services/StoryServices";
 import {CREATED} from "../util/HttpErrors";
@@ -50,7 +51,7 @@ StoryRouter.get("/:libraryId",
 
 // POST /:libraryId/ - Insert a new Story
 StoryRouter.post("/:libraryId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.status(CREATED).send(await StoryServices.insert(
             parseInt(req.params.libraryId, 10),
@@ -60,7 +61,7 @@ StoryRouter.post("/:libraryId",
 
 // DELETE /:libraryId/:storyId - Remove Story by ID
 StoryRouter.delete("/:libraryId/:storyId",
-    requireAdmin,
+    requireSuperuser,
     async (req: Request, res: Response) => {
         res.send(await StoryServices.remove(
             parseInt(req.params.libraryId, 10),
@@ -81,7 +82,7 @@ StoryRouter.get("/:libraryId/:storyId",
 
 // PUT /:libraryId/:storyId - Update Story by ID
 StoryRouter.put("/:libraryId/:storyId",
-    requireRegular,
+    requireAdmin,
     async (req: Request, res: Response) => {
         res.send(await StoryServices.update(
             parseInt(req.params.libraryId, 10),
