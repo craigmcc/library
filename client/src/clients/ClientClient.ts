@@ -8,7 +8,7 @@
 import axios, {AxiosInstance} from "axios";
 
 const CLIENT_BASE = "/client";
-const REQUEST_TIMEOUT = 10000; // Request timeout in milliseconds (0 means none)
+const REQUEST_TIMEOUT = 30000; // Request timeout in milliseconds (0 means none)
 
 const Client: AxiosInstance = axios.create({
     baseURL: "/api",

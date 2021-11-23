@@ -15,6 +15,7 @@ import Table from "react-bootstrap/Table";
 // Internal Modules ----------------------------------------------------------
 
 import CheckBox from "../general/CheckBox";
+import LoadingProgress from "../general/LoadingProgress";
 import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LibraryContext from "../libraries/LibraryContext";
@@ -60,6 +61,7 @@ const VolumeOptions = (props: Props) => {
     });
     const fetchVolumes = useFetchVolumes({
         active: active,
+        alertPopup: false,
         currentPage: currentPage,
         name: (searchText.length > 0) ? searchText : undefined,
         pageSize: pageSize,
@@ -184,6 +186,12 @@ const VolumeOptions = (props: Props) => {
 
     return (
         <Container fluid id="VolumeOptions">
+
+            <LoadingProgress
+                error={fetchVolumes.error}
+                loading={fetchVolumes.loading}
+                title="Selected Volumes"
+            />
 
             <Row className="mb-3">
                 <Col/>

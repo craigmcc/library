@@ -20,6 +20,7 @@ import ReportError from "../util/ReportError";
 
 export interface Props {
     active?: boolean;                   // Select only active Users? [false]
+    alertPopup?: boolean;               // Pop up browser alert on error? [true]
     currentPage?: number;               // One-relative page number [1]
     pageSize?: number;                  // Number of Users to be returned [25]
     username?: string;                  // Select Users with matching username? [none]
@@ -39,6 +40,7 @@ const useFetchUsers = (props: Props): State => {
 
     const loginContext = useContext(LoginContext);
 
+    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
     const [error, setError] = useState<Error | null>(null);
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -76,7 +78,7 @@ const useFetchUsers = (props: Props): State => {
                 setError(error as Error);
                 ReportError("useFetchUsers.fetchUsers", error, {
                     parameters: parameters,
-                });
+                }, alertPopup);
             }
 
             setUsers(theUsers);
@@ -88,6 +90,7 @@ const useFetchUsers = (props: Props): State => {
 
     }, [props.active, props.currentPage, props.pageSize,
         props.username, props.withAccessTokens, props.withRefreshTokens,
+        alertPopup,
         loginContext.data.loggedIn]);
 
     return {

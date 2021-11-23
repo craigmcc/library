@@ -32,6 +32,7 @@ import * as ToModel from "../util/ToModel";
 
 export interface Props {
     active?: boolean;                   // Select only active Stories? [false]
+    alertPopup?: boolean;               // Pop up browser alert on error? [true]
     currentPage?: number;               // One-relative page number [1]
     name?: string;                      // Select Stories with matching name? [none]
     pageSize?: number;                  // Number of Stories to be returned [25]
@@ -55,6 +56,7 @@ const useFetchStories = (props: Props): State => {
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
+    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -109,10 +111,6 @@ const useFetchStories = (props: Props): State => {
                     });
                     logger.info({
                         context: "useFetchStories.fetchStories",
-                        parameters: parameters,
-                        library: Abridgers.LIBRARY(libraryContext.library),
-                        parent: Abridgers.ANY(props.parent),
-                        refresh: refresh,
                         url: url,
                         stories: Abridgers.STORIES(theStories),
                     });
@@ -120,10 +118,6 @@ const useFetchStories = (props: Props): State => {
                     logger.info({
                         context: "useFetchStories.fetchStories",
                         msg: "Skipped fetching Stories",
-                        parameters: parameters,
-                        library: Abridgers.LIBRARY(libraryContext.library),
-                        parent: Abridgers.ANY(props.parent),
-                        refresh: refresh,
                         url: url,
                         loggedIn: loginContext.data.loggedIn,
                     });
@@ -131,12 +125,9 @@ const useFetchStories = (props: Props): State => {
             } catch (error) {
                 setError(error as Error);
                 ReportError("useFetchStories.fetchStories", error, {
-                    parameters: parameters,
                     url: url,
-                    library: Abridgers.LIBRARY(libraryContext.library),
-                    parent: Abridgers.ANY(props.parent),
                     loggedIn: loginContext.data.loggedIn,
-                });
+                }, alertPopup);
             }
 
             setStories(theStories);
@@ -151,7 +142,7 @@ const useFetchStories = (props: Props): State => {
         props.parent, props.withAuthors, props.withSeries, props.withVolumes,
         libraryContext.library, libraryContext.library.id,
         loginContext.data.loggedIn,
-        refresh]);
+        alertPopup, refresh]);
 
     const handleRefresh: HandleAction = () => {
         logger.info({

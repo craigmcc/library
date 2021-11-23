@@ -31,6 +31,7 @@ import * as ToModel from "../util/ToModel";
 
 export interface Props {
     active?: boolean;                   // Select only active Serieses? [false]
+    alertPopup?: boolean;               // Pop up browser alert on error? [true]
     currentPage?: number;               // One-relative page number [1]
     name?: string;                      // Select Serieses with matching name? [none]
     pageSize?: number;                  // Number of Serieses to be returned [25]
@@ -53,6 +54,7 @@ const useFetchSerieses = (props: Props): State => {
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
+    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -98,10 +100,6 @@ const useFetchSerieses = (props: Props): State => {
                     });
                     logger.info({
                         context: "useFetchSerieses.fetchSerieses",
-                        parameters: parameters,
-                        library: Abridgers.LIBRARY(libraryContext.library),
-                        parent: Abridgers.ANY(props.parent),
-                        refresh: refresh,
                         url: url,
                         serieses: Abridgers.SERIESES(theSerieses),
                     });
@@ -109,10 +107,6 @@ const useFetchSerieses = (props: Props): State => {
                     logger.info({
                         context: "useFetchSerieses.fetchSerieses",
                         msg: "Skipped fetching Series",
-                        parameters: parameters,
-                        library: Abridgers.LIBRARY(libraryContext.library),
-                        parent: Abridgers.ANY(props.parent),
-                        refresh: refresh,
                         url: url,
                         loggedIn: loginContext.data.loggedIn,
                     });
@@ -120,13 +114,9 @@ const useFetchSerieses = (props: Props): State => {
             } catch (error) {
                 setError(error as Error);
                 ReportError("useFetchSerieses.fetchSerieses", error, {
-                    parameters: parameters,
-                    library: Abridgers.LIBRARY(libraryContext.library),
-                    parent: Abridgers.ANY(props.parent),
-                    refresh: refresh,
                     url: url,
                     loggedIn: loginContext.data.loggedIn,
-                });
+                }, alertPopup);
             }
 
             setSerieses(theSerieses);
@@ -141,7 +131,7 @@ const useFetchSerieses = (props: Props): State => {
         props.parent, props.withAuthors, props.withStories,
         libraryContext.library, libraryContext.library.id,
         loginContext.data.loggedIn,
-        refresh]);
+        alertPopup, refresh]);
 
     const handleRefresh: HandleAction = () => {
         logger.info({

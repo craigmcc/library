@@ -15,6 +15,7 @@ import Table from "react-bootstrap/Table";
 // Internal Modules ----------------------------------------------------------
 
 import CheckBox from "../general/CheckBox";
+import LoadingProgress from "../general/LoadingProgress";
 import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LoginContext from "../login/LoginContext";
@@ -48,6 +49,7 @@ const UsersList = (props: Props) => {
 
     const fetchUsers = useFetchUsers({
         active: active,
+        alertPopup: false,
         currentPage: currentPage,
         pageSize: pageSize,
         username: (searchText.length > 0) ? searchText : undefined,
@@ -86,6 +88,12 @@ const UsersList = (props: Props) => {
 
     return (
         <Container fluid id="UsersList">
+
+            <LoadingProgress
+                error={fetchUsers.error}
+                loading={fetchUsers.loading}
+                title="Selected Users"
+            />
 
             <Row className="mb-3">
                 <Col className="col-6">

@@ -22,6 +22,7 @@ import * as ToModel from "../util/ToModel";
 
 export interface Props {
     active?: boolean;                   // Select only active Libraries? [false]
+    alertPopup?: boolean;               // Pop up browser alert on error? [true]
     currentPage?: number;               // One-relative page number [1]
     name?: string;                      // Select Libraries with matching name? [none]
     pageSize?: number;                  // Number of Libraries to be returned [25]
@@ -44,6 +45,7 @@ const useFetchLibraries = (props: Props): State => {
 
     const loginContext = useContext(LoginContext);
 
+    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
     const [error, setError] = useState<Error | null>(null);
     const [libraries, setLibraries] = useState<Library[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -105,8 +107,8 @@ const useFetchLibraries = (props: Props): State => {
             } catch (error) {
                 setError(error as Error);
                 ReportError("useFetchLibraries.fetchLibraries", error, {
-                    parameters: parameters,
-                });
+                    url: url,
+                }, alertPopup);
             }
 
             setLibraries(theLibraries);
@@ -119,6 +121,7 @@ const useFetchLibraries = (props: Props): State => {
     }, [props.active, props.currentPage, props.name,
         props.pageSize, props.scope, props.withAuthors,
         props.withSeries, props.withStories, props.withVolumes,
+        alertPopup,
         loginContext.data.loggedIn]);
 
     return {
