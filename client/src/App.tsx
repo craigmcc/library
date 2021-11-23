@@ -13,17 +13,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 // Internal Modules ----------------------------------------------------------
 
-import AuthorsView from "./components/authors/AuthorsView";
-import HomeView from "./components/general/HomeView";
-import LibrariesView from "./components/libraries/LibrariesView";
 import {LibraryContextProvider} from "./components/libraries/LibraryContext";
 import LibrarySelector from "./components/libraries/LibrarySelector";
 import LoggedInUser from "./components/login/LoggedInUser";
 import {LoginContextProvider} from "./components/login/LoginContext";
-import SeriesView from "./components/series/SeriesView";
-import StoriesView from "./components/stories/StoriesView";
-import UsersView from "./components/users/UsersView";
-import VolumesView from "./components/volumes/VolumesView";
 import Container from "react-bootstrap/Container";
 
 // Component Details ---------------------------------------------------------
@@ -69,18 +62,6 @@ function App() {
                     </Navbar>
                 </Navbar>
             </Container>
-
-{/*
-            <Switch>
-                <Route exact path="/authors"><AuthorsView/></Route>
-                <Route exact path="/libraries"><LibrariesView/></Route>
-                <Route exact path="/series"><SeriesView/></Route>
-                <Route exact path="/stories"><StoriesView/></Route>
-                <Route exact path="/users"><UsersView/></Route>
-                <Route exact path="/volumes"><VolumesView/></Route>
-                <Route path="/"><HomeView/></Route>
-            </Switch>
-*/}
 
         </Router>
 
