@@ -9,6 +9,7 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
+import {store} from "react-notifications-component";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -20,6 +21,12 @@ import {HandleLibrary, OnAction, Scope} from "../../types";
 import useMutateLibrary from "../../hooks/useMutateLibrary";
 import Library from "../../models/Library";
 import logger from "../../util/ClientLogger";
+import {
+    errorNotification,
+    insertedNotification,
+    removedNotification,
+    updatedNotification
+} from "../../util/Notifications";
 
 // Component Details ---------------------------------------------------------
 
@@ -33,7 +40,9 @@ const LibrariesView = () => {
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
     const [library, setLibrary] = useState<Library | null>(null);
 
-    const mutateLibrary = useMutateLibrary({});
+    const mutateLibrary = useMutateLibrary({
+        alertPopup: false,
+    });
 
     useEffect(() => {
 
@@ -61,12 +70,22 @@ const LibrariesView = () => {
         await mutateLibrary.insert(theLibrary);
         libraryContext.handleRefresh();
         setLibrary(null);
+        if (mutateLibrary.error) {
+            store.addNotification(errorNotification(`Library '${theLibrary.name}'`, mutateLibrary.error));
+        } else {
+            store.addNotification(insertedNotification(`Library '${theLibrary.name}'`));
+        }
     }
 
     const handleRemove: HandleLibrary = async (theLibrary) => {
         await mutateLibrary.remove(theLibrary);
         libraryContext.handleRefresh();
         setLibrary(null);
+        if (mutateLibrary.error) {
+            store.addNotification(errorNotification(`Library '${theLibrary.name}'`, mutateLibrary.error));
+        } else {
+            store.addNotification(removedNotification(`Library '${theLibrary.name}'`));
+        }
     }
 
     const handleSelect: HandleLibrary = (theLibrary) => {
@@ -77,6 +96,11 @@ const LibrariesView = () => {
         await mutateLibrary.update(theLibrary);
         libraryContext.handleRefresh();
         setLibrary(null);
+        if (mutateLibrary.error) {
+            store.addNotification(errorNotification(`Library '${theLibrary.name}'`, mutateLibrary.error));
+        } else {
+            store.addNotification(updatedNotification(`Library '${theLibrary.name}'`));
+        }
     }
 
     return (

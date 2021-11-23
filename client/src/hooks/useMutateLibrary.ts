@@ -18,6 +18,7 @@ import ReportError from "../util/ReportError";
 // Incoming Properties and Outgoing State ------------------------------------
 
 export interface Props {
+    alertPopup?: boolean;               // Pop up browser alert on error? [true]
 }
 
 export interface State {
@@ -32,6 +33,7 @@ export interface State {
 
 const useMutateLibrary = (props: Props): State => {
 
+    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
     const [error, setError] = useState<Error | null>(null);
     const [executing, setExecuting] = useState<boolean>(false);
 
@@ -57,7 +59,7 @@ const useMutateLibrary = (props: Props): State => {
             setError(error as Error);
             ReportError("useMutateLibrary.insert", error, {
                 library: theLibrary,
-            });
+            }, alertPopup);
         }
 
         setExecuting(false);
@@ -82,7 +84,7 @@ const useMutateLibrary = (props: Props): State => {
             setError(error as Error);
             ReportError("useMutateLibrary.remove", error, {
                 library: theLibrary,
-            });
+            }, alertPopup);
         }
 
         setExecuting(false);
@@ -107,7 +109,7 @@ const useMutateLibrary = (props: Props): State => {
             setError(error as Error);
             ReportError("useMutateLibrary.update", error, {
                 library: theLibrary,
-            });
+            }, alertPopup);
         }
 
         setExecuting(false);

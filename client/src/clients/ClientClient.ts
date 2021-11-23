@@ -4,9 +4,19 @@
 
 // Internal Modules ----------------------------------------------------------
 
-import Api from "./Api";
+
+import axios, {AxiosInstance} from "axios";
 
 const CLIENT_BASE = "/client";
+const REQUEST_TIMEOUT = 10000; // Request timeout in milliseconds (0 means none)
+
+const Client: AxiosInstance = axios.create({
+    baseURL: "/api",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    timeout: REQUEST_TIMEOUT,
+});
 
 // Public Objects ------------------------------------------------------------
 
@@ -14,7 +24,7 @@ class ClientClient {
 
     // Post a log message to the server
     async log(object: any): Promise<void> {
-        await Api.post(CLIENT_BASE + "/clientLog", object);
+        await Client.post(CLIENT_BASE + "/clientLog", object);
     }
 
 }

@@ -13,11 +13,14 @@ import {LOGIN_DATA} from "../components/login/LoginContext";
 
 // Public Objects ------------------------------------------------------------
 
+const REQUEST_TIMEOUT = 5000; // Request timeout in milliseconds (0 means none)
+
 const Api: AxiosInstance = axios.create({
     baseURL: "/api",
     headers: {
         "Content-Type": "application/json",
     },
+    timeout: REQUEST_TIMEOUT,
 });
 
 Api.interceptors.request.use(function (config) {

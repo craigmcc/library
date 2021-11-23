@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ReactNotification from "react-notifications-component";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-notifications-component/dist/theme.css";
 
 import AuthorSegment from "./components/authors/AuthorSegment";
 import HomeView from "./components/general/HomeView";
@@ -17,6 +19,7 @@ import VolumeSegment from "./components/volumes/VolumeSegment";
 
 ReactDOM.render(
   <React.StrictMode>
+      <ReactNotification/>
       <LoginContextProvider>
           <LibraryContextProvider>
               <BrowserRouter>
