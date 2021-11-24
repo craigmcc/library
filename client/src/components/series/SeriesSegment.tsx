@@ -51,7 +51,9 @@ const SeriesSegment = (props: Props) => {
     const [title, setTitle] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
 
-    const mutateSeries = useMutateSeries({});
+    const mutateSeries = useMutateSeries({
+        alertPopup: false,
+    });
 
     useEffect(() => {
         logger.info({

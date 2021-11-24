@@ -1,10 +1,10 @@
-// LibraryForm ------------------------------------------------------------------
+// LibraryDetails ------------------------------------------------------------
 
 // Detail editing form for Library objects.
 
 // External Modules ----------------------------------------------------------
 
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Formik,FormikHelpers,FormikValues} from "formik";
 import Button from "react-bootstrap/button";
 import Col from "react-bootstrap/Col";
@@ -16,13 +16,12 @@ import * as Yup from "yup";
 
 // Internal Modules ----------------------------------------------------------
 
-import {HandleLibrary} from "../../types";
+import {HandleAction, HandleLibrary} from "../../types";
 import Library from "../../models/Library";
 import {
     validateLibraryNameUnique,
     validateLibraryScopeUnique
 } from "../../util/AsyncValidators";
-import logger from "../../util/ClientLogger";
 import * as ToModel from "../../util/ToModel";
 import {toEmptyStrings, toNullValues} from "../../util/Transformations";
 import {validateLibraryScope} from "../../util/Validators";
@@ -31,34 +30,25 @@ import {validateLibraryScope} from "../../util/Validators";
 
 export interface Props {
     autoFocus?: boolean;                // First element receive autoFocus? [false]
-    canRemove: boolean;                 // Can remove be performed? [false]
-    canSave: boolean;                   // Can save be performed? [false]
-    handleInsert: HandleLibrary;        // Handle Library insert request
-    handleRemove: HandleLibrary;        // Handle Library remove request
-    handleUpdate: HandleLibrary;        // Handle Library update request
+    handleInsert?: HandleLibrary;       // Handle Library insert request [not allowed]
+    handleRemove?: HandleLibrary;       // Handle Library remove request [not allowed]
+    handleReturn: HandleAction;         // Handle return to options view
+    handleUpdate?: HandleLibrary;       // Handle Library update request [not allowed
     library: Library;                   // Initial values (id < 0 for adding)
 }
 
 // Component Details ---------------------------------------------------------
 
-const LibraryForm = (props: Props) => {
+const LibraryDetails = (props: Props) => {
 
     const [adding] = useState<boolean>(props.library.id < 0);
     const [initialValues] = useState(toEmptyStrings(props.library));
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
-    useEffect(() => {
-        logger.debug({
-            context: "LibraryForm.useEffect",
-            library: props.library,
-            values: initialValues,
-        });
-    }, [props.library, initialValues]);
-
     const handleSubmit = (values: FormikValues, actions: FormikHelpers<FormikValues>): void => {
-        if (adding) {
+        if (adding && props.handleInsert) {
             props.handleInsert(ToModel.LIBRARY(toNullValues(values)));
-        } else {
+        } else if (!adding && props.handleUpdate) {
             props.handleUpdate(ToModel.LIBRARY(toNullValues(values)));
         }
     }
@@ -73,7 +63,9 @@ const LibraryForm = (props: Props) => {
 
     const onConfirmPositive = (): void => {
         setShowConfirm(false);
-        props.handleRemove(props.library);
+        if (props.handleRemove) {
+            props.handleRemove(props.library);
+        }
     }
 
     const validationSchema = () => {
@@ -108,7 +100,26 @@ const LibraryForm = (props: Props) => {
         <>
 
             {/* Details Form */}
-            <Container id="LibraryForm">
+            <Container id="LibraryDetails">
+
+                <Row className="mb-3 ms-1 me-1">
+                    <Col className="text-center">
+                        {(adding)? (
+                            <span>Add New</span>
+                        ) : (
+                            <span>Edit Existing</span>
+                        )}
+                        &nbsp;Library
+                    </Col>
+                    <Col className="text-end">
+                        <Button
+                            onClick={() => props.handleReturn()}
+                            size="sm"
+                            type="button"
+                            variant="secondary"
+                        >Back</Button>
+                    </Col>
+                </Row>
 
                 <Formik
                     initialValues={initialValues}
@@ -132,7 +143,7 @@ const LibraryForm = (props: Props) => {
                        }) => (
 
                         <Form
-                            id="LibraryForm"
+                            id="LibraryDetails"
                             noValidate
                             onSubmit={handleSubmit}
                         >
@@ -152,7 +163,7 @@ const LibraryForm = (props: Props) => {
                                         value={values.name}
                                     />
                                     <Form.Control.Feedback type="valid">
-                                        Name of this Library.
+                                        Name of this Library (must be unique).
                                     </Form.Control.Feedback>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.name}
@@ -215,7 +226,7 @@ const LibraryForm = (props: Props) => {
                             <Row className="g-3 mb-3">
                                 <Col className="text-start">
                                     <Button
-                                        disabled={isSubmitting || !props.canSave}
+                                        disabled={isSubmitting || !(props.handleInsert || props.handleUpdate)}
                                         size="sm"
                                         type="submit"
                                         variant="primary"
@@ -225,7 +236,7 @@ const LibraryForm = (props: Props) => {
                                 </Col>
                                 <Col className="text-end">
                                     <Button
-                                        disabled={adding || !props.canRemove}
+                                        disabled={(props.library.id < 0) || !props.handleRemove}
                                         onClick={onConfirm}
                                         size="sm"
                                         type="button"
@@ -291,4 +302,4 @@ const LibraryForm = (props: Props) => {
     )
 }
 
-export default LibraryForm;
+export default LibraryDetails;

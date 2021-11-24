@@ -9,8 +9,8 @@ import "react-notifications-component/dist/theme.css";
 import AuthorSegment from "./components/authors/AuthorSegment";
 import HomeView from "./components/general/HomeView";
 import Navigation from './components/general/Navigation';
-import LibrariesView from "./components/libraries/LibrariesView";
 import {LibraryContextProvider} from "./components/libraries/LibraryContext";
+import LibrarySegment from "./components/libraries/LibrarySegment";
 import {LoginContextProvider} from "./components/login/LoginContext";
 import SeriesSegment from "./components/series/SeriesSegment";
 import StorySegment from "./components/stories/StorySegment";
@@ -26,7 +26,7 @@ ReactDOM.render(
                   <Routes>
                       <Route path="/" element={<Navigation/>}>
                           <Route path="authors" element={<AuthorSegment/>}/>
-                          <Route path="libraries" element={<LibrariesView/>}/>
+                          <Route path="libraries" element={<LibrarySegment/>}/>
                           <Route path="series" element={<SeriesSegment/>}/>
                           <Route path="stories" element={<StorySegment/>}/>
                           <Route path="users" element={<UsersView/>}/>

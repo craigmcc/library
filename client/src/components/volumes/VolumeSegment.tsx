@@ -51,7 +51,9 @@ const VolumeSegment = (props: Props) => {
     const [view, setView] = useState<View>(View.OPTIONS);
     const [volume, setVolume] = useState<Volume>(new Volume());
 
-    const mutateVolume = useMutateVolume({});
+    const mutateVolume = useMutateVolume({
+        alertPopup: false,
+    });
 
     useEffect(() => {
         logger.info({

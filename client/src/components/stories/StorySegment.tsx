@@ -53,7 +53,9 @@ const StorySegment = (props: Props) => {
     const [title, setTitle] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
 
-    const mutateStory = useMutateStory({});
+    const mutateStory = useMutateStory({
+        alertPopup: false,
+    });
 
     useEffect(() => {
         logger.info({

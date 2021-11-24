@@ -1,4 +1,4 @@
-// LibrariesList -----------------------------------------------------------------
+// LibraryOptions ------------------------------------------------------------
 
 // List Libraries that match search criteria, offering callbacks for adding,
 // editing, and removing Libraries.
@@ -20,25 +20,22 @@ import LoadingProgress from "../general/LoadingProgress";
 import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LoginContext from "../login/LoginContext";
-import {HandleBoolean, HandleLibrary, HandleValue, OnAction, Scope} from "../../types";
-import Library from "../../models/Library";
+import {HandleAction, HandleBoolean, HandleLibrary, HandleValue, Scope} from "../../types";
 import useFetchLibraries from "../../hooks/useFetchLibraries";
+import Library from "../../models/Library";
 import logger from "../../util/ClientLogger";
 import {listValue} from "../../util/Transformations";
 
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
-    canInsert: boolean;                 // Can this user add Libraries?
-    canRemove: boolean;                 // Can this user remove Libraries?
-    canUpdate: boolean;                 // Can this user edit Libraries?
-    handleAdd: OnAction;                // Handle request to add a Library
-    handleSelect: HandleLibrary;        // Handle request to select a Library
+    handleAdd?: HandleAction;           // Handle request to add a Library [not allowed]
+    handleEdit?: HandleLibrary;         // Handle request to edit a Library [not allowed]
 }
 
 // Component Details ---------------------------------------------------------
 
-const LibrariesList = (props: Props) => {
+const LibraryOptions = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -59,8 +56,10 @@ const LibrariesList = (props: Props) => {
 
     useEffect(() => {
 
-        logger.debug({
-            context: "LibrariesList.useEffect"
+        logger.info({
+            context: "LibraryOptions.useEffect",
+            active: active,
+            name: searchText,
         });
 
         const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
@@ -70,26 +69,40 @@ const LibrariesList = (props: Props) => {
             setAvailables(libraryContext.libraries);
         }
 
-    }, [libraryContext.libraries, fetchLibraries.libraries, loginContext]);
+    }, [libraryContext.libraries, loginContext, loginContext.data.loggedIn,
+        active, searchText,
+        fetchLibraries.libraries]);
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
+    }
+
+    const handleAdd: HandleAction = () => {
+        if (props.handleAdd) {
+            props.handleAdd();
+        }
     }
 
     const handleChange: HandleValue = (theSearchText) => {
         setSearchText(theSearchText);
     }
 
-    const handleNext: OnAction = () => {
+    const handleEdit: HandleLibrary = (theLibrary) => {
+        if (props.handleEdit) {
+            props.handleEdit(theLibrary);
+        }
+    }
+
+    const handleNext: HandleAction = () => {
         setCurrentPage(currentPage + 1);
     }
 
-    const handlePrevious: OnAction = () => {
+    const handlePrevious: HandleAction = () => {
         setCurrentPage(currentPage - 1);
     }
 
     return (
-        <Container fluid id="LibrariesList">
+        <Container fluid id="LibraryOptions">
 
             <LoadingProgress
                 error={fetchLibraries.error}
@@ -120,15 +133,15 @@ const LibrariesList = (props: Props) => {
                         currentPage={currentPage}
                         handleNext={handleNext}
                         handlePrevious={handlePrevious}
-                        lastPage={(fetchLibraries.libraries.length === 0) ||
-                            (fetchLibraries.libraries.length < pageSize)}
+                        lastPage={(availables.length === 0) ||
+                            (availables.length < pageSize)}
                         variant="secondary"
                     />
                 </Col>
                 <Col className="text-end">
                     <Button
-                        disabled={!props.canInsert}
-                        onClick={props.handleAdd}
+                        disabled={!props.handleAdd}
+                        onClick={handleAdd}
                         size="sm"
                         variant="primary"
                     >Add</Button>
@@ -157,7 +170,7 @@ const LibrariesList = (props: Props) => {
                         <tr
                             className="table-default"
                             key={1000 + (rowIndex * 100)}
-                            onClick={() => props.handleSelect(library)}
+                            onClick={props.handleEdit ? (() => handleEdit(library)) : undefined}
                         >
                             <td key={1000 + (rowIndex * 100) + 1}>
                                 {library.name}
@@ -181,8 +194,8 @@ const LibrariesList = (props: Props) => {
             <Row className="mb-3">
                 <Col className="text-end">
                     <Button
-                        disabled={!props.canInsert}
-                        onClick={props.handleAdd}
+                        disabled={!props.handleAdd}
+                        onClick={handleAdd}
                         size="sm"
                         variant="primary"
                     >Add</Button>
@@ -194,4 +207,4 @@ const LibrariesList = (props: Props) => {
 
 }
 
-export default LibrariesList;
+export default LibraryOptions;

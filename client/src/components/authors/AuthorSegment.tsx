@@ -53,7 +53,9 @@ const AuthorSegment = (props: Props) => {
     const [title, setTitle] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
 
-    const mutateAuthor = useMutateAuthor({});
+    const mutateAuthor = useMutateAuthor({
+        alertPopup: false,
+    });
 
     useEffect(() => {
         logger.info({
