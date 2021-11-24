@@ -16,11 +16,13 @@ import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
 import {queryParameters} from "../util/QueryParameters";
 import ReportError from "../util/ReportError";
+import * as ToModel from "../util/ToModel";
 import {parentBase} from "../util/Transformations";
 
 // Incoming Properties and Outgoing State ------------------------------------
 
 export interface Props {
+    alertPopup?: boolean;               // Pop up browser alert on error? [true]
 }
 
 export interface State {
@@ -35,15 +37,16 @@ export interface State {
 
 // Component Details ---------------------------------------------------------
 
-const useMutateAuthor = (props: Props): State => {
+const useMutateAuthor = (props: Props = {}): State => {
 
     const libraryContext = useContext(LibraryContext);
 
+    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
     const [error, setError] = useState<Error | null>(null);
     const [executing, setExecuting] = useState<boolean>(false);
 
     useEffect(() => {
-        logger.debug({
+        logger.info({
             context: "useMutateAuthor.useEffect",
         });
     });
@@ -68,7 +71,7 @@ const useMutateAuthor = (props: Props): State => {
                 author: Abridgers.AUTHOR(theAuthor),
                 parent: Abridgers.ANY(theParent),
                 url: url,
-            })
+            }, alertPopup);
         }
         setExecuting(false);
         return theAuthor;
@@ -97,7 +100,7 @@ const useMutateAuthor = (props: Props): State => {
                 author: Abridgers.AUTHOR(theAuthor),
                 parent: Abridgers.ANY(theParent),
                 url: url,
-            })
+            }, alertPopup);
         }
         setExecuting(false);
         return theAuthor;
@@ -105,22 +108,25 @@ const useMutateAuthor = (props: Props): State => {
 
     const insert: ProcessAuthor = async (theAuthor) => {
 
+        const url = AUTHORS_BASE
+            + `/${libraryContext.library.id}`;
         let inserted = new Author();
         setError(null);
         setExecuting(true);
 
         try {
-            inserted = (await Api.post(AUTHORS_BASE
-                + `/${libraryContext.library.id}`, theAuthor)).data;
-            logger.debug({
+            inserted = ToModel.AUTHOR((await Api.post(url, theAuthor)).data);
+            logger.info({
                 context: "useMutateAuthor.insert",
-                volume: Abridgers.AUTHOR(inserted),
+                author: Abridgers.AUTHOR(inserted),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateAuthor.insert", error, {
-                volume: theAuthor,
-            });
+                author: Abridgers.AUTHOR(theAuthor),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);
@@ -130,22 +136,25 @@ const useMutateAuthor = (props: Props): State => {
 
     const remove: ProcessAuthor = async (theAuthor): Promise<Author> => {
 
+        const url = AUTHORS_BASE
+            + `/${libraryContext.library.id}/${theAuthor.id}`;
         let removed = new Author();
         setError(null);
         setExecuting(true);
 
         try {
-            removed = (await Api.delete(AUTHORS_BASE
-                + `/${libraryContext.library.id}/${theAuthor.id}`)).data;
-            logger.debug({
+            removed = ToModel.AUTHOR((await Api.delete(url)).data);
+            logger.info({
                 context: "useMutateAuthor.remove",
-                volume: Abridgers.AUTHOR(removed),
+                author: Abridgers.AUTHOR(removed),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateAuthor.remove", error, {
-                volume: theAuthor,
-            });
+                author: Abridgers.AUTHOR(theAuthor),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);
@@ -155,22 +164,25 @@ const useMutateAuthor = (props: Props): State => {
 
     const update: ProcessAuthor = async (theAuthor): Promise<Author> => {
 
+        const url = AUTHORS_BASE
+            + `/${libraryContext.library.id}/${theAuthor.id}`;
         let updated = new Author();
         setError(null);
         setExecuting(true);
 
         try {
-            updated = (await Api.put(AUTHORS_BASE
-                + `/${libraryContext.library.id}/${theAuthor.id}`, theAuthor)).data;
-            logger.debug({
+            updated = ToModel.AUTHOR((await Api.put(url, theAuthor)).data);
+            logger.info({
                 context: "useMutateAuthor.update",
-                volume: Abridgers.AUTHOR(updated),
+                author: Abridgers.AUTHOR(updated),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateAuthor.update", error, {
-                volume: theAuthor,
-            });
+                author: Abridgers.AUTHOR(theAuthor),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);

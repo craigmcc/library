@@ -19,10 +19,12 @@ import ReportError from "../util/ReportError";
 import {parentBase} from "../util/Transformations";
 import Story from "../models/Story";
 import {queryParameters} from "../util/QueryParameters";
+import * as ToModel from "../util/ToModel";
 
 // Incoming Properties and Outgoing State ------------------------------------
 
 export interface Props {
+    alertPopup?: boolean;               // Pop up browser alert on error? [true]
 }
 
 export interface State {
@@ -37,15 +39,16 @@ export interface State {
 
 // Component Details ---------------------------------------------------------
 
-const useMutateVolume = (props: Props): State => {
+const useMutateVolume = (props: Props = {}): State => {
 
     const libraryContext = useContext(LibraryContext);
 
+    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
     const [error, setError] = useState<Error | null>(null);
     const [executing, setExecuting] = useState<boolean>(false);
 
     useEffect(() => {
-        logger.debug({
+        logger.info({
             context: "useMutateVolume.useEffect",
         });
     });
@@ -77,7 +80,7 @@ const useMutateVolume = (props: Props): State => {
                 volume: Abridgers.VOLUME(theVolume),
                 parent: Abridgers.ANY(theParent),
                 url: url,
-            });
+            }, alertPopup);
         }
         setExecuting(false);
         return theVolume;
@@ -113,7 +116,7 @@ const useMutateVolume = (props: Props): State => {
                 volume: Abridgers.VOLUME(theVolume),
                 parent: Abridgers.ANY(theParent),
                 url: url,
-            });
+            }, alertPopup);
         }
         setExecuting(false);
         return theVolume;
@@ -121,22 +124,25 @@ const useMutateVolume = (props: Props): State => {
 
     const insert: ProcessVolume = async (theVolume) => {
 
+        const url = VOLUMES_BASE
+            + `/${libraryContext.library.id}`;
         let inserted = new Volume();
         setError(null);
         setExecuting(true);
 
         try {
-            inserted = (await Api.post(VOLUMES_BASE
-                + `/${libraryContext.library.id}`, theVolume)).data;
-            logger.debug({
+            inserted = ToModel.VOLUME((await Api.post(url, theVolume)).data);
+            logger.info({
                 context: "useMutateVolume.insert",
                 volume: Abridgers.VOLUME(inserted),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateVolume.insert", error, {
                 volume: theVolume,
-            });
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);
@@ -146,22 +152,25 @@ const useMutateVolume = (props: Props): State => {
 
     const remove: ProcessVolume = async (theVolume): Promise<Volume> => {
 
+        const url = VOLUMES_BASE
+            + `/${libraryContext.library.id}/${theVolume.id}`;
         let removed = new Volume();
         setError(null);
         setExecuting(true);
 
         try {
-            removed = (await Api.delete(VOLUMES_BASE
-                + `/${libraryContext.library.id}/${theVolume.id}`)).data;
-            logger.debug({
+            removed = ToModel.VOLUME((await Api.delete(url)).data);
+            logger.info({
                 context: "useMutateVolume.remove",
                 volume: Abridgers.VOLUME(removed),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateVolume.remove", error, {
-                volume: theVolume,
-            });
+                volume: Abridgers.VOLUME(theVolume),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);
@@ -171,22 +180,25 @@ const useMutateVolume = (props: Props): State => {
 
     const update: ProcessVolume = async (theVolume): Promise<Volume> => {
 
+        const url = VOLUMES_BASE
+            + `/${libraryContext.library.id}/${theVolume.id}`;
         let updated = new Volume();
         setError(null);
         setExecuting(true);
 
         try {
-            updated = (await Api.put(VOLUMES_BASE
-                + `/${libraryContext.library.id}/${theVolume.id}`, theVolume)).data;
-            logger.debug({
+            updated = ToModel.VOLUME((await Api.put(url, theVolume)).data);
+            logger.info({
                 context: "useMutateVolume.update",
                 volume: Abridgers.VOLUME(updated),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateVolume.update", error, {
-                volume: theVolume,
-            });
+                volume: Abridgers.VOLUME(theVolume),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);

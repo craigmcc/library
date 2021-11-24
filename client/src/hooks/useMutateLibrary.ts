@@ -14,6 +14,7 @@ import Library, {LIBRARIES_BASE} from "../models/Library";
 import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
 import ReportError from "../util/ReportError";
+import * as ToModel from "../util/ToModel";
 
 // Incoming Properties and Outgoing State ------------------------------------
 
@@ -31,7 +32,7 @@ export interface State {
 
 // Component Details ---------------------------------------------------------
 
-const useMutateLibrary = (props: Props): State => {
+const useMutateLibrary = (props: Props = {}): State => {
 
     const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
     const [error, setError] = useState<Error | null>(null);
@@ -45,20 +46,23 @@ const useMutateLibrary = (props: Props): State => {
 
     const insert: HandleLibrary = async (theLibrary): Promise<Library> => {
 
+        const url = LIBRARIES_BASE;
         let inserted = new Library();
         setError(null);
         setExecuting(true);
 
         try {
-            inserted = (await Api.post(LIBRARIES_BASE, theLibrary)).data;
-            logger.debug({
+            inserted = ToModel.LIBRARY((await Api.post(url, theLibrary)).data);
+            logger.info({
                 context: "useMutateLibrary.insert",
                 library: Abridgers.LIBRARY(inserted),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateLibrary.insert", error, {
                 library: theLibrary,
+                url: url,
             }, alertPopup);
         }
 
@@ -69,21 +73,24 @@ const useMutateLibrary = (props: Props): State => {
 
     const remove: HandleLibrary = async (theLibrary): Promise<Library> => {
 
+        const url = LIBRARIES_BASE
+            + `/${theLibrary.id}`;
         let removed = new Library();
         setError(null);
         setExecuting(true);
 
         try {
-            removed = (await Api.delete(LIBRARIES_BASE
-                + `/${theLibrary.id}`)).data;
-            logger.debug({
+            removed = ToModel.LIBRARY((await Api.delete(url)).data);
+            logger.info({
                 context: "useMutateLibrary.remove",
                 library: Abridgers.LIBRARY(removed),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateLibrary.remove", error, {
                 library: theLibrary,
+                url: url,
             }, alertPopup);
         }
 
@@ -94,21 +101,23 @@ const useMutateLibrary = (props: Props): State => {
 
     const update: HandleLibrary = async (theLibrary): Promise<Library> => {
 
+        const url = LIBRARIES_BASE
+            + `/${theLibrary.id}`
         let updated = new Library();
         setError(null);
         setExecuting(true);
 
         try {
-            updated = (await Api.put(LIBRARIES_BASE
-                + `/${theLibrary.id}`, theLibrary)).data;
-            logger.debug({
+            updated = ToModel.LIBRARY((await Api.put(url, theLibrary)).data);
+            logger.info({
                 context: "useMutateLibrary.update",
                 library: Abridgers.LIBRARY(updated),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateLibrary.update", error, {
-                library: theLibrary,
+                library: Abridgers.LIBRARY(theLibrary),
             }, alertPopup);
         }
 

@@ -19,10 +19,12 @@ import ReportError from "../util/ReportError";
 import {parentBase} from "../util/Transformations";
 import Story from "../models/Story";
 import {queryParameters} from "../util/QueryParameters";
+import * as ToModel from "../util/ToModel";
 
 // Incoming Properties and Outgoing State ------------------------------------
 
 export interface Props {
+    alertPopup?: boolean;               // Pop up browser alert on error? [true]
 }
 
 export interface State {
@@ -37,15 +39,16 @@ export interface State {
 
 // Component Details ---------------------------------------------------------
 
-const useMutateSeries = (props: Props): State => {
+const useMutateSeries = (props: Props = {}): State => {
 
     const libraryContext = useContext(LibraryContext);
 
+    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
     const [error, setError] = useState<Error | null>(null);
     const [executing, setExecuting] = useState<boolean>(false);
 
     useEffect(() => {
-        logger.debug({
+        logger.info({
             context: "useMutateSeries.useEffect",
         });
     });
@@ -77,7 +80,7 @@ const useMutateSeries = (props: Props): State => {
                 series: Abridgers.SERIES(theSeries),
                 parent: Abridgers.ANY(theParent),
                 url: url,
-            });
+            }, alertPopup);
         }
         setExecuting(false);
         return theSeries;
@@ -113,7 +116,7 @@ const useMutateSeries = (props: Props): State => {
                 series: Abridgers.SERIES(theSeries),
                 parent: Abridgers.ANY(theParent),
                 url: url,
-            });
+            }, alertPopup);
         }
         setExecuting(false);
         return theSeries;
@@ -121,22 +124,24 @@ const useMutateSeries = (props: Props): State => {
 
     const insert: ProcessSeries = async (theSeries) => {
 
+        const url = SERIES_BASE
+            + `/${libraryContext.library.id}`;
         let inserted = new Series();
         setError(null);
         setExecuting(true);
 
         try {
-            inserted = (await Api.post(SERIES_BASE
-                + `/${libraryContext.library.id}`, theSeries)).data;
-            logger.debug({
+            inserted = ToModel.SERIES((await Api.post(url, theSeries)).data);
+            logger.info({
                 context: "useMutateSeries.insert",
                 series: Abridgers.SERIES(inserted),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateSeries.insert", error, {
-                series: theSeries,
-            });
+                series: Abridgers.SERIES(theSeries),
+            }, alertPopup);
         }
 
         setExecuting(false);
@@ -146,22 +151,25 @@ const useMutateSeries = (props: Props): State => {
 
     const remove: ProcessSeries = async (theSeries): Promise<Series> => {
 
+        const url = SERIES_BASE
+            + `/${libraryContext.library.id}/${theSeries.id}`;
         let removed = new Series();
         setError(null);
         setExecuting(true);
 
         try {
-            removed = (await Api.delete(SERIES_BASE
-                + `/${libraryContext.library.id}/${theSeries.id}`)).data;
-            logger.debug({
+            removed = ToModel.SERIES((await Api.delete(url)).data);
+            logger.info({
                 context: "useMutateSeries.remove",
                 series: Abridgers.SERIES(removed),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateSeries.remove", error, {
-                series: theSeries,
-            });
+                series: ToModel.SERIES(theSeries),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);
@@ -171,22 +179,25 @@ const useMutateSeries = (props: Props): State => {
 
     const update: ProcessSeries = async (theSeries): Promise<Series> => {
 
+        const url = SERIES_BASE
+            + `/${libraryContext.library.id}/${theSeries.id}`;
         let updated = new Series();
         setError(null);
         setExecuting(true);
 
         try {
-            updated = (await Api.put(SERIES_BASE
-                + `/${libraryContext.library.id}/${theSeries.id}`, theSeries)).data;
-            logger.debug({
+            updated = ToModel.SERIES((await Api.put(url, theSeries)).data);
+            logger.info({
                 context: "useMutateSeries.update",
                 series: Abridgers.SERIES(updated),
-            });
+                url: url,
+            }, alertPopup);
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateSeries.update", error, {
-                series: theSeries,
-            });
+                series: ToModel.SERIES(theSeries),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);

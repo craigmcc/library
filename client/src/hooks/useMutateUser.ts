@@ -14,10 +14,12 @@ import User, {USERS_BASE} from "../models/User";
 import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
 import ReportError from "../util/ReportError";
+import * as ToModel from "../util/ToModel";
 
 // Incoming Properties and Outgoing State ------------------------------------
 
 export interface Props {
+    alertPopup?: boolean;               // Pop up browser alert on error? [true]
 }
 
 export interface State {
@@ -30,34 +32,38 @@ export interface State {
 
 // Component Details ---------------------------------------------------------
 
-const useMutateUser = (props: Props): State => {
+const useMutateUser = (props: Props = {}): State => {
 
+    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
     const [error, setError] = useState<Error | null>(null);
     const [executing, setExecuting] = useState<boolean>(false);
 
     useEffect(() => {
-        logger.debug({
+        logger.info({
             context: "useMutateUser.useEffect",
         });
     });
 
     const insert: HandleUser = async (theUser): Promise<User> => {
 
+        const url = USERS_BASE;
         let inserted = new User();
         setError(null);
         setExecuting(true);
 
         try {
-            inserted = (await Api.post(USERS_BASE, theUser)).data;
-            logger.debug({
+            inserted = ToModel.USER((await Api.post(url, theUser)).data);
+            logger.info({
                 context: "useMutateUser.insert",
-                library: Abridgers.USER(inserted),
+                user: Abridgers.USER(inserted),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateUser.insert", error, {
-                library: theUser,
-            });
+                user: Abridgers.USER(theUser),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);
@@ -67,22 +73,25 @@ const useMutateUser = (props: Props): State => {
 
     const remove: HandleUser = async (theUser): Promise<User> => {
 
+        const url = USERS_BASE
+            + `/${theUser.id}`;
         let removed = new User();
         setError(null);
         setExecuting(true);
 
         try {
-            removed = (await Api.delete(USERS_BASE
-                + `/${theUser.id}`)).data;
-            logger.debug({
+            removed = ToModel.USER((await Api.delete(url)).data);
+            logger.info({
                 context: "useMutateUser.remove",
-                library: Abridgers.USER(removed),
+                user: Abridgers.USER(removed),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateFcility.remove", error, {
-                library: theUser,
-            });
+                user: ToModel.USER(theUser),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);
@@ -92,22 +101,25 @@ const useMutateUser = (props: Props): State => {
 
     const update: HandleUser = async (theUser): Promise<User> => {
 
+        const url = USERS_BASE
+            + `/${theUser.id}`;
         let updated = new User();
         setError(null);
         setExecuting(true);
 
         try {
-            updated = (await Api.put(USERS_BASE
-                + `/${theUser.id}`, theUser)).data;
-            logger.debug({
+            updated = ToModel.USER((await Api.put(url, theUser)).data);
+            logger.info({
                 context: "useMutateUser.update",
-                library: Abridgers.USER(updated),
+                user: Abridgers.USER(updated),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateUser.update", error, {
-                library: theUser,
-            });
+                user: Abridgers.USER(theUser),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);

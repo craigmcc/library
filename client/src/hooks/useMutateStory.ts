@@ -19,11 +19,13 @@ import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
 import {queryParameters} from "../util/QueryParameters";
 import ReportError from "../util/ReportError";
+import * as ToModel from "../util/ToModel";
 import {parentBase} from "../util/Transformations";
 
 // Incoming Properties and Outgoing State ------------------------------------
 
 export interface Props {
+    alertPopup?: boolean;               // Pop up browser alert on error? [true]
 }
 
 export interface State {
@@ -38,15 +40,16 @@ export interface State {
 
 // Component Details ---------------------------------------------------------
 
-const useMutateStory = (props: Props): State => {
+const useMutateStory = (props: Props = {}): State => {
 
     const libraryContext = useContext(LibraryContext);
 
+    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
     const [error, setError] = useState<Error | null>(null);
     const [executing, setExecuting] = useState<boolean>(false);
 
     useEffect(() => {
-        logger.debug({
+        logger.info({
             context: "useMutateStory.useEffect",
         });
     });
@@ -82,7 +85,7 @@ const useMutateStory = (props: Props): State => {
                 author: Abridgers.STORY(theStory),
                 parent: Abridgers.ANY(theParent),
                 url: url,
-            })
+            }, alertPopup);
         }
         setExecuting(false);
         return theStory;
@@ -122,7 +125,7 @@ const useMutateStory = (props: Props): State => {
                 story: Abridgers.STORY(theStory),
                 parent: Abridgers.ANY(theParent),
                 url: url,
-            })
+            }, alertPopup);
         }
         setExecuting(false);
         return theStory;
@@ -130,22 +133,25 @@ const useMutateStory = (props: Props): State => {
 
     const insert: ProcessStory = async (theStory) => {
 
+        const url = STORIES_BASE
+            + `/${libraryContext.library.id}`;
         let inserted = new Story();
         setError(null);
         setExecuting(true);
 
         try {
-            inserted = (await Api.post(STORIES_BASE
-                + `/${libraryContext.library.id}`, theStory)).data;
-            logger.debug({
+            inserted = ToModel.STORY((await Api.post(url, theStory)).data);
+            logger.info({
                 context: "useMutateStory.insert",
-                volume: Abridgers.STORY(inserted),
+                story: Abridgers.STORY(inserted),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateStory.insert", error, {
-                volume: theStory,
-            });
+                story: Abridgers.STORY(theStory),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);
@@ -155,22 +161,25 @@ const useMutateStory = (props: Props): State => {
 
     const remove: ProcessStory = async (theStory): Promise<Story> => {
 
+        const url = STORIES_BASE
+            + `/${libraryContext.library.id}/${theStory.id}`;
         let removed = new Story();
         setError(null);
         setExecuting(true);
 
         try {
-            removed = (await Api.delete(STORIES_BASE
-                + `/${libraryContext.library.id}/${theStory.id}`)).data;
-            logger.debug({
+            removed = ToModel.STORY((await Api.delete(url)).data);
+            logger.info({
                 context: "useMutateStory.remove",
-                volume: Abridgers.STORY(removed),
+                story: Abridgers.STORY(removed),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateStory.remove", error, {
-                volume: theStory,
-            });
+                story: ToModel.STORY(theStory),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);
@@ -180,22 +189,25 @@ const useMutateStory = (props: Props): State => {
 
     const update: ProcessStory = async (theStory): Promise<Story> => {
 
+        const url = STORIES_BASE
+            + `/${libraryContext.library.id}/${theStory.id}`;
         let updated = new Story();
         setError(null);
         setExecuting(true);
 
         try {
-            updated = (await Api.put(STORIES_BASE
-                + `/${libraryContext.library.id}/${theStory.id}`, theStory)).data;
-            logger.debug({
+            updated = (await Api.put(url, theStory)).data;
+            logger.info({
                 context: "useMutateStory.update",
-                volume: Abridgers.STORY(updated),
+                story: Abridgers.STORY(updated),
+                url: url,
             });
         } catch (error) {
             setError(error as Error);
             ReportError("useMutateStory.update", error, {
-                volume: theStory,
-            });
+                story: Abridgers.STORY(theStory),
+                url: url,
+            }, alertPopup);
         }
 
         setExecuting(false);
