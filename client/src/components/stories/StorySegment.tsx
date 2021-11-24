@@ -12,6 +12,7 @@ import React, {useContext, useEffect, useState} from "react";
 import StoryDetails from "./StoryDetails";
 import StoryOptions from "./StoryOptions";
 import AuthorSegment from "../authors/AuthorSegment";
+import SavingProgress from "../general/SavingProgress";
 import SeriesSegment from "../series/SeriesSegment";
 import VolumeSegment from "../volumes/VolumeSegment";
 import LibraryContext from "../libraries/LibraryContext";
@@ -49,6 +50,7 @@ const StorySegment = (props: Props) => {
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
     const [story, setStory] = useState<Story>(new Story());
+    const [title, setTitle] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
 
     const mutateStory = useMutateStory({});
@@ -120,6 +122,7 @@ const StorySegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
+                setTitle(theStory._title);
                 /* const excluded = */ await mutateStory.exclude(theStory, props.parent);
             }
         }
@@ -134,6 +137,7 @@ const StorySegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
+                setTitle(theStory._title);
                 /* const included = */ await mutateStory.include(theStory, props.parent);
             }
         }
@@ -145,6 +149,7 @@ const StorySegment = (props: Props) => {
             context: "StorySegment.handleInsert",
             story: Abridgers.STORY(theStory),
         });
+        setTitle(theStory._title);
         const inserted = await mutateStory.insert(theStory);
         handleInclude(inserted);
         setView(View.OPTIONS);
@@ -204,12 +209,19 @@ const StorySegment = (props: Props) => {
             context: "StorySegment.handleUpdate",
             story: Abridgers.STORY(theStory),
         });
+        setTitle(theStory._title);
         /* const updated = */ await mutateStory.update(theStory);
         setView(View.OPTIONS);
     }
 
     return (
         <>
+
+            <SavingProgress
+                error={mutateStory.error}
+                executing={mutateStory.executing}
+                title={title}
+            />
 
             {(view === View.DETAILS) ? (
                 <StoryDetails

@@ -12,6 +12,7 @@ import React, {useContext, useEffect, useState} from "react";
 import SeriesDetails from "./SeriesDetails";
 import SeriesOptions from "./SeriesOptions";
 import AuthorSegment from "../authors/AuthorSegment";
+import SavingProgress from "../general/SavingProgress";
 import StorySegment from "../stories/StorySegment";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
@@ -47,6 +48,7 @@ const SeriesSegment = (props: Props) => {
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
     const [series, setSeries] = useState<Series>(new Series());
+    const [title, setTitle] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
 
     const mutateSeries = useMutateSeries({});
@@ -117,6 +119,7 @@ const SeriesSegment = (props: Props) => {
             series: Abridgers.SERIES(theSeries),
         });
         if (props.parent) {
+            setTitle(theSeries._title);
             if (!(props.parent instanceof Library)) {
                 /* const excluded = */ await mutateSeries.exclude(theSeries, props.parent);
             }
@@ -132,6 +135,7 @@ const SeriesSegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
+                setTitle(theSeries._title);
                 /* const included = */ await mutateSeries.include(theSeries, props.parent);
             }
         }
@@ -143,6 +147,7 @@ const SeriesSegment = (props: Props) => {
             context: "SeriesSegment.handleInsert",
             series: Abridgers.SERIES(theSeries),
         });
+        setTitle(theSeries._title);
         const inserted = await mutateSeries.insert(theSeries);
         handleInclude(inserted);
         setView(View.OPTIONS);
@@ -154,6 +159,7 @@ const SeriesSegment = (props: Props) => {
             context: "SeriesSegment.handleRemove",
             series: Abridgers.SERIES(theSeries),
         });
+        setTitle(theSeries._title);
         /* const removed = */ await mutateSeries.remove(theSeries);
         setView(View.OPTIONS);
     }
@@ -192,12 +198,19 @@ const SeriesSegment = (props: Props) => {
             context: "SeriesSegment.handleUpdate",
             series: Abridgers.SERIES(theSeries),
         });
+        setTitle(theSeries._title);
         /* const updated = */ await mutateSeries.update(theSeries);
         setView(View.OPTIONS);
     }
 
     return (
         <>
+
+            <SavingProgress
+                error={mutateSeries.error}
+                executing={mutateSeries.executing}
+                title={title}
+            />
 
             {(view === View.DETAILS) ? (
                 <SeriesDetails

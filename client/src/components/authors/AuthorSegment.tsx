@@ -11,6 +11,7 @@ import React, {useContext, useEffect, useState} from "react";
 
 import AuthorDetails from "./AuthorDetails";
 import AuthorOptions from "./AuthorOptions";
+import SavingProgress from "../general/SavingProgress";
 import SeriesSegment from "../series/SeriesSegment";
 import StorySegment from "../stories/StorySegment";
 import VolumeSegment from "../volumes/VolumeSegment";
@@ -49,6 +50,7 @@ const AuthorSegment = (props: Props) => {
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
     const [author, setAuthor] = useState<Author>(new Author());
+    const [title, setTitle] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
 
     const mutateAuthor = useMutateAuthor({});
@@ -120,6 +122,7 @@ const AuthorSegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
+                setTitle(theAuthor._title);
                 /* const excluded = */ await mutateAuthor.exclude(theAuthor, props.parent);
             }
         }
@@ -134,6 +137,7 @@ const AuthorSegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
+                setTitle(theAuthor._title);
                 /* const included = */ await mutateAuthor.include(theAuthor, props.parent);
             }
         }
@@ -145,6 +149,7 @@ const AuthorSegment = (props: Props) => {
             context: "AuthorSegment.handleInsert",
             author: Abridgers.AUTHOR(theAuthor),
         });
+        setTitle(theAuthor._title);
         const inserted = await mutateAuthor.insert(theAuthor);
         handleInclude(inserted);
         setView(View.OPTIONS);
@@ -156,6 +161,7 @@ const AuthorSegment = (props: Props) => {
             context: "AuthorSegment.handleRemove",
             author: Abridgers.AUTHOR(theAuthor),
         });
+        setTitle(theAuthor._title);
         /* const removed = */ await mutateAuthor.remove(theAuthor);
         setView(View.OPTIONS);
     }
@@ -204,12 +210,19 @@ const AuthorSegment = (props: Props) => {
             context: "AuthorSegment.handleUpdate",
             author: Abridgers.AUTHOR(theAuthor),
         });
+        setTitle(theAuthor._title);
         /* const updated = */ await mutateAuthor.update(theAuthor);
         setView(View.OPTIONS);
     }
 
     return (
         <>
+
+            <SavingProgress
+                error={mutateAuthor.error}
+                executing={mutateAuthor.executing}
+                title={title}
+            />
 
             {(view === View.DETAILS) ? (
                 <AuthorDetails

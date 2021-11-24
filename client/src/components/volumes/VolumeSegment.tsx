@@ -12,6 +12,7 @@ import React, {useContext, useEffect, useState} from "react";
 import VolumeDetails from "./VolumeDetails";
 import VolumeOptions from "./VolumeOptions";
 import AuthorSegment from "../authors/AuthorSegment";
+import SavingProgress from "../general/SavingProgress";
 import StorySegment from "../stories/StorySegment";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
@@ -46,6 +47,7 @@ const VolumeSegment = (props: Props) => {
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
+    const [title, setTitle] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
     const [volume, setVolume] = useState<Volume>(new Volume());
 
@@ -123,6 +125,7 @@ const VolumeSegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
+                setTitle(theVolume._title);
                 /* const excluded = */ await mutateVolume.exclude(theVolume, props.parent);
             }
         }
@@ -137,6 +140,7 @@ const VolumeSegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
+                setTitle(theVolume._title);
                 /* const included = */ await mutateVolume.include(theVolume, props.parent);
             }
         }
@@ -148,6 +152,7 @@ const VolumeSegment = (props: Props) => {
             context: "VolumeSegment.handleInsert",
             volume: Abridgers.VOLUME(theVolume),
         });
+        setTitle(theVolume._title);
         const inserted = await mutateVolume.insert(theVolume);
         handleInclude(inserted);
         setView(View.OPTIONS);
@@ -159,6 +164,7 @@ const VolumeSegment = (props: Props) => {
             context: "VolumeSegment.handleRemove",
             volume: Abridgers.VOLUME(theVolume),
         });
+        setTitle(theVolume._title);
         /* const removed = */ await mutateVolume.remove(theVolume);
         setView(View.OPTIONS);
     }
@@ -197,12 +203,19 @@ const VolumeSegment = (props: Props) => {
             context: "VolumeSegment.handleUpdate",
             volume: Abridgers.VOLUME(theVolume),
         });
+        setTitle(theVolume._title);
         /* const updated = */ await mutateVolume.update(theVolume);
         setView(View.OPTIONS);
     }
 
     return (
         <>
+
+            <SavingProgress
+                error={mutateVolume.error}
+                executing={mutateVolume.executing}
+                title={title}
+            />
 
             {(view === View.DETAILS) ? (
                 <VolumeDetails
