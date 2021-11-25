@@ -8,7 +8,7 @@ import {useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import {HandleUser} from "../types";
+import {ProcessUser} from "../types";
 import Api from "../clients/Api";
 import User, {USERS_BASE} from "../models/User";
 import * as Abridgers from "../util/Abridgers";
@@ -25,9 +25,9 @@ export interface Props {
 export interface State {
     error: Error | null;                // I/O error (if any)
     executing: boolean;                 // Are we currently executing?
-    insert: HandleUser;                 // Function to insert a new User
-    remove: HandleUser;                 // Function to remove an existing User
-    update: HandleUser;                 // Function to update an existing User
+    insert: ProcessUser;                // Function to insert a new User
+    remove: ProcessUser;                // Function to remove an existing User
+    update: ProcessUser;                // Function to update an existing User
 }
 
 // Component Details ---------------------------------------------------------
@@ -44,7 +44,7 @@ const useMutateUser = (props: Props = {}): State => {
         });
     });
 
-    const insert: HandleUser = async (theUser): Promise<User> => {
+    const insert: ProcessUser = async (theUser) => {
 
         const url = USERS_BASE;
         let inserted = new User();
@@ -71,7 +71,7 @@ const useMutateUser = (props: Props = {}): State => {
 
     }
 
-    const remove: HandleUser = async (theUser): Promise<User> => {
+    const remove: ProcessUser = async (theUser) => {
 
         const url = USERS_BASE
             + `/${theUser.id}`;
@@ -99,7 +99,7 @@ const useMutateUser = (props: Props = {}): State => {
 
     }
 
-    const update: HandleUser = async (theUser): Promise<User> => {
+    const update: ProcessUser = async (theUser) => {
 
         const url = USERS_BASE
             + `/${theUser.id}`;

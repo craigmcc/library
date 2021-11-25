@@ -147,24 +147,24 @@ const AuthorSegment = (props: Props) => {
 
     // Handle insert of a new Author
     const handleInsert: HandleAuthor = async (theAuthor) => {
-        logger.info({
-            context: "AuthorSegment.handleInsert",
-            author: Abridgers.AUTHOR(theAuthor),
-        });
         setTitle(theAuthor._title);
         const inserted = await mutateAuthor.insert(theAuthor);
+        logger.info({
+            context: "AuthorSegment.handleInsert",
+            author: Abridgers.AUTHOR(inserted),
+        });
         handleInclude(inserted);
         setView(View.OPTIONS);
     }
 
     // Handle remove of an existing Author
     const handleRemove: HandleAuthor = async (theAuthor) => {
+        setTitle(theAuthor._title);
+        const removed = await mutateAuthor.remove(theAuthor);
         logger.info({
             context: "AuthorSegment.handleRemove",
-            author: Abridgers.AUTHOR(theAuthor),
+            author: Abridgers.AUTHOR(removed),
         });
-        setTitle(theAuthor._title);
-        /* const removed = */ await mutateAuthor.remove(theAuthor);
         setView(View.OPTIONS);
     }
 
@@ -208,12 +208,12 @@ const AuthorSegment = (props: Props) => {
 
     // Handle update of an existing Author
     const handleUpdate: HandleAuthor = async (theAuthor) => {
+        setTitle(theAuthor._title);
+        const updated = await mutateAuthor.update(theAuthor);
         logger.info({
             context: "AuthorSegment.handleUpdate",
-            author: Abridgers.AUTHOR(theAuthor),
+            author: Abridgers.AUTHOR(updated),
         });
-        setTitle(theAuthor._title);
-        /* const updated = */ await mutateAuthor.update(theAuthor);
         setView(View.OPTIONS);
     }
 

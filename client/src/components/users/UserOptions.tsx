@@ -1,4 +1,4 @@
-// UsersList -----------------------------------------------------------------
+// UserOptions -----------------------------------------------------------------
 
 // List Users that match search criteria, offering callbacks for adding,
 // editing, and removing Users.
@@ -19,7 +19,7 @@ import LoadingProgress from "../general/LoadingProgress";
 import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LoginContext from "../login/LoginContext";
-import {HandleBoolean, HandleUser, HandleValue, OnAction, Scope} from "../../types";
+import {HandleAction, HandleBoolean, HandleUser, HandleValue, Scope} from "../../types";
 import useFetchUsers from "../../hooks/useFetchUsers";
 import User from "../../models/User";
 import logger from "../../util/ClientLogger";
@@ -28,16 +28,13 @@ import {listValue} from "../../util/Transformations";
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
-    canInsert: boolean;                 // Can this user add Users?
-    canRemove: boolean;                 // Can this user remove Users?
-    canUpdate: boolean;                 // Can this user edit Users?
-    handleAdd: OnAction;                // Handle request to add a User
-    handleSelect: HandleUser;           // Handle request to select a User
+    handleAdd?: HandleAction;           // Handle request to add a User [not allowed]
+    handleEdit?: HandleUser;            // Handle request to edit a User [not allowed]
 }
 
 // Component Details ---------------------------------------------------------
 
-const UsersList = (props: Props) => {
+const UserOptions = (props: Props) => {
 
     const loginContext = useContext(LoginContext);
 
@@ -57,8 +54,10 @@ const UsersList = (props: Props) => {
 
     useEffect(() => {
 
-        logger.debug({
-            context: "UsersList.useEffect"
+        logger.info({
+            context: "UserOptions.useEffect",
+            active: active,
+            searchText: searchText,
         });
 
         const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
@@ -68,26 +67,40 @@ const UsersList = (props: Props) => {
             setAvailables([]);
         }
 
-    }, [fetchUsers.users, loginContext]);
+    }, [loginContext, loginContext.data.loggedIn,
+        active, searchText,
+        fetchUsers.users]);
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
+    }
+
+    const handleAdd: HandleAction = () => {
+        if (props.handleAdd) {
+            props.handleAdd();
+        }
     }
 
     const handleChange: HandleValue = (theSearchText) => {
         setSearchText(theSearchText);
     }
 
-    const handleNext: OnAction = () => {
+    const handleEdit: HandleUser = (theUser) => {
+        if (props.handleEdit) {
+            props.handleEdit(theUser);
+        }
+    }
+
+    const handleNext: HandleAction = () => {
         setCurrentPage(currentPage + 1);
     }
 
-    const handlePrevious: OnAction = () => {
+    const handlePrevious: HandleAction = () => {
         setCurrentPage(currentPage - 1);
     }
 
     return (
-        <Container fluid id="UsersList">
+        <Container fluid id="UserOptions">
 
             <LoadingProgress
                 error={fetchUsers.error}
@@ -125,8 +138,8 @@ const UsersList = (props: Props) => {
                 </Col>
                 <Col className="text-end">
                     <Button
-                        disabled={!props.canInsert}
-                        onClick={props.handleAdd}
+                        disabled={!props.handleAdd}
+                        onClick={handleAdd}
                         size="sm"
                         variant="primary"
                     >Add</Button>
@@ -155,7 +168,7 @@ const UsersList = (props: Props) => {
                         <tr
                             className="table-default"
                             key={1000 + (rowIndex * 100)}
-                            onClick={() => props.handleSelect(user)}
+                            onClick={props.handleEdit ? (() => handleEdit(user)) : undefined}
                         >
                             <td key={1000 + (rowIndex * 100) + 1}>
                                 {user.username}
@@ -179,8 +192,8 @@ const UsersList = (props: Props) => {
             <Row className="mb-3">
                 <Col className="text-end">
                     <Button
-                        disabled={!props.canInsert}
-                        onClick={props.handleAdd}
+                        disabled={!props.handleAdd}
+                        onClick={handleAdd}
                         size="sm"
                         variant="primary"
                     >Add</Button>
@@ -193,4 +206,4 @@ const UsersList = (props: Props) => {
 
 }
 
-export default UsersList;
+export default UserOptions;

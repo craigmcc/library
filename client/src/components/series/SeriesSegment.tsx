@@ -145,24 +145,24 @@ const SeriesSegment = (props: Props) => {
 
     // Handle insert of a new Series
     const handleInsert: HandleSeries = async (theSeries) => {
-        logger.info({
-            context: "SeriesSegment.handleInsert",
-            series: Abridgers.SERIES(theSeries),
-        });
         setTitle(theSeries._title);
         const inserted = await mutateSeries.insert(theSeries);
+        logger.info({
+            context: "SeriesSegment.handleInsert",
+            series: Abridgers.SERIES(inserted),
+        });
         handleInclude(inserted);
         setView(View.OPTIONS);
     }
 
     // Handle remove of an existing Series
     const handleRemove: HandleSeries = async (theSeries) => {
+        setTitle(theSeries._title);
+        const removed = await mutateSeries.remove(theSeries);
         logger.info({
             context: "SeriesSegment.handleRemove",
-            series: Abridgers.SERIES(theSeries),
+            series: Abridgers.SERIES(removed),
         });
-        setTitle(theSeries._title);
-        /* const removed = */ await mutateSeries.remove(theSeries);
         setView(View.OPTIONS);
     }
 
@@ -196,12 +196,12 @@ const SeriesSegment = (props: Props) => {
 
     // Handle update of an existing Series
     const handleUpdate: HandleSeries = async (theSeries) => {
+        setTitle(theSeries._title);
+        const updated = await mutateSeries.update(theSeries);
         logger.info({
             context: "SeriesSegment.handleUpdate",
-            series: Abridgers.SERIES(theSeries),
+            series: Abridgers.SERIES(updated),
         });
-        setTitle(theSeries._title);
-        /* const updated = */ await mutateSeries.update(theSeries);
         setView(View.OPTIONS);
     }
 

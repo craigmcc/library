@@ -14,7 +14,7 @@ import LibrarySegment from "./components/libraries/LibrarySegment";
 import {LoginContextProvider} from "./components/login/LoginContext";
 import SeriesSegment from "./components/series/SeriesSegment";
 import StorySegment from "./components/stories/StorySegment";
-import UsersView from "./components/users/UsersView";
+import UserSegment from "./components/users/UserSegment";
 import VolumeSegment from "./components/volumes/VolumeSegment";
 
 ReactDOM.render(
@@ -29,7 +29,7 @@ ReactDOM.render(
                           <Route path="libraries" element={<LibrarySegment/>}/>
                           <Route path="series" element={<SeriesSegment/>}/>
                           <Route path="stories" element={<StorySegment/>}/>
-                          <Route path="users" element={<UsersView/>}/>
+                          <Route path="users" element={<UserSegment/>}/>
                           <Route path="volumes" element={<VolumeSegment/>}/>
                           <Route path="" element={<HomeView/>}/>
                       </Route>

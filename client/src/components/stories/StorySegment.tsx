@@ -147,23 +147,24 @@ const StorySegment = (props: Props) => {
 
     // Handle insert of a new Story
     const handleInsert: HandleStory = async (theStory) => {
-        logger.info({
-            context: "StorySegment.handleInsert",
-            story: Abridgers.STORY(theStory),
-        });
         setTitle(theStory._title);
         const inserted = await mutateStory.insert(theStory);
+        logger.info({
+            context: "StorySegment.handleInsert",
+            story: Abridgers.STORY(inserted),
+        });
         handleInclude(inserted);
         setView(View.OPTIONS);
     }
 
     // Handle remove of an existing Story
     const handleRemove: HandleStory = async (theStory) => {
+        setTitle(theStory._title);
+        const removed = await mutateStory.remove(theStory);
         logger.info({
             context: "StorySegment.handleRemove",
-            story: Abridgers.STORY(theStory),
+            story: Abridgers.STORY(removed),
         });
-        /* const removed = */ await mutateStory.remove(theStory);
         setView(View.OPTIONS);
     }
 
@@ -207,12 +208,12 @@ const StorySegment = (props: Props) => {
 
     // Handle update of an existing Story
     const handleUpdate: HandleStory = async (theStory) => {
+        setTitle(theStory._title);
+        const updated = await mutateStory.update(theStory);
         logger.info({
             context: "StorySegment.handleUpdate",
-            story: Abridgers.STORY(theStory),
+            story: Abridgers.STORY(updated),
         });
-        setTitle(theStory._title);
-        /* const updated = */ await mutateStory.update(theStory);
         setView(View.OPTIONS);
     }
 

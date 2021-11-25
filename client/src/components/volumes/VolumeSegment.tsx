@@ -150,24 +150,24 @@ const VolumeSegment = (props: Props) => {
 
     // Handle insert of a new Volume
     const handleInsert: HandleVolume = async (theVolume) => {
-        logger.info({
-            context: "VolumeSegment.handleInsert",
-            volume: Abridgers.VOLUME(theVolume),
-        });
         setTitle(theVolume._title);
         const inserted = await mutateVolume.insert(theVolume);
+        logger.info({
+            context: "VolumeSegment.handleInsert",
+            volume: Abridgers.VOLUME(inserted),
+        });
         handleInclude(inserted);
         setView(View.OPTIONS);
     }
 
     // Handle remove of an existing Volume
     const handleRemove: HandleVolume = async (theVolume) => {
+        setTitle(theVolume._title);
+        const removed = await mutateVolume.remove(theVolume);
         logger.info({
             context: "VolumeSegment.handleRemove",
-            volume: Abridgers.VOLUME(theVolume),
+            volume: Abridgers.VOLUME(removed),
         });
-        setTitle(theVolume._title);
-        /* const removed = */ await mutateVolume.remove(theVolume);
         setView(View.OPTIONS);
     }
 
@@ -201,12 +201,12 @@ const VolumeSegment = (props: Props) => {
 
     // Handle update of an existing Volume
     const handleUpdate: HandleVolume = async (theVolume) => {
+        setTitle(theVolume._title);
+        const updated = await mutateVolume.update(theVolume);
         logger.info({
             context: "VolumeSegment.handleUpdate",
-            volume: Abridgers.VOLUME(theVolume),
+            volume: Abridgers.VOLUME(updated),
         });
-        setTitle(theVolume._title);
-        /* const updated = */ await mutateVolume.update(theVolume);
         setView(View.OPTIONS);
     }
 

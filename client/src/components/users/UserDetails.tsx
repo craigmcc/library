@@ -1,10 +1,10 @@
-// UserForm ------------------------------------------------------------------
+// UserDetails ---------------------------------------------------------------
 
 // Detail editing form for User objects.
 
 // External Modules ----------------------------------------------------------
 
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Formik,FormikHelpers,FormikValues} from "formik";
 import Button from "react-bootstrap/button";
 import Col from "react-bootstrap/Col";
@@ -16,10 +16,9 @@ import * as Yup from "yup";
 
 // Internal Modules ----------------------------------------------------------
 
-import {HandleUser} from "../../types";
+import {HandleAction, HandleUser} from "../../types";
 import User from "../../models/User";
 import {validateUserUsernameUnique} from "../../util/AsyncValidators";
-import logger from "../../util/ClientLogger";
 import * as ToModel from "../../util/ToModel";
 import {toEmptyStrings, toNullValues} from "../../util/Transformations";
 
@@ -27,34 +26,25 @@ import {toEmptyStrings, toNullValues} from "../../util/Transformations";
 
 export interface Props {
     autoFocus?: boolean;                // First element receive autoFocus? [false]
-    canRemove: boolean;                 // Can remove be performed? [false]
-    canSave: boolean;                   // Can save be performed? [false]
-    handleInsert: HandleUser;           // Handle User insert request
-    handleRemove: HandleUser;           // Handle User remove request
-    handleUpdate: HandleUser;           // Handle User update request
+    handleInsert?: HandleUser;          // Handle User insert request [not allowed]
+    handleRemove?: HandleUser;          // Handle User remove request [not allowed]
+    handleReturn: HandleAction;         // Handle return to options view
+    handleUpdate?: HandleUser;          // Handle User update request [not allowed
     user: User;                         // Initial values (id < 0 for adding)
 }
 
 // Component Details ---------------------------------------------------------
 
-const UserForm = (props: Props) => {
+const UserDetails = (props: Props) => {
 
     const [adding] = useState<boolean>(props.user.id < 0);
     const [initialValues] = useState(toEmptyStrings(props.user));
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
-    useEffect(() => {
-        logger.debug({
-            context: "UserForm.useEffect",
-            user: props.user,
-            values: initialValues,
-        });
-    }, [props.user, initialValues]);
-
     const handleSubmit = (values: FormikValues, actions: FormikHelpers<FormikValues>): void => {
-        if (adding) {
+        if (adding && props.handleInsert) {
             props.handleInsert(ToModel.USER(toNullValues(values)));
-        } else {
+        } else if (!adding && props.handleUpdate) {
             props.handleUpdate(ToModel.USER(toNullValues(values)));
         }
     }
@@ -69,7 +59,9 @@ const UserForm = (props: Props) => {
 
     const onConfirmPositive = (): void => {
         setShowConfirm(false);
-        props.handleRemove(props.user)
+        if (props.handleRemove) {
+            props.handleRemove(props.user)
+        }
     }
 
     // NOTE - there is no server-side equivalent for this because there is
@@ -115,7 +107,26 @@ const UserForm = (props: Props) => {
         <>
 
             {/* Details Form */}
-            <Container id="UserForm">
+            <Container id="UserDetails">
+
+                <Row className="mb-3 ms-1 me-1">
+                    <Col className="text-center">
+                        {(adding)? (
+                            <span>Add New</span>
+                        ) : (
+                            <span>Edit Existing</span>
+                        )}
+                        &nbsp;User
+                    </Col>
+                    <Col className="text-end">
+                        <Button
+                            onClick={() => props.handleReturn()}
+                            size="sm"
+                            type="button"
+                            variant="secondary"
+                        >Back</Button>
+                    </Col>
+                </Row>
 
                 <Formik
                     initialValues={initialValues}
@@ -139,7 +150,7 @@ const UserForm = (props: Props) => {
                        }) => (
 
                         <Form
-                            id="UserForm"
+                            id="UserDetails"
                             noValidate
                             onSubmit={handleSubmit}
                         >
@@ -245,7 +256,7 @@ const UserForm = (props: Props) => {
                             <Row className="g-3 mb-3">
                                 <Col className="text-start">
                                     <Button
-                                        disabled={isSubmitting || !props.canSave}
+                                        disabled={isSubmitting || !(props.handleInsert || props.handleUpdate)}
                                         size="sm"
                                         type="submit"
                                         variant="primary"
@@ -255,7 +266,7 @@ const UserForm = (props: Props) => {
                                 </Col>
                                 <Col className="text-end">
                                     <Button
-                                        disabled={adding || !props.canRemove}
+                                        disabled={adding || !props.handleRemove}
                                         onClick={onConfirm}
                                         size="sm"
                                         type="button"
@@ -321,4 +332,4 @@ const UserForm = (props: Props) => {
     )
 }
 
-export default UserForm;
+export default UserDetails;

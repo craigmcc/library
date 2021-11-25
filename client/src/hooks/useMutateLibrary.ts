@@ -8,7 +8,7 @@ import {useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import {HandleLibrary} from "../types";
+import {ProcessLibrary} from "../types";
 import Api from "../clients/Api";
 import Library, {LIBRARIES_BASE} from "../models/Library";
 import * as Abridgers from "../util/Abridgers";
@@ -25,9 +25,9 @@ export interface Props {
 export interface State {
     error: Error | null;                // I/O error (if any)
     executing: boolean;                 // Are we currently executing?
-    insert: HandleLibrary;              // Function to insert a new Library
-    remove: HandleLibrary;              // Function to remove an existing Library
-    update: HandleLibrary;              // Function to update an existing Library
+    insert: ProcessLibrary;             // Function to insert a new Library
+    remove: ProcessLibrary;             // Function to remove an existing Library
+    update: ProcessLibrary;             // Function to update an existing Library
 }
 
 // Component Details ---------------------------------------------------------
@@ -44,7 +44,7 @@ const useMutateLibrary = (props: Props = {}): State => {
         });
     });
 
-    const insert: HandleLibrary = async (theLibrary): Promise<Library> => {
+    const insert: ProcessLibrary = async (theLibrary) => {
 
         const url = LIBRARIES_BASE;
         let inserted = new Library();
@@ -71,7 +71,7 @@ const useMutateLibrary = (props: Props = {}): State => {
 
     }
 
-    const remove: HandleLibrary = async (theLibrary): Promise<Library> => {
+    const remove: ProcessLibrary = async (theLibrary) => {
 
         const url = LIBRARIES_BASE
             + `/${theLibrary.id}`;
@@ -99,7 +99,7 @@ const useMutateLibrary = (props: Props = {}): State => {
 
     }
 
-    const update: HandleLibrary = async (theLibrary): Promise<Library> => {
+    const update: ProcessLibrary = async (theLibrary) => {
 
         const url = LIBRARIES_BASE
             + `/${theLibrary.id}`

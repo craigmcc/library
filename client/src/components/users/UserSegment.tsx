@@ -1,6 +1,6 @@
-// LibrarySegment ------------------------------------------------------------
+// UserSegment ---------------------------------------------------------------
 
-// Consolidated segment for listing and editing Library objects.
+// Top-level view for managing User objects.
 
 // External Modules ----------------------------------------------------------
 
@@ -8,14 +8,13 @@ import React, {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import LibraryContext from "./LibraryContext";
-import LibraryDetails from "./LibraryDetails";
-import LibraryOptions from "./LibraryOptions";
+import UserDetails from "./UserDetails";
+import UserOptions from "./UserOptions";
 import SavingProgress from "../general/SavingProgress";
 import LoginContext from "../login/LoginContext";
-import {HandleAction, HandleLibrary, Scope} from "../../types";
-import useMutateLibrary from "../../hooks/useMutateLibrary";
-import Library from "../../models/Library";
+import {HandleAction, HandleUser, Scope} from "../../types";
+import useMutateUser from "../../hooks/useMutateUser";
+import User from "../../models/User";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 
@@ -26,27 +25,26 @@ enum View {
     OPTIONS = "Options",
 }
 
-const LibrarySegment = () => {
+const UserSegment = () => {
 
-    const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
-    const [library, setLibrary] = useState<Library>(new Library());
     const [title, setTitle] = useState<string>("");
+    const [user, setUser] = useState<User>(new User());
     const [view, setView] = useState<View>(View.OPTIONS);
 
-    const mutateLibrary = useMutateLibrary({
+    const mutateUser = useMutateUser({
         alertPopup: false,
     });
 
     useEffect(() => {
 
         logger.info({
-            context: "LibrarySegment.useEffect",
-            library: Abridgers.LIBRARY(library),
+            context: "UserSegment.useEffect",
+            user: Abridgers.USER(user),
             view: view.toString(),
         });
 
@@ -56,100 +54,98 @@ const LibrarySegment = () => {
         setCanUpdate(isSuperuser);
 
     }, [loginContext, loginContext.data.loggedIn,
-        library, view]);
+        user, view]);
 
-    // Create an empty Library to be added
+    // Create an empty User to be added
     const handleAdd: HandleAction = () => {
-        const theLibrary = new Library({
+        const theUser = new User({
             active: true,
             name: null,
-            notes: null,
+            password: null,
             scope: null,
+            username: null,
         });
         logger.info({
-            context: "LibrarySegment.handleAdd",
-            library: theLibrary,
+            context: "UserSegment.handleAdd",
+            user: theUser,
         });
-        setLibrary(theLibrary);
+        setUser(theUser);
         setView(View.DETAILS);
     }
 
-    // Handle selection of a Library to edit details
-    const handleEdit: HandleLibrary = (theLibrary) => {
+    // Handle selection of a User to edit details
+    const handleEdit: HandleUser = (theUser) => {
         logger.info({
-            context: "LibrarySegment.handleEdit",
-            library: Abridgers.LIBRARY(theLibrary),
+            context: "UserSegment.handleEdit",
+            user: Abridgers.USER(theUser),
         });
-        setLibrary(theLibrary);
+        setUser(theUser);
         setView(View.DETAILS);
     }
 
-    // Handle insert of a new Library
-    const handleInsert: HandleLibrary = async (theLibrary) => {
-        setTitle(theLibrary._title);
-        const inserted = await mutateLibrary.insert(theLibrary);
+    // Handle insert of a new User
+    const handleInsert: HandleUser = async (theUser) => {
+        setTitle(theUser.username);
+        const inserted = await mutateUser.insert(theUser);
         logger.info({
-            context: "LibrarySegment.handleInsert",
-            library: Abridgers.LIBRARY(inserted),
-        });
+            context: "UserSegment.handleInsert",
+            user: Abridgers.USER(inserted),
+        })
         setView(View.OPTIONS);
-        libraryContext.handleRefresh();
     }
 
-    // Handle remove of an existing Library
-    const handleRemove: HandleLibrary = async (theLibrary) => {
-        setTitle(theLibrary._title);
-        const removed = await mutateLibrary.remove(theLibrary);
+    // Handle remove of an existing User
+    const handleRemove: HandleUser = async (theUser) => {
+        setTitle(theUser.username);
+        const removed = await mutateUser.remove(theUser);
         logger.info({
-            context: "LibrarySegment.handleRemove",
-            library: Abridgers.LIBRARY(removed),
+            context: "UserSegment.remove",
+            user: Abridgers.USER(removed),
         });
         setView(View.OPTIONS);
-        libraryContext.handleRefresh();
     }
 
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
         logger.info({
-            context: "LibrarySegment.handleReturn",
+            context: "UserSegment.handleReturn",
         });
         setView(View.OPTIONS);
     }
 
-    // Handle request to update an existing Library
-    const handleUpdate: HandleLibrary = async (theLibrary) => {
-        setTitle(theLibrary._title);
-        const updated = await mutateLibrary.update(theLibrary);
+    // Handle request to update an existing User
+    const handleUpdate: HandleUser = async (theUser) => {
+        setTitle(theUser.username);
+        const updated = await mutateUser.update(theUser);
         logger.info({
-            context: "LibrarySegment.handleUpdate",
-            library: Abridgers.LIBRARY(updated),
-        });
+            context: "UserSegment.handleUpdate",
+            user: Abridgers.USER(updated),
+        })
         setView(View.OPTIONS);
-        libraryContext.handleRefresh();
     }
 
     return (
         <>
 
             <SavingProgress
-                error={mutateLibrary.error}
-                executing={mutateLibrary.executing}
+                error={mutateUser.error}
+                executing={mutateUser.executing}
                 title={title}
             />
 
             {(view === View.DETAILS) ? (
-                <LibraryDetails
+                <UserDetails
                     autoFocus
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
                     handleReturn={handleReturn}
                     handleUpdate={canUpdate ? handleUpdate : undefined}
-                    library={library}
+                    user={user}
                 />
             ) : null }
 
             {(view === View.OPTIONS) ? (
-                <LibraryOptions
+                <UserOptions
                     handleAdd={handleAdd}
                     handleEdit={handleEdit}
                 />
@@ -160,4 +156,4 @@ const LibrarySegment = () => {
 
 }
 
-export default LibrarySegment;
+export default UserSegment;
