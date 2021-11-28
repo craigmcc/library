@@ -17,6 +17,7 @@ import * as Yup from "yup";
 
 // Internal Modules ----------------------------------------------------------
 
+import CheckBoxField from "../general/CheckBoxField";
 import TextField from "../general/TextField";
 import {HandleAction, HandleUser} from "../../types";
 import User from "../../models/User";
@@ -31,7 +32,7 @@ export interface Props {
     handleInsert?: HandleUser;          // Handle User insert request [not allowed]
     handleRemove?: HandleUser;          // Handle User remove request [not allowed]
     handleReturn: HandleAction;         // Handle return to options view
-    handleUpdate?: HandleUser;          // Handle User update request [not allowed
+    handleUpdate?: HandleUser;          // Handle User update request [not allowed]
     user: User;                         // Initial values (id < 0 for adding)
 }
 
@@ -175,109 +176,69 @@ const UserDetails = (props: Props) => {
                             valid="Name of this User."
                         />
 
-
-{/*
-                        <Form.Group as={Col} controlId="name" id="nameGroup">
-                            <Form.Label>Name:</Form.Label>
-                            <Form.Control
-                                autoFocus={props.autoFocus ? props.autoFocus : undefined}
-                                isInvalid={!!errors.name}
-                                isValid={!errors.name}
-                                {...register("name")}
-                            />
-                            <Form.Control.Feedback type="valid">
-                                Name of this User.
-                            </Form.Control.Feedback>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.name?.message}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-*/}
-
-                        <Form.Group as={Col} controlId="scope" id="scopeGroup">
-                            <Form.Label>Scope:</Form.Label>
-                            <Form.Control
-                                isInvalid={!!errors.scope}
-                                isValid={!errors.scope}
-                                {...register("scope")}
-                            />
-                            <Form.Control.Feedback type="valid">
-                                Scope(s) granted to this user.
-                            </Form.Control.Feedback>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.scope?.message}
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                        <TextField
+                            errors={errors}
+                            label="Scope:"
+                            name="scope"
+                            register={register}
+                            valid="Space-separated scope(s) granted to this user."
+                        />
 
                     </Row>
 
                     <Row className="g-3 mb-3" id="usernamePasswordRow">
 
-                        <Form.Group as={Col} controlId="username" id="usernameGroup">
-                            <Form.Label>Username:</Form.Label>
-                            <Form.Control
-                                isInvalid={!!errors.username}
-                                isValid={!errors.username}
-                                {...register("username")}
-                            />
-                            <Form.Control.Feedback type="valid">
-                                Login username of this User (must be unique).
-                            </Form.Control.Feedback>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.username?.message}
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                        <TextField
+                            errors={errors}
+                            label="Username:"
+                            name="username"
+                            register={register}
+                            valid="Login username of this User (must be unique)."
+                        />
 
-                        <Form.Group as={Col} controlId="password" id="passwordGroup">
-                            <Form.Label>Password:</Form.Label>
-                            <Form.Control
-                                isInvalid={!!errors.password}
-                                isValid={!errors.password}
-                                {...register("password")}
-                            />
-                            <Form.Control.Feedback type="valid">
-                                Login password of this User (set this ONLY on new Users or if you want to change the password for an existing User).
-                            </Form.Control.Feedback>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.password?.message}
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                        <TextField
+                            errors={errors}
+                            label="Password:"
+                            name="password"
+                            register={register}
+                            valid="Login password of this User (set this ONLY on new Users or if you want to change the password for an existing User)."
+                        />
 
-                        <Row className="g-3 mb-3" id="activeRow">
-                            <Form.Group as={Col} controlId="active" id="activeGroup">
-                                <Form.Check
-                                    feedback={errors.active}
-                                    id="active"
-                                    label="Active?"
-                                    {...register("active")}
-                                />
-                            </Form.Group>
-                        </Row>
+                    </Row>
 
-                        <Row className="g-3 mb-3">
-                            <Col className="text-start">
-                                <Button
-                                    disabled={!props.handleInsert && !props.handleUpdate}
-                                    size="sm"
-                                    type="submit"
-                                    variant="primary"
-                                >
-                                    Save
-                                </Button>
-                            </Col>
-                            <Col className="text-end">
-                                <Button
-                                    disabled={adding || !props.handleRemove}
-                                    onClick={onConfirm}
-                                    size="sm"
-                                    type="button"
-                                    variant="danger"
-                                >
-                                    Remove
-                                </Button>
-                            </Col>
-                        </Row>
+                    <Row className="g-3 mb-3" id="activeRow">
 
+                        <CheckBoxField
+                            errors={errors}
+                            label="Active?"
+                            name="active"
+                            register={register}
+                        />
+
+                    </Row>
+
+                    <Row className="g-3 mb-3">
+                        <Col className="text-start">
+                            <Button
+                                disabled={!props.handleInsert && !props.handleUpdate}
+                                size="sm"
+                                type="submit"
+                                variant="primary"
+                            >
+                                Save
+                            </Button>
+                        </Col>
+                        <Col className="text-end">
+                            <Button
+                                disabled={adding || !props.handleRemove}
+                                onClick={onConfirm}
+                                size="sm"
+                                type="button"
+                                variant="danger"
+                            >
+                                Remove
+                            </Button>
+                        </Col>
                     </Row>
 
                 </Form>

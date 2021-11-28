@@ -1,6 +1,6 @@
-// TextField -----------------------------------------------------------------
+// CheckBoxField -------------------------------------------------------------
 
-// Render a <Form.Group> element (from react-bootstrap) for a text input field
+// Render a <Form.Group> (from react-bootstrap) for a checkbox input field
 // that is processed by react-hook-form.  Field names MUST be unique within
 // a single Form.
 
@@ -21,16 +21,17 @@ export interface Props {
     className?: string;                 // CSS class(es) for the Form.Group [none]
     disabled?: boolean;                 // Disable this field? [false]
     errors: FieldErrors;                // errors object from useForm()
+    invalid?: string;                   // Error message if input is invalid [none]
     label: string;                      // Field label [required]
     name: string;                       // Name of this field [required]
     readOnly?: boolean;                 // Mark field as read only? [false]
     register: UseFormRegister<any>;     // register object from useForm() // TODO - <any> ???
-    valid?: string;                     // Help message for valid input [none]
+    type?: "checkbox" | "radio";        // Input control type [checkbox]
 }
 
 // Component Details ---------------------------------------------------------
 
-const TextField = (props: Props) => {
+const CheckBoxField = (props: Props) => {
 
     return (
         <Form.Group
@@ -39,26 +40,28 @@ const TextField = (props: Props) => {
             controlId={props.name}
             id={props.name + "Group"}
         >
-            <Form.Label>{props.label}</Form.Label>
-            <Form.Control
-                autoFocus={props.autoFocus ? props.autoFocus : undefined}
-                disabled={(props.disabled !== undefined) ? props.disabled : undefined}
-                isInvalid={!!props.errors[props.name]}
-                isValid={!props.errors[props.name]}
-                readOnly={(props.readOnly !== undefined) ? props.readOnly : undefined}
-                {...props.register(props.name)}
-            />
-            {(props.valid) ? (
-                <Form.Control.Feedback type="valid">
-                    {props.valid}
-                </Form.Control.Feedback>
-            ) : null }
-            <Form.Control.Feedback type="invalid">
-                {props.errors[props.name]?.message}
-            </Form.Control.Feedback>
+            <Form.Check>
+                <Form.Check.Input
+                    autoFocus={props.autoFocus ? props.autoFocus : undefined}
+                    className="me-2"
+                    disabled={(props.disabled !== undefined) ? props.disabled : undefined}
+                    isInvalid={!!props.errors[props.name]}
+                    isValid={!props.errors[props.name]}
+                    readOnly={(props.readOnly !== undefined) ? props.readOnly : undefined}
+                    type={props.type ? props.type : undefined}
+                    {...props.register(props.name)}
+
+                />
+                <Form.Check.Label>{props.label}</Form.Check.Label>
+                {(props.invalid) ? (
+                    <Form.Control.Feedback type="invalid">
+                        {props.invalid}
+                    </Form.Control.Feedback>
+                ) : null }
+            </Form.Check>
         </Form.Group>
     )
 
 }
 
-export default TextField;
+export default CheckBoxField;
