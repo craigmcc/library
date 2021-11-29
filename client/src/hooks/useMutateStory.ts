@@ -49,7 +49,7 @@ const useMutateStory = (props: Props = {}): State => {
     const [executing, setExecuting] = useState<boolean>(false);
 
     useEffect(() => {
-        logger.info({
+        logger.debug({
             context: "useMutateStory.useEffect",
         });
     });
@@ -73,7 +73,7 @@ const useMutateStory = (props: Props = {}): State => {
         setExecuting(true);
         try {
             await Api.delete(url);
-            logger.info({
+            logger.debug({
                 context: "useMutateStory.exclude",
                 author: Abridgers.STORY(theStory),
                 parent: Abridgers.ANY(theParent),
@@ -113,7 +113,7 @@ const useMutateStory = (props: Props = {}): State => {
         setExecuting(true);
         try {
             await Api.post(url);
-            logger.info({
+            logger.debug({
                 context: "useMutateStory.include",
                 story: Abridgers.STORY(theStory),
                 parent: Abridgers.ANY(theParent),
@@ -141,7 +141,7 @@ const useMutateStory = (props: Props = {}): State => {
 
         try {
             inserted = ToModel.STORY((await Api.post(url, theStory)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateStory.insert",
                 story: Abridgers.STORY(inserted),
                 url: url,
@@ -169,7 +169,7 @@ const useMutateStory = (props: Props = {}): State => {
 
         try {
             removed = ToModel.STORY((await Api.delete(url)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateStory.remove",
                 story: Abridgers.STORY(removed),
                 url: url,
@@ -197,7 +197,7 @@ const useMutateStory = (props: Props = {}): State => {
 
         try {
             updated = (await Api.put(url, theStory)).data;
-            logger.info({
+            logger.debug({
                 context: "useMutateStory.update",
                 story: Abridgers.STORY(updated),
                 url: url,

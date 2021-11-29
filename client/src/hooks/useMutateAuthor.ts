@@ -46,7 +46,7 @@ const useMutateAuthor = (props: Props = {}): State => {
     const [executing, setExecuting] = useState<boolean>(false);
 
     useEffect(() => {
-        logger.info({
+        logger.debug({
             context: "useMutateAuthor.useEffect",
         });
     });
@@ -59,7 +59,7 @@ const useMutateAuthor = (props: Props = {}): State => {
         setExecuting(true);
         try {
             await Api.delete(url);
-            logger.info({
+            logger.debug({
                 context: "useMutateAuthor.exclude",
                 author: Abridgers.AUTHOR(theAuthor),
                 parent: Abridgers.ANY(theParent),
@@ -88,7 +88,7 @@ const useMutateAuthor = (props: Props = {}): State => {
         setExecuting(true);
         try {
             await Api.post(url);
-            logger.info({
+            logger.debug({
                 context: "useMutateAuthor.include",
                 author: Abridgers.AUTHOR(theAuthor),
                 parent: Abridgers.ANY(theParent),
@@ -116,7 +116,7 @@ const useMutateAuthor = (props: Props = {}): State => {
 
         try {
             inserted = ToModel.AUTHOR((await Api.post(url, theAuthor)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateAuthor.insert",
                 author: Abridgers.AUTHOR(inserted),
                 url: url,
@@ -144,7 +144,7 @@ const useMutateAuthor = (props: Props = {}): State => {
 
         try {
             removed = ToModel.AUTHOR((await Api.delete(url)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateAuthor.remove",
                 author: Abridgers.AUTHOR(removed),
                 url: url,
@@ -172,7 +172,7 @@ const useMutateAuthor = (props: Props = {}): State => {
 
         try {
             updated = ToModel.AUTHOR((await Api.put(url, theAuthor)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateAuthor.update",
                 author: Abridgers.AUTHOR(updated),
                 url: url,

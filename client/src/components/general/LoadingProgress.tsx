@@ -38,7 +38,7 @@ const LoadingProgress = (props: Props) => {
 
     // Handle error notification
     useEffect(() => {
-        logger.info({
+        logger.trace({
             context: "LoadingProgress.useEffect:error",
             error: (props.error !== undefined) ? props.error : "UNDEFINED",
             notificationId: errorNotificationId,
@@ -69,7 +69,7 @@ const LoadingProgress = (props: Props) => {
 
     // Handle loading notification
     useEffect(() => {
-        logger.info({
+        logger.trace({
             context: "LoadingProgress.useEffect:loading",
             loading: (props.loading !== undefined) ? props.loading : "UNDEFINED",
             notificationId: loadingNotificationId,

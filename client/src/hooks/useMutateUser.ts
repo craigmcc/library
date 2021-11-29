@@ -39,7 +39,7 @@ const useMutateUser = (props: Props = {}): State => {
     const [executing, setExecuting] = useState<boolean>(false);
 
     useEffect(() => {
-        logger.info({
+        logger.debug({
             context: "useMutateUser.useEffect",
         });
     });
@@ -53,7 +53,7 @@ const useMutateUser = (props: Props = {}): State => {
 
         try {
             inserted = ToModel.USER((await Api.post(url, theUser)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateUser.insert",
                 user: Abridgers.USER(inserted),
                 url: url,
@@ -81,7 +81,7 @@ const useMutateUser = (props: Props = {}): State => {
 
         try {
             removed = ToModel.USER((await Api.delete(url)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateUser.remove",
                 user: Abridgers.USER(removed),
                 url: url,
@@ -109,7 +109,7 @@ const useMutateUser = (props: Props = {}): State => {
 
         try {
             updated = ToModel.USER((await Api.put(url, theUser)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateUser.update",
                 user: Abridgers.USER(updated),
                 url: url,

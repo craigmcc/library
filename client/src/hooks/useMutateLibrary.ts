@@ -53,7 +53,7 @@ const useMutateLibrary = (props: Props = {}): State => {
 
         try {
             inserted = ToModel.LIBRARY((await Api.post(url, theLibrary)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateLibrary.insert",
                 library: Abridgers.LIBRARY(inserted),
                 url: url,
@@ -81,7 +81,7 @@ const useMutateLibrary = (props: Props = {}): State => {
 
         try {
             removed = ToModel.LIBRARY((await Api.delete(url)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateLibrary.remove",
                 library: Abridgers.LIBRARY(removed),
                 url: url,
@@ -109,7 +109,7 @@ const useMutateLibrary = (props: Props = {}): State => {
 
         try {
             updated = ToModel.LIBRARY((await Api.put(url, theLibrary)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateLibrary.update",
                 library: Abridgers.LIBRARY(updated),
                 url: url,

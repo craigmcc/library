@@ -38,7 +38,7 @@ const SavingProgress = (props: Props) => {
 
     // Handle error notification
     useEffect(() => {
-        logger.info({
+        logger.trace({
             context: "SavingProgress.useEffect:error",
             error: (props.error !== undefined) ? props.error : "UNDEFINED",
             notificationId: errorNotificationId,
@@ -70,7 +70,7 @@ const SavingProgress = (props: Props) => {
 
     // Handle saving notification
     useEffect(() => {
-        logger.info({
+        logger.trace({
             context: "SavingProgress.useEffect:executing",
             executing: (props.executing !== undefined) ? props.executing : "UNDEFINED",
             notificationId: executingNotificationId,

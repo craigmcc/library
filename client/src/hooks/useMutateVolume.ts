@@ -48,7 +48,7 @@ const useMutateVolume = (props: Props = {}): State => {
     const [executing, setExecuting] = useState<boolean>(false);
 
     useEffect(() => {
-        logger.info({
+        logger.debug({
             context: "useMutateVolume.useEffect",
         });
     });
@@ -68,7 +68,7 @@ const useMutateVolume = (props: Props = {}): State => {
         setExecuting(true);
         try {
             await Api.delete(url);
-            logger.info({
+            logger.debug({
                 context: "useMutateVolume.exclude",
                 volume: Abridgers.VOLUME(theVolume),
                 parent: Abridgers.ANY(theParent),
@@ -104,7 +104,7 @@ const useMutateVolume = (props: Props = {}): State => {
         setExecuting(true);
         try {
             await Api.post(url);
-            logger.info({
+            logger.debug({
                 context: "useMutateVolume.include",
                 volume: Abridgers.VOLUME(theVolume),
                 parent: Abridgers.ANY(theParent),
@@ -132,7 +132,7 @@ const useMutateVolume = (props: Props = {}): State => {
 
         try {
             inserted = ToModel.VOLUME((await Api.post(url, theVolume)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateVolume.insert",
                 volume: Abridgers.VOLUME(inserted),
                 url: url,
@@ -160,7 +160,7 @@ const useMutateVolume = (props: Props = {}): State => {
 
         try {
             removed = ToModel.VOLUME((await Api.delete(url)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateVolume.remove",
                 volume: Abridgers.VOLUME(removed),
                 url: url,
@@ -188,7 +188,7 @@ const useMutateVolume = (props: Props = {}): State => {
 
         try {
             updated = ToModel.VOLUME((await Api.put(url, theVolume)).data);
-            logger.info({
+            logger.debug({
                 context: "useMutateVolume.update",
                 volume: Abridgers.VOLUME(updated),
                 url: url,

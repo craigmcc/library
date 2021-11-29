@@ -91,13 +91,13 @@ const useFetchLibraries = (props: Props): State => {
                             theLibrary.volumes = Sorters.VOLUMES(theLibrary.volumes);
                         }
                     });
-                    logger.info({
+                    logger.debug({
                         context: "useFetchLibraries.fetchLibraries",
                         url: url,
                         libraries: Abridgers.LIBRARIES(theLibraries),
                     });
                 } else {
-                    logger.info({
+                    logger.debug({
                         context: "useFetchLibraries.fetchLibraries",
                         msg: "Skipped fetching Libraries",
                         url: url,

@@ -109,13 +109,13 @@ const useFetchAuthors = (props: Props): State => {
                             theAuthor.volumes = Sorters.VOLUMES(theAuthor.volumes);
                         }
                     });
-                    logger.info({
+                    logger.debug({
                         context: "useFetchAuthors.fetchAuthors",
                         url: url,
                         authors: Abridgers.AUTHORS(theAuthors),
                     });
                 } else {
-                    logger.info({
+                    logger.debug({
                         context: "useFetchAuthors.fetchAuthors",
                         msg: "Skipped fetching Authors",
                         url: url,
@@ -144,7 +144,7 @@ const useFetchAuthors = (props: Props): State => {
         alertPopup, refresh]);
 
     const handleRefresh: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "useFetchAuthors.handleRefresh",
             library: Abridgers.LIBRARY(libraryContext.library),
             parent: Abridgers.ANY(props.parent),

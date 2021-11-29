@@ -98,13 +98,13 @@ const useFetchSerieses = (props: Props): State => {
                             theSeries.stories = Sorters.STORIES(theSeries.stories);
                         }
                     });
-                    logger.info({
+                    logger.debug({
                         context: "useFetchSerieses.fetchSerieses",
                         url: url,
                         serieses: Abridgers.SERIESES(theSerieses),
                     });
                 } else {
-                    logger.info({
+                    logger.debug({
                         context: "useFetchSerieses.fetchSerieses",
                         msg: "Skipped fetching Series",
                         url: url,
@@ -134,7 +134,7 @@ const useFetchSerieses = (props: Props): State => {
         alertPopup, refresh]);
 
     const handleRefresh: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "useFetchSerieses.handleRefresh",
             library: Abridgers.LIBRARY(libraryContext.library),
             parent: Abridgers.ANY(props.parent),

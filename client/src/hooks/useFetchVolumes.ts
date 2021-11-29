@@ -98,13 +98,13 @@ const useFetchVolumes = (props: Props): State => {
                             theVolume.stories = Sorters.STORIES(theVolume.stories);
                         }
                     });
-                    logger.info({
+                    logger.debug({
                         context: "useFetchVolumes.fetchVolumes",
                         url: url,
                         volumes: Abridgers.VOLUMES(theVolumes),
                     });
                 } else {
-                    logger.info({
+                    logger.debug({
                         context: "useFetchVolumes.fetchVolumes",
                         msg: "Skipped fetching Volumes",
                         url: url,
@@ -134,7 +134,7 @@ const useFetchVolumes = (props: Props): State => {
         alertPopup, refresh]);
 
     const handleRefresh: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "useFetchVolumes.handleRefresh",
             library: Abridgers.LIBRARY(libraryContext.library),
             parent: Abridgers.ANY(props.parent),

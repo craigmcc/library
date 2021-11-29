@@ -53,7 +53,7 @@ const useFetchFocused = (props: Props): State => {
 
     useEffect(() => {
 
-        logger.info({
+        logger.debug({
             context: "useFetchFocused.useEffect",
             focusee: Abridgers.ANY(props.focusee),
             refresh: refresh,
@@ -82,7 +82,7 @@ const useFetchFocused = (props: Props): State => {
                 if (theAuthor.volumes && (theAuthor.volumes.length > 0)) {
                     theAuthor.volumes = Sorters.VOLUMES(theAuthor.volumes);
                 }
-                logger.info({
+                logger.debug({
                     context: "useFetchFocused.fetchAuthor",
                     library: Abridgers.LIBRARY(libraryContext.library),
                     refresh: refresh,
@@ -91,7 +91,7 @@ const useFetchFocused = (props: Props): State => {
                 });
                 setFocused(theAuthor);
             } else {
-                logger.info({
+                logger.debug({
                     context: "useFetchFocused.fetchAuthor",
                     msg: "Skipped fetching Author",
                     library: Abridgers.LIBRARY(libraryContext.library),
@@ -120,7 +120,7 @@ const useFetchFocused = (props: Props): State => {
                 if (theSeries.stories && (theSeries.stories.length > 0)) {
                     theSeries.stories = Sorters.STORIES(theSeries.stories);
                 }
-                logger.info({
+                logger.debug({
                     context: "useFetchFocused.fetchSeries",
                     library: Abridgers.LIBRARY(libraryContext.library),
                     refresh: refresh,
@@ -129,7 +129,7 @@ const useFetchFocused = (props: Props): State => {
                 });
                 setFocused(theSeries);
             } else {
-                logger.info({
+                logger.debug({
                     context: "useFetchFocused.fetchSeries",
                     msg: "Skipped fetching Series",
                     library: Abridgers.LIBRARY(libraryContext.library),
@@ -162,7 +162,7 @@ const useFetchFocused = (props: Props): State => {
                 if (theStory.volumes && (theStory.volumes.length > 0)) {
                     theStory.volumes = Sorters.VOLUMES(theStory.volumes);
                 }
-                logger.info({
+                logger.debug({
                     context: "useFetchFocused.fetchStory",
                     library: Abridgers.LIBRARY(libraryContext.library),
                     refresh: refresh,
@@ -171,7 +171,7 @@ const useFetchFocused = (props: Props): State => {
                 });
                 setFocused(theStory);
             } else {
-                logger.info({
+                logger.debug({
                     context: "useFetchFocused.fetchStory",
                     msg: "Skipped fetching Story",
                     library: Abridgers.LIBRARY(libraryContext.library),
@@ -200,7 +200,7 @@ const useFetchFocused = (props: Props): State => {
                 if (theVolume.stories && (theVolume.stories.length > 0)) {
                     theVolume.stories = Sorters.STORIES(theVolume.stories);
                 }
-                logger.info({
+                logger.debug({
                     context: "useFetchFocused.fetchVolume",
                     library: Abridgers.LIBRARY(libraryContext.library),
                     refresh: refresh,
@@ -209,7 +209,7 @@ const useFetchFocused = (props: Props): State => {
                 });
                 setFocused(theVolume);
             } else {
-                logger.info({
+                logger.debug({
                     context: "useFetchFocused.fetchVolume",
                     msg: "Skipped fetching Volume",
                     library: Abridgers.LIBRARY(libraryContext.library),
@@ -254,7 +254,7 @@ const useFetchFocused = (props: Props): State => {
         loginContext.data.loggedIn]);
 
     const handleRefresh: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "useFetchFocused.handleRefresh",
             parent: Abridgers.ANY(focused),
         });
