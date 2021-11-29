@@ -18,10 +18,9 @@ import UserSegment from "./components/users/UserSegment";
 import VolumeSegment from "./components/volumes/VolumeSegment";
 
 ReactDOM.render(
-  <React.StrictMode>
-      <ReactNotification/>
       <LoginContextProvider>
           <LibraryContextProvider>
+              <ReactNotification/>
               <BrowserRouter>
                   <Routes>
                       <Route path="/" element={<Navigation/>}>
@@ -37,7 +36,7 @@ ReactDOM.render(
               </BrowserRouter>
           </LibraryContextProvider>
       </LoginContextProvider>
-  </React.StrictMode>,
+    ,
   document.getElementById('root')
 );
 
