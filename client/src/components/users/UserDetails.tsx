@@ -21,6 +21,7 @@ import CheckBoxField from "../general/CheckBoxField";
 import TextField from "../general/TextField";
 import {HandleAction, HandleUser} from "../../types";
 import User from "../../models/User";
+import UserData from "../../models/UserData";
 import {validateUserUsernameUnique} from "../../util/AsyncValidators";
 import * as ToModel from "../../util/ToModel";
 import {/*toEmptyStrings, */toNullValues} from "../../util/Transformations";
@@ -29,34 +30,14 @@ import {/*toEmptyStrings, */toNullValues} from "../../util/Transformations";
 
 export interface Props {
     autoFocus?: boolean;                // First element receive autoFocus? [false]
+    handleBack: HandleAction;           // Handle return to previous view
     handleInsert?: HandleUser;          // Handle User insert request [not allowed]
     handleRemove?: HandleUser;          // Handle User remove request [not allowed]
-    handleReturn: HandleAction;         // Handle return to options view
     handleUpdate?: HandleUser;          // Handle User update request [not allowed]
     user: User;                         // Initial values (id < 0 for adding)
 }
 
 // Component Details ---------------------------------------------------------
-
-class UserData {
-
-    constructor (data: any = {}) {
-        this.id = data.id ? data.id : -1;
-        this.active = (data.active !== undefined) ? data.active : true;
-        this.name = data.name ? data.name : null;
-        this.password = data.password ? data.password : null;
-        this.scope = data.scope ? data.scope : null;
-        this.username = data.username ? data.username : null;
-    }
-
-    id: number;
-    active: boolean;
-    name: string;
-    password: string;
-    scope: string;
-    username: string;
-
-}
 
 const UserDetails = (props: Props) => {
 
@@ -151,7 +132,7 @@ const UserDetails = (props: Props) => {
                     </Col>
                     <Col className="text-end">
                         <Button
-                            onClick={() => props.handleReturn()}
+                            onClick={() => props.handleBack()}
                             size="sm"
                             type="button"
                             variant="secondary"
@@ -166,16 +147,14 @@ const UserDetails = (props: Props) => {
                 >
 
                     <Row className="g-3 mb-3" id="nameScopeRow">
-
                         <TextField
-                            autoFocus
+                            autoFocus={(props.autoFocus !== undefined) ? props.autoFocus : undefined}
                             errors={errors}
                             label="Name:"
                             name="name"
                             register={register}
                             valid="Name of this User."
                         />
-
                         <TextField
                             errors={errors}
                             label="Scope:"
@@ -183,11 +162,9 @@ const UserDetails = (props: Props) => {
                             register={register}
                             valid="Space-separated scope(s) granted to this user."
                         />
-
                     </Row>
 
                     <Row className="g-3 mb-3" id="usernamePasswordRow">
-
                         <TextField
                             errors={errors}
                             label="Username:"
@@ -195,7 +172,6 @@ const UserDetails = (props: Props) => {
                             register={register}
                             valid="Login username of this User (must be unique)."
                         />
-
                         <TextField
                             errors={errors}
                             label="Password:"
@@ -203,18 +179,15 @@ const UserDetails = (props: Props) => {
                             register={register}
                             valid="Login password of this User (set this ONLY on new Users or if you want to change the password for an existing User)."
                         />
-
                     </Row>
 
                     <Row className="g-3 mb-3" id="activeRow">
-
                         <CheckBoxField
                             errors={errors}
                             label="Active?"
                             name="active"
                             register={register}
                         />
-
                     </Row>
 
                     <Row className="g-3 mb-3">

@@ -34,7 +34,7 @@ VALID_VOLUME_LOCATIONS.set("Box",           "Book in a Box (see Notes)");
 VALID_VOLUME_LOCATIONS.set("Computer",      "Computer Downloads (PDF)");
 VALID_VOLUME_LOCATIONS.set("Kindle",        "Kindle Download (Purchased)");
 VALID_VOLUME_LOCATIONS.set("Kobo",          "Kobo Download (Purchased)");
-VALID_VOLUME_LOCATIONS.set("Other",         "Other Location (See Notes");
+VALID_VOLUME_LOCATIONS.set("Other",         "Other Location (See Notes)");
 VALID_VOLUME_LOCATIONS.set("Returned",      "Kindle Unlimited (Returned)");
 VALID_VOLUME_LOCATIONS.set("Unlimited",     "Kindle Unlimited (Checked Out)");
 VALID_VOLUME_LOCATIONS.set("Watch",         "Not Yet Purchased or Downloaded");

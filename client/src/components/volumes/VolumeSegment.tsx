@@ -222,9 +222,9 @@ const VolumeSegment = (props: Props) => {
             {(view === View.DETAILS) ? (
                 <VolumeDetails
                     autoFocus
+                    handleBack={handleReturn}
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
-                    handleReturn={handleReturn}
                     handleUpdate={canUpdate ? handleUpdate : undefined}
                     parent={props.parent ? props.parent : libraryContext.library}
                     volume={volume}

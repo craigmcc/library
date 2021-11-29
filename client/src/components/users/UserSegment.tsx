@@ -136,9 +136,9 @@ const UserSegment = () => {
             {(view === View.DETAILS) ? (
                 <UserDetails
                     autoFocus
+                    handleBack={handleReturn}
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
-                    handleReturn={handleReturn}
                     handleUpdate={canUpdate ? handleUpdate : undefined}
                     user={user}
                 />
