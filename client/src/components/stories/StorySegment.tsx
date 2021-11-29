@@ -29,6 +29,7 @@ import logger from "../../util/ClientLogger";
 export interface Props {
     handleBack?: HandleAction;          // Handle request to exit this segment [no handler]
     parent?: Parent;                    // Current object from parent segment [owning Library]
+    showOrdinal?: boolean;              // Show the Ordinal field? [false]
 }
 
 // Component Details --------------------------------------------------------
@@ -231,9 +232,10 @@ const StorySegment = (props: Props) => {
                     autoFocus
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
-                    handleReturn={handleReturn}
+                    handleBack={handleReturn}
                     handleUpdate={canUpdate ? handleUpdate : undefined}
                     parent={props.parent ? props.parent : libraryContext.library}
+                    showOrdinal={(props.showOrdinal !== undefined) ? props.showOrdinal : undefined}
                     story={story}
                 />
             ) : null }
@@ -249,6 +251,7 @@ const StorySegment = (props: Props) => {
                     handleShowSeries={handleShowSeries}
                     handleShowVolumes={handleShowVolumes}
                     parent={props.parent ? props.parent : libraryContext.library}
+                    showOrdinal={(props.showOrdinal !== undefined) ? props.showOrdinal : undefined}
                 />
             ) : null }
 

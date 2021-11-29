@@ -242,7 +242,7 @@ const SeriesSegment = (props: Props) => {
             {(view === View.AUTHORS) ? (
                 <AuthorSegment
                     handleBack={handleReturn}
-                    parent={series ? series : undefined}
+                    parent={series}
                 />
             ) : null }
 
@@ -250,6 +250,7 @@ const SeriesSegment = (props: Props) => {
                 <StorySegment
                     handleBack={handleReturn}
                     parent={series}
+                    showOrdinal={true}
                 />
             ) : null }
 

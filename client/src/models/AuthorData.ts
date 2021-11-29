@@ -13,8 +13,16 @@ class AuthorData {
         this.lastName = data.lastName ? data.lastName : null;
         this.libraryId = data.libraryId ? data.libraryId : -1;
         this.notes = data.notes;
-        this.principal = this.calculatePrincipal(data);
-
+        this.principal = false;
+        if (data.principal !== undefined) {
+            this.principal = data.principal;
+        } else if (data.AuthorSeries && (data.AuthorSeries.principal !== undefined)) {
+            this.principal = data.AuthorSeries.principal;
+        } else if (data.AuthorStory && (data.AuthorStory.principal !== undefined)) {
+            this.principal = data.AuthorStory.principal;
+        } else if (data.AuthorVolume && (data.AuthorVolume.principal !== undefined)) {
+            this.principal = data.AuthorVolume.principal;
+        }
     }
 
     id: number;
@@ -24,20 +32,6 @@ class AuthorData {
     libraryId: number;
     notes: string;
     principal: boolean;
-
-    private calculatePrincipal(data: any): boolean {
-        if (data.principal !== undefined) {
-            return data.principal;
-        } else if (data.AuthorSeries && (data.AuthorSeries.principal !== undefined)) {
-            return data.AuthorSeries.principal;
-        } else if (data.AuthorStory && (data.AuthorStory.principal !== undefined)) {
-            return data.AuthorStory.principal;
-        } else if (data.AuthorVolume && (data.AuthorVolume.principal !== undefined)) {
-            return data.AuthorVolume.principal;
-        } else {
-            return false;
-        }
-    }
 
 }
 

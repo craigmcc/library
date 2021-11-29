@@ -25,6 +25,8 @@ export interface Props {
     name: string;                       // Name of this field [required]
     readOnly?: boolean;                 // Mark field as read only? [false]
     register: UseFormRegister<any>;     // register object from useForm() // TODO - <any> ???
+    type?: "date" | "hidden" | "month" | "number" | "password" | "text" | "time";
+                                        // Input field type [text]
     valid?: string;                     // Help message for valid input [none]
 }
 
@@ -46,6 +48,7 @@ const TextField = (props: Props) => {
                 isInvalid={!!props.errors[props.name]}
                 isValid={!props.errors[props.name]}
                 readOnly={(props.readOnly !== undefined) ? props.readOnly : undefined}
+                type={props.type ? props.type : undefined}
                 {...props.register(props.name)}
             />
             {(props.valid) ? (

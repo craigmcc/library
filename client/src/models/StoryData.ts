@@ -13,7 +13,12 @@ class StoryData {
         this.libraryId = data.libraryId ? data.libraryId : -1;
         this.name = data.name ? data.name : null;
         this.notes = data.notes ? data.notes : null;
-        this.ordinal = this.calculateOrdinal(data);
+        this.ordinal = 0;
+        if (data.ordinal) {
+            this.ordinal = data.ordinal;
+        } else if (data.SeriesStory && data.SeriesStory.ordinal) {
+            this.ordinal = data.SeriesStory.ordinal;
+        }
     }
 
     id: number;
@@ -23,16 +28,6 @@ class StoryData {
     name: string;
     notes: string;
     ordinal: number;
-
-    private calculateOrdinal(data: any): number {
-        if (data.ordinal) {
-            return data.ordinal;
-        } else if (data.SeriesStory && data.SeriesStory.ordinal) {
-            return data.SeriesStory.ordinal;
-        } else {
-            return 0;
-        }
-    }
 
 }
 

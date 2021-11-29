@@ -43,6 +43,7 @@ export interface Props {
     handleShowSeries?: HandleStory;     // Handle request to show related Stories [not allowed]
     handleShowVolumes?: HandleStory;    // Handle request to show related Volumes [not allowed]
     parent: Parent;                     // Parent object for Stories
+    showOrdinal?: boolean;              // Show the Ordinal field? [false]
 }
 
 // Component Details ---------------------------------------------------------
@@ -288,6 +289,9 @@ const StoryOptions = (props: Props) => {
                     </tr>
                     <tr className="table-secondary">
                         <th scope="col">Name</th>
+                        {(props.showOrdinal) ? (
+                            <th scope="col">Ordinal</th>
+                        ) : null }
                         <th scope="col">Authors</th>
                         <th scope="col">Active</th>
                         <th scope="col">Notes</th>
@@ -307,16 +311,21 @@ const StoryOptions = (props: Props) => {
                             >
                                 {story._title}
                             </td>
-                            <td key={1000 + (rowIndex * 100) + 2}>
+                            {(props.showOrdinal) ? (
+                                <td key={1000 + (rowIndex * 100) + 2}>
+                                    {story.ordinal}
+                                </td>
+                            ) : null}
+                            <td key={1000 + (rowIndex * 100) + 3}>
                                 {authorsNames(story.authors)}
                             </td>
-                            <td key={1000 + (rowIndex * 100) + 3}>
+                            <td key={1000 + (rowIndex * 100) + 4}>
                                 {listValue(story.active)}
                             </td>
-                            <td key={1000 + (rowIndex * 100) + 4}>
+                            <td key={1000 + (rowIndex * 100) + 5}>
                                 {story.notes}
                             </td>
-                            <td key={1000 + (rowIndex * 100) + 5}>
+                            <td key={1000 + (rowIndex * 100) + 6}>
                                 {(props.handleEdit) ? (
                                     <Button
                                         className="me-1"
