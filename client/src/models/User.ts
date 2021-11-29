@@ -2,16 +2,14 @@
 
 // User allowed to log in to this application, with specified scope permissions.
 
-// External Modules ----------------------------------------------------------
-
 // Internal Modules ----------------------------------------------------------
-
-// Public Objects ------------------------------------------------------------
 
 import AccessToken from "./AccessToken";
 import RefreshToken from "./RefreshToken";
 import UserData from "./UserData";
 import * as ToModel from "../util/ToModel";
+
+// Public Objects ------------------------------------------------------------
 
 export const USERS_BASE = "/users";
 
@@ -32,8 +30,8 @@ class User extends UserData {
     accessTokens?: AccessToken[];
     refreshTokens?: RefreshToken[];
 
-    _model!: string;
-    _title!: string;
+    _model: string;
+    _title: string;
 
 }
 

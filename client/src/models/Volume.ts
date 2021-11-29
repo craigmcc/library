@@ -3,8 +3,6 @@
 // Physical or electronic published unit, written by one or more Authors,
 // and containing one or more Stories.
 
-// External Modules ----------------------------------------------------------
-
 // Internal Modules ----------------------------------------------------------
 
 import Author from "./Author";
@@ -36,8 +34,8 @@ class Volume extends VolumeData {
     library?: Library;
     stories?: Story[];
 
-    _model!: string;
-    _title!: string;
+    _model: string;
+    _title: string;
 
 }
 

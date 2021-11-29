@@ -2,10 +2,9 @@
 
 // Contributor to one or more series, stories, and/or volumes.
 
-// External Modules ----------------------------------------------------------
-
 // Internal Modules ----------------------------------------------------------
 
+import AuthorData from "./AuthorData";
 import Library from "./Library";
 import Series from "./Series";
 import Story from "./Story";
@@ -16,17 +15,11 @@ import * as ToModel from "../util/ToModel";
 
 export const AUTHORS_BASE = "/authors";
 
-class Author {
+class Author extends AuthorData {
 
     constructor(data: any = {}) {
 
-        this.id = data.id ? data.id : -1;
-        this.active = (data.active !== undefined) ? data.active : true;
-        this.firstName = data.firstName ? data.firstName : null;
-        this.lastName = data.lastName ? data.lastName : null;
-        this.libraryId = data.libraryId ? data.libraryId : null;
-        this.notes = data.notes;
-        this.principal = this.calculatePrincipal(data);
+        super(data);
 
         this.library = data.library ? ToModel.LIBRARY(data.library) : undefined;
         this.series = data.series ? ToModel.SERIESES(data.series) : undefined;
@@ -38,35 +31,13 @@ class Author {
 
     }
 
-    id!: number;
-    active!: boolean;
-    firstName!: string;
-    lastName!: string;
-    libraryId!: number;
-    notes?: string;
-    principal!: boolean;
-
     library?: Library;
     series?: Series[];
     stories?: Story[];
     volumes?: Volume[];
 
-    _model!: string;
-    _title!: string;
-
-    private calculatePrincipal(data: any): boolean {
-        if (data.principal !== undefined) {
-            return data.principal;
-        } else if (data.AuthorSeries && (data.AuthorSeries.principal !== undefined)) {
-            return data.AuthorSeries.principal;
-        } else if (data.AuthorStory && (data.AuthorStory.principal !== undefined)) {
-            return data.AuthorStory.principal;
-        } else if (data.AuthorVolume && (data.AuthorVolume.principal !== undefined)) {
-            return data.AuthorVolume.principal;
-        } else {
-            return false;
-        }
-    }
+    _model: string;
+    _title: string;
 
 }
 

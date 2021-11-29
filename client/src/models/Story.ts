@@ -3,13 +3,12 @@
 // Individual story or novel, may be a participant in one or more Series,
 // published in one or more Volumes, and written by one or more Authors.
 
-// External Modules ----------------------------------------------------------
-
 // Internal Modules ----------------------------------------------------------
 
 import Author from "./Author";
 import Library from "./Library";
 import Series from "./Series";
+import StoryData from "./StoryData";
 import Volume from "./Volume";
 import * as ToModel from "../util/ToModel";
 
@@ -17,17 +16,11 @@ import * as ToModel from "../util/ToModel";
 
 export const STORIES_BASE = "/stories";
 
-class Story {
+class Story extends StoryData {
 
     constructor(data: any = {}) {
 
-        this.id = data.id ? data.id : -1;
-        this.active = (data.active !== undefined) ? data.active : true;
-        this.copyright = data.copyright ? data.copyright : null;
-        this.libraryId = data.libraryId ? data.libraryId : -1;
-        this.name = data.name ? data.name : null;
-        this.notes = data.notes ? data.notes : null;
-        this.ordinal = this.calculateOrdinal(data);
+        super(data);
 
         this.authors = data.authors ? ToModel.AUTHORS(data.authors) : undefined;
         this.library = data.library ? ToModel.LIBRARY(data.library) : undefined;
@@ -39,31 +32,13 @@ class Story {
 
     }
 
-    id!: number;
-    active!: boolean;
-    copyright?: string;
-    libraryId!: number;
-    name!: string;
-    notes?: string;
-    ordinal!: number;
-
     authors?: Author[];
     library?: Library;
     series?: Series[];
     volumes?: Volume[];
 
-    _model!: string;
-    _title!: string;
-
-    private calculateOrdinal(data: any): number {
-        if (data.ordinal) {
-            return data.ordinal;
-        } else if (data.SeriesStory && data.SeriesStory.ordinal) {
-            return data.SeriesStory.ordinal;
-        } else {
-            return 0;
-        }
-    }
+    _model: string;
+    _title: string;
 
 }
 
