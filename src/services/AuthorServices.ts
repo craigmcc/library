@@ -80,7 +80,7 @@ class AuthorServices extends BaseChildServices<Author, Library> {
         await this.read("AuthorServices.seriesInclude", libraryId, authorId);
         const series = await SeriesServices.read("AuthorServices.seriesInclude", libraryId, seriesId);
         // @ts-ignore
-        await AuthorSeries.create({
+        await AuthorSeries.upsert({
             authorId: authorId,
             seriesId: seriesId,
             principal: principal,
@@ -109,7 +109,7 @@ class AuthorServices extends BaseChildServices<Author, Library> {
         await this.read("AuthorServices.storiesInclude", libraryId, authorId);
         const story = await StoryServices.read("AuthorServices.storiesInclude", libraryId, storyId);
         // @ts-ignore
-        await AuthorStory.create({
+        await AuthorStory.upsert({
             authorId: authorId,
             storyId: storyId,
             principal: principal,
@@ -138,7 +138,7 @@ class AuthorServices extends BaseChildServices<Author, Library> {
         await this.read("AuthorServices.volumesInclude", libraryId, authorId);
         const volume = await VolumeServices.read("AuthorServices.volumesInclude", libraryId, volumeId);
         // @ts-ignore
-        await AuthorVolume.create({
+        await AuthorVolume.upsert({
             authorId: authorId,
             volumeId: volumeId,
             principal: principal,

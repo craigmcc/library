@@ -153,6 +153,9 @@ const AuthorSegment = (props: Props) => {
             context: "AuthorSegment.handleInsert",
             author: Abridgers.AUTHOR(inserted),
         });
+        if (theAuthor.principal !== undefined) {
+            inserted.principal = theAuthor.principal;
+        }
         handleInclude(inserted);
         setView(View.OPTIONS);
     }

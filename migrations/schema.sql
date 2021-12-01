@@ -421,6 +421,30 @@ ALTER TABLE ONLY public.authors
 
 
 --
+-- Name: authors_series authors_series_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors_series
+    ADD CONSTRAINT authors_series_pkey PRIMARY KEY (author_id, series_id);
+
+
+--
+-- Name: authors_stories authors_stories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors_stories
+    ADD CONSTRAINT authors_stories_pkey PRIMARY KEY (author_id, story_id);
+
+
+--
+-- Name: authors_volumes authors_volumes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors_volumes
+    ADD CONSTRAINT authors_volumes_pkey PRIMARY KEY (author_id, volume_id);
+
+
+--
 -- Name: libraries libraries_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 

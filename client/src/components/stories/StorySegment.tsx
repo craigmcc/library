@@ -154,6 +154,9 @@ const StorySegment = (props: Props) => {
             context: "StorySegment.handleInsert",
             story: Abridgers.STORY(inserted),
         });
+        if (theStory.ordinal) {
+            inserted.ordinal = theStory.ordinal;
+        }
         handleInclude(inserted);
         setView(View.OPTIONS);
     }
