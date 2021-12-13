@@ -6,7 +6,7 @@
 
 import React, {useState} from "react";
 import {Formik, FormikHelpers, FormikValues} from "formik";
-import Button from "react-bootstrap/button";
+import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
