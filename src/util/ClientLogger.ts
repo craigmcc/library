@@ -18,14 +18,14 @@ const CLIENT_LOG = process.env.CLIENT_LOG ? process.env.CLIENT_LOG : "stderr";
 const logger = (CLIENT_LOG === "stderr") || (CLIENT_LOG === "stdout")
     ? require("pino")({
         base: null, // Remove "hostname", "name", and "pid"
-        level: (NODE_ENV === "production") ? "info" : "debug",
+        level: (NODE_ENV === "production") ? "debug" : "trace",
         timestamp: function (): string {
             return ',"time":"' + nowLocalISO() + '"';
         }
     }, (CLIENT_LOG === "stderr") ? process.stderr : process.stdout)
     : require("pino")({
         base: null, // Remove "hostname", "name", and "pid"
-        level: (NODE_ENV === "production") ? "info" : "debug",
+        level: (NODE_ENV === "production") ? "debug" : "trace",
         timestamp: function (): string {
             return ',"time":"' + nowLocalISO() + '"';
         }
