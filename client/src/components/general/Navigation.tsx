@@ -8,7 +8,7 @@ import React from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import {Link, Outlet} from "react-router-dom";
+import {NavLink, Outlet} from "react-router-dom";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -20,7 +20,13 @@ import LibrarySelector from "../libraries/LibrarySelector";
 function Navigation() {
     return (
         <>
-            <Navbar bg="primary" className="mb-3" sticky="top" variant="dark">
+            <Navbar
+                bg="primary"
+                className="mb-3"
+                collapseOnSelect
+                sticky="top"
+                variant="dark"
+            >
                 <Navbar.Brand className="ms-2" href="/">
                     <img
                         alt="Library Management"
@@ -33,18 +39,18 @@ function Navigation() {
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse>
                     <Nav className="me-auto">
-                        <Link className="nav-link" to="/">Home</Link>
-                        <Link className="nav-link" to="/authors">Authors</Link>
-                        <Link className="nav-link" to="/series">Series</Link>
-                        <Link className="nav-link" to="/stories">Stories</Link>
-                        <Link className="nav-link" to="/volumes">Volumes</Link>
+                        <NavLink className="nav-link" to="/">Home</NavLink>
+                        <NavLink className="nav-link" to="/authors">Authors</NavLink>
+                        <NavLink className="nav-link" to="/series">Series</NavLink>
+                        <NavLink className="nav-link" to="/stories">Stories</NavLink>
+                        <NavLink className="nav-link" to="/volumes">Volumes</NavLink>
                         <NavDropdown id="admin" title="Admin">
-                            <Link to="/libraries" data-rr-ui-dropdown-item className="dropdown-item">
-                                Libraries
-                            </Link>
-                            <Link to="/users" data-rr-ui-dropdown-item className="dropdown-item">
-                                Users
-                            </Link>
+                            <NavDropdown.Item>
+                                <NavLink to="/libraries">Libraries</NavLink>
+                            </NavDropdown.Item>
+                            <NavDropdown.Item>
+                                <NavLink to="/users">Users</NavLink>
+                            </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
                     <LoggedInUser/>
