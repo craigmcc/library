@@ -42,7 +42,7 @@ const UserSegment = () => {
 
     useEffect(() => {
 
-        logger.info({
+        logger.debug({
             context: "UserSegment.useEffect",
             user: Abridgers.USER(user),
             view: view.toString(),
@@ -65,7 +65,7 @@ const UserSegment = () => {
             scope: null,
             username: null,
         });
-        logger.info({
+        logger.debug({
             context: "UserSegment.handleAdd",
             user: theUser,
         });
@@ -75,7 +75,7 @@ const UserSegment = () => {
 
     // Handle selection of a User to edit details
     const handleEdit: HandleUser = (theUser) => {
-        logger.info({
+        logger.debug({
             context: "UserSegment.handleEdit",
             user: Abridgers.USER(theUser),
         });
@@ -87,7 +87,7 @@ const UserSegment = () => {
     const handleInsert: HandleUser = async (theUser) => {
         setTitle(theUser.username);
         const inserted = await mutateUser.insert(theUser);
-        logger.info({
+        logger.debug({
             context: "UserSegment.handleInsert",
             user: Abridgers.USER(inserted),
         })
@@ -98,7 +98,7 @@ const UserSegment = () => {
     const handleRemove: HandleUser = async (theUser) => {
         setTitle(theUser.username);
         const removed = await mutateUser.remove(theUser);
-        logger.info({
+        logger.debug({
             context: "UserSegment.remove",
             user: Abridgers.USER(removed),
         });
@@ -107,7 +107,7 @@ const UserSegment = () => {
 
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "UserSegment.handleReturn",
         });
         setView(View.OPTIONS);
@@ -117,7 +117,7 @@ const UserSegment = () => {
     const handleUpdate: HandleUser = async (theUser) => {
         setTitle(theUser.username);
         const updated = await mutateUser.update(theUser);
-        logger.info({
+        logger.debug({
             context: "UserSegment.handleUpdate",
             user: Abridgers.USER(updated),
         })

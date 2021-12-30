@@ -71,7 +71,7 @@ const SeriesOptions = (props: Props) => {
     });
 
     useEffect(() => {
-        logger.info({
+        logger.debug({
             context: "SeriesOptions.useEffect",
             library: Abridgers.LIBRARY(libraryContext.library),
             parent: Abridgers.ANY(props.parent),

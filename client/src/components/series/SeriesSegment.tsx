@@ -56,7 +56,7 @@ const SeriesSegment = (props: Props) => {
     });
 
     useEffect(() => {
-        logger.info({
+        logger.debug({
             context: "SeriesSegment.useEffect",
             library: libraryContext.library.id > 0 ? Abridgers.LIBRARY(libraryContext.library) : undefined,
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
@@ -84,7 +84,7 @@ const SeriesSegment = (props: Props) => {
             name: null,
             notes: null,
         });
-        logger.info({
+        logger.debug({
             context: "SeriesSegment.handleAdd",
             series: theSeries,
         });
@@ -94,7 +94,7 @@ const SeriesSegment = (props: Props) => {
 
     // Go back to the ancestor parent, if any
     const handleBack: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "SeriesSegment.handleBack"
         });
         setView(View.OPTIONS);
@@ -105,7 +105,7 @@ const SeriesSegment = (props: Props) => {
 
     // Handle selection of a Series to edit details
     const handleEdit: HandleSeries = (theSeries) => {
-        logger.info({
+        logger.debug({
             context: "SeriesSegment.handleEdit",
             series: Abridgers.SERIES(theSeries),
         });
@@ -115,7 +115,7 @@ const SeriesSegment = (props: Props) => {
 
     // Handle excluding a Series from its parent
     const handleExclude: HandleSeries = async (theSeries) => {
-        logger.info({
+        logger.debug({
             context: "SeriesSegment.handleExclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             series: Abridgers.SERIES(theSeries),
@@ -130,7 +130,7 @@ const SeriesSegment = (props: Props) => {
 
     // Handle including a Series into its Ancestor
     const handleInclude: HandleSeries = async (theSeries) => {
-        logger.info({
+        logger.debug({
             context: "SeriesSegment.handleInclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             series: Abridgers.SERIES(theSeries),
@@ -147,7 +147,7 @@ const SeriesSegment = (props: Props) => {
     const handleInsert: HandleSeries = async (theSeries) => {
         setTitle(theSeries._title);
         const inserted = await mutateSeries.insert(theSeries);
-        logger.info({
+        logger.debug({
             context: "SeriesSegment.handleInsert",
             series: Abridgers.SERIES(inserted),
         });
@@ -159,7 +159,7 @@ const SeriesSegment = (props: Props) => {
     const handleRemove: HandleSeries = async (theSeries) => {
         setTitle(theSeries._title);
         const removed = await mutateSeries.remove(theSeries);
-        logger.info({
+        logger.debug({
             context: "SeriesSegment.handleRemove",
             series: Abridgers.SERIES(removed),
         });
@@ -168,7 +168,7 @@ const SeriesSegment = (props: Props) => {
 
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "SeriesSegment.handleReturn",
         });
         setView(View.OPTIONS);
@@ -176,7 +176,7 @@ const SeriesSegment = (props: Props) => {
 
     // Handle request to show AuthorSegment for a parent Series
     const handleShowAuthors: HandleSeries = (theSeries) => {
-        logger.info({
+        logger.debug({
             context: "SeriesSegment.handleShowAuthors",
             series: Abridgers.SERIES(theSeries),
         });
@@ -186,7 +186,7 @@ const SeriesSegment = (props: Props) => {
 
     // Handle request to show StorySegment for a parent Series
     const handleShowStories: HandleSeries = (theSeries) => {
-        logger.info({
+        logger.debug({
             context: "SeriesSegment.handleShowStories",
             series: Abridgers.SERIES(theSeries),
         });
@@ -198,7 +198,7 @@ const SeriesSegment = (props: Props) => {
     const handleUpdate: HandleSeries = async (theSeries) => {
         setTitle(theSeries._title);
         const updated = await mutateSeries.update(theSeries);
-        logger.info({
+        logger.debug({
             context: "SeriesSegment.handleUpdate",
             series: Abridgers.SERIES(updated),
         });

@@ -54,7 +54,7 @@ const UserOptions = (props: Props) => {
 
     useEffect(() => {
 
-        logger.info({
+        logger.debug({
             context: "UserOptions.useEffect",
             active: active,
             searchText: searchText,

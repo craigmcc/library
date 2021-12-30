@@ -59,7 +59,7 @@ const StorySegment = (props: Props) => {
     });
 
     useEffect(() => {
-        logger.info({
+        logger.debug({
             context: "StorySegment.useEffect",
             library: libraryContext.library.id > 0 ? Abridgers.LIBRARY(libraryContext.library) : undefined,
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
@@ -87,7 +87,7 @@ const StorySegment = (props: Props) => {
             name: null,
             notes: null,
         });
-        logger.info({
+        logger.debug({
             context: "StorySegment.handleAdd",
             story: theStory,
         });
@@ -97,7 +97,7 @@ const StorySegment = (props: Props) => {
 
     // Go back to the ancestor parent, if any
     const handleBack: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "StorySegment.handleBack"
         });
         setView(View.OPTIONS);
@@ -108,7 +108,7 @@ const StorySegment = (props: Props) => {
 
     // Handle selection of a Story to edit details
     const handleEdit: HandleStory = (theStory) => {
-        logger.info({
+        logger.debug({
             context: "StorySegment.handleEdit",
             story: Abridgers.STORY(theStory),
         });
@@ -118,7 +118,7 @@ const StorySegment = (props: Props) => {
 
     // Handle excluding a Story from its parent
     const handleExclude: HandleStory = async (theStory) => {
-        logger.info({
+        logger.debug({
             context: "StorySegment.handleExclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             story: Abridgers.STORY(theStory),
@@ -133,7 +133,7 @@ const StorySegment = (props: Props) => {
 
     // Handle including a Story into its Ancestor
     const handleInclude: HandleStory = async (theStory) => {
-        logger.info({
+        logger.debug({
             context: "StorySegment.handleInclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             story: Abridgers.STORY(theStory),
@@ -150,7 +150,7 @@ const StorySegment = (props: Props) => {
     const handleInsert: HandleStory = async (theStory) => {
         setTitle(theStory._title);
         const inserted = await mutateStory.insert(theStory);
-        logger.info({
+        logger.debug({
             context: "StorySegment.handleInsert",
             story: Abridgers.STORY(inserted),
         });
@@ -165,7 +165,7 @@ const StorySegment = (props: Props) => {
     const handleRemove: HandleStory = async (theStory) => {
         setTitle(theStory._title);
         const removed = await mutateStory.remove(theStory);
-        logger.info({
+        logger.debug({
             context: "StorySegment.handleRemove",
             story: Abridgers.STORY(removed),
         });
@@ -174,7 +174,7 @@ const StorySegment = (props: Props) => {
 
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "StorySegment.handleReturn",
         });
         setView(View.OPTIONS);
@@ -182,7 +182,7 @@ const StorySegment = (props: Props) => {
 
     // Handle request to show AuthorSegment for a parent Story
     const handleShowAuthors: HandleStory = (theStory) => {
-        logger.info({
+        logger.debug({
             context: "StorySegment.handleShowAuthors",
             story: Abridgers.STORY(theStory),
         });
@@ -192,7 +192,7 @@ const StorySegment = (props: Props) => {
 
     // Handle request to show SeriesSegment for a parent Story
     const handleShowSeries: HandleStory = (theStory) => {
-        logger.info({
+        logger.debug({
             context: "StorySegment.handleShowSeries",
             story: Abridgers.STORY(theStory),
         });
@@ -202,7 +202,7 @@ const StorySegment = (props: Props) => {
 
     // Handle request to show VolumeSegment for a parent Story
     const handleShowVolumes: HandleStory = (theStory) => {
-        logger.info({
+        logger.debug({
             context: "StorySegment.handleShowVolumes",
             story: Abridgers.STORY(theStory),
         });
@@ -214,7 +214,7 @@ const StorySegment = (props: Props) => {
     const handleUpdate: HandleStory = async (theStory) => {
         setTitle(theStory._title);
         const updated = await mutateStory.update(theStory);
-        logger.info({
+        logger.debug({
             context: "StorySegment.handleUpdate",
             story: Abridgers.STORY(updated),
         });

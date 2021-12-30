@@ -56,7 +56,7 @@ const VolumeSegment = (props: Props) => {
     });
 
     useEffect(() => {
-        logger.info({
+        logger.debug({
             context: "VolumeSegment.useEffect",
             library: libraryContext.library.id > 0 ? Abridgers.LIBRARY(libraryContext.library) : undefined,
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
@@ -89,7 +89,7 @@ const VolumeSegment = (props: Props) => {
             read: false,
             type: "Single",
         });
-        logger.info({
+        logger.debug({
             context: "VolumeSegment.handleAdd",
             volume: theVolume,
         });
@@ -99,7 +99,7 @@ const VolumeSegment = (props: Props) => {
 
     // Go back to the ancestor parent, if any
     const handleBack: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "VolumeSegment.handleBack"
         });
         setView(View.OPTIONS);
@@ -110,7 +110,7 @@ const VolumeSegment = (props: Props) => {
 
     // Handle selection of a Volume to edit details
     const handleEdit: HandleVolume = (theVolume) => {
-        logger.info({
+        logger.debug({
             context: "VolumeSegment.handleEdit",
             volume: Abridgers.VOLUME(theVolume),
         });
@@ -120,7 +120,7 @@ const VolumeSegment = (props: Props) => {
 
     // Handle excluding a Volume from its parent
     const handleExclude: HandleVolume = async (theVolume) => {
-        logger.info({
+        logger.debug({
             context: "VolumeSegment.handleExclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             volume: Abridgers.VOLUME(theVolume),
@@ -135,7 +135,7 @@ const VolumeSegment = (props: Props) => {
 
     // Handle including a Volume into its Ancestor
     const handleInclude: HandleVolume = async (theVolume) => {
-        logger.info({
+        logger.debug({
             context: "VolumeSegment.handleInclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             volume: Abridgers.VOLUME(theVolume),
@@ -152,7 +152,7 @@ const VolumeSegment = (props: Props) => {
     const handleInsert: HandleVolume = async (theVolume) => {
         setTitle(theVolume._title);
         const inserted = await mutateVolume.insert(theVolume);
-        logger.info({
+        logger.debug({
             context: "VolumeSegment.handleInsert",
             volume: Abridgers.VOLUME(inserted),
         });
@@ -164,7 +164,7 @@ const VolumeSegment = (props: Props) => {
     const handleRemove: HandleVolume = async (theVolume) => {
         setTitle(theVolume._title);
         const removed = await mutateVolume.remove(theVolume);
-        logger.info({
+        logger.debug({
             context: "VolumeSegment.handleRemove",
             volume: Abridgers.VOLUME(removed),
         });
@@ -173,7 +173,7 @@ const VolumeSegment = (props: Props) => {
 
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "VolumeSegment.handleReturn",
         });
         setView(View.OPTIONS);
@@ -181,7 +181,7 @@ const VolumeSegment = (props: Props) => {
 
     // Handle request to show AuthorSegment for a parent Volume
     const handleShowAuthors: HandleVolume = (theVolume) => {
-        logger.info({
+        logger.debug({
             context: "VolumeSegment.handleShowAuthors",
             volume: Abridgers.VOLUME(theVolume),
         });
@@ -191,7 +191,7 @@ const VolumeSegment = (props: Props) => {
 
     // Handle request to show StorySegment for a parent Volume
     const handleShowStories: HandleVolume = (theVolume) => {
-        logger.info({
+        logger.debug({
             context: "VolumeSegment.handleShowStories",
             volume: Abridgers.VOLUME(theVolume),
         });
@@ -203,7 +203,7 @@ const VolumeSegment = (props: Props) => {
     const handleUpdate: HandleVolume = async (theVolume) => {
         setTitle(theVolume._title);
         const updated = await mutateVolume.update(theVolume);
-        logger.info({
+        logger.debug({
             context: "VolumeSegment.handleUpdate",
             volume: Abridgers.VOLUME(updated),
         });

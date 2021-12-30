@@ -44,7 +44,7 @@ const LibrarySegment = () => {
 
     useEffect(() => {
 
-        logger.info({
+        logger.debug({
             context: "LibrarySegment.useEffect",
             library: Abridgers.LIBRARY(library),
             view: view.toString(),
@@ -66,7 +66,7 @@ const LibrarySegment = () => {
             notes: null,
             scope: null,
         });
-        logger.info({
+        logger.debug({
             context: "LibrarySegment.handleAdd",
             library: theLibrary,
         });
@@ -76,7 +76,7 @@ const LibrarySegment = () => {
 
     // Handle selection of a Library to edit details
     const handleEdit: HandleLibrary = (theLibrary) => {
-        logger.info({
+        logger.debug({
             context: "LibrarySegment.handleEdit",
             library: Abridgers.LIBRARY(theLibrary),
         });
@@ -88,7 +88,7 @@ const LibrarySegment = () => {
     const handleInsert: HandleLibrary = async (theLibrary) => {
         setTitle(theLibrary._title);
         const inserted = await mutateLibrary.insert(theLibrary);
-        logger.info({
+        logger.debug({
             context: "LibrarySegment.handleInsert",
             library: Abridgers.LIBRARY(inserted),
         });
@@ -100,7 +100,7 @@ const LibrarySegment = () => {
     const handleRemove: HandleLibrary = async (theLibrary) => {
         setTitle(theLibrary._title);
         const removed = await mutateLibrary.remove(theLibrary);
-        logger.info({
+        logger.debug({
             context: "LibrarySegment.handleRemove",
             library: Abridgers.LIBRARY(removed),
         });
@@ -110,7 +110,7 @@ const LibrarySegment = () => {
 
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "LibrarySegment.handleReturn",
         });
         setView(View.OPTIONS);
@@ -120,7 +120,7 @@ const LibrarySegment = () => {
     const handleUpdate: HandleLibrary = async (theLibrary) => {
         setTitle(theLibrary._title);
         const updated = await mutateLibrary.update(theLibrary);
-        logger.info({
+        logger.debug({
             context: "LibrarySegment.handleUpdate",
             library: Abridgers.LIBRARY(updated),
         });

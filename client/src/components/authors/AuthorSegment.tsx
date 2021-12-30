@@ -58,7 +58,7 @@ const AuthorSegment = (props: Props) => {
     });
 
     useEffect(() => {
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.useEffect",
             library: libraryContext.library.id > 0 ? Abridgers.LIBRARY(libraryContext.library) : undefined,
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
@@ -86,7 +86,7 @@ const AuthorSegment = (props: Props) => {
             libraryId: libraryContext.library.id,
             notes: null,
         });
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.handleAdd",
             author: theAuthor,
         });
@@ -96,7 +96,7 @@ const AuthorSegment = (props: Props) => {
 
     // Go back to the ancestor parent, if any
     const handleBack: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.handleBack"
         });
         setView(View.OPTIONS);
@@ -107,7 +107,7 @@ const AuthorSegment = (props: Props) => {
 
     // Handle selection of an Author to edit details
     const handleEdit: HandleAuthor = (theAuthor) => {
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.handleEdit",
             author: Abridgers.AUTHOR(theAuthor),
         });
@@ -117,7 +117,7 @@ const AuthorSegment = (props: Props) => {
 
     // Handle excluding an Author from its parent
     const handleExclude: HandleAuthor = async (theAuthor) => {
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.handleExclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             author: Abridgers.AUTHOR(theAuthor),
@@ -132,7 +132,7 @@ const AuthorSegment = (props: Props) => {
 
     // Handle including a Author into its Ancestor
     const handleInclude: HandleAuthor = async (theAuthor) => {
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.handleInclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             author: Abridgers.AUTHOR(theAuthor),
@@ -149,7 +149,7 @@ const AuthorSegment = (props: Props) => {
     const handleInsert: HandleAuthor = async (theAuthor) => {
         setTitle(theAuthor._title);
         const inserted = await mutateAuthor.insert(theAuthor);
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.handleInsert",
             author: Abridgers.AUTHOR(inserted),
         });
@@ -164,7 +164,7 @@ const AuthorSegment = (props: Props) => {
     const handleRemove: HandleAuthor = async (theAuthor) => {
         setTitle(theAuthor._title);
         const removed = await mutateAuthor.remove(theAuthor);
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.handleRemove",
             author: Abridgers.AUTHOR(removed),
         });
@@ -173,7 +173,7 @@ const AuthorSegment = (props: Props) => {
 
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.handleReturn",
         });
         setView(View.OPTIONS);
@@ -181,7 +181,7 @@ const AuthorSegment = (props: Props) => {
 
     // Handle request to show SeriesSegment for a parent Author
     const handleShowSeries: HandleAuthor = (theAuthor) => {
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.handleShowSeries",
             author: Abridgers.AUTHOR(theAuthor),
         });
@@ -191,7 +191,7 @@ const AuthorSegment = (props: Props) => {
 
     // Handle request to show StorySegment for a parent Author
     const handleShowStories: HandleAuthor = (theAuthor) => {
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.handleShowStories",
             author: Abridgers.AUTHOR(theAuthor),
         });
@@ -201,7 +201,7 @@ const AuthorSegment = (props: Props) => {
 
     // Handle request to show VolumeSegment for a parent Author
     const handleShowVolumes: HandleAuthor = (theAuthor) => {
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.handleShowVolumes",
             author: Abridgers.AUTHOR(theAuthor),
         });
@@ -213,7 +213,7 @@ const AuthorSegment = (props: Props) => {
     const handleUpdate: HandleAuthor = async (theAuthor) => {
         setTitle(theAuthor._title);
         const updated = await mutateAuthor.update(theAuthor);
-        logger.info({
+        logger.debug({
             context: "AuthorSegment.handleUpdate",
             author: Abridgers.AUTHOR(updated),
         });

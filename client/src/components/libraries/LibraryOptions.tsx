@@ -56,7 +56,7 @@ const LibraryOptions = (props: Props) => {
 
     useEffect(() => {
 
-        logger.info({
+        logger.debug({
             context: "LibraryOptions.useEffect",
             active: active,
             name: searchText,
