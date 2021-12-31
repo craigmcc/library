@@ -5,25 +5,28 @@
 // External Modules ----------------------------------------------------------
 
 import React, {useState} from "react";
-import {Formik,FormikHelpers,FormikValues} from "formik";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
+import {SubmitHandler, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
 // Internal Modules ----------------------------------------------------------
 
+import CheckBoxField from "../general/CheckBoxField";
+import TextField from "../general/TextField";
 import {HandleAction, HandleLibrary} from "../../types";
 import Library from "../../models/Library";
+import LibraryData from "../../models/LibraryData";
 import {
     validateLibraryNameUnique,
     validateLibraryScopeUnique
 } from "../../util/AsyncValidators";
 import * as ToModel from "../../util/ToModel";
-import {toEmptyStrings, toNullValues} from "../../util/Transformations";
 import {validateLibraryScope} from "../../util/Validators";
 
 // Incoming Properties ------------------------------------------------------
@@ -42,16 +45,7 @@ export interface Props {
 const LibraryDetails = (props: Props) => {
 
     const [adding] = useState<boolean>(props.library.id < 0);
-    const [initialValues] = useState(toEmptyStrings(props.library));
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
-
-    const handleSubmit = (values: FormikValues, actions: FormikHelpers<FormikValues>): void => {
-        if (adding && props.handleInsert) {
-            props.handleInsert(ToModel.LIBRARY(toNullValues(values)));
-        } else if (!adding && props.handleUpdate) {
-            props.handleUpdate(ToModel.LIBRARY(toNullValues(values)));
-        }
-    }
 
     const onConfirm = (): void => {
         setShowConfirm(true);
@@ -68,32 +62,49 @@ const LibraryDetails = (props: Props) => {
         }
     }
 
-    const validationSchema = () => {
-        return Yup.object().shape({
-            active: Yup.boolean(),
-            name: Yup.string()
-                .required("Name is required")
-                .test("unique-name",
-                    "That name is already in use",
-                    async function (this) {
-                        return validateLibraryNameUnique(ToModel.LIBRARY(this.parent));
-                    }
-                ),
-            notes: Yup.string(),
-            scope: Yup.string()
-                .required("Scope is required")
-                .test("valid-scope",
-                    "Only alphanumeric (a-z, A-Z, 0-9) characters are allowed",
-                    function(value) {
-                        return validateLibraryScope(value);
-                    })
-                .test("unique-scope",
-                    "That scope is already in use",
-                    async function(value) {
-                        return validateLibraryScopeUnique(ToModel.LIBRARY(this.parent));
-                    }),
+    const onSubmit: SubmitHandler<LibraryData> = (values) => {
+        const theLibrary = new Library({
+            ...props.library,
+            ...values,
         });
+        if (adding && props.handleInsert) {
+            props.handleInsert(theLibrary);
+        } else if (!adding && props.handleUpdate) {
+            props.handleUpdate(theLibrary);
+        }
     }
+
+    const validationSchema = Yup.object().shape({
+        active: Yup.boolean(),
+        name: Yup.string()
+            .required("Name is required")
+            .test("unique-name",
+                "That name is already in use",
+                async function (this) {
+                    return validateLibraryNameUnique(ToModel.LIBRARY(this.parent));
+                }
+            ),
+        notes: Yup.string()
+            .nullable(),
+        scope: Yup.string()
+            .required("Scope is required")
+            .test("valid-scope",
+                "Only alphanumeric (a-z, A-Z, 0-9) characters are allowed",
+                function(value) {
+                    return validateLibraryScope(value);
+                })
+            .test("unique-scope",
+                "That scope is already in use",
+                async function(value) {
+                    return validateLibraryScopeUnique(ToModel.LIBRARY(this.parent));
+                }),
+    });
+
+    const {formState: {errors}, handleSubmit, register} = useForm<LibraryData>({
+        defaultValues: new LibraryData(props.library),
+        mode: "onBlur",
+        resolver: yupResolver(validationSchema),
+    });
 
     return (
 
@@ -121,112 +132,53 @@ const LibraryDetails = (props: Props) => {
                     </Col>
                 </Row>
 
-                <Formik
-                    initialValues={initialValues}
-                    onSubmit={(values, actions) => {
-                        handleSubmit(values, actions);
-                    }}
-                    validateOnBlur={true}
-                    validateOnChange={false}
-                    validationSchema={validationSchema}
-                >
-
-                    {( {
-                           errors,
-                           handleBlur,
-                           handleChange,
-                           handleSubmit,
-                           isSubmitting,
-                           isValid,
-                           touched,
-                           values,
-                       }) => (
-
                         <Form
                             id="LibraryDetails"
                             noValidate
-                            onSubmit={handleSubmit}
+                            onSubmit={handleSubmit(onSubmit)}
                         >
 
                             <Row className="g-3 mb-3" id="nameScopeRow">
-                                <Form.Group as={Col} controlId="name" id="nameGroup">
-                                    <Form.Label>Name:</Form.Label>
-                                    <Form.Control
-                                        autoFocus={(props.autoFocus !== undefined) ? props.autoFocus : undefined}
-                                        isInvalid={touched.name && !!errors.name}
-                                        isValid={!errors.name}
-                                        name="name"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        size="sm"
-                                        type="text"
-                                        value={values.name}
-                                    />
-                                    <Form.Control.Feedback type="valid">
-                                        Name of this Library (must be unique).
-                                    </Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.name}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                                <Form.Group as={Col} controlId="scope" id="scopeGroup">
-                                    <Form.Label>Scope:</Form.Label>
-                                    <Form.Control
-                                        isInvalid={touched.scope && !!errors.scope}
-                                        isValid={!errors.scope}
-                                        name="scope"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        size="sm"
-                                        type="text"
-                                        value={values.scope}
-                                    />
-                                    <Form.Control.Feedback type="valid">
-                                        Scope required to access this Library (must be alphanumeric and unique).
-                                    </Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.scope}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
+                                <TextField
+                                    autoFocus={(props.autoFocus !== undefined) ? props.autoFocus : undefined}
+                                    errors={errors}
+                                    label="Name:"
+                                    name="name"
+                                    register={register}
+                                    valid="Name of this Library (must be unique)."
+                                />
+                                <TextField
+                                    errors={errors}
+                                    label="Scope:"
+                                    name="scope"
+                                    register={register}
+                                    valid="Permission scope of this Library (must be unique)."
+                                />
                             </Row>
 
                             <Row className="g-3 mb-3" id="notesRow">
-                                <Form.Group as={Col} controlId="notes" id="notesGroup">
-                                    <Form.Label>Notes:</Form.Label>
-                                    <Form.Control
-                                        isInvalid={touched.notes && !!errors.notes}
-                                        isValid={!errors.notes}
-                                        name="notes"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        size="sm"
-                                        type="text"
-                                        value={values.notes}
-                                    />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.notes}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
+                                <TextField
+                                    errors={errors}
+                                    label="Notes:"
+                                    name="notes"
+                                    register={register}
+                                    valid="Miscellaneous notes about this Library."
+                                />
                             </Row>
 
                             <Row className="g-3 mb-3" id="activeRow">
-                                <Form.Group as={Col} controlId="active" id="activeGroup">
-                                    <Form.Check
-                                        feedback={errors.active}
-                                        defaultChecked={values.active}
-                                        id="active"
-                                        label="Active?"
-                                        name="active"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                    />
-                                </Form.Group>
+                                <CheckBoxField
+                                    errors={errors}
+                                    label="Active?"
+                                    name="active"
+                                    register={register}
+                                />
                             </Row>
 
-                            <Row className="g-3 mb-3">
-                                <Col className="text-start">
+                            <Row className="mb-3">
+                                <Col className="col-11">
                                     <Button
-                                        disabled={isSubmitting || !(props.handleInsert || props.handleUpdate)}
+                                        disabled={!props.handleInsert && !props.handleUpdate}
                                         size="sm"
                                         type="submit"
                                         variant="primary"
@@ -234,9 +186,9 @@ const LibraryDetails = (props: Props) => {
                                         Save
                                     </Button>
                                 </Col>
-                                <Col className="text-end">
+                                <Col className="col-1">
                                     <Button
-                                        disabled={(props.library.id < 0) || !props.handleRemove}
+                                        disabled={adding || (!props.handleRemove)}
                                         onClick={onConfirm}
                                         size="sm"
                                         type="button"
@@ -248,10 +200,6 @@ const LibraryDetails = (props: Props) => {
                             </Row>
 
                         </Form>
-
-                    )}
-
-                </Formik>
 
             </Container>
 

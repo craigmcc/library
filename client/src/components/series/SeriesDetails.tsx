@@ -28,7 +28,7 @@ import * as ToModel from "../../util/ToModel";
 // Property Details ----------------------------------------------------------
 
 export interface Props {
-    autoFocus?: boolean;                // Should the first element receive autofocus? [false]
+    autoFocus?: boolean;                // Should the first element receive autoFocus? [false]
     handleBack: HandleAction;           // Handle return to previous view
     handleInsert?: HandleSeries;        // Handle (Series) insert request [not allowed]
     handleRemove?: HandleSeries;        // Handle (Series) remove request [not allowed]
