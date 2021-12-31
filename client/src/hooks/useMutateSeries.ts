@@ -74,9 +74,9 @@ const useMutateSeries = (props: Props = {}): State => {
                 parent: Abridgers.ANY(theParent),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateSeries.exclude", error,{
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateSeries.exclude", anError,{
                 series: Abridgers.SERIES(theSeries),
                 parent: Abridgers.ANY(theParent),
                 url: url,
@@ -110,9 +110,9 @@ const useMutateSeries = (props: Props = {}): State => {
                 parent: Abridgers.ANY(theParent),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateSeries.include", error,{
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateSeries.include", anError,{
                 series: Abridgers.SERIES(theSeries),
                 parent: Abridgers.ANY(theParent),
                 url: url,
@@ -137,9 +137,9 @@ const useMutateSeries = (props: Props = {}): State => {
                 series: Abridgers.SERIES(inserted),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateSeries.insert", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateSeries.insert", anError, {
                 series: Abridgers.SERIES(theSeries),
             }, alertPopup);
         }
@@ -164,9 +164,9 @@ const useMutateSeries = (props: Props = {}): State => {
                 series: Abridgers.SERIES(removed),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateSeries.remove", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateSeries.remove", anError, {
                 series: ToModel.SERIES(theSeries),
                 url: url,
             }, alertPopup);
@@ -192,9 +192,9 @@ const useMutateSeries = (props: Props = {}): State => {
                 series: Abridgers.SERIES(updated),
                 url: url,
             }, alertPopup);
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateSeries.update", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateSeries.update", anError, {
                 series: ToModel.SERIES(theSeries),
                 url: url,
             }, alertPopup);

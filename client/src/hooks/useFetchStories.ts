@@ -122,9 +122,9 @@ const useFetchStories = (props: Props): State => {
                         loggedIn: loginContext.data.loggedIn,
                     });
                 }
-            } catch (error) {
-                setError(error as Error);
-                ReportError("useFetchStories.fetchStories", error, {
+            } catch (anError) {
+                setError(anError as Error);
+                ReportError("useFetchStories.fetchStories", anError, {
                     url: url,
                     loggedIn: loginContext.data.loggedIn,
                 }, alertPopup);

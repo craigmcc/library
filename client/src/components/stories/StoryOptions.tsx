@@ -116,7 +116,7 @@ const StoryOptions = (props: Props) => {
             //fetchStories.refresh();
             //fetchFocused.refresh();
             //setRefresh(true);
-            // TODO - Messing with fetchFocused.focused is really lame
+            // NOTE - Messing with fetchFocused.focused is really lame
             // @ts-ignore
             if (fetchFocused.focused.stories) {
                 let found = -1;
@@ -141,7 +141,7 @@ const StoryOptions = (props: Props) => {
             //fetchStories.refresh();
             //fetchFocused.refresh();
             //setRefresh(true);
-            // TODO - Messing with fetchFocused.focused is really lame
+            // NOTE - Messing with fetchFocused.focused is really lame
             // @ts-ignore
             if (fetchFocused.focused.stories) {
                 // @ts-ignore

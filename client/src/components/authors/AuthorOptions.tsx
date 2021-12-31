@@ -116,7 +116,7 @@ const AuthorOptions = (props: Props) => {
             //fetchAuthors.refresh();
             //fetchFocused.refresh();
             //setRefresh(true);
-            // TODO - Messing with fetchFocused.focused is really lame
+            // NOTE - Messing with fetchFocused.focused is really lame
             // @ts-ignore
             if (fetchFocused.focused.authors) {
                 let found = -1;
@@ -140,7 +140,7 @@ const AuthorOptions = (props: Props) => {
             //fetchAuthors.refresh();
             //fetchFocused.refresh();
             //setRefresh(true);
-            // TODO - Messing with fetchFocused.focused is really lame
+            // NOTE - Messing with fetchFocused.focused is really lame
             // @ts-ignore
             if (fetchFocused.focused.authors) {
                 // @ts-ignore

@@ -11,8 +11,6 @@ import * as ToModel from "../util/ToModel";
 
 // Public Objects ------------------------------------------------------------
 
-//export const ACCESS_TOKENS = "/accessTokens";
-
 class AccessToken {
 
     constructor (data: any = {}) {

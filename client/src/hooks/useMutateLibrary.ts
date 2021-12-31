@@ -58,9 +58,9 @@ const useMutateLibrary = (props: Props = {}): State => {
                 library: Abridgers.LIBRARY(inserted),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateLibrary.insert", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateLibrary.insert", anError, {
                 library: theLibrary,
                 url: url,
             }, alertPopup);
@@ -86,9 +86,9 @@ const useMutateLibrary = (props: Props = {}): State => {
                 library: Abridgers.LIBRARY(removed),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateLibrary.remove", error, {
+        } catch (enError) {
+            setError(enError as Error);
+            ReportError("useMutateLibrary.remove", enError, {
                 library: theLibrary,
                 url: url,
             }, alertPopup);
@@ -114,9 +114,9 @@ const useMutateLibrary = (props: Props = {}): State => {
                 library: Abridgers.LIBRARY(updated),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateLibrary.update", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateLibrary.update", anError, {
                 library: Abridgers.LIBRARY(theLibrary),
             }, alertPopup);
         }

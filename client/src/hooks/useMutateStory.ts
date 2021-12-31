@@ -79,9 +79,9 @@ const useMutateStory = (props: Props = {}): State => {
                 parent: Abridgers.ANY(theParent),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateStory.exclude", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateStory.exclude", anError, {
                 author: Abridgers.STORY(theStory),
                 parent: Abridgers.ANY(theParent),
                 url: url,
@@ -119,9 +119,9 @@ const useMutateStory = (props: Props = {}): State => {
                 parent: Abridgers.ANY(theParent),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateStory.include", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateStory.include", anError, {
                 story: Abridgers.STORY(theStory),
                 parent: Abridgers.ANY(theParent),
                 url: url,
@@ -146,9 +146,9 @@ const useMutateStory = (props: Props = {}): State => {
                 story: Abridgers.STORY(inserted),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateStory.insert", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateStory.insert", anError, {
                 story: Abridgers.STORY(theStory),
                 url: url,
             }, alertPopup);
@@ -174,9 +174,9 @@ const useMutateStory = (props: Props = {}): State => {
                 story: Abridgers.STORY(removed),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateStory.remove", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateStory.remove", anError, {
                 story: ToModel.STORY(theStory),
                 url: url,
             }, alertPopup);
@@ -202,9 +202,9 @@ const useMutateStory = (props: Props = {}): State => {
                 story: Abridgers.STORY(updated),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateStory.update", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateStory.update", anError, {
                 story: Abridgers.STORY(theStory),
                 url: url,
             }, alertPopup);

@@ -11,8 +11,6 @@ import * as ToModel from "../util/ToModel";
 
 // Public Objects ------------------------------------------------------------
 
-//export const REFRESH_TOKENS = "/refreshTokens";
-
 class RefreshToken {
 
     constructor (data: any = {}) {

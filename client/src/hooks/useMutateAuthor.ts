@@ -65,9 +65,9 @@ const useMutateAuthor = (props: Props = {}): State => {
                 parent: Abridgers.ANY(theParent),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateAuthor.exclude", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateAuthor.exclude", anError, {
                 author: Abridgers.AUTHOR(theAuthor),
                 parent: Abridgers.ANY(theParent),
                 url: url,
@@ -94,9 +94,9 @@ const useMutateAuthor = (props: Props = {}): State => {
                 parent: Abridgers.ANY(theParent),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateAuthor.include", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateAuthor.include", anError, {
                 author: Abridgers.AUTHOR(theAuthor),
                 parent: Abridgers.ANY(theParent),
                 url: url,
@@ -121,9 +121,9 @@ const useMutateAuthor = (props: Props = {}): State => {
                 author: Abridgers.AUTHOR(inserted),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateAuthor.insert", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateAuthor.insert", anError, {
                 author: Abridgers.AUTHOR(theAuthor),
                 url: url,
             }, alertPopup);
@@ -149,9 +149,9 @@ const useMutateAuthor = (props: Props = {}): State => {
                 author: Abridgers.AUTHOR(removed),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateAuthor.remove", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateAuthor.remove", anError, {
                 author: Abridgers.AUTHOR(theAuthor),
                 url: url,
             }, alertPopup);
@@ -177,9 +177,9 @@ const useMutateAuthor = (props: Props = {}): State => {
                 author: Abridgers.AUTHOR(updated),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateAuthor.update", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateAuthor.update", anError, {
                 author: Abridgers.AUTHOR(theAuthor),
                 url: url,
             }, alertPopup);

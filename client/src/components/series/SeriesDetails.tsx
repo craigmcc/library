@@ -80,7 +80,7 @@ const SeriesDetails = (props: Props) => {
             .test("unique-name",
                 "That name is already in use within this Library",
                 async function (this) {
-                    return await validateSeriesNameUnique(ToModel.SERIES(this.parent));
+                    return validateSeriesNameUnique(ToModel.SERIES(this.parent));
                 }),
         notes: Yup.string()
             .nullable(),

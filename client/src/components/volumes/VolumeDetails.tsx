@@ -104,7 +104,7 @@ const VolumeDetails = (props: Props) => {
             .test("unique-name",
                 "That name is already in use within this Library",
                 async function (this) {
-                    return await validateVolumeNameUnique(ToModel.VOLUME(this.parent));
+                    return validateVolumeNameUnique(ToModel.VOLUME(this.parent));
                 }),
         notes: Yup.string()
             .nullable(),

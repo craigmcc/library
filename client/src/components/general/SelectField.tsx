@@ -30,7 +30,7 @@ export interface Props {
     label: string;                      // Field label [required]
     name: string;                       // Name of this field [required]
     options: SelectOption[];            // Selection options to be displayed
-    register: UseFormRegister<any>;     // register object from useForm() // TODO - <any> ???
+    register: UseFormRegister<any>;     // register object from useForm() // NOTE - <any> ???
     valid?: string;                     // Help message for valid input [none]
 }
 

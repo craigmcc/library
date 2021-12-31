@@ -66,7 +66,6 @@ const AuthorSegment = (props: Props) => {
             view: view.toString(),
         });
         const isAdmin = loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
-        // const isRegular = loginContext.validateLibrary(libraryContext.library, Scope.REGULAR);
         const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
         setCanInsert(isAdmin || isSuperuser);
         setCanRemove(isSuperuser);

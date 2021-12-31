@@ -79,8 +79,8 @@ const LibrarySelector = (props: Props) => {
                 value={index}
             >
                 <option key="-1" value="-1">{props.placeholder ? props.placeholder : "(Select Library)"}</option>
-                {libraryContext.libraries.map((library, index) => (
-                    <option key={index} value={index}>
+                {libraryContext.libraries.map((library, li) => (
+                    <option key={li} value={li}>
                         {library.name}
                     </option>
                 ))}

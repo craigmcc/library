@@ -73,17 +73,8 @@ const UserDetails = (props: Props) => {
 
     // NOTE - there is no server-side equivalent for this because there is
     // not an individual logged-in user performing the request
-    // TODO - needs LoginContext to provide validateScope() method
     const validateRequestedScope = (requested: string | undefined): boolean => {
-        return true; // TODO
-        /*
-                if (!requested || ("" === requested)) {
-                    return true;  // Not asking for scope but should be required
-                } else {
-                    // TODO - deal with log:<level> pseudo-scopes
-                    return loginContext.validateScope(requested);
-                }
-        */
+        return true; // NOTE - must implement server side somehow
     }
 
     const validationSchema = Yup.object().shape({
@@ -104,7 +95,7 @@ const UserDetails = (props: Props) => {
             .test("unique-username",
                 "That username is already in use",
                 async function (this) {
-                    return await validateUserUsernameUnique(ToModel.USER(toNullValues(this.parent)))
+                    return validateUserUsernameUnique(ToModel.USER(toNullValues(this.parent)))
                 }),
         });
 

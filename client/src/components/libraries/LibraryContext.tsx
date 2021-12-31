@@ -114,9 +114,9 @@ export const LibraryContextProvider = (props: any) => {
             return;
         }
         let found = false;
-        availables.forEach(library => {
-            if (theLibrary.id === library.id) {
-                setLibrary(library);
+        availables.forEach(aLibrary => {
+            if (theLibrary.id === aLibrary.id) {
+                setLibrary(aLibrary);
                 found = true;
             }
         });

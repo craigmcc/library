@@ -111,9 +111,9 @@ const useFetchSerieses = (props: Props): State => {
                         loggedIn: loginContext.data.loggedIn,
                     });
                 }
-            } catch (error) {
-                setError(error as Error);
-                ReportError("useFetchSerieses.fetchSerieses", error, {
+            } catch (anError) {
+                setError(anError as Error);
+                ReportError("useFetchSerieses.fetchSerieses", anError, {
                     url: url,
                     loggedIn: loginContext.data.loggedIn,
                 }, alertPopup);

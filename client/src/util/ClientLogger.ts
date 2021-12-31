@@ -38,7 +38,7 @@ const write = async (object: any, level: number): Promise<void> => {
 }
 // Public Objects ------------------------------------------------------------
 
-export let LOG_LEVEL: number = 20;  // Default to debug level (TODO - go back to info later)
+export let LOG_LEVEL: number = 30;
 
 export const logger = require("pino")({
     base: null, // Remove "name", "pid", and "hostname" since we do not need them

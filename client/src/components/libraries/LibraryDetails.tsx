@@ -76,7 +76,7 @@ const LibraryDetails = (props: Props) => {
                 .test("unique-name",
                     "That name is already in use",
                     async function (this) {
-                        return await validateLibraryNameUnique(ToModel.LIBRARY(this.parent));
+                        return validateLibraryNameUnique(ToModel.LIBRARY(this.parent));
                     }
                 ),
             notes: Yup.string(),
@@ -90,7 +90,7 @@ const LibraryDetails = (props: Props) => {
                 .test("unique-scope",
                     "That scope is already in use",
                     async function(value) {
-                        return await validateLibraryScopeUnique(ToModel.LIBRARY(this.parent));
+                        return validateLibraryScopeUnique(ToModel.LIBRARY(this.parent));
                     }),
         });
     }

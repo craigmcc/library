@@ -76,7 +76,7 @@ const AuthorDetails = (props: Props) => {
                 .test("unique-name",
                     "That name is already in use within this Library",
                     async function (this) {
-                        return await validateAuthorNameUnique(ToModel.AUTHOR(this.parent));
+                        return validateAuthorNameUnique(ToModel.AUTHOR(this.parent));
                     }),
             notes: Yup.string(),
         });

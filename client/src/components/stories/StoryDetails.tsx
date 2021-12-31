@@ -81,7 +81,7 @@ const StoryDetails = (props: Props) => {
             .test("unique-name",
                 "That name is already in use within this Library",
                 async function (this) {
-                    return await validateStoryNameUnique(ToModel.STORY(this.parent));
+                    return validateStoryNameUnique(ToModel.STORY(this.parent));
                 }),
         notes: Yup.string()
             .nullable(),

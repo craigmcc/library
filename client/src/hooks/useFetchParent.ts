@@ -217,9 +217,9 @@ const useFetchParent = (props: Props): State => {
             } else if (props.parent instanceof Volume) {
                 fetchVolume();
             }
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useFetchParent.useEffect", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useFetchParent.useEffect", anError, {
                 library: Abridgers.LIBRARY(libraryContext.library),
                 parentId: props.parent.id,
                 parentModel: props.parent._model,
