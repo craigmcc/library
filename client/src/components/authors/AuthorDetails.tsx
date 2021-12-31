@@ -100,8 +100,9 @@ const AuthorDetails = (props: Props) => {
             {/* Details Form */}
             <Container id="AuthorDetails">
 
-                <Row className="mb-3 ml-1 mr-1">
+                <Row className="mb-3">
                     <Col className="text-center">
+                        <strong>
                         {(adding) ? (
                             <span>Add New</span>
                         ) : (
@@ -111,6 +112,7 @@ const AuthorDetails = (props: Props) => {
                         <span className="text-info">
                             {props.parent._title}
                         </span>
+                        </strong>
                     </Col>
                     <Col className="text-end">
                         <Button

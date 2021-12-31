@@ -112,14 +112,16 @@ const UserDetails = (props: Props) => {
             {/* Details Form */}
             <Container id="UserDetails">
 
-                <Row className="mb-3 ms-1 me-1">
+                <Row className="mb-3">
                     <Col className="text-center">
+                        <strong>
                         {(adding)? (
                             <span>Add New</span>
                         ) : (
                             <span>Edit Existing</span>
                         )}
                         &nbsp;User
+                        </strong>
                     </Col>
                     <Col className="text-end">
                         <Button

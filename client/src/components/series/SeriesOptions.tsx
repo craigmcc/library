@@ -196,8 +196,10 @@ const SeriesOptions = (props: Props) => {
             <Row className="mb-3">
                 <Col/>
                 <Col className="text-center">
+                    <strong>
                     <span>Manage Series for {props.parent._model}:&nbsp;</span>
                     <span className="text-info">{props.parent._title}</span>
+                    </strong>
                 </Col>
                 {props.handleBack ? (
                     <Col className="text-end">

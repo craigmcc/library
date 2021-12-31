@@ -113,14 +113,16 @@ const LibraryDetails = (props: Props) => {
             {/* Details Form */}
             <Container id="LibraryDetails">
 
-                <Row className="mb-3 ms-1 me-1">
+                <Row className="mb-3">
                     <Col className="text-center">
+                        <strong>
                         {(adding)? (
                             <span>Add New</span>
                         ) : (
                             <span>Edit Existing</span>
                         )}
                         &nbsp;Library
+                        </strong>
                     </Col>
                     <Col className="text-end">
                         <Button
