@@ -10,6 +10,7 @@ import {Router} from "express";
 
 import AuthorRouter from "./AuthorRouter";
 import ClientRouter from "./ClientRouter";
+import DatabaseRouter from "./DatabaseRouter";
 import LibraryRouter from "./LibraryRouter";
 import SeriesRouter from "./SeriesRouter";
 import StoryRouter from "./StoryRouter";
@@ -28,6 +29,7 @@ export default ApiRouter;
 
 ApiRouter.use("/authors", AuthorRouter);
 ApiRouter.use("/client", ClientRouter);
+ApiRouter.use("/database", DatabaseRouter);
 ApiRouter.use("/libraries", LibraryRouter);
 ApiRouter.use("/series", SeriesRouter);
 ApiRouter.use("/stories", StoryRouter);

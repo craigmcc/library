@@ -25,6 +25,7 @@ import logger from "../util/ServerLogger";
 
 const ADMIN_PERMISSION = "admin";
 const AUTHORIZATION_HEADER = "Authorization";
+const DATABASE_TOKEN = process.env.DATABASE_TOKEN ? process.env.DATABASE_TOKEN : "";
 const NODE_ENV: string | undefined = process.env.NODE_ENV;
 const REGULAR_PERMISSION = "regular";
 const SUPERUSER_SCOPE = process.env.SUPERUSER_SCOPE ? process.env.SUPERUSER_SCOPE : "superuser";
@@ -159,6 +160,38 @@ export const requireAny: RequestHandler =
             next();
         } else {
             res.locals.token = token;
+            next();
+        }
+    }
+
+/**
+ * Pass this request on if the current request includes the database token.
+ *
+ * @param req                           Current HTTP request
+ * @param res                           Current HTTP response
+ * @param next                          Next function to handle things after this one
+ *
+ * @throws                              Error if required permission is missing
+ */
+export const requireDatabase: RequestHandler =
+    async (req: Request, res: Response, next: NextFunction) => {
+        if (oauthEnabled) {
+            const token = extractToken(req);
+            if (!token) {
+                throw new Forbidden(
+                    "No access token presented",
+                    "OAuthMiddleware.requireDatabase"
+                );
+            }
+            if ((DATABASE_TOKEN === "") || (token !== DATABASE_TOKEN)) {
+                throw new Forbidden(
+                    "Invalid access token presented",
+                    "OAuthMiddleware.requireDatabase",
+                );
+            }
+            res.locals.token = token;
+            next();
+        } else {
             next();
         }
     }
