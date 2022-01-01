@@ -85,14 +85,10 @@ OAuthTokenRouter.post("/",
         if (input.password) {
             input.password = "*REDACTED*";
         }
-        try {
-            const tokenResponse: TokenResponse
-                = await OAuthOrchestrator.token(tokenRequest);
-            res.send(tokenResponse);
-        } catch (error) {
-            // Handle errors with standard middleware
-            throw error;
-        }
+        const tokenResponse: TokenResponse
+            = await OAuthOrchestrator.token(tokenRequest);
+        res.send(tokenResponse);
+        // Any error is handled with standard middleware
 
     });
 

@@ -284,12 +284,7 @@ const mapping = new Map<number, string>();
  *                      if token was not successfully authorized
  */
 const authorizeToken = async (token: string, required: string): Promise<void> => {
-    try {
-        await OAuthOrchestrator.authorize(token, required);
-    } catch (error) {
-        throw error;
-    }
-
+    await OAuthOrchestrator.authorize(token, required);
 }
 
 /**

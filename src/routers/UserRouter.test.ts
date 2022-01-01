@@ -233,44 +233,44 @@ describe("UserRouter Functional Tests", () => {
 
         })
 
-        describe("UserRouter PUT /api/users/:userId", () => {
+    })
 
-            const PATH = "/api/users/:userId";
+    describe("UserRouter PUT /api/users/:userId", () => {
 
-            it("should fail on unauthenticated request", async () => {
+        const PATH = "/api/users/:userId";
 
-                const user = await UTILS.lookupUser(SeedData.USER_USERNAME_FIRST_REGULAR);
-                const INPUT: Partial<User> = {
-                    name: "Updated User",
-                }
+        it("should fail on unauthenticated request", async () => {
 
-                const response = await chai.request(app)
-                    .put(PATH.replace(":userId", "" + user.id))
-                    .send(INPUT);
-                expect(response).to.have.status(FORBIDDEN);
-                expect(response).to.be.json;
-                expect(response.body.context).to.equal("OAuthMiddleware.requireSuperuser");
-                expect(response.body.message).to.equal("No access token presented");
-                expect(response.body.status).to.equal(403);
+            const user = await UTILS.lookupUser(SeedData.USER_USERNAME_FIRST_REGULAR);
+            const INPUT: Partial<User> = {
+                name: "Updated User",
+            }
 
-            })
+            const response = await chai.request(app)
+                .put(PATH.replace(":userId", "" + user.id))
+                .send(INPUT);
+            expect(response).to.have.status(FORBIDDEN);
+            expect(response).to.be.json;
+            expect(response.body.context).to.equal("OAuthMiddleware.requireSuperuser");
+            expect(response.body.message).to.equal("No access token presented");
+            expect(response.body.status).to.equal(403);
 
-            it("should pass on authenticated superuser", async () => {
+        })
 
-                const user = await UTILS.lookupUser(SeedData.USER_USERNAME_FIRST_ADMIN);
-                const INPUT: Partial<User> = {
-                    name: "Updated User",
-                }
+        it("should pass on authenticated superuser", async () => {
 
-                const response = await chai.request(app)
-                    .put(PATH.replace(":userId", "" + user.id))
-                    .set(AUTHORIZATION, await UTILS.credentials(SeedData.USER_USERNAME_SUPERUSER))
-                    .send(INPUT);
-                expect(response).to.have.status(OK);
-                expect(response).to.be.json;
-                compareUsers(response.body, INPUT);
+            const user = await UTILS.lookupUser(SeedData.USER_USERNAME_FIRST_ADMIN);
+            const INPUT: Partial<User> = {
+                name: "Updated User",
+            }
 
-            })
+            const response = await chai.request(app)
+                .put(PATH.replace(":userId", "" + user.id))
+                .set(AUTHORIZATION, await UTILS.credentials(SeedData.USER_USERNAME_SUPERUSER))
+                .send(INPUT);
+            expect(response).to.have.status(OK);
+            expect(response).to.be.json;
+            compareUsers(response.body, INPUT);
 
         })
 

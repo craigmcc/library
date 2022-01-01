@@ -111,9 +111,9 @@ const useFetchVolumes = (props: Props): State => {
                         loggedIn: loginContext.data.loggedIn,
                     });
                 }
-            } catch (error) {
-                setError(error as Error);
-                ReportError("useFetchVolumes.fetchVolumes", error, {
+            } catch (anError) {
+                setError(anError as Error);
+                ReportError("useFetchVolumes.fetchVolumes", anError, {
                     url: url,
                     loggedIn: loginContext.data.loggedIn,
                 }, alertPopup);

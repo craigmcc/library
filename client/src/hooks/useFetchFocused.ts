@@ -235,9 +235,9 @@ const useFetchFocused = (props: Props): State => {
             } else if (props.focusee instanceof Volume) {
                 fetchVolume();
             }
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useFetchFocused.useEffect", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useFetchFocused.useEffect", anError, {
                 library: Abridgers.LIBRARY(libraryContext.library),
                 focusee: props.focusee,
                 parameters: parameters,

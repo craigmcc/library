@@ -74,9 +74,9 @@ const useMutateVolume = (props: Props = {}): State => {
                 parent: Abridgers.ANY(theParent),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateVolume.exclude", error,{
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateVolume.exclude", anError,{
                 volume: Abridgers.VOLUME(theVolume),
                 parent: Abridgers.ANY(theParent),
                 url: url,
@@ -110,9 +110,9 @@ const useMutateVolume = (props: Props = {}): State => {
                 parent: Abridgers.ANY(theParent),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateVolume.include", error,{
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateVolume.include", anError,{
                 volume: Abridgers.VOLUME(theVolume),
                 parent: Abridgers.ANY(theParent),
                 url: url,
@@ -137,9 +137,9 @@ const useMutateVolume = (props: Props = {}): State => {
                 volume: Abridgers.VOLUME(inserted),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateVolume.insert", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateVolume.insert", anError, {
                 volume: theVolume,
                 url: url,
             }, alertPopup);
@@ -165,9 +165,9 @@ const useMutateVolume = (props: Props = {}): State => {
                 volume: Abridgers.VOLUME(removed),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateVolume.remove", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateVolume.remove", anError, {
                 volume: Abridgers.VOLUME(theVolume),
                 url: url,
             }, alertPopup);
@@ -193,9 +193,9 @@ const useMutateVolume = (props: Props = {}): State => {
                 volume: Abridgers.VOLUME(updated),
                 url: url,
             });
-        } catch (error) {
-            setError(error as Error);
-            ReportError("useMutateVolume.update", error, {
+        } catch (anError) {
+            setError(anError as Error);
+            ReportError("useMutateVolume.update", anError, {
                 volume: Abridgers.VOLUME(theVolume),
                 url: url,
             }, alertPopup);

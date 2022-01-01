@@ -64,7 +64,7 @@ class AuthorServices extends BaseChildServices<Author, Library> {
         const options: FindOptions = SeriesServices.appendMatchOptions({
             order: SortOrder.SERIES,
         }, query);
-        return await author.$get("series", options);
+        return author.$get("series", options);
     }
 
     public async seriesExclude(libraryId: number, authorId: number, seriesId: number): Promise<Series> {
@@ -93,7 +93,7 @@ class AuthorServices extends BaseChildServices<Author, Library> {
         const options: FindOptions = StoryServices.appendMatchOptions({
             order: SortOrder.STORIES,
         }, query);
-        return await author.$get("stories", options);
+        return author.$get("stories", options);
     }
 
     public async storiesExclude(libraryId: number, authorId: number, storyId: number): Promise<Story> {
@@ -122,7 +122,7 @@ class AuthorServices extends BaseChildServices<Author, Library> {
         const options: FindOptions = VolumeServices.appendMatchOptions({
             order: SortOrder.VOLUMES,
         }, query);
-        return await author.$get("volumes", options);
+        return author.$get("volumes", options);
     }
 
     public async volumesExclude(libraryId: number, authorId: number, volumeId: number): Promise<Volume> {

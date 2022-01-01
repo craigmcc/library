@@ -5,7 +5,7 @@
 
 // External Modules ----------------------------------------------------------
 
-import {FindOptions, Op} from "sequelize";
+import {FindOptions} from "sequelize";
 
 // Internal Modules ----------------------------------------------------------
 

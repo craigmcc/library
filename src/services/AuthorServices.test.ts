@@ -92,12 +92,12 @@ describe("AuthorServices Functional Tests", () => {
             const INVALID_LAST_NAME = "INVALID LAST NAME";
 
             try {
-                const author = await AuthorServices.exact(library.id, INVALID_FIRST_NAME, INVALID_LAST_NAME);
+                await AuthorServices.exact(library.id, INVALID_FIRST_NAME, INVALID_LAST_NAME);
                 expect.fail("Should have thrown NotFound");
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).includes
-                    (`Missing Author '${INVALID_FIRST_NAME} ${INVALID_LAST_NAME}'`);
+                        (`Missing Author '${INVALID_FIRST_NAME} ${INVALID_LAST_NAME}'`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -113,7 +113,7 @@ describe("AuthorServices Functional Tests", () => {
                 try {
                     const firstName = author.firstName ? author.firstName : "can not happen";
                     const lastName = author.lastName ? author.lastName : "can not happen";
-                    const result = await AuthorServices.exact(library.id, firstName, lastName);
+                    await AuthorServices.exact(library.id, firstName, lastName);
                 } catch (error) {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -136,7 +136,7 @@ describe("AuthorServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`authorId: Missing Author ${INVALID_ID}`);
+                        (`authorId: Missing Author ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -202,7 +202,7 @@ describe("AuthorServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof BadRequest) {
                     expect(error.message).to.include
-                    (`name: Name '${INPUT.firstName} ${INPUT.lastName}' is already in use`);
+                        (`name: Name '${INPUT.firstName} ${INPUT.lastName}' is already in use`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -260,7 +260,7 @@ describe("AuthorServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`authorId: Missing Author ${INVALID_ID}`);
+                        (`authorId: Missing Author ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -283,7 +283,7 @@ describe("AuthorServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`authorId: Missing Author ${VALID_ID}`);
+                        (`authorId: Missing Author ${VALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -346,7 +346,7 @@ describe("AuthorServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof BadRequest) {
                     expect(error.message).to.include
-                    (`name: Name '${INPUT.firstName} ${INPUT.lastName}' is already in use`);
+                        (`name: Name '${INPUT.firstName} ${INPUT.lastName}' is already in use`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -366,7 +366,7 @@ describe("AuthorServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`authorId: Missing Author ${INVALID_ID}`);
+                        (`authorId: Missing Author ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }

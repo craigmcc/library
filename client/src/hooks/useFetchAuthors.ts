@@ -122,9 +122,9 @@ const useFetchAuthors = (props: Props): State => {
                         loggedIn: loginContext.data.loggedIn,
                     });
                 }
-            } catch (error) {
-                setError(error as Error);
-                ReportError("useFetchAuthors.fetchAuthors", error, {
+            } catch (anError) {
+                setError(anError as Error);
+                ReportError("useFetchAuthors.fetchAuthors", anError, {
                     url: url,
                 }, alertPopup);
             }

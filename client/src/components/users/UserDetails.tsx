@@ -81,7 +81,7 @@ const UserDetails = (props: Props) => {
         name: Yup.string()
             .required("Name is required"),
         password: Yup.string()
-            .nullable(), // TODO - required on add, optional on edit
+            .nullable(), // NOTE - required on add, optional on edit
         scope: Yup.string()
             .required("Scope is required")
             .test("allowed-scope",

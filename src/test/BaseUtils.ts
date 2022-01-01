@@ -163,7 +163,7 @@ const loadAccessTokens
     });
     let results: AccessToken[] = [];
     try {
-        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
+        // @ts-ignore NOTE - did Typescript get tougher about Partial<M>?
         results = await AccessToken.bulkCreate(accessTokens);
         return results;
     } catch (error) {
@@ -180,7 +180,7 @@ const loadAuthors
     });
     let results: Author[] = [];
     try {
-        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
+        // @ts-ignore NOTE - did Typescript get tougher about Partial<M>?
         results = await Author.bulkCreate(authors);
     } catch (error) {
         console.info("  Reloading Authors ERROR", error);
@@ -218,7 +218,7 @@ const loadLibraries
 {
     let results: Library[] = [];
     try {
-        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
+        // @ts-ignore NOTE - did Typescript get tougher about Partial<M>?
         results = await Library.bulkCreate(libraries);
     } catch (error) {
         console.info("  Reloading Libraries ERROR", error);
@@ -234,7 +234,7 @@ const loadRefreshTokens
     });
     let results: RefreshToken[] = [];
     try {
-        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
+        // @ts-ignore NOTE - did Typescript get tougher about Partial<M>?
         results = await RefreshToken.bulkCreate(refreshTokens);
         return results;
     } catch (error) {
@@ -251,7 +251,7 @@ const loadSeries
     });
     let results: Series[] = [];
     try {
-        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
+        // @ts-ignore NOTE - did Typescript get tougher about Partial<M>?
         results = await Series.bulkCreate(series);
     } catch (error) {
         console.info("  Reloading Series ERROR", error);
@@ -279,7 +279,7 @@ const loadStories
     });
     let results: Story[] = [];
     try {
-        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
+        // @ts-ignore NOTE - did Typescript get tougher about Partial<M>?
         results = await Story.bulkCreate(stories);
     } catch (error) {
         console.info("  Reloading Stories ERROR", error);
@@ -289,20 +289,19 @@ const loadStories
 }
 
 const hashedPassword = async (password: string | undefined): Promise<string> => {
-    return await hashPassword(password ? password : "");
+    return hashPassword(password ? password : "");
 }
 
 const loadUsers = async (users: Partial<User>[]): Promise<User[]> => {
     // For tests, the unhashed password is the same as the username
-    const promises = await users.map(user => hashedPassword(user.username));
+    const promises = users.map(user => hashedPassword(user.username));
     const hashedPasswords: string[] = await Promise.all(promises);
     for(let i = 0; i < users.length; i++) {
         users[i].password = hashedPasswords[i];
     }
     try {
-        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
-        const results = await User.bulkCreate(users);
-        return results;
+        // @ts-ignore NOTE - did Typescript get tougher about Partial<M>?
+        return User.bulkCreate(users);
     } catch (error) {
         console.info("  Reloading Users ERROR", error);
         throw error;
@@ -317,7 +316,7 @@ const loadVolumes
     });
     let results: Volume[] = [];
     try {
-        // @ts-ignore TODO - did Typescript get tougher about Partial<M>?
+        // @ts-ignore NOTE - did Typescript get tougher about Partial<M>?
         results = await Volume.bulkCreate(volumes);
     } catch (error) {
         console.info("  Reloading Volumes ERROR", error);

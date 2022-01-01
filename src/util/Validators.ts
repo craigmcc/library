@@ -11,7 +11,7 @@ export const validateDate = (date: string): boolean => {
     if (!date || (date.length === 0)) {
         return true;
     } else {
-        // TODO - range check on each component?
+        // NOTE - range check on each component?
         return datePattern.test(date);
     }
 }
@@ -28,7 +28,7 @@ export const validateMonth = (month: string): boolean => {
     if (!month || (month.length === 0)) {
         return true;
     } else {
-        // TODO - range check on each component?
+        // NOTE - range check on each component?
         return monthPattern.test(month);
     }
 }
@@ -53,7 +53,7 @@ export const validateTime = (time: string): boolean => {
     if (!time || (time.length === 0)) {
         return true;
     } else {
-        // TODO - range check on each component?
+        // NOTE - range check on each component?
         return timePattern.test(time);
     }
 }

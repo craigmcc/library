@@ -104,9 +104,9 @@ const useFetchLibraries = (props: Props): State => {
                         loggedIn: loginContext.data.loggedIn,
                     });
                 }
-            } catch (error) {
-                setError(error as Error);
-                ReportError("useFetchLibraries.fetchLibraries", error, {
+            } catch (anError) {
+                setError(anError as Error);
+                ReportError("useFetchLibraries.fetchLibraries", anError, {
                     url: url,
                 }, alertPopup);
             }
