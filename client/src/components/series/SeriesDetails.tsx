@@ -20,8 +20,7 @@ import * as Yup from "yup";
 import CheckBoxField from "../general/CheckBoxField";
 import TextField from "../general/TextField";
 import {HandleAction, HandleSeries, Parent} from "../../types";
-import Series from "../../models/Series";
-import SeriesData from "../../models/SeriesData";
+import Series, {SeriesData} from "../../models/Series";
 import {validateSeriesNameUnique} from "../../util/AsyncValidators";
 import * as ToModel from "../../util/ToModel";
 

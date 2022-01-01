@@ -20,8 +20,7 @@ import * as Yup from "yup";
 import CheckBoxField from "../general/CheckBoxField";
 import TextField from "../general/TextField";
 import {HandleAction, HandleAuthor, Parent} from "../../types";
-import Author from "../../models/Author";
-import AuthorData from "../../models/AuthorData";
+import Author, {AuthorData} from "../../models/Author";
 import {validateAuthorNameUnique} from "../../util/AsyncValidators";
 import * as ToModel from "../../util/ToModel";
 

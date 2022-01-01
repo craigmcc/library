@@ -20,8 +20,7 @@ import * as Yup from "yup";
 import CheckBoxField from "../general/CheckBoxField";
 import TextField from "../general/TextField";
 import {HandleAction, HandleLibrary} from "../../types";
-import Library from "../../models/Library";
-import LibraryData from "../../models/LibraryData";
+import Library, {LibraryData} from "../../models/Library";
 import {
     validateLibraryNameUnique,
     validateLibraryScopeUnique

@@ -6,12 +6,31 @@
 
 import AccessToken from "./AccessToken";
 import RefreshToken from "./RefreshToken";
-import UserData from "./UserData";
 import * as ToModel from "../util/ToModel";
 
 // Public Objects ------------------------------------------------------------
 
 export const USERS_BASE = "/users";
+
+export class UserData {
+
+    constructor (data: any = {}) {
+        this.id = data.id ? data.id : -1;
+        this.active = (data.active !== undefined) ? data.active : true;
+        this.name = data.name ? data.name : null;
+        this.password = data.password ? data.password : null;
+        this.scope = data.scope ? data.scope : null;
+        this.username = data.username ? data.username : null;
+    }
+
+    id: number;
+    active: boolean;
+    name: string;
+    password: string;
+    scope: string;
+    username: string;
+
+}
 
 class User extends UserData {
 
