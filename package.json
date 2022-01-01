@@ -6,6 +6,11 @@
   "scripts": {
     "develop:dev": "concurrently \"npm:server:build:watch\" \"npm:start:dev\"",
     "develop:prod": "concurrently \"npm:server:build:watch\" \"npm:start:prod\"",
+    "heroku:local": "cross-env heroku local web",
+    "heroku:start": "node dist/server.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false && npm install --prefix client && npm run build --prefix client",
+    "preheroku:local": "tsc",
+    "postinstall": "tsc",
     "run": "cross-env NODE_ENV=production node dist/server.js",
     "run:dev": "cross-env NODE_ENV=development node dist/server.js",
     "run:prod": "cross-env NODE_ENV=production node dist/server.js",

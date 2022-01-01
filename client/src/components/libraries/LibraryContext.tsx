@@ -28,8 +28,12 @@ export interface State {
 export const LibraryContext = createContext<State>({
     libraries: [],
     library: new Library({name: "Never Selected"}),
-    handleRefresh: () => {},
-    handleSelect: () => {},
+    handleRefresh: () => {
+        // Will be replaced in the real returned context information
+    },
+    handleSelect: () => {
+        // Will be replaced in the real returned context information
+    },
 });
 
 // Context Provider ----------------------------------------------------------

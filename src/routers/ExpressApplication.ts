@@ -5,7 +5,6 @@
 // External Modules ----------------------------------------------------------
 
 import bodyParser from "body-parser";
-import cors from "cors";
 import express from "express";
 import morgan from "morgan";
 import path from "path";
@@ -19,18 +18,14 @@ import OAuthRouter from "../oauth/OAuthRouter";
 import {handleHttpError, handleServerError, handleValidationError} from "../util/Middleware";
 import logger from "../util/ServerLogger";
 import { toLocalISO } from "../util/Timestamps";
-//import OpenApiRouter from "./OpenApiRouter";
 
 // Public Objects ------------------------------------------------------------
 
+// Initialize Express environment
 const app = express();
-
-// Configure global middleware
-app.use(cors({
-    origin: "*"
-}));
 app.disable("x-powered-by");
 
+// Configure access log management
 const ACCESS_LOG = process.env.ACCESS_LOG ? process.env.ACCESS_LOG : "stderr";
 morgan.token("date", (req, res): string => {
     return toLocalISO(new Date());
