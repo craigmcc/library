@@ -67,7 +67,7 @@ class SeriesServices extends BaseChildServices<Series, Library> {
         const options: FindOptions = StoryServices.appendMatchOptions({
             order: SortOrder.STORIES,
         }, query);
-        return await series.$get("stories", options);
+        return series.$get("stories", options);
     }
 
     public async storiesExclude(libraryId: number, seriesId: number, storyId: number): Promise<Story> {
