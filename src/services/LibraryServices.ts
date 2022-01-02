@@ -42,7 +42,7 @@ class LibraryServices extends BaseParentServices<Library> {
         const options: FindOptions = AuthorServices.appendMatchOptions({
             order: SortOrder.AUTHORS,
         }, query);
-        return await library.$get("authors", options);
+        return library.$get("authors", options);
     }
 
     public async exact(name: string, query?: any): Promise<Library> {
@@ -63,7 +63,7 @@ class LibraryServices extends BaseParentServices<Library> {
         const options: FindOptions = SeriesServices.appendMatchOptions({
             order: SortOrder.SERIES,
         }, query);
-        return await library.$get("series", options);
+        return library.$get("series", options);
     }
 
     public async stories(libraryId: number, query?: any): Promise<Story[]> {
@@ -71,7 +71,7 @@ class LibraryServices extends BaseParentServices<Library> {
         const options: FindOptions = StoryServices.appendMatchOptions({
             order: SortOrder.STORIES,
         }, query);
-        return await library.$get("stories", options);
+        return library.$get("stories", options);
     }
 
     public async volumes(libraryId: number, query?: any): Promise<Volume[]> {
@@ -79,7 +79,7 @@ class LibraryServices extends BaseParentServices<Library> {
         const options: FindOptions = VolumeServices.appendMatchOptions({
             order: SortOrder.VOLUMES,
         }, query);
-        return await library.$get("volumes", options);
+        return library.$get("volumes", options);
     }
 
     // Public Helpers --------------------------------------------------------

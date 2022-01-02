@@ -176,7 +176,7 @@ describe("UserServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`username: Missing User '${INVALID_USERNAME}'`);
+                        (`username: Missing User '${INVALID_USERNAME}'`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -233,7 +233,7 @@ describe("UserServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`userId: Missing User ${INVALID_ID}`);
+                        (`userId: Missing User ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -403,7 +403,7 @@ describe("UserServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`userId: Missing User ${INVALID_ID}`);
+                        (`userId: Missing User ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -448,7 +448,7 @@ describe("UserServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof BadRequest) {
                     expect(error.message).to.include
-                    (`username: Username '${INPUT.username}' is already in use`);
+                        (`username: Username '${INPUT.username}' is already in use`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -471,7 +471,7 @@ describe("UserServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`userId: Missing User ${INVALID_ID}`);
+                        (`userId: Missing User ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }

@@ -38,12 +38,12 @@ class SeriesServices extends BaseChildServices<Series, Library> {
     // Model-Specific Methods ------------------------------------------------
 
     public async authors(libraryId: number, seriesId: number, query?: any): Promise<Author[]> {
-        const library = await LibraryServices.read("SeriesServices.authors", libraryId);
+        await LibraryServices.read("SeriesServices.authors", libraryId);
         const series = await this.read("SeriesServices.authors", libraryId, seriesId);
         const options: FindOptions = AuthorServices.appendMatchOptions({
             order: SortOrder.AUTHORS,
         }, query);
-        return await series.$get("authors", options);
+        return series.$get("authors", options);
     }
 
     public async exact(libraryId: number, name: string, query?: any): Promise<Series> {
@@ -62,7 +62,7 @@ class SeriesServices extends BaseChildServices<Series, Library> {
     }
 
     public async stories(libraryId: number, seriesId: number, query?: any): Promise<Story[]> {
-        const library = await LibraryServices.read("SeriesServices.stories", libraryId);
+        await LibraryServices.read("SeriesServices.stories", libraryId);
         const series = await this.read("SeriesServices.stories", libraryId, seriesId);
         const options: FindOptions = StoryServices.appendMatchOptions({
             order: SortOrder.STORIES,

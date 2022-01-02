@@ -11,9 +11,6 @@ const expect = chai.expect;
 
 import LibraryServices from "./LibraryServices";
 import Library from "../models/Library";
-import Series from "../models/Series";
-import Story from "../models/Story";
-import Volume from "../models/Volume";
 import * as SeedData from "../test/SeedData";
 import ServicesUtils from "../test/ServicesUtils";
 import {BadRequest, NotFound} from "../util/HttpErrors";
@@ -128,7 +125,7 @@ describe("LibraryServices Functional Tests", () => {
             const INVALID_NAME = "INVALID LIBRARY NAME";
 
             try {
-                const result = await LibraryServices.exact(INVALID_NAME);
+                await LibraryServices.exact(INVALID_NAME);
                 expect.fail("Should have thrown NotFound");
             } catch (error) {
                 if (error instanceof NotFound) {
@@ -168,7 +165,7 @@ describe("LibraryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`libraryId: Missing Library ${INVALID_ID}`);
+                        (`libraryId: Missing Library ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -249,7 +246,7 @@ describe("LibraryServices Functional Tests", () => {
 
         it("should fail on invalid input data", async () => {
 
-            const INPUTS = await LibraryServices.all();
+            await LibraryServices.all();
             const INPUT = {
                 name: "Valid Name",
                 scope: "invalid scope",
@@ -337,7 +334,7 @@ describe("LibraryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`libraryId: Missing Library ${INPUT.id}`);
+                        (`libraryId: Missing Library ${INPUT.id}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }

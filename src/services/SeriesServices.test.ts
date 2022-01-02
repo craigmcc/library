@@ -44,9 +44,9 @@ describe("SeriesServices Functional Tests", () => {
             });
 
             expect(series.length).to.be.lessThanOrEqual(SeedData.SERIES_LIBRARY0.length);
-            series.forEach(series => {
-                expect(series.active).to.be.true;
-                expect(series.libraryId).to.equal(library.id);
+            series.forEach(aSeries => {
+                expect(aSeries.active).to.be.true;
+                expect(aSeries.libraryId).to.equal(library.id);
             });
 
         });
@@ -57,8 +57,8 @@ describe("SeriesServices Functional Tests", () => {
             const series = await SeriesServices.all(library.id);
 
             expect(series.length).to.equal(SeedData.SERIES_LIBRARY1.length);
-            series.forEach(series => {
-                expect(series.libraryId).to.equal(library.id);
+            series.forEach(aSeries => {
+                expect(aSeries.libraryId).to.equal(library.id);
             })
 
         })
@@ -72,9 +72,9 @@ describe("SeriesServices Functional Tests", () => {
             });
 
             expect(series.length).to.equal(1);
-            series.forEach(series => {
-                expect(series.libraryId).to.equal(library.id);
-                expect(series.name.toLowerCase()).to.include(NAME.toLowerCase());
+            series.forEach(aSeries => {
+                expect(aSeries.libraryId).to.equal(library.id);
+                expect(aSeries.name.toLowerCase()).to.include(NAME.toLowerCase());
             })
 
         })
@@ -146,7 +146,7 @@ describe("SeriesServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).includes
-                    (`Missing Series '${INVALID_NAME}'`);
+                        (`Missing Series '${INVALID_NAME}'`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -184,7 +184,7 @@ describe("SeriesServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`seriesId: Missing Series ${INVALID_ID}`);
+                        (`seriesId: Missing Series ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -209,7 +209,7 @@ describe("SeriesServices Functional Tests", () => {
                 expect(series.authors).to.exist;
                 series.authors.forEach(author => {
                     expect(author.libraryId).to.equal(library.id);
-                    expect(author.AuthorStory).to.exist;
+                    expect(author.AuthorSeries).to.exist;
                 })
                 expect(series.stories).to.exist;
                 series.stories.forEach(story => {
@@ -252,7 +252,7 @@ describe("SeriesServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof BadRequest) {
                     expect(error.message).to.include
-                    (`name: Name '${INPUT.name}' is already in use`);
+                        (`name: Name '${INPUT.name}' is already in use`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -308,7 +308,7 @@ describe("SeriesServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`seriesId: Missing Series ${INVALID_ID}`);
+                        (`seriesId: Missing Series ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -331,7 +331,7 @@ describe("SeriesServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`seriesId: Missing Series ${VALID_ID}`);
+                        (`seriesId: Missing Series ${VALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -410,7 +410,7 @@ describe("SeriesServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof BadRequest) {
                     expect(error.message).to.include
-                    (`name: Name '${INPUT.name}' is already in use`);
+                        (`name: Name '${INPUT.name}' is already in use`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -430,7 +430,7 @@ describe("SeriesServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`seriesId: Missing Series ${INVALID_ID}`);
+                        (`seriesId: Missing Series ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }

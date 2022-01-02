@@ -210,7 +210,7 @@ describe("VolumeServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).includes
-                    (`Missing Volume '${INVALID_NAME}'`);
+                        (`Missing Volume '${INVALID_NAME}'`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -248,7 +248,7 @@ describe("VolumeServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`volumeId: Missing Volume ${INVALID_ID}`);
+                        (`volumeId: Missing Volume ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }

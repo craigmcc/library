@@ -44,7 +44,7 @@ class StoryServices extends BaseChildServices<Story, Library> {
         const options: FindOptions = AuthorServices.appendMatchOptions({
             order: SortOrder.AUTHORS,
         }, query);
-        return await story.$get("authors", options);
+        return story.$get("authors", options);
     }
 
     public async exact(libraryId: number, name: string, query?: any): Promise<Story> {
@@ -68,7 +68,7 @@ class StoryServices extends BaseChildServices<Story, Library> {
         const options: FindOptions = SeriesServices.appendMatchOptions({
             order: SortOrder.SERIES,
         }, query);
-        return await story.$get("series", options);
+        return story.$get("series", options);
     }
 
     public async volumes(libraryId: number, storyId: number, query?: any): Promise<Volume[]> {
@@ -77,7 +77,7 @@ class StoryServices extends BaseChildServices<Story, Library> {
         const options: FindOptions = VolumeServices.appendMatchOptions({
             order: SortOrder.VOLUMES,
         }, query);
-        return await story.$get("volumes", options);
+        return story.$get("volumes", options);
     }
 
     // Public Helpers --------------------------------------------------------

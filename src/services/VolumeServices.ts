@@ -47,7 +47,7 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
         const options: FindOptions = AuthorServices.appendMatchOptions({
             order: SortOrder.AUTHORS,
         }, query);
-        return await volume.$get("authors", options);
+        return volume.$get("authors", options);
     }
 
     public async exact(libraryId: number, name: string, query?: any): Promise<Volume> {
@@ -71,7 +71,7 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
         const options: FindOptions = StoryServices.appendMatchOptions({
             order: SortOrder.STORIES,
         }, query);
-        return await volume.$get("stories", options);
+        return volume.$get("stories", options);
     }
 
     public async storiesExclude(libraryId: number, volumeId: number, storyId: number): Promise<Story> {

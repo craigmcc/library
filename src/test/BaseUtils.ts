@@ -107,30 +107,24 @@ export abstract class BaseUtils {
         }
 
         // Load relationships if both related tables were requested
-        /*
-            if (options.withAuthors && options.withSeries) {
-                loadAuthorSeries(authors0[0], [series0[0]]);
-                loadAuthorSeries(authors0[1], [series0[0]]);
-                loadAuthorSeries(authors1[0], [series1[0]]);
-                loadAuthorSeries(authors1[1], [series1[0]]);
-            }
-        */
-        /*
-            if (options.withAuthors && options.withStories) {
-                loadAuthorStories(authors0[0], [stories0[0], stories0[2]]);
-                loadAuthorStories(authors0[1], [stories0[1], stories0[2]]);
-                loadAuthorStories(authors1[0], [stories1[0], stories1[2]]);
-                loadAuthorStories(authors1[1], [stories1[1], stories1[2]]);
-            }
-        */
-        /*
-            if (options.withAuthors && options.withVolumes) {
-                loadAuthorVolumes(authors0[0], [volumes0[0], volumes0[2]]);
-                loadAuthorVolumes(authors0[1], [volumes0[1], volumes0[2]]);
-                loadAuthorVolumes(authors1[0], [volumes1[0], volumes1[2]]);
-                loadAuthorVolumes(authors1[1], [volumes1[1], volumes1[2]]);
-            }
-        */
+        if (options.withAuthors && options.withSeries) {
+            loadAuthorSeries(authors0[0], [series0[0]]);
+            loadAuthorSeries(authors0[1], [series0[0]]);
+            loadAuthorSeries(authors1[0], [series1[0]]);
+            loadAuthorSeries(authors1[1], [series1[0]]);
+        }
+        if (options.withAuthors && options.withStories) {
+            loadAuthorStories(authors0[0], [stories0[0], stories0[2]]);
+            loadAuthorStories(authors0[1], [stories0[1], stories0[2]]);
+            loadAuthorStories(authors1[0], [stories1[0], stories1[2]]);
+            loadAuthorStories(authors1[1], [stories1[1], stories1[2]]);
+        }
+        if (options.withAuthors && options.withVolumes) {
+            loadAuthorVolumes(authors0[0], [volumes0[0], volumes0[2]]);
+            loadAuthorVolumes(authors0[1], [volumes0[1], volumes0[2]]);
+            loadAuthorVolumes(authors1[0], [volumes1[0], volumes1[2]]);
+            loadAuthorVolumes(authors1[1], [volumes1[1], volumes1[2]]);
+        }
         if (options.withSeries && options.withStories) {
             loadSeriesStory(series0[0], stories0[0], 1);
             loadSeriesStory(series0[0], stories0[1], 2);
@@ -189,29 +183,23 @@ const loadAuthors
     return results;
 }
 
-/*
 const loadAuthorSeries
     = async (author: Author, series: Series[]): Promise<void> =>
 {
     await author.$add("series", series);
 }
-*/
 
-/*
 const loadAuthorStories
     = async (author: Author, stories: Story[]): Promise<void> =>
 {
     await author.$add("stories", stories);
 }
-*/
 
-/*
 const loadAuthorVolumes
     = async (author: Author, volumes: Volume[]): Promise<void> =>
 {
     await author.$add("volumes", volumes);
 }
-*/
 
 const loadLibraries
     = async (libraries: Partial<Library>[]): Promise<Library[]> =>

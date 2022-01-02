@@ -58,7 +58,7 @@ class UserServices extends BaseParentServices<User> {
                 "UserServices.insert"
             );
         }
-        user.password = await hashPassword(user.password); // TODO - leaked back to caller
+        user.password = await hashPassword(user.password); // NOTE - leaked back to caller
         const result = await super.insert(user);
         result.password = "";
         return result;
@@ -72,7 +72,7 @@ class UserServices extends BaseParentServices<User> {
 
     public async update(userId: number, user: Partial<User>): Promise<User> {
         if (user.password && (user.password.length > 0)) {
-            user.password = await hashPassword(user.password); // TODO - leaked back to caller
+            user.password = await hashPassword(user.password); // NOTE - leaked back to caller
         } else {
             delete user.password;
         }
@@ -88,7 +88,7 @@ class UserServices extends BaseParentServices<User> {
         const options: FindOptions = AccessTokenServices.appendMatchOptions({
             order: SortOrder.ACCESS_TOKENS,
         }, query);
-        return await user.$get("accessTokens", options);
+        return user.$get("accessTokens", options);
     }
 
     public async exact(username: string, query?: any): Promise<User> {
@@ -110,7 +110,7 @@ class UserServices extends BaseParentServices<User> {
         const options: FindOptions = RefreshTokenServices.appendMatchOptions({
             order: SortOrder.REFRESH_TOKENS,
         }, query);
-        return await user.$get("refreshTokens", options);
+        return user.$get("refreshTokens", options);
     }
 
     // Public Helpers --------------------------------------------------------

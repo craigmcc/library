@@ -142,12 +142,12 @@ describe("StoryServices Functional Tests", () => {
             const INVALID_NAME = "INVALID VOLUME NAME";
 
             try {
-                const story = await StoryServices.exact(library.id, INVALID_NAME);
+                await StoryServices.exact(library.id, INVALID_NAME);
                 expect.fail("Should have thrown NotFound");
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).includes
-                    (`Missing Story '${INVALID_NAME}'`);
+                        (`Missing Story '${INVALID_NAME}'`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -162,7 +162,7 @@ describe("StoryServices Functional Tests", () => {
             SeedData.STORIES_LIBRARY1.forEach(async story => {
                 try {
                     const name = story.name ? story.name : "can not happen";
-                    const result = await StoryServices.exact(library.id, name);
+                    await StoryServices.exact(library.id, name);
                 } catch (error) {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -185,7 +185,7 @@ describe("StoryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`storyId: Missing Story ${INVALID_ID}`);
+                        (`storyId: Missing Story ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -252,7 +252,7 @@ describe("StoryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof BadRequest) {
                     expect(error.message).to.include
-                    (`name: Name '${INPUT.name}' is already in use`);
+                        (`name: Name '${INPUT.name}' is already in use`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -308,7 +308,7 @@ describe("StoryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`storyId: Missing Story ${INVALID_ID}`);
+                        (`storyId: Missing Story ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -331,7 +331,7 @@ describe("StoryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`storyId: Missing Story ${VALID_ID}`);
+                        (`storyId: Missing Story ${VALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -413,7 +413,7 @@ describe("StoryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof BadRequest) {
                     expect(error.message).to.include
-                    (`name: Name '${INPUT.name}' is already in use`);
+                        (`name: Name '${INPUT.name}' is already in use`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
@@ -433,7 +433,7 @@ describe("StoryServices Functional Tests", () => {
             } catch (error) {
                 if (error instanceof NotFound) {
                     expect(error.message).to.include
-                    (`storyId: Missing Story ${INVALID_ID}`);
+                        (`storyId: Missing Story ${INVALID_ID}`);
                 } else {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
