@@ -21,8 +21,10 @@ export interface Props {
     className?: string;                 // CSS class(es) for the Form.Group [none]
     disabled?: boolean;                 // Disable this field? [false]
     errors: FieldErrors;                // errors object from useForm()
-    label: string;                      // Field label [required]
+    htmlSize?: number;                  // HTML size of text field [none]
+    label?: string;                     // Field label [none]
     name: string;                       // Name of this field [required]
+    placeholder?: string;               // Placeholder text [none]
     readOnly?: boolean;                 // Mark field as read only? [false]
     register: UseFormRegister<any>;     // register object from useForm() // NOTE - <any> ???
     type?: "date" | "hidden" | "month" | "number" | "password" | "text" | "time";
@@ -41,12 +43,16 @@ const TextField = (props: Props) => {
             controlId={props.name}
             id={props.name + "Group"}
         >
-            <Form.Label>{props.label}</Form.Label>
+            {(props.label) ? (
+                <Form.Label>{props.label}</Form.Label>
+            ) : null }
             <Form.Control
                 autoFocus={props.autoFocus ? props.autoFocus : undefined}
                 disabled={(props.disabled !== undefined) ? props.disabled : undefined}
+                htmlSize={(props.htmlSize !== undefined) ? props.htmlSize : undefined}
                 isInvalid={!!props.errors[props.name]}
                 isValid={!props.errors[props.name]}
+                placeholder={props.placeholder ? props.placeholder : undefined}
                 readOnly={(props.readOnly !== undefined) ? props.readOnly : undefined}
                 type={props.type ? props.type : undefined}
                 {...props.register(props.name)}

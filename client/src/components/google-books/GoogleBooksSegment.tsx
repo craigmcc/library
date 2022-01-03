@@ -32,7 +32,6 @@ const GoogleBooksSegment = () => {
         logger.debug({
             context: "GoogleBooksSegment.useEffect",
             view: view.toString(),
-            me: fetchMe.me,
         });
     }, [view, fetchMe.me, fetchMe.me.googleBooksApiKey]);
 

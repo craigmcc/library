@@ -4,18 +4,21 @@
 
 // External Modules ----------------------------------------------------------
 
-import React, {useEffect, useState} from "react";
-import Container from "react-bootstrap/Container";
+import React, {useState} from "react";
 import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
+import {SubmitHandler, useForm} from "react-hook-form";
 
 // Internal Modules ----------------------------------------------------------
 
 import LoadingProgress from "../general/LoadingProgress";
+import TextField from "../general/TextField";
 import Pagination from "../general/Pagination";
-import SearchBar from "../general/SearchBar";
-import {HandleAction, HandleValue} from "../../types";
+import {HandleAction} from "../../types";
 import useFetchGoogleBooks from "../../hooks/useFetchGoogleBooks";
+import GoogleVolumes from "../../models/GoogleVolumes";
 import logger from "../../util/ClientLogger";
 
 // Incoming Properties -------------------------------------------------------
@@ -25,6 +28,10 @@ export interface Props {
 }
 
 // Component Details ---------------------------------------------------------
+
+type Data = {
+    searchText: string;
+}
 
 const GoogleBooksOptions = (props: Props) => {
 
@@ -40,33 +47,31 @@ const GoogleBooksOptions = (props: Props) => {
         offset: (currentPage - 1) * pageSize,
     });
 
-    useEffect(() => {
-        logger.debug({
-            context: "GoogleBooksOptions.useEffect",
-            apiKey: props.apiKey,
-            currentPage: currentPage,
-            pageSize: pageSize,
-            searchText: searchText,
-        });
-    }, [props.apiKey,
-        currentPage, pageSize, searchText,
-        fetchGoogleBooks.books]);
-
-    const handleNext: HandleAction = () => {
+    const onNext: HandleAction = () => {
         setCurrentPage(currentPage + 1);
     }
 
-    const handlePrevious: HandleAction = () => {
+    const onPrevious: HandleAction = () => {
         setCurrentPage(currentPage - 1);
     }
 
-    const handleSearchText: HandleValue = (theSearchText) => {
+    const onSubmit: SubmitHandler<Data> = (values) => {
         logger.debug({
-            context: "GoogleBooksOptions.handleSearchText",
-            searchText: theSearchText,
+            context: "GoogleBooksOptions.onSubmit",
+            searchText: values.searchText,
         });
-        setSearchText(theSearchText);
+        setSearchText(values.searchText);
     }
+
+    const position = (): string => {
+        const offset = (currentPage - 1) * pageSize;
+        return `Books ${offset + 1}-${offset + pageSize} of ${fetchGoogleBooks.volumes.totalItems}`;
+    }
+
+    const {formState: {errors}, handleSubmit, register} = useForm<Data>({
+        defaultValues: { searchText: "" },
+        mode: "onBlur",
+    });
 
     return (
         <Container fluid id="GoogleBooksOptions">
@@ -78,20 +83,36 @@ const GoogleBooksOptions = (props: Props) => {
             />
 
             <Row className="mb-3">
+                <Col className="text-center">
+                    <span><strong>Browse Google Books</strong></span>
+                </Col>
+            </Row>
+            <Row className="mb-3">
+                <Col className="col-1">
+                    <span className="form-label">Search Terms:</span>
+                </Col>
                 <Col className="col-8">
-                    <SearchBar
-                        autoFocus
-                        handleValue={handleSearchText}
-                        htmlSize={50}
-                        label="Search Terms:"
-                        placeholder="Enter Google Books query terms"
-                    />
+                    <Form id="GoogleBooksForm"
+                          noValidate
+                          onSubmit={handleSubmit(onSubmit)}
+                    >
+                        <TextField
+                            autoFocus
+                            errors={errors}
+                            name="searchText"
+                            placeholder="Enter Google Books query terms"
+                            register={register}
+                        />
+                    </Form>
+                </Col>
+                <Col>
+                    {position()}
                 </Col>
                 <Col className="text-end">
                     <Pagination
                         currentPage={currentPage}
-                        handleNext={handleNext}
-                        handlePrevious={handlePrevious}
+                        handleNext={onNext}
+                        handlePrevious={onPrevious}
                         lastPage={false}
                         variant="secondary"
                     />
@@ -100,7 +121,7 @@ const GoogleBooksOptions = (props: Props) => {
 
             <Row>
                 <pre>
-                    {JSON.stringify(fetchGoogleBooks.books, null, 2)}
+                    {JSON.stringify(fetchGoogleBooks.volumes, null, 2)}
                 </pre>
             </Row>
 

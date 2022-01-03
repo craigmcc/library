@@ -10,6 +10,7 @@ import {useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import GoogleBooksApi from "../clients/GoogleBooksApi";
+import GoogleVolumes from "../models/GoogleVolumes";
 import logger from "../util/ClientLogger";
 import {queryParameters} from "../util/QueryParameters";
 import ReportError from "../util/ReportError";
@@ -25,14 +26,12 @@ export interface Props {
 }
 
 export interface State {
-    books: object;                      // Fetched books (NOTE - need a collection type)
     error: Error | null;                // I/O error (if any)
     loading: boolean;                   // Are we currently loading?
+    volumes: GoogleVolumes;             // Fetched volumes
 }
 
 // Hook Details --------------------------------------------------------------
-
-const BASE_URL = ""; //https://www.googleapis.com/books/v1";
 
 const useFetchGoogleBooks = (props: Props): State => {
 
@@ -47,29 +46,22 @@ const useFetchGoogleBooks = (props: Props): State => {
 
             setError(null);
             setLoading(true);
-            let theBooks: object = {};
+            let theBooks: GoogleVolumes = {};
 
             const parameters = {
-                key: props.apiKey,
                 maxResults: props.limit ? props.limit : undefined,
                 startIndex: props.offset ? props.offset : undefined,
                 q: encodeURIComponent(props.query),
             }
-            const url = `${BASE_URL}/volumes${queryParameters(parameters)}`;
+            const url = `/volumes${queryParameters(parameters)}`;
 
             try {
                 if (props.query !== "") {
-                    theBooks = (await GoogleBooksApi.get(url)).data;
+                    theBooks = (await GoogleBooksApi.get(url + `&key=${props.apiKey}`)).data;
                 }
                 logger.debug({
                     context: "useFetchGoogleBooks.fetchBooks",
-                    apiKey: props.apiKey,
-                    limit: props.limit,
-                    offset: props.offset,
-                    query: props.query,
-                    parameters: parameters,
                     url: url,
-                    theBooks: theBooks,
                 });
             } catch (anError) {
                 setError(anError as Error);
@@ -88,9 +80,9 @@ const useFetchGoogleBooks = (props: Props): State => {
     }, [props.apiKey, props.limit, props.query, props.offset, alertPopup]);
 
     return {
-        books: books,
         error: error,
         loading: loading,
+        volumes: books,
     }
 
 }
