@@ -10,7 +10,7 @@ import {Request, Response, Router} from "express";
 
 import {requireUser} from "./OAuthMiddleware";
 import User from "../models/User";
-import {BadRequest, Forbidden, ServerError} from "../util/HttpErrors";
+import {BadRequest, Forbidden} from "../util/HttpErrors";
 import UserServices from "../services/UserServices";
 
 // Public Objects ------------------------------------------------------------
