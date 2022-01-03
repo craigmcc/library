@@ -60,6 +60,7 @@ const UserSegment = () => {
     const handleAdd: HandleAction = () => {
         const theUser = new User({
             active: true,
+            googleBooksApiKey: null,
             name: null,
             password: null,
             scope: null,

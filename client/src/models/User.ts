@@ -17,6 +17,7 @@ export class UserData {
     constructor (data: any = {}) {
         this.id = data.id ? data.id : -1;
         this.active = (data.active !== undefined) ? data.active : true;
+        this.googleBooksApiKey = data.googleBooksApiKey ? data.googleBooksApiKey : null;
         this.name = data.name ? data.name : null;
         this.password = data.password ? data.password : null;
         this.scope = data.scope ? data.scope : null;
@@ -25,6 +26,7 @@ export class UserData {
 
     id: number;
     active: boolean;
+    googleBooksApiKey: string;
     name: string;
     password: string;
     scope: string;

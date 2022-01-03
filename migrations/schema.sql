@@ -275,7 +275,8 @@ CREATE TABLE public.users (
     name text NOT NULL,
     password text NOT NULL,
     scope text NOT NULL,
-    username text NOT NULL
+    username text NOT NULL,
+    google_books_api_key text
 );
 
 

@@ -5,7 +5,6 @@
 // External Modules ----------------------------------------------------------
 
 require("custom-env").env(true);
-const https = require("https");
 
 import {InvalidScopeError, OAuthError} from "@craigmcc/oauth-orchestrator";
 import {
@@ -19,6 +18,8 @@ import {
 // Internal Modules ----------------------------------------------------------
 
 import OAuthOrchestrator from "./OAuthOrchestrator";
+import AccessToken from "../models/AccessToken";
+import User from "../models/User";
 import LibraryServices from "../services/LibraryServices";
 import {Forbidden} from "../util/HttpErrors";
 import logger from "../util/ServerLogger";
@@ -295,6 +296,57 @@ export const requireSuperuser: RequestHandler =
         } else {
             next();
         }
+    }
+
+/**
+ * Pass this request on if the request has a valid access token,
+ * as in requireAny().  In addition, add the User object of the
+ * User associated with the validated token as a local object, for
+ * use in subsequent handling.
+ *
+ * IMPLEMENTATION NOTE:  A valid access token is required, even if
+ * oauthEnabled is false, because we must be able to look up the
+ * relevant User.
+ *
+ * @param req                           Current HTTP request
+ * @param res                           Current HTTP response
+ * @param next                          Next function to handle things after this one
+ *
+ * @throws                              Error if valid token is not present
+ */
+export const requireUser: RequestHandler =
+    async (req: Request, res: Response, next: NextFunction) => {
+
+        // Validate and save the token itself
+        const token = extractToken(req);
+        if (!token) {
+            throw new Forbidden(
+                "No access token presented",
+                "OAuthMiddleware.requireUser"
+            );
+        }
+        await authorizeToken(token, "");
+        res.locals.token = token;
+
+        // Look up and save the User that corresponds to this
+        // access token.
+        //
+        // WARNING: This depends on using the same mechanisms
+        // that the authorizeToken() mechanism uses to relate
+        // an AccessToken to a User.
+        const accessToken = await AccessToken.findOne({
+            include: [ User ],
+            where: { token: token }
+        });
+        if (accessToken && accessToken.user) {
+            res.locals.user = accessToken.user;
+        } else {
+            res.locals.user = null;
+        }
+
+        // Pass control to the next middleware, as usual
+        next();
+
     }
 
 // Private Objects -----------------------------------------------------------

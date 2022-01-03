@@ -62,6 +62,14 @@ class User extends Model<User> {
     active!: boolean;
 
     @Column({
+        allowNull: true,
+        field: "google_books_api_key",
+        type: DataType.TEXT,
+    })
+    // API key for this User on Google Books
+    googleBooksApiKey!: string;
+
+    @Column({
         allowNull: false,
         field: "name",
         type: DataType.TEXT,

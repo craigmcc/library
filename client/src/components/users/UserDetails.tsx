@@ -78,6 +78,8 @@ const UserDetails = (props: Props) => {
 
     const validationSchema = Yup.object().shape({
         active: Yup.boolean(),
+        googleBooksApiKey: Yup.string()
+            .nullable(),
         name: Yup.string()
             .required("Name is required"),
         password: Yup.string()
@@ -173,7 +175,14 @@ const UserDetails = (props: Props) => {
                         />
                     </Row>
 
-                    <Row className="g-3 mb-3" id="activeRow">
+                    <Row className="g-3 mb-3" id="googleBooksApiKeyActiveRow">
+                        <TextField
+                            errors={errors}
+                            label="Google Books API Key:"
+                            name="googleBooksApiKey"
+                            register={register}
+                            valid="This User's API Key for Google Books (if any)."
+                        />
                         <CheckBoxField
                             errors={errors}
                             label="Active?"

@@ -26,6 +26,7 @@ class UserServices extends BaseParentServices<User> {
     constructor () {
         super(User, SortOrder.USERS, [
             "active",
+            "googleBooksApiKey",
             "name",
             "password",
             "scope",
