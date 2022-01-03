@@ -16,26 +16,25 @@ import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import {HandleAction, HandleValue} from "../../types";
 import useFetchGoogleBooks from "../../hooks/useFetchGoogleBooks";
-import useFetchMe from "../../hooks/useFetchMe";
 import logger from "../../util/ClientLogger";
 
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
+    apiKey: string;                     // API key for Google Books
 }
 
 // Component Details ---------------------------------------------------------
 
-const GoogleBooksOptions = (props: Props = {}) => {
+const GoogleBooksOptions = (props: Props) => {
 
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize] = useState<number>(10);
     const [searchText, setSearchText] = useState<string>("");
 
-    const fetchMe = useFetchMe();
     const fetchGoogleBooks = useFetchGoogleBooks({
         alertPopup: false,
-        apiKey: fetchMe.me.googleBooksApiKey,
+        apiKey: props.apiKey,
         limit: pageSize,
         query: searchText,
         offset: (currentPage - 1) * pageSize,
@@ -44,11 +43,14 @@ const GoogleBooksOptions = (props: Props = {}) => {
     useEffect(() => {
         logger.debug({
             context: "GoogleBooksOptions.useEffect",
+            apiKey: props.apiKey,
             currentPage: currentPage,
             pageSize: pageSize,
             searchText: searchText,
         });
-    }, [currentPage, pageSize, searchText]);
+    }, [props.apiKey,
+        currentPage, pageSize, searchText,
+        fetchGoogleBooks.books]);
 
     const handleNext: HandleAction = () => {
         setCurrentPage(currentPage + 1);
@@ -72,7 +74,7 @@ const GoogleBooksOptions = (props: Props = {}) => {
             <LoadingProgress
                 error={fetchGoogleBooks.error}
                 loading={fetchGoogleBooks.loading}
-                title="Selected Google Books"
+                title="Fetching Google Books"
             />
 
             <Row className="mb-3">

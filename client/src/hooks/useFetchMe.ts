@@ -53,6 +53,9 @@ const useFetchMe = (props: Props = {}): State => {
             const url = "/me";
             try {
                 theMe = ToModel.USER((await OAuth.get(url)).data);
+                if (!theMe.googleBooksApiKey) {
+                    theMe.googleBooksApiKey = "";
+                }
             } catch (anError) {
                 setError(anError as Error);
                 ReportError("useFetchMe.fetchMe", anError, {
@@ -67,7 +70,9 @@ const useFetchMe = (props: Props = {}): State => {
         if (loginContext.data.loggedIn) {
             fetchMe();
         } else {
-            setMe(new User());
+            setMe(new User({
+                googleBooksApiKey: "",
+            }));
         }
 
         logger.debug({
@@ -80,7 +85,7 @@ const useFetchMe = (props: Props = {}): State => {
         setLoading(false);
         setRefresh(false);
 
-    }, [refresh, loginContext.data.loggedIn]);
+    }, [alertPopup, refresh, loginContext.data.loggedIn]);
 
     const handleRefresh: HandleAction = () => {
         logger.debug({

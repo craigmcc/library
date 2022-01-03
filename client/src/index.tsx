@@ -9,6 +9,7 @@ import "react-notifications-component/dist/theme.css";
 import AuthorSegment from "./components/authors/AuthorSegment";
 import HomeView from "./components/general/HomeView";
 import Navigation from './components/general/Navigation';
+import GoogleBooksSegment from "./components/google-books/GoogleBooksSegment";
 import {LibraryContextProvider} from "./components/libraries/LibraryContext";
 import LibrarySegment from "./components/libraries/LibrarySegment";
 import {LoginContextProvider} from "./components/login/LoginContext";
@@ -25,6 +26,7 @@ ReactDOM.render(
                   <Routes>
                       <Route path="/" element={<Navigation/>}>
                           <Route path="authors" element={<AuthorSegment/>}/>
+                          <Route path="browse-google" element={<GoogleBooksSegment/>}/>
                           <Route path="libraries" element={<LibrarySegment/>}/>
                           <Route path="series" element={<SeriesSegment/>}/>
                           <Route path="stories" element={<StorySegment/>}/>

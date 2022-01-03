@@ -32,6 +32,8 @@ export interface State {
 
 // Hook Details --------------------------------------------------------------
 
+const BASE_URL = ""; //https://www.googleapis.com/books/v1";
+
 const useFetchGoogleBooks = (props: Props): State => {
 
     const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
@@ -53,7 +55,7 @@ const useFetchGoogleBooks = (props: Props): State => {
                 startIndex: props.offset ? props.offset : undefined,
                 q: encodeURIComponent(props.query),
             }
-            const url = `/volumes${queryParameters(parameters)}`;
+            const url = `${BASE_URL}/volumes${queryParameters(parameters)}`;
 
             try {
                 if (props.query !== "") {
@@ -61,7 +63,13 @@ const useFetchGoogleBooks = (props: Props): State => {
                 }
                 logger.debug({
                     context: "useFetchGoogleBooks.fetchBooks",
+                    apiKey: props.apiKey,
+                    limit: props.limit,
+                    offset: props.offset,
+                    query: props.query,
+                    parameters: parameters,
                     url: url,
+                    theBooks: theBooks,
                 });
             } catch (anError) {
                 setError(anError as Error);
@@ -77,7 +85,7 @@ const useFetchGoogleBooks = (props: Props): State => {
 
         fetchBooks();
 
-    }, [props.apiKey, props.limit, props.query, props.offset]);
+    }, [props.apiKey, props.limit, props.query, props.offset, alertPopup]);
 
     return {
         books: books,

@@ -52,6 +52,11 @@ function Navigation() {
                                 <NavLink to="/users">Users</NavLink>
                             </NavDropdown.Item>
                         </NavDropdown>
+                        <NavDropdown id="browse" title="Browse">
+                            <NavDropdown.Item>
+                                <NavLink to="/browse-google">Google Books</NavLink>
+                            </NavDropdown.Item>
+                        </NavDropdown>
                     </Nav>
                     <LoggedInUser/>
                     <span className="me-4"/>
