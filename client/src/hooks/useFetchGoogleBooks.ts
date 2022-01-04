@@ -21,6 +21,7 @@ export interface Props {
     alertPopup?: boolean;               // Pop up browser alert on error? [true]
     apiKey: string;                     // API Key for Google Books API
     limit?: number;                     // Maximum books to retrieve [10]
+    newest?: boolean;                   // Sort by newest not relevance? [false]
     query: string;                      // Query expression (will be URL encoded)
     offset?: number;                    // Zero-relative offset to first result [0]
 }
@@ -50,6 +51,7 @@ const useFetchGoogleBooks = (props: Props): State => {
 
             const parameters = {
                 maxResults: props.limit ? props.limit : undefined,
+                orderBy: props.newest ? "newest" : undefined,
                 startIndex: props.offset ? props.offset : undefined,
                 q: encodeURIComponent(props.query),
             }
@@ -77,7 +79,8 @@ const useFetchGoogleBooks = (props: Props): State => {
 
         fetchBooks();
 
-    }, [props.apiKey, props.limit, props.query, props.offset, alertPopup]);
+    }, [props.apiKey, props.limit, props.newest,
+        props.offset, props.query, alertPopup]);
 
     return {
         error: error,

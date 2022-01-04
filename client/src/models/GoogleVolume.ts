@@ -23,10 +23,16 @@ type IndustryIdentifier = {
     type?: IndustryIdentifierType;      // Identifier type
 }
 
+// Search result information related to this volume
+type SearchInfo = {
+    textSnippet?: string;               // A text snippet containing the search query
+}
+
 // General volume information
 type VolumeInfo = {
     authors?: string[];                 // List of author names
     categories?: string[];              // Subject categories
+    contentVersion?: string;            // Identifier for the version of the volume content
     description?: string;               // Synopsis of this volume (formatted simple HTML)
     industryIdentifiers: IndustryIdentifier[]; // Industry standard identifiers
     imageLinks?: ImageLinks;            // Links to images in various sizes
@@ -43,6 +49,8 @@ type VolumeInfo = {
 class GoogleVolume {
     id?: string;                        // Unique identifier for this volume
     kind?: string;                      // books#volume
+    searchInfo?: SearchInfo;            // Search result information related to this volume
+    selfLink?: string;                  // URL to this API resource
     volumeInfo?: VolumeInfo;            // General volume information
 }
 
