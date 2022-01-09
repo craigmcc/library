@@ -1,5 +1,5 @@
 import React from "react";
-import {prettyDOM, render, screen} from "@testing-library/react";
+import {render, screen} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import CheckBox from "./CheckBox";
@@ -26,7 +26,7 @@ test("renders correctly with maximal properties", () => {
 
     const inputElement = screen.getByLabelText(LABEL);
     expect(inputElement).toBeInTheDocument();
-    // console.log("inputElement", prettyDOM(inputElement));
+    // NOTE - console.log("inputElement", prettyDOM(inputElement));
     // NOTE - autoFocus is a Javascript thing
     expect(inputElement).toHaveAttribute(CHECKED);
     expect(inputElement).toHaveAttribute("disabled");
@@ -54,6 +54,7 @@ test("renders correctly with minimal properties", () => {
     expect(inputElement).toBeInTheDocument();
     expect(inputElement).not.toHaveAttribute("autoFocus");
     expect(inputElement).not.toHaveAttribute(CHECKED);
+    expect(inputElement).not.toHaveAttribute("disabled");
     expect(inputElement).toHaveAttribute("id", "checkBox"); // Default value
     expect(inputElement).toHaveAttribute("type", "checkbox");
 
