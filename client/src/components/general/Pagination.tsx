@@ -30,7 +30,7 @@ const Pagination = (props: Props) => {
     return (
         <>
             <Button
-                className="mr-1"
+                className="me-1"
                 disabled={props.currentPage === 1}
                 onClick={props.handlePrevious ? props.handlePrevious : undefined}
                 variant={variant}
@@ -38,7 +38,7 @@ const Pagination = (props: Props) => {
                 &lt;
             </Button>
             <Button
-                className="mr-1"
+                className="me-1"
                 disabled
                 variant={variant}
             >
