@@ -17,14 +17,14 @@ import * as Yup from "yup";
 // Internal Modules ----------------------------------------------------------
 
 import TextField from "../general/TextField";
+import {HandleCredentials} from "../../types";
 import Credentials from "../../models/Credentials";
 
 // Property Details ----------------------------------------------------------
 
 export interface Props {
-    autoFocus?: boolean;        // Should the first element receive autoFocus? [false]
-    handleLogin:                // Handle (credentials) for login request
-        (credentials: Credentials) => void;
+    autoFocus?: boolean;                // Should the first element receive autoFocus? [false]
+    handleLogin: HandleCredentials;     // Handle (credentials) for login request
 }
 
 // Component Details ---------------------------------------------------------

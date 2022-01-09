@@ -9,6 +9,7 @@ import React from "react";
 // Internal Modules ----------------------------------------------------------
 
 import Author from "./models/Author";
+import Credentials from "./models/Credentials";
 import Library from "./models/Library";
 import Series from "./models/Series";
 import Story from "./models/Story";
@@ -77,6 +78,7 @@ export type HandleValue = (newValue: string) => void;
 // Model Object Handlers -----------------------------------------------------
 
 export type HandleAuthor = (author: Author) => void;
+export type HandleCredentials = (credentials: Credentials) => void;
 export type HandleLibrary = (library: Library) => void;
 export type HandleSeries = (series: Series) => void;
 export type HandleStory = (story: Story) => void;
