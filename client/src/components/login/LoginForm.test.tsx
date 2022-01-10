@@ -4,29 +4,37 @@ import userEvent from "@testing-library/user-event";
 
 import LoginForm from "./LoginForm";
 
-const elements = (): [
+const elements = (): {
+    // Fields
     username: HTMLElement,
     password: HTMLElement,
-    button: HTMLElement,
-] => {
+    // Buttons
+    login: HTMLElement,
+} => {
+
     const username = screen.getByLabelText("Username:");
     expect(username).toBeInTheDocument();
-    expect(username).toHaveValue("");
     const password = screen.getByLabelText("Password:");
     expect(password).toBeInTheDocument();
-    expect(password).toHaveValue("");
-    const button = screen.getByRole("button");
-    expect(button).toBeInTheDocument();
-    return [username, password, button];
+
+    const login = screen.getByRole("button", { name: "Log In" });
+    expect(login).toBeInTheDocument();
+
+    return {
+        username,
+        password,
+        login,
+    };
+
 }
 
 test("invalid data does not submit", async () => {
 
     const handleCredentials = jest.fn();
     render(<LoginForm handleLogin={handleCredentials}/>);
-    const [buttonElement] = elements();
+    const {login} = elements();
 
-    userEvent.click(buttonElement);
+    userEvent.click(login);
 
     await waitFor(() => {
         expect(handleCredentials).not.toBeCalled();
@@ -40,7 +48,7 @@ test("valid data with enter after last field", async () => {
     const VALID_PASSWORD = "mypassword";
     const handleCredentials = jest.fn();
     render(<LoginForm handleLogin={handleCredentials}/>);
-    const [username, password] = elements();
+    const {username, password} = elements();
 
     userEvent.type(username, VALID_USERNAME);
     userEvent.type(password, VALID_PASSWORD + "{enter}");
@@ -60,11 +68,11 @@ test("valid data with submit button", async () => {
     const VALID_PASSWORD = "mypassword";
     const handleCredentials = jest.fn();
     render(<LoginForm handleLogin={handleCredentials}/>);
-    const [username, password, button] = elements();
+    const {username, password, login} = elements();
 
     userEvent.type(username, VALID_USERNAME);
     userEvent.type(password, VALID_PASSWORD);
-    userEvent.click(button);
+    userEvent.click(login);
 
     await waitFor(() => {
         expect(handleCredentials).toHaveBeenCalledWith({
