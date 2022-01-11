@@ -59,7 +59,7 @@ test("disabled buttons on no handlers", async () => {
         active: true,
         firstName: null,
         lastName: null,
-        libraryId: SeedData.LIBRARY0_ID,
+        libraryId: -1,
         notes: null,
     })
     const handleBack = jest.fn();
@@ -87,7 +87,7 @@ test("empty data does not submit", async () => {
         active: true,
         firstName: null,
         lastName: null,
-        libraryId: SeedData.LIBRARY0_ID,
+        libraryId: -1,
         notes: null,
     })
     const handleBack = jest.fn();
