@@ -38,23 +38,23 @@ export const all = (libraryId: number): Author[] => {
  */
 export const exact = (libraryId: number, firstName: string, lastName: string): Author => {
     MockLibraryServices.find(libraryId);
-    let result: Author | undefined = undefined;
+    let found: Author | undefined = undefined;
     for (const author of map.values()) {
         if ((author.libraryId === libraryId) &&
             (author.firstName === firstName) &&
             (author.lastName === lastName)) {
-            result = author;
+            found = author;
         }
     }
-    if (result) {
+    if (found) {
         logger.info({
             context: "MockAuthorServices.exact",
             libraryId: libraryId,
             firstName: firstName,
             lastName: lastName,
-            result: result,
+            result: found,
         });
-        return new Author(result);
+        return new Author(found);
     } else {
         throw new NotFound(
             `name: Missing Author '${firstName} ${lastName}'`,
@@ -68,9 +68,9 @@ export const exact = (libraryId: number, firstName: string, lastName: string): A
  */
 export const find = (libraryId: number, authorId: number): Author => {
     MockLibraryServices.find(libraryId);
-    const result = map.get(authorId);
-    if (result) {
-        return new Author(result);
+    const found = map.get(authorId);
+    if (found && (found.libraryId === libraryId)) {
+        return new Author(found);
     } else {
         throw new NotFound(
             `authorId: Missing Author ${authorId}`,
@@ -84,7 +84,7 @@ export const find = (libraryId: number, authorId: number): Author => {
  */
 export const insert = (libraryId: number, author: Author): Author => {
     MockLibraryServices.find(libraryId);
-    // NOTE - check for duplicate key violation?
+    // NOTE - Check for duplicate key violations?
     const inserted = new Author({
         ...author,
         id: nextId++,
@@ -95,6 +95,15 @@ export const insert = (libraryId: number, author: Author): Author => {
 }
 
 /**
+ * Remove and return an existing Author.
+ */
+export const remove = (libraryId: number, authorId: number): Author => {
+    const removed = find(libraryId, authorId);
+    map.delete(authorId);
+    return new Author(removed);
+}
+
+/**
  * Reset the mock database to be empty.
  */
 export const reset = (): void => {
@@ -102,3 +111,18 @@ export const reset = (): void => {
     map.clear();
 }
 
+/**
+ * Update and return an existing Author.
+ */
+export const update = (libraryId: number, authorId: number, author: Author): Author => {
+    const original = find(libraryId, authorId);
+    // NOTE - Check for duplicate key violations?
+    const updated = {
+        ...original,
+        ...author,
+        id: authorId,
+        libraryId: libraryId,
+    }
+    map.set(authorId, updated);
+    return new Author(updated);
+}

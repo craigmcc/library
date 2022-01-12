@@ -13,9 +13,11 @@ import * as MockAuthorServices from "./MockAuthorServices";
 
 // Public Logic --------------------------------------------------------------
 
+const PREFIX = "/api/authors";
+
 export const authorHandlers: RestHandler<MockedRequest<DefaultRequestBody>>[] = [
 
-    rest.get("/api/authors/:libraryId/exact/:firstName/:lastName", (req, res, ctx) => {
+    rest.get(`${PREFIX}/:libraryId/exact/:firstName/:lastName`, (req, res, ctx) => {
         const {libraryId, firstName, lastName} = req.params;
         try {
             const author = MockAuthorServices.exact
