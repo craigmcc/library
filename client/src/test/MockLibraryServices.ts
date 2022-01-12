@@ -6,14 +6,15 @@
 
 // Internal Modules ----------------------------------------------------------
 
+import {NotFound} from "./HttpErrors";
 import Library from "../models/Library";
 import * as Sorters from "../util/Sorters";
 
 // Private Objects -----------------------------------------------------------
 
 let ids: number[] = [];                 // Library IDs by index from SeedData.
-let lastId = 0;                         // Last used ID value
 let map = new Map<number, Library>();   // Map of Libraries keyed by id
+let nextId = 0;                         // Next used ID value
 
 // Public Objects ------------------------------------------------------------
 
@@ -31,25 +32,35 @@ export const all = (): Library[] => {
 /**
  * Return the Library with the specified name, if any.
  */
-export const exact = (name: string): Library | undefined => {
+export const exact = (name: string): Library => {
     let result: Library | undefined = undefined;
     for (const library of map.values()) {
         if (library.name === name) {
-            result = new Library(library);
+            result = library;
         }
     }
-    return result;
+    if (result) {
+        return new Library(result);
+    } else {
+        throw new NotFound(
+            `name: Missing Library '${name}`,
+            "MockLibraryServices.exact",
+        );
+    }
 }
 
 /**
  * Return the Library with the specified id, if any.
  */
-export const find = (libraryId: number): Library | undefined => {
+export const find = (libraryId: number): Library => {
     const result = map.get(libraryId);
     if (result) {
         return new Library(result);
     } else {
-        return undefined;
+        throw new NotFound(
+            `libraryId: Missing Library ${libraryId}`,
+            "MockLibraryServices.find",
+        );
     }
 }
 
@@ -64,10 +75,12 @@ export const id = (index: number): number => {
  * Insert and return a new Library after assigning it a new ID.
  */
 export const insert = (library: Library): Library => {
+    // NOTE - Check for duplicate key violation?
     const inserted = new Library({
         ...library,
-        id: ++lastId,
+        id: nextId++,
     });
+    ids.push(inserted.id);
     map.set(inserted.id, inserted);
     return inserted;
 }
@@ -77,7 +90,7 @@ export const insert = (library: Library): Library => {
  */
 export const reset = (): void => {
     ids = [];
-    lastId = 0;
+    nextId = 1000;
     map.clear();
 }
 

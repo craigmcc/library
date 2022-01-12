@@ -20,11 +20,11 @@ import Library from "../models/Library";
  */
 export const reset = (): void => {
 
-    // Reset model collecions
+    // Reset model collections
     MockAuthorServices.reset();
     MockLibraryServices.reset();
 
-    // Load main tables, with Libraries first
+    // Load model data, with Libraries first
     loadLibraries(SeedData.LIBRARIES);
     loadAuthors(MockLibraryServices.id(0), SeedData.AUTHORS0);
     loadAuthors(MockLibraryServices.id(1), SeedData.AUTHORS1);
