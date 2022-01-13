@@ -9,7 +9,6 @@
 import {NotFound} from "./HttpErrors";
 import * as MockLibraryServices from "./MockLibraryServices";
 import Author from "../models/Author";
-import logger from "../util/ClientLogger";
 import * as Sorters from "../util/Sorters";
 
 // Private Objects -----------------------------------------------------------
@@ -47,13 +46,6 @@ export const exact = (libraryId: number, firstName: string, lastName: string): A
         }
     }
     if (found) {
-        logger.info({
-            context: "MockAuthorServices.exact",
-            libraryId: libraryId,
-            firstName: firstName,
-            lastName: lastName,
-            result: found,
-        });
         return new Author(found);
     } else {
         throw new NotFound(

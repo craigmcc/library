@@ -74,8 +74,10 @@ const AuthorDetails = (props: Props) => {
     const validationSchema = Yup.object().shape({
         active: Yup.boolean(),
         firstName: Yup.string()
+            .nullable()                 // Groan -- Javascript thinks "" is falsy
             .required("First Name is required"),
         lastName: Yup.string()
+            .nullable()                 // Groan -- Javascript thinks "" is falsy
             .required("Last Name is required")
             .test("unique-name",
                 "That name is already in use within this Library",
