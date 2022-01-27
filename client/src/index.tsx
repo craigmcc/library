@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactNotification from "react-notifications-component";
+import {ReactNotifications} from "react-notifications-component";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -21,7 +21,7 @@ import VolumeSegment from "./components/volumes/VolumeSegment";
 ReactDOM.render(
       <LoginContextProvider>
           <LibraryContextProvider>
-              <ReactNotification/>
+              <ReactNotifications/>
               <BrowserRouter>
                   <Routes>
                       <Route path="/" element={<Navigation/>}>

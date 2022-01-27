@@ -9,7 +9,7 @@
 // External Modules ----------------------------------------------------------
 
 import React, {useEffect, useState} from "react";
-import {store} from "react-notifications-component";
+import {Store as store} from "react-notifications-component";
 
 // Internal Modules ----------------------------------------------------------
 
