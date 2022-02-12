@@ -113,14 +113,14 @@ test("empty data does not submit", async () => {
         expect(handleInsert).not.toBeCalled();
         expect(handleRemove).not.toBeCalled();
         expect(handleUpdate).not.toBeCalled();
-    })
+    });
 
 });
 
 test("validation fails on duplicate name update", async () => {
 
-    const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0));
-    const AUTHORS = MockAuthorServices.all(LIBRARY.id);
+    const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0), {});
+    const AUTHORS = MockAuthorServices.all(LIBRARY.id, {});
     const AUTHOR = {
         ...AUTHORS[0],
         firstName: AUTHORS[1].firstName,
@@ -151,7 +151,7 @@ test("validation fails on duplicate name update", async () => {
 
 test("validation fails on empty insert", async () => {
 
-    const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0));
+    const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0), {});
     const handleBack = jest.fn();
     const handleInsert = jest.fn();
     const handleUpdate = jest.fn();
@@ -186,8 +186,8 @@ test("validation fails on empty insert", async () => {
 
 test("validation passes on new name update", async () => {
 
-    const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0));
-    const AUTHORS = MockAuthorServices.all(LIBRARY.id);
+    const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0), {});
+    const AUTHORS = MockAuthorServices.all(LIBRARY.id, {});
     const AUTHOR = {
         ...AUTHORS[0],
         firstName: "Someone",
@@ -220,8 +220,8 @@ test("validation passes on new name update", async () => {
 
 test("validation passes on no change remove", async () => {
 
-    const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0));
-    const AUTHORS = MockAuthorServices.all(LIBRARY.id);
+    const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0), {});
+    const AUTHORS = MockAuthorServices.all(LIBRARY.id, {});
     const handleBack = jest.fn();
     const handleInsert = jest.fn();
     const handleRemove = jest.fn();
@@ -249,8 +249,8 @@ test("validation passes on no change remove", async () => {
 
 test("validation passes on no change update", async () => {
 
-    const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0));
-    const AUTHORS = MockAuthorServices.all(LIBRARY.id);
+    const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0), {});
+    const AUTHORS = MockAuthorServices.all(LIBRARY.id, {});
     const handleBack = jest.fn();
     const handleInsert = jest.fn();
     const handleUpdate = jest.fn();

@@ -1,6 +1,6 @@
-// MockAuthorHandlers --------------------------------------------------------
+// MockLibraryHandlers --------------------------------------------------------
 
-// Mock service worker handlers for Author models.
+// Mock service worker handlers for Library models.
 
 // External Modules ----------------------------------------------------------
 
@@ -9,47 +9,33 @@ import {DefaultRequestBody, MockedRequest, rest, RestHandler} from "msw";
 // Internal Modules ----------------------------------------------------------
 
 import {HttpError} from "./HttpErrors";
-import * as MockAuthorServices from "./MockAuthorServices";
+import * as MockLibraryServices from "./MockLibraryServices";
 
-// Public Logic --------------------------------------------------------------
+// Public Objects ------------------------------------------------------------
 
-const PREFIX = "/api/authors";
+const PREFIX = "/api/libraries";
 
-export const authorHandlers: RestHandler<MockedRequest<DefaultRequestBody>>[] = [
+export const libraryHandlers: RestHandler<MockedRequest<DefaultRequestBody>>[] = [
 
     // all -------------------------------------------------------------------
-    rest.get(`${PREFIX}/:libraryId`, (req, res, ctx) => {
-        const {libraryId} = req.params;
-        const query = authorQuery(req.url.searchParams, true);
-        try {
-            const authors = MockAuthorServices.all(Number(libraryId), query);
-            return res(
-                ctx.status(200),
-                ctx.json(authors),
-            );
-        } catch (error) {
-            const httpError = error as HttpError;
-            return res(
-                ctx.status(httpError.status),
-                ctx.json({
-                    context: httpError.context,
-                    message: httpError.message,
-                    status: httpError.status,
-                }),
-            );
-        }
+    rest.get(`${PREFIX}`, (req, res, ctx) => {
+        const query = libraryQuery(req.url.searchParams, true);
+        const libraries = MockLibraryServices.all(query);
+        return res(
+            ctx.status(200),
+            ctx.json(libraries),
+        )
     }),
 
     // exact -----------------------------------------------------------------
-    rest.get(`${PREFIX}/:libraryId/exact/:firstName/:lastName`, (req, res, ctx) => {
-        const {libraryId, firstName, lastName} = req.params;
+    rest.get(`${PREFIX}/exact/:name`, (req, res, ctx) => {
+        const {name} = req.params;
         try {
-            const query = authorQuery(req.url.searchParams);
-            const author = MockAuthorServices.exact(Number(libraryId),
-                firstName as string, lastName as string, query);
+            const query = libraryQuery(req.url.searchParams);
+            const library = MockLibraryServices.exact(name as string, query);
             return res(
                 ctx.status(200),
-                ctx.json(author),
+                ctx.json(library),
             );
         } catch (error) {
             const httpError = error as HttpError;
@@ -65,15 +51,14 @@ export const authorHandlers: RestHandler<MockedRequest<DefaultRequestBody>>[] = 
     }),
 
     // find ------------------------------------------------------------------
-    rest.get(`${PREFIX}/:libraryId/:authorId`, (req, res, ctx) => {
-        const {libraryId, authorId} = req.params;
+    rest.get(`${PREFIX}/:libraryId`, (req, res, ctx) => {
+        const {libraryId} = req.params;
         try {
-            const query = authorQuery(req.url.searchParams);
-            const author = MockAuthorServices.find(Number(libraryId),
-                Number(authorId), query);
+            const query = libraryQuery(req.url.searchParams);
+            const library = MockLibraryServices.find(Number(libraryId), query);
             return res(
                 ctx.status(200),
-                ctx.json(author),
+                ctx.json(library),
             );
         } catch (error) {
             const httpError = error as HttpError;
@@ -86,7 +71,7 @@ export const authorHandlers: RestHandler<MockedRequest<DefaultRequestBody>>[] = 
                 }),
             );
         }
-    }),
+    })
 
 ];
 
@@ -97,11 +82,11 @@ export const authorHandlers: RestHandler<MockedRequest<DefaultRequestBody>>[] = 
  * @param searchParams                  URLSearchParams from this request
  * @param matches                       Add match parameters as well?
  */
-export const authorQuery = (searchParams: URLSearchParams, matches: boolean = false): any => {
+export const libraryQuery = (searchParams: URLSearchParams, matches: boolean = false): any => {
     let result: any = {};
     // Include Parameters
-    if (searchParams.get("withLibrary")) {
-        result.withLibrary = "";
+    if (searchParams.get("withAuthors")) {
+        result.withAuthors = "";
     }
     if (searchParams.get("withSeries")) {
         result.withSeries = "";
@@ -119,6 +104,9 @@ export const authorQuery = (searchParams: URLSearchParams, matches: boolean = fa
         }
         if (searchParams.get("name")) {
             result.name = searchParams.get("name");
+        }
+        if (searchParams.get("scope")) {
+            result.scope = searchParams.get("scope");
         }
     }
     return result;

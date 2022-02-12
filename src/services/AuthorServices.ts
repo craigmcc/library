@@ -150,7 +150,6 @@ class AuthorServices extends BaseChildServices<Author, Library> {
 
     /**
      * Supported include query parameters:
-     * * withAuthors                    Include related Authors
      * * withLibrary                    Include parent Library
      * * withSeries                     Include related Series
      * * withStories                    Include related Stories

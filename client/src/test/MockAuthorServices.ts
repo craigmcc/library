@@ -21,12 +21,14 @@ let nextId = 0;                         // Next used ID value
 /**
  * Return a sorted array of all Authors for the specified Library.
  */
-export const all = (libraryId: number): Author[] => {
-    MockLibraryServices.find(libraryId);
+export const all = (libraryId: number, query: any): Author[] => {
+    MockLibraryServices.find(libraryId, {});
     const results: Author[] = [];
     for (const author of map.values()) {
         if (author.libraryId === libraryId) {
-            results.push(new Author(author));
+            if (matches(author, query)) {
+                results.push(includes(author, query));
+            }
         }
     }
     return Sorters.AUTHORS(results);
@@ -35,8 +37,8 @@ export const all = (libraryId: number): Author[] => {
 /**
  * Return the Author with the specified name, for the specified Library, if any.
  */
-export const exact = (libraryId: number, firstName: string, lastName: string): Author => {
-    MockLibraryServices.find(libraryId);
+export const exact = (libraryId: number, firstName: string, lastName: string, query: any): Author => {
+    MockLibraryServices.find(libraryId, {});
     let found: Author | undefined = undefined;
     for (const author of map.values()) {
         if ((author.libraryId === libraryId) &&
@@ -46,7 +48,7 @@ export const exact = (libraryId: number, firstName: string, lastName: string): A
         }
     }
     if (found) {
-        return new Author(found);
+        return includes(found, query);
     } else {
         throw new NotFound(
             `name: Missing Author '${firstName} ${lastName}'`,
@@ -58,11 +60,11 @@ export const exact = (libraryId: number, firstName: string, lastName: string): A
 /**
  * Return the Author with the specified id, for the specified Library, if any.
  */
-export const find = (libraryId: number, authorId: number): Author => {
-    MockLibraryServices.find(libraryId);
+export const find = (libraryId: number, authorId: number, query: any): Author => {
+    MockLibraryServices.find(libraryId, {});
     const found = map.get(authorId);
     if (found && (found.libraryId === libraryId)) {
-        return new Author(found);
+        return includes(found, query);
     } else {
         throw new NotFound(
             `authorId: Missing Author ${authorId}`,
@@ -75,7 +77,7 @@ export const find = (libraryId: number, authorId: number): Author => {
  * Insert and return a new Author for the specified Library, after assigning it a new ID.
  */
 export const insert = (libraryId: number, author: Author): Author => {
-    MockLibraryServices.find(libraryId);
+    MockLibraryServices.find(libraryId, {});
     // NOTE - Check for duplicate key violations?
     const inserted = new Author({
         ...author,
@@ -90,7 +92,7 @@ export const insert = (libraryId: number, author: Author): Author => {
  * Remove and return an existing Author.
  */
 export const remove = (libraryId: number, authorId: number): Author => {
-    const removed = find(libraryId, authorId);
+    const removed = find(libraryId, authorId, {});
     map.delete(authorId);
     return new Author(removed);
 }
@@ -107,7 +109,7 @@ export const reset = (): void => {
  * Update and return an existing Author.
  */
 export const update = (libraryId: number, authorId: number, author: Author): Author => {
-    const original = find(libraryId, authorId);
+    const original = find(libraryId, authorId, {});
     // NOTE - Check for duplicate key violations?
     const updated = {
         ...original,
@@ -117,4 +119,39 @@ export const update = (libraryId: number, authorId: number, author: Author): Aut
     }
     map.set(authorId, updated);
     return new Author(updated);
+}
+
+// Private Functions ---------------------------------------------------------
+
+/**
+ * Return a new Author, decorated with parent and child objets based on
+ * any specified "with" parameters.
+ *
+ * @param author                        Author to be decorated and returned
+ * @param query                         Query parameters from this request
+ */
+const includes = (author: Author, query: any): Author => {
+    const result = new Author(author);
+    if (query.withLibrary) {
+        result.library = MockLibraryServices.find(author.id, {});
+    }
+    // NOTE - implement withSeries
+    // NOTE - implement withStories
+    // NOTE - implement withVolumes
+    return result;
+}
+
+/**
+ * Return true if this Author matches all specified match criteria (if any).
+ *
+ * @param author                        Author to be tested
+ * @param query                         Query parameters from this request
+ */
+const matches = (author: Author, query: any): boolean => {
+    let result = true;
+    if (query.active && !author.active) {
+        result = false;
+    }
+    // NOTE - implement name
+    return result;
 }
