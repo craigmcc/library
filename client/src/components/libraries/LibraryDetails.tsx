@@ -76,6 +76,7 @@ const LibraryDetails = (props: Props) => {
     const validationSchema = Yup.object().shape({
         active: Yup.boolean(),
         name: Yup.string()
+            .nullable()                 // Groan -- Javascript thinks "" is falsy
             .required("Name is required")
             .test("unique-name",
                 "That name is already in use",
@@ -86,17 +87,20 @@ const LibraryDetails = (props: Props) => {
         notes: Yup.string()
             .nullable(),
         scope: Yup.string()
+            .nullable()                 // Groan -- Javascript thinks "" is falsy
             .required("Scope is required")
             .test("valid-scope",
                 "Only alphanumeric (a-z, A-Z, 0-9) characters are allowed",
                 function(value) {
-                    return validateLibraryScope(value);
+                    return validateLibraryScope(value ? value : undefined);
                 })
+/* NOTE - server side does not enforce this (no uniqueness constraint)
             .test("unique-scope",
                 "That scope is already in use",
                 async function(value) {
                     return validateLibraryScopeUnique(ToModel.LIBRARY(this.parent));
                 }),
+*/
     });
 
     const {formState: {errors}, handleSubmit, register} = useForm<LibraryData>({

@@ -180,7 +180,7 @@ test("validation fails on empty insert", async () => {
         expect(handleUpdate).not.toBeCalled();
         screen.getByText("First Name is required");
         screen.getByText("Last Name is required");
-    })
+    });
 
 });
 
