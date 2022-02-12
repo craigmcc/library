@@ -23,7 +23,6 @@ import {HandleAction, HandleLibrary} from "../../types";
 import Library, {LibraryData} from "../../models/Library";
 import {
     validateLibraryNameUnique,
-    validateLibraryScopeUnique
 } from "../../util/AsyncValidators";
 import * as ToModel from "../../util/ToModel";
 import {validateLibraryScope} from "../../util/Validators";
