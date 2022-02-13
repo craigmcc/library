@@ -1,77 +1,77 @@
 import React from "react";
-import {render, screen, waitFor} from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import {render, screen/*, waitFor*/} from "@testing-library/react";
+//import userEvent from "@testing-library/user-event";
 
-import LibraryDetails from "./LibraryDetails";
-import Library from "../../models/Library";
-import * as MockLibraryServices from "../../test/MockLibraryServices";
+import LibraryOptions from "./LibraryOptions";
+//import Library from "../../models/Library";
+//import * as MockLibraryServices from "../../test/MockLibraryServices";
 
-const elements = (): {
+type Elements = {
     // Fields
-    active: HTMLElement,
-    name: HTMLElement,
-    notes: HTMLElement,
-    scope: HTMLElement,
+    activeOnly: HTMLElement,
+    rows: HTMLElement[],
+    searchBar: HTMLElement,
     // Buttons
-    back: HTMLElement,
-    remove: HTMLElement,
-    save: HTMLElement,
-} => {
+    add0: HTMLElement,
+    add1: HTMLElement,
+    pageNext: HTMLElement,
+    pageNumber: HTMLElement,
+    pagePrevious: HTMLElement,
+}
 
-    const active = screen.getByLabelText("Active?");
-    expect(active).toBeInTheDocument();
-    const name = screen.getByLabelText("Name:");
-    expect(name).toBeInTheDocument();
-    const notes = screen.getByLabelText("Notes:");
-    expect(notes).toBeInTheDocument();
-    const scope = screen.getByLabelText("Scope:");
+const elements = function (): Elements {
 
-    const back = screen.getByRole("button", { name: "Back" });
-    expect(back).toBeInTheDocument();
-    const save = screen.getByRole("button", { name: "Save" });
-    expect(save).toBeInTheDocument();
-    const remove = screen.getByRole("button", { name: "Remove" });
-    expect(remove).toBeInTheDocument();
+    const activeOnly = screen.getByLabelText("Active Libraries Only?");
+    expect(activeOnly).toBeInTheDocument();
+    expect(activeOnly).not.toHaveAccessibleDescription("checked");
+    const rows = screen.getAllByRole("row"); // TODO - just finds the one in <thead>
+    // NOTE - We really only want the rows inside <tbody>
+    // Should be SeedData.LIBRARIES.length of them
+    const searchBar = screen.getByLabelText("Search For Libraries:");
+    expect(searchBar).toBeInTheDocument();
+
+    const adds = screen.getAllByRole("button", { name:"Add" });
+    const pageNext = screen.getByRole("button", { name: ">" });
+    expect(pageNext).toBeInTheDocument();
+    const pageNumber = screen.getByRole("button", { name: "1" });
+    expect(pageNumber).toBeInTheDocument();
+    const pagePrevious = screen.getByRole("button", { name: "<" });
+    expect(pagePrevious).toBeInTheDocument();
 
     return {
-        active,
-        name,
-        notes,
-        scope,
-        back,
-        remove,
-        save,
+
+        activeOnly: activeOnly,
+        rows: rows,
+        searchBar: searchBar,
+
+        add0: adds[0],
+        add1: adds[1],
+        pageNext: pageNext,
+        pageNumber: pageNumber,
+        pagePrevious: pagePrevious,
     };
 
 }
 
 test("disabled buttons on no handlers", async () => {
 
-    const LIBRARY = new Library({
-        id: -1,
-        active: true,
-        name: null,
-        notes: null,
-        scope: null,
-    });
-    const handleBack = jest.fn();
-    render(<LibraryDetails
-        handleReturn={handleBack}
-        library={LIBRARY}
-    />)
+    render(<LibraryOptions/>);
 
-    const {back, save, remove} = elements();
-    expect(save).toHaveAttribute("disabled");
-    expect(remove).toHaveAttribute("disabled");
+    const {activeOnly,// rows, searchBar,
+        add0, add1, pageNext, pageNumber, pagePrevious}
+        = elements();
 
-    userEvent.click(back);
+    expect(activeOnly).not.toBeChecked();
 
-    await waitFor(() => {
-        expect(handleBack).toBeCalled();
-    });
+    expect(add0).toBeDisabled();
+    expect(add1).toBeDisabled();
+    expect(pageNext).toBeDisabled();
+    expect(pageNumber).toBeDisabled();
+    expect(pagePrevious).toBeDisabled();
 
 });
 
+/*
 test("empty data does not submit", async () => {
 
     const LIBRARY = new Library({
@@ -105,7 +105,9 @@ test("empty data does not submit", async () => {
     });
 
 });
+*/
 
+/*
 test("validation fails on duplicate name update", async () => {
 
     const LIBRARIES = MockLibraryServices.all({});
@@ -134,7 +136,9 @@ test("validation fails on duplicate name update", async () => {
     });
 
 });
+*/
 
+/*
 test("validation fails on empty insert", async () => {
 
     const handleBack = jest.fn();
@@ -166,7 +170,9 @@ test("validation fails on empty insert", async () => {
     });
 
 });
+*/
 
+/*
 test("validation passes on new name update", async () => {
 
     const ORIGINAL = MockLibraryServices.find(MockLibraryServices.id(0), {});
@@ -197,7 +203,9 @@ test("validation passes on new name update", async () => {
     });
 
 });
+*/
 
+/*
 test("validation passes on no change remove", async () => {
 
     const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(1), {});
@@ -224,7 +232,9 @@ test("validation passes on no change remove", async () => {
     })
 
 });
+*/
 
+/*
 test("validation passes on no change update", async () => {
 
     const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0), {});
@@ -248,4 +258,5 @@ test("validation passes on no change update", async () => {
     });
 
 });
+*/
 

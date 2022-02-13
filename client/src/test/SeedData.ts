@@ -73,7 +73,7 @@ export const LIBRARIES: Library[] = [
         scope: "one",
     }),
     new Library({
-        active: true,
+        active: false,
         name: "Library Two",
         notes: null,
         scope: "two",
