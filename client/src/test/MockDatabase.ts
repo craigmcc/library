@@ -8,9 +8,11 @@
 
 import * as MockAuthorServices from "./MockAuthorServices";
 import * as MockLibraryServices from "./MockLibraryServices";
+import * as MockUserServices from "./MockUserServices";
 import * as SeedData from "./SeedData";
 import Author from "../models/Author";
 import Library from "../models/Library";
+import User from "../models/User";
 
 // Public Functions ---------------------------------------------------------
 
@@ -23,8 +25,10 @@ export const reset = (): void => {
     // Reset model collections
     MockAuthorServices.reset();
     MockLibraryServices.reset();
+    MockUserServices.reset();
 
-    // Load model data, with Libraries first
+    // Load model data, with Users and Libraries first
+    loadUsers(SeedData.USERS);
     loadLibraries(SeedData.LIBRARIES);
     loadAuthors(MockLibraryServices.id(0), SeedData.AUTHORS0);
     loadAuthors(MockLibraryServices.id(1), SeedData.AUTHORS1);
@@ -42,6 +46,12 @@ const loadAuthors = (libraryId: number, authors: Author[]): void => {
 const loadLibraries = (libraries: Library[]): void => {
     libraries.forEach(library => {
         MockLibraryServices.insert(library);
+    });
+}
+
+const loadUsers = (users: User[]): void => {
+    users.forEach(user => {
+        MockUserServices.insert(user);
     });
 }
 

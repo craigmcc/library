@@ -8,6 +8,7 @@ import Author from "../models/Author";
 import Library from "../models/Library";
 import Series from "../models/Series";
 import Story from "../models/Story";
+import User from "../models/User";
 import Volume from "../models/Volume";
 
 // Public Objects ------------------------------------------------------------
@@ -69,6 +70,18 @@ export const STORIES = (stories: Story[]): Story[] => {
         } else if (a.name > b.name) {
             return 1;
         } else if (a.name < b.name) {
+            return -1;
+        } else {
+            return 0;
+        }
+    });
+}
+
+export const USERS = (users: User[]): User[] => {
+    return users.sort(function (a, b) {
+        if (a.username > b.username) {
+            return 1;
+        } else if (a.username < b.username) {
             return -1;
         } else {
             return 0;

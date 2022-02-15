@@ -6,8 +6,17 @@
 
 import Author from "../models/Author";
 import Library from "../models/Library";
+import User from "../models/User";
 
 // Public Objects ------------------------------------------------------------
+
+// ----- Common Identifiers --------------------------------------------------
+
+export const LIBRARY_ZERO = "Library Zero";
+export const LIBRARY_ONE = "Library One";
+export const LIBRARY_TWO = "Library Two";
+export const USER_ADMIN = "testadmin";
+export const USER_REGULAR = "testregular";
 
 // ----- Authors -------------------------------------------------------------
 
@@ -62,21 +71,51 @@ export const AUTHORS1: Author[] = [
 export const LIBRARIES: Library[] = [
     new Library({
         active: true,
-        name: "Library Zero",
+        name: LIBRARY_ZERO,
         notes: null,
-        scope: "zero",
+        scope: "test",
     }),
     new Library({
         active: true,
-        name: "Library One",
+        name: LIBRARY_ONE,
         notes: null,
-        scope: "one",
+        scope: "test",
     }),
     new Library({
         active: false,
-        name: "Library Two",
+        name: LIBRARY_TWO,
         notes: null,
-        scope: "two",
+        scope: "test",
     }),
+];
+
+// ----- Users ---------------------------------------------------------------
+
+// Must populate id field.
+
+export const USERS: User[] = [
+    new User({
+        active: true,
+        name: "Test Admin User",
+        password: USER_ADMIN,
+        scope: "test:admin",
+        username: USER_ADMIN,
+    }),
+    new User({
+        active: true,
+        name: "Test Regular User",
+        password: USER_REGULAR,
+        scope: "test:regular",
+        username: USER_REGULAR,
+    }),
+/*
+    new User({
+        active: true,
+        name: "Test Superuser User",
+        password: "testsuper",
+        scope: "superuser",
+        username: "testsuper",
+    }),
+*/
 ];
 

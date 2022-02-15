@@ -7,6 +7,7 @@
 // External Modules ----------------------------------------------------------
 
 import React, {createContext, useState} from "react";
+const NODE_ENV = process.env.NODE_ENV;
 
 // Internal Modules ----------------------------------------------------------
 
@@ -108,6 +109,7 @@ export const LoginContextProvider = (props: any) => {
             username: username,
             scope: tokenResponse.scope,
             logLevel: logLevel,
+            environment: NODE_ENV,
         });
 
         // Prepare the data that will be visible to components and statically
