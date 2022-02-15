@@ -3,7 +3,6 @@ import {render, screen} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import CheckBox from "./CheckBox";
-import {HandleBoolean} from "../../types";
 
 test("renders correctly with maximal properties", () => {
 
