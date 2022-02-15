@@ -7,7 +7,6 @@
 // External Modules ----------------------------------------------------------
 
 import React, {createContext, useState} from "react";
-const NODE_ENV = process.env.NODE_ENV;
 
 // Internal Modules ----------------------------------------------------------
 
@@ -17,6 +16,8 @@ import TokenResponse from "../../models/TokenResponse";
 import logger, {setLevel} from "../../util/ClientLogger";
 
 // Context Properties -------------------------------------------------------
+
+const NODE_ENV = process.env.NODE_ENV;
 
 // Data that is visible to HTTP clients not part of the React component hierarchy
 export interface Data {
