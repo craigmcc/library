@@ -24,7 +24,6 @@ import { toLocalISO } from "../util/Timestamps";
 
 // Initialize Express environment
 const app = express();
-//app.disable("x-powered-by");
 app.use(helmet());
 
 // Configure access log management

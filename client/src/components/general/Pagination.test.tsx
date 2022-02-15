@@ -18,15 +18,7 @@ test("renders correctly with handler functions", () => {
     />);
 
     const buttonElements = screen.getAllByRole("button");  // Relies on HTML default
-    expect(buttonElements.length).toBe(3);
-    buttonElements.forEach(buttonElement => {
-        // NOTE - console.log(prettyDOM(buttonElement));
-        if (buttonElement.textContent === ("" + CURRENT_PAGE)) {
-            expect(buttonElement).toHaveAttribute("disabled");
-        } else {
-            expect(buttonElement).not.toHaveAttribute("disabled");
-        }
-    });
+    checkButtonElements(buttonElements, CURRENT_PAGE);
 
     userEvent.click(buttonElements[0]);
     userEvent.click(buttonElements[2]);
@@ -45,15 +37,17 @@ test("renders correctly with minimal properties", () => {
     />);
 
     const buttonElements = screen.getAllByRole("button");  // Relies on HTML default
-    expect(buttonElements.length).toBe(3);
-    buttonElements.forEach(buttonElement => {
-        // NOTE - console.log(prettyDOM(buttonElement));
-        if (buttonElement.textContent === ("" + CURRENT_PAGE)) {
-            expect(buttonElement).toHaveAttribute("disabled");
-        } else {
-            expect(buttonElement).not.toHaveAttribute("disabled");
-        }
-    });
+    checkButtonElements(buttonElements, CURRENT_PAGE);
 
 });
 
+const checkButtonElements = (buttonElements: HTMLElement[], currentPage: number): void => {
+    expect(buttonElements.length).toBe(3);
+    buttonElements.forEach(buttonElement => {
+        if (buttonElement.textContent === ("" + currentPage)) {
+            expect(buttonElement).toBeDisabled();
+        } else {
+            expect(buttonElement).toBeEnabled();
+        }
+    });
+}

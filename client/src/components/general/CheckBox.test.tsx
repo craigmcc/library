@@ -7,14 +7,10 @@ import {HandleBoolean} from "../../types";
 
 test("renders correctly with maximal properties", () => {
 
-    const CHECKED = "checked";
     const LABEL = "My Label";
     const NAME = "myCheckbox";
+    const handleChange = jest.fn();
 
-    let lastValue = false; // Default should be not checked
-    const handleChange: HandleBoolean = (theValue) => {
-        lastValue = theValue;
-    }
     render(<CheckBox
         autoFocus
         disabled
@@ -28,8 +24,8 @@ test("renders correctly with maximal properties", () => {
     expect(inputElement).toBeInTheDocument();
     // NOTE - console.log("inputElement", prettyDOM(inputElement));
     // NOTE - autoFocus is a Javascript thing
-    expect(inputElement).toHaveAttribute(CHECKED);
-    expect(inputElement).toHaveAttribute("disabled");
+    expect(inputElement).toBeChecked();
+    expect(inputElement).toBeDisabled();
     expect(inputElement).toHaveAttribute("id", NAME);
     expect(inputElement).toHaveAttribute("type", "checkbox");
 
@@ -39,12 +35,8 @@ test("renders correctly with maximal properties", () => {
 
 test("renders correctly with minimal properties", () => {
 
-    const CHECKED = "checked";
     const LABEL_TEXT = "My Label";
-    let lastValue = false; // Default should be not checked
-    const handleChange: HandleBoolean = (theValue) => {
-        lastValue = theValue;
-    }
+    const handleChange = jest.fn();
     render(<CheckBox
         handleChange={handleChange}
         label={LABEL_TEXT}
@@ -52,15 +44,14 @@ test("renders correctly with minimal properties", () => {
 
     const inputElement = screen.getByLabelText(LABEL_TEXT);
     expect(inputElement).toBeInTheDocument();
-    expect(inputElement).not.toHaveAttribute("autoFocus");
-    expect(inputElement).not.toHaveAttribute(CHECKED);
-    expect(inputElement).not.toHaveAttribute("disabled");
+    expect(inputElement).not.toBeChecked();
+    expect(inputElement).toBeEnabled();
     expect(inputElement).toHaveAttribute("id", "checkBox"); // Default value
     expect(inputElement).toHaveAttribute("type", "checkbox");
 
     userEvent.click(inputElement);
-    expect(inputElement).toHaveAttribute(CHECKED);
+    expect(inputElement).toBeChecked();
     userEvent.click(inputElement);
-    expect(inputElement).not.toHaveAttribute(CHECKED);
+    expect(inputElement).not.toBeChecked();
 
 });

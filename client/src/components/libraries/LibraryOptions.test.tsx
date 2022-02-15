@@ -24,9 +24,10 @@ const elements = function (): Elements {
     const activeOnly = screen.getByLabelText("Active Libraries Only?");
     expect(activeOnly).toBeInTheDocument();
     expect(activeOnly).not.toHaveAccessibleDescription("checked");
-    const rows = screen.getAllByRole("row"); // TODO - just finds the one in <thead>
+    const rows = screen.getAllByRole("row"); // NOTE - just finds the one in <thead>
     // NOTE - We really only want the rows inside <tbody>
-    // Should be SeedData.LIBRARIES.length of them
+    // NOTE - Should be SeedData.LIBRARIES.length of them
+    // NOTE - Need to mock authentication to see actual data
     const searchBar = screen.getByLabelText("Search For Libraries:");
     expect(searchBar).toBeInTheDocument();
 
