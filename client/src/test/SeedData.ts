@@ -17,6 +17,7 @@ export const LIBRARY_ONE = "Library One";
 export const LIBRARY_TWO = "Library Two";
 export const USER_ADMIN = "testadmin";
 export const USER_REGULAR = "testregular";
+export const USER_SUPERUSER = "testsuperuser";
 
 // ----- Authors -------------------------------------------------------------
 
@@ -108,14 +109,12 @@ export const USERS: User[] = [
         scope: "test:regular",
         username: USER_REGULAR,
     }),
-/*
     new User({
         active: true,
         name: "Test Superuser User",
-        password: "testsuper",
+        password: USER_SUPERUSER,
         scope: "superuser",
-        username: "testsuper",
+        username: USER_SUPERUSER,
     }),
-*/
 ];
 
