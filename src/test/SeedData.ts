@@ -154,6 +154,12 @@ export const STORIES_LIBRARY1: Partial<Story>[] = [
 
 // ***** Users *****
 
+export const USER_SCOPE_SUPERUSER = "superuser";
+export const USER_SCOPE_FIRST_ADMIN = `${LIBRARY_SCOPE_FIRST}:admin`;
+export const USER_SCOPE_FIRST_REGULAR = `${LIBRARY_SCOPE_FIRST}:regular`;
+export const USER_SCOPE_SECOND_ADMIN = `${LIBRARY_SCOPE_SECOND}:admin`;
+export const USER_SCOPE_SECOND_REGULAR = `${LIBRARY_SCOPE_SECOND}:regular`;
+
 export const USER_USERNAME_SUPERUSER = "superuser";
 export const USER_USERNAME_FIRST_ADMIN = "firstadmin";
 export const USER_USERNAME_FIRST_REGULAR = "firstregular";
@@ -164,31 +170,31 @@ export const USERS: Partial<User>[] = [
     {
         active: true,
         name: "First Admin User",
-        scope: `${LIBRARY_SCOPE_FIRST}:admin`,
+        scope: USER_SCOPE_FIRST_ADMIN,
         username: USER_USERNAME_FIRST_ADMIN,
     },
     {
         active: true,
         name: "First Regular User",
-        scope: `${LIBRARY_SCOPE_FIRST}:regular`,
+        scope: USER_SCOPE_FIRST_REGULAR,
         username: USER_USERNAME_FIRST_REGULAR,
     },
     {
         active: false,
         name: "Second Admin User",
-        scope: `${LIBRARY_SCOPE_SECOND}:admin`,
+        scope: USER_SCOPE_SECOND_ADMIN,
         username: USER_USERNAME_SECOND_ADMIN,
     },
     {
         active: false,
         name: "Second Regular User",
-        scope: `${LIBRARY_SCOPE_SECOND}:regular`,
+        scope: USER_SCOPE_SECOND_REGULAR,
         username: USER_USERNAME_SECOND_REGULAR,
     },
     {
         active: true,
         name: "Superuser User",
-        scope: "superuser",
+        scope: USER_SCOPE_SUPERUSER,
         username: USER_USERNAME_SUPERUSER,
     }
 ];

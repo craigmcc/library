@@ -12,12 +12,11 @@ import User from "../models/User";
 
 // ----- Common Identifiers --------------------------------------------------
 
-export const LIBRARY_ZERO = "Library Zero";
-export const LIBRARY_ONE = "Library One";
-export const LIBRARY_TWO = "Library Two";
-export const USER_ADMIN = "testadmin";
-export const USER_REGULAR = "testregular";
-export const USER_SUPERUSER = "testsuperuser";
+export const LIBRARY_ZERO_NAME = "Library Zero";
+export const LIBRARY_ONE_NAME = "Library One";
+export const LIBRARY_TWO_NAME = "Library Two";
+
+export const LIBRARY_SCOPE = "test";
 
 // ----- Authors -------------------------------------------------------------
 
@@ -72,19 +71,19 @@ export const AUTHORS1: Author[] = [
 export const LIBRARIES: Library[] = [
     new Library({
         active: true,
-        name: LIBRARY_ZERO,
+        name: LIBRARY_ZERO_NAME,
         notes: null,
         scope: "test",
     }),
     new Library({
         active: true,
-        name: LIBRARY_ONE,
+        name: LIBRARY_ONE_NAME,
         notes: null,
         scope: "test",
     }),
     new Library({
         active: false,
-        name: LIBRARY_TWO,
+        name: LIBRARY_TWO_NAME,
         notes: null,
         scope: "test",
     }),
@@ -92,29 +91,37 @@ export const LIBRARIES: Library[] = [
 
 // ----- Users ---------------------------------------------------------------
 
+export const USER_SCOPE_ADMIN = `${LIBRARY_SCOPE}:admin`;
+export const USER_SCOPE_REGULAR = `${LIBRARY_SCOPE}:regular`;
+export const USER_SCOPE_SUPERUSER = `superuser`;
+
+export const USER_USERNAME_ADMIN = "testadmin";
+export const USER_USERNAME_REGULAR = "testregular";
+export const USER_USERNAME_SUPERUSER = "testsuperuser";
+
 // Must populate id field.
 
 export const USERS: User[] = [
     new User({
         active: true,
         name: "Test Admin User",
-        password: USER_ADMIN,
-        scope: "test:admin",
-        username: USER_ADMIN,
+        password: USER_USERNAME_ADMIN,
+        scope: USER_SCOPE_ADMIN,
+        username: USER_USERNAME_ADMIN,
     }),
     new User({
         active: true,
         name: "Test Regular User",
-        password: USER_REGULAR,
-        scope: "test:regular",
-        username: USER_REGULAR,
+        password: USER_USERNAME_REGULAR,
+        scope: USER_SCOPE_REGULAR,
+        username: USER_USERNAME_REGULAR,
     }),
     new User({
         active: true,
         name: "Test Superuser User",
-        password: USER_SUPERUSER,
-        scope: "superuser",
-        username: USER_SUPERUSER,
+        password: USER_USERNAME_SUPERUSER,
+        scope: USER_SCOPE_SUPERUSER,
+        username: USER_USERNAME_SUPERUSER,
     }),
 ];
 
