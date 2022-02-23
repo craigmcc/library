@@ -51,7 +51,7 @@
     "cross-env": "^7.0.3",
     "custom-env": "^2.0.1",
     "date-fns": "^2.27.0",
-    "express": "^5.0.0-alpha.8",
+    "express": "^5.0.0-beta.1",
     "helmet": "^5.0.2",
     "morgan": "^1.10.0",
     "nyc": "^15.1.0",
