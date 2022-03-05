@@ -5,67 +5,45 @@
 // External Modules ----------------------------------------------------------
 
 import React from "react";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import {BrowserRouter as Router} from "react-router-dom";
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-notifications-component/dist/theme.css";
 
 // Internal Modules ----------------------------------------------------------
 
+import AuthorSegment from "./components/authors/AuthorSegment";
 import {LibraryContextProvider} from "./components/libraries/LibraryContext";
-import LibrarySelector from "./components/libraries/LibrarySelector";
-import LoggedInUser from "./components/login/LoggedInUser";
 import {LoginContextProvider} from "./components/login/LoginContext";
-import Container from "react-bootstrap/Container";
+import HomeView from "./components/general/HomeView";
+import Navigation from "./components/general/Navigation";
+import GoogleBooksSegment from "./components/google-books/GoogleBooksSegment";
+import LibrarySegment from "./components/libraries/LibrarySegment";
+import SeriesSegment from "./components/series/SeriesSegment";
+import StorySegment from "./components/stories/StorySegment";
+import UserSegment from "./components/users/UserSegment";
+import VolumeSegment from "./components/volumes/VolumeSegment";
 
 // Component Details ---------------------------------------------------------
 
 function App() {
     return (
         <LoginContextProvider>
-        <LibraryContextProvider>
-
-        <Router>
-
-            <Container className="mb-3 p-0" fluid>
-                <Navbar bg="primary" variant="dark">
-                    <Navbar sticky="top">
-                        <Navbar.Brand className="ms-2" href="/">
-                            <img
-                                alt="Library Management"
-                                height={60}
-                                src="./books.jpeg"
-                                width={100}
-                            />
-                            <span className="ms-2">Library Management</span>
-                        </Navbar.Brand>
-                        <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-                        <Navbar.Collapse id="basic-navbar-nav">
-                            <Nav className="me-auto">
-                                <Nav.Link href="/">Home</Nav.Link>
-                                <Nav.Link href="/authors">Authors</Nav.Link>
-                                <Nav.Link href="/series">Series</Nav.Link>
-                                <Nav.Link href="/stories">Stories</Nav.Link>
-                                <Nav.Link href="/volumes">Volumes</Nav.Link>
-                                <NavDropdown title="Admin" id="basic-nav-dropdown">
-                                    <NavDropdown.Item href="/libraries">Libraries</NavDropdown.Item>
-                                    <NavDropdown.Item href="/users">Users</NavDropdown.Item>
-                                </NavDropdown>
-                            </Nav>
-                        </Navbar.Collapse>
-                        <Container>
-                            <LoggedInUser/>
-                            <span className="me-4"/>
-                            <LibrarySelector/>
-                        </Container>
-                    </Navbar>
-                </Navbar>
-            </Container>
-
-        </Router>
-
-        </LibraryContextProvider>
+            <LibraryContextProvider>
+                <Router>
+                    <Routes>
+                        <Route path="/" element={<Navigation/>}>
+                            <Route path="authors" element={<AuthorSegment/>}/>
+                            <Route path="browse-google" element={<GoogleBooksSegment/>}/>
+                            <Route path="libraries" element={<LibrarySegment/>}/>
+                            <Route path="series" element={<SeriesSegment/>}/>
+                            <Route path="stories" element={<StorySegment/>}/>
+                            <Route path="users" element={<UserSegment/>}/>
+                            <Route path="volumes" element={<VolumeSegment/>}/>
+                            <Route path="" element={<HomeView/>}/>
+                        </Route>
+                    </Routes>
+                </Router>
+            </LibraryContextProvider>
         </LoginContextProvider>
 
     )
