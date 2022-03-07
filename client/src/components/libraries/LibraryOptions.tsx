@@ -16,7 +16,7 @@ import Table from "react-bootstrap/Table";
 
 import LibraryContext from "./LibraryContext";
 import CheckBox from "../general/CheckBox";
-import LoadingProgress from "../general/LoadingProgress";
+import FetchingProgress from "../general/FetchingProgress";
 import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LoginContext from "../login/LoginContext";
@@ -104,10 +104,10 @@ const LibraryOptions = (props: Props) => {
     return (
         <Container fluid id="LibraryOptions">
 
-            <LoadingProgress
+            <FetchingProgress
                 error={fetchLibraries.error}
                 loading={fetchLibraries.loading}
-                title="Selected Libraries"
+                message="Fetching selected Libraries"
             />
 
             <Row className="mb-3">

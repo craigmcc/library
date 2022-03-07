@@ -9,7 +9,7 @@ import React, {useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import GoogleBooksOptions from "./GoogleBooksOptions";
-import LoadingProgress from "../general/LoadingProgress";
+import FetchingProgress from "../general/FetchingProgress";
 import useFetchMe from "../../hooks/useFetchMe";
 import logger from "../../util/ClientLogger";
 
@@ -38,10 +38,10 @@ const GoogleBooksSegment = () => {
     return (
         <>
 
-            <LoadingProgress
+            <FetchingProgress
                 error={fetchMe.error}
                 loading={fetchMe.loading}
-                title="Fetching User Profile"
+                message="Fetching User Profile"
             />
 
             {(view === View.OPTIONS) ? (

@@ -11,7 +11,7 @@ import React, {useContext, useEffect, useState} from "react";
 
 import AuthorDetails from "./AuthorDetails";
 import AuthorOptions from "./AuthorOptions";
-import SavingProgress from "../general/SavingProgress";
+import MutatingProgress from "../general/MutatingProgress";
 import SeriesSegment from "../series/SeriesSegment";
 import StorySegment from "../stories/StorySegment";
 import VolumeSegment from "../volumes/VolumeSegment";
@@ -50,7 +50,7 @@ const AuthorSegment = (props: Props) => {
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
     const [author, setAuthor] = useState<Author>(new Author());
-    const [title, setTitle] = useState<string>("");
+    const [message, setMessage] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
 
     const mutateAuthor = useMutateAuthor({
@@ -123,7 +123,7 @@ const AuthorSegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
-                setTitle(theAuthor._title);
+                setMessage(`Excluding Author '${theAuthor._title}'`);
                 /* const excluded = */ await mutateAuthor.exclude(theAuthor, props.parent);
             }
         }
@@ -138,7 +138,7 @@ const AuthorSegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
-                setTitle(theAuthor._title);
+                setMessage(`Including Author '${theAuthor._title}'`);
                 /* const included = */ await mutateAuthor.include(theAuthor, props.parent);
             }
         }
@@ -146,7 +146,7 @@ const AuthorSegment = (props: Props) => {
 
     // Handle insert of a new Author
     const handleInsert: HandleAuthor = async (theAuthor) => {
-        setTitle(theAuthor._title);
+        setMessage(`Inserting Author '${theAuthor._title}'`);
         const inserted = await mutateAuthor.insert(theAuthor);
         logger.debug({
             context: "AuthorSegment.handleInsert",
@@ -161,7 +161,7 @@ const AuthorSegment = (props: Props) => {
 
     // Handle remove of an existing Author
     const handleRemove: HandleAuthor = async (theAuthor) => {
-        setTitle(theAuthor._title);
+        setMessage(`Removing Author '${theAuthor._title}'`);
         const removed = await mutateAuthor.remove(theAuthor);
         logger.debug({
             context: "AuthorSegment.handleRemove",
@@ -210,7 +210,7 @@ const AuthorSegment = (props: Props) => {
 
     // Handle update of an existing Author
     const handleUpdate: HandleAuthor = async (theAuthor) => {
-        setTitle(theAuthor._title);
+        setMessage(`Updating Author '${theAuthor._title}'`);
         const updated = await mutateAuthor.update(theAuthor);
         logger.debug({
             context: "AuthorSegment.handleUpdate",
@@ -222,10 +222,10 @@ const AuthorSegment = (props: Props) => {
     return (
         <>
 
-            <SavingProgress
+            <MutatingProgress
                 error={mutateAuthor.error}
                 executing={mutateAuthor.executing}
-                title={title}
+                message={message}
             />
 
             {(view === View.DETAILS) ? (

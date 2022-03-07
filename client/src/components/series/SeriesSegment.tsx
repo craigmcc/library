@@ -12,7 +12,7 @@ import React, {useContext, useEffect, useState} from "react";
 import SeriesDetails from "./SeriesDetails";
 import SeriesOptions from "./SeriesOptions";
 import AuthorSegment from "../authors/AuthorSegment";
-import SavingProgress from "../general/SavingProgress";
+import MutatingProgress from "../general/MutatingProgress";
 import StorySegment from "../stories/StorySegment";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
@@ -47,8 +47,8 @@ const SeriesSegment = (props: Props) => {
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
+    const [message, setMessage] = useState<string>("");
     const [series, setSeries] = useState<Series>(new Series());
-    const [title, setTitle] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
 
     const mutateSeries = useMutateSeries({
@@ -120,7 +120,7 @@ const SeriesSegment = (props: Props) => {
             series: Abridgers.SERIES(theSeries),
         });
         if (props.parent) {
-            setTitle(theSeries._title);
+            setMessage(`Excluding Series '${theSeries._title}'`);
             if (!(props.parent instanceof Library)) {
                 /* const excluded = */ await mutateSeries.exclude(theSeries, props.parent);
             }
@@ -136,7 +136,7 @@ const SeriesSegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
-                setTitle(theSeries._title);
+                setMessage(`Including Series '${theSeries._title}'`);
                 /* const included = */ await mutateSeries.include(theSeries, props.parent);
             }
         }
@@ -144,7 +144,7 @@ const SeriesSegment = (props: Props) => {
 
     // Handle insert of a new Series
     const handleInsert: HandleSeries = async (theSeries) => {
-        setTitle(theSeries._title);
+        setMessage(`Inserting Series '${theSeries._title}'`);
         const inserted = await mutateSeries.insert(theSeries);
         logger.debug({
             context: "SeriesSegment.handleInsert",
@@ -156,7 +156,7 @@ const SeriesSegment = (props: Props) => {
 
     // Handle remove of an existing Series
     const handleRemove: HandleSeries = async (theSeries) => {
-        setTitle(theSeries._title);
+        setMessage(`Removing Series '${theSeries._title}'`);
         const removed = await mutateSeries.remove(theSeries);
         logger.debug({
             context: "SeriesSegment.handleRemove",
@@ -195,7 +195,7 @@ const SeriesSegment = (props: Props) => {
 
     // Handle update of an existing Series
     const handleUpdate: HandleSeries = async (theSeries) => {
-        setTitle(theSeries._title);
+        setMessage(`Updating Series '${theSeries._title}'`);
         const updated = await mutateSeries.update(theSeries);
         logger.debug({
             context: "SeriesSegment.handleUpdate",
@@ -207,10 +207,10 @@ const SeriesSegment = (props: Props) => {
     return (
         <>
 
-            <SavingProgress
+            <MutatingProgress
                 error={mutateSeries.error}
                 executing={mutateSeries.executing}
-                title={title}
+                message={message}
             />
 
             {(view === View.DETAILS) ? (

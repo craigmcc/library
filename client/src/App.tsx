@@ -6,8 +6,9 @@
 
 import React from "react";
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import {ToastContainer} from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "react-notifications-component/dist/theme.css";
+import "react-toastify/dist/ReactToastify.css";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -27,6 +28,16 @@ import VolumeSegment from "./components/volumes/VolumeSegment";
 
 function App() {
     return (
+        <>
+        <ToastContainer
+            autoClose={5000}
+            closeOnClick={true}
+            draggable={false}
+            hideProgressBar={false}
+            newestOnTop={false}
+            position="top-right"
+            theme="colored"
+        />
         <LoginContextProvider>
             <LibraryContextProvider>
                 <Router>
@@ -45,7 +56,7 @@ function App() {
                 </Router>
             </LibraryContextProvider>
         </LoginContextProvider>
-
+        </>
     )
 }
 

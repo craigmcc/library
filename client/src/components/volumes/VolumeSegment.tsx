@@ -12,7 +12,7 @@ import React, {useContext, useEffect, useState} from "react";
 import VolumeDetails from "./VolumeDetails";
 import VolumeOptions from "./VolumeOptions";
 import AuthorSegment from "../authors/AuthorSegment";
-import SavingProgress from "../general/SavingProgress";
+import MutatingProgress from "../general/MutatingProgress";
 import StorySegment from "../stories/StorySegment";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
@@ -47,7 +47,7 @@ const VolumeSegment = (props: Props) => {
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
-    const [title, setTitle] = useState<string>("");
+    const [message, setMessage] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
     const [volume, setVolume] = useState<Volume>(new Volume());
 
@@ -126,7 +126,7 @@ const VolumeSegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
-                setTitle(theVolume._title);
+                setMessage(`Excluding Volume '${theVolume._title}'`);
                 /* const excluded = */ await mutateVolume.exclude(theVolume, props.parent);
             }
         }
@@ -141,7 +141,7 @@ const VolumeSegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
-                setTitle(theVolume._title);
+                setMessage(`Including Volume '${theVolume._title}'`);
                 /* const included = */ await mutateVolume.include(theVolume, props.parent);
             }
         }
@@ -149,7 +149,7 @@ const VolumeSegment = (props: Props) => {
 
     // Handle insert of a new Volume
     const handleInsert: HandleVolume = async (theVolume) => {
-        setTitle(theVolume._title);
+        setMessage(`Inserting Volume ${theVolume._title}`);
         const inserted = await mutateVolume.insert(theVolume);
         logger.debug({
             context: "VolumeSegment.handleInsert",
@@ -161,7 +161,7 @@ const VolumeSegment = (props: Props) => {
 
     // Handle remove of an existing Volume
     const handleRemove: HandleVolume = async (theVolume) => {
-        setTitle(theVolume._title);
+        setMessage(`Removing Volume ${theVolume._title}`);
         const removed = await mutateVolume.remove(theVolume);
         logger.debug({
             context: "VolumeSegment.handleRemove",
@@ -200,7 +200,7 @@ const VolumeSegment = (props: Props) => {
 
     // Handle update of an existing Volume
     const handleUpdate: HandleVolume = async (theVolume) => {
-        setTitle(theVolume._title);
+        setMessage(`Updating Volume ${theVolume._title}`);
         const updated = await mutateVolume.update(theVolume);
         logger.debug({
             context: "VolumeSegment.handleUpdate",
@@ -212,10 +212,10 @@ const VolumeSegment = (props: Props) => {
     return (
         <>
 
-            <SavingProgress
+            <MutatingProgress
                 error={mutateVolume.error}
                 executing={mutateVolume.executing}
-                title={title}
+                message={message}
             />
 
             {(view === View.DETAILS) ? (

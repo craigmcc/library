@@ -15,7 +15,7 @@ import Table from "react-bootstrap/Table";
 // Internal Modules ----------------------------------------------------------
 
 import CheckBox from "../general/CheckBox";
-import LoadingProgress from "../general/LoadingProgress";
+import FetchingProgress from "../general/FetchingProgress";
 import Pagination from "../general/Pagination";
 import SearchBar from "../general/SearchBar";
 import LibraryContext from "../libraries/LibraryContext";
@@ -187,10 +187,10 @@ const VolumeOptions = (props: Props) => {
     return (
         <Container fluid id="VolumeOptions">
 
-            <LoadingProgress
+            <FetchingProgress
                 error={fetchVolumes.error}
                 loading={fetchVolumes.loading}
-                title="Selected Volumes"
+                message="Fetching selected Volumes"
             />
 
             <Row className="mb-3">

@@ -16,7 +16,7 @@ import {SubmitHandler, useForm} from "react-hook-form";
 // Internal Modules ----------------------------------------------------------
 
 import CheckBox from "../general/CheckBox";
-import LoadingProgress from "../general/LoadingProgress";
+import FetchingProgress from "../general/FetchingProgress";
 import TextField from "../general/TextField";
 import Pagination from "../general/Pagination";
 import {HandleAction, HandleBoolean} from "../../types";
@@ -139,10 +139,10 @@ const GoogleBooksOptions = (props: Props) => {
     return (
         <Container fluid id="GoogleBooksOptions">
 
-            <LoadingProgress
+            <FetchingProgress
                 error={fetchGoogleBooks.error}
                 loading={fetchGoogleBooks.loading}
-                title="Fetching Google Books"
+                message="Fetching Google Books"
             />
 
             <Row className="mb-3">

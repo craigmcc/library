@@ -12,7 +12,7 @@ import React, {useContext, useEffect, useState} from "react";
 import StoryDetails from "./StoryDetails";
 import StoryOptions from "./StoryOptions";
 import AuthorSegment from "../authors/AuthorSegment";
-import SavingProgress from "../general/SavingProgress";
+import MutatingProgress from "../general/MutatingProgress";
 import SeriesSegment from "../series/SeriesSegment";
 import VolumeSegment from "../volumes/VolumeSegment";
 import LibraryContext from "../libraries/LibraryContext";
@@ -50,8 +50,8 @@ const StorySegment = (props: Props) => {
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
+    const [message, setMessage] = useState<string>("");
     const [story, setStory] = useState<Story>(new Story());
-    const [title, setTitle] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
 
     const mutateStory = useMutateStory({
@@ -124,7 +124,7 @@ const StorySegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
-                setTitle(theStory._title);
+                setMessage(`Excluding Story '${theStory._title}'`);
                 /* const excluded = */ await mutateStory.exclude(theStory, props.parent);
             }
         }
@@ -139,7 +139,7 @@ const StorySegment = (props: Props) => {
         });
         if (props.parent) {
             if (!(props.parent instanceof Library)) {
-                setTitle(theStory._title);
+                setMessage(`Including Story '${theStory._title}'`);
                 /* const included = */ await mutateStory.include(theStory, props.parent);
             }
         }
@@ -147,7 +147,7 @@ const StorySegment = (props: Props) => {
 
     // Handle insert of a new Story
     const handleInsert: HandleStory = async (theStory) => {
-        setTitle(theStory._title);
+        setMessage(`Inserting Story '${theStory._title}'`);
         const inserted = await mutateStory.insert(theStory);
         logger.debug({
             context: "StorySegment.handleInsert",
@@ -162,7 +162,7 @@ const StorySegment = (props: Props) => {
 
     // Handle remove of an existing Story
     const handleRemove: HandleStory = async (theStory) => {
-        setTitle(theStory._title);
+        setMessage(`Removing Story '${theStory._title}'`);
         const removed = await mutateStory.remove(theStory);
         logger.debug({
             context: "StorySegment.handleRemove",
@@ -211,7 +211,7 @@ const StorySegment = (props: Props) => {
 
     // Handle update of an existing Story
     const handleUpdate: HandleStory = async (theStory) => {
-        setTitle(theStory._title);
+        setMessage(`Updating Story '${theStory._title}'`);
         const updated = await mutateStory.update(theStory);
         logger.debug({
             context: "StorySegment.handleUpdate",
@@ -223,10 +223,10 @@ const StorySegment = (props: Props) => {
     return (
         <>
 
-            <SavingProgress
+            <MutatingProgress
                 error={mutateStory.error}
                 executing={mutateStory.executing}
-                title={title}
+                message={message}
             />
 
             {(view === View.DETAILS) ? (

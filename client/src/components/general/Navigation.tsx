@@ -8,7 +8,6 @@ import React from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import {ReactNotifications} from "react-notifications-component";
 import {NavLink, Outlet} from "react-router-dom";
 
 // Internal Modules ----------------------------------------------------------
@@ -21,7 +20,6 @@ import LibrarySelector from "../libraries/LibrarySelector";
 function Navigation() {
     return (
         <>
-            <ReactNotifications/>
             <Navbar
                 bg="primary"
                 className="mb-3"
@@ -29,7 +27,7 @@ function Navigation() {
                 sticky="top"
                 variant="dark"
             >
-                <Navbar.Brand className="ms-2" href="/">
+                <Navbar.Brand className="ms-2">
                     <img
                         alt="Library Management"
                         height={60}
@@ -41,6 +39,7 @@ function Navigation() {
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse>
                     <Nav className="me-auto">
+                        <NavLink className="nav-link" to="/">Home</NavLink>
                         <NavLink className="nav-link" to="/authors">Authors</NavLink>
                         <NavLink className="nav-link" to="/series">Series</NavLink>
                         <NavLink className="nav-link" to="/stories">Stories</NavLink>

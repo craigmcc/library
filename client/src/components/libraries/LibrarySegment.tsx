@@ -11,7 +11,7 @@ import React, {useContext, useEffect, useState} from "react";
 import LibraryContext from "./LibraryContext";
 import LibraryDetails from "./LibraryDetails";
 import LibraryOptions from "./LibraryOptions";
-import SavingProgress from "../general/SavingProgress";
+import MutatingProgress from "../general/MutatingProgress";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleLibrary, Scope} from "../../types";
 import useMutateLibrary from "../../hooks/useMutateLibrary";
@@ -35,7 +35,7 @@ const LibrarySegment = () => {
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
     const [library, setLibrary] = useState<Library>(new Library());
-    const [title, setTitle] = useState<string>("");
+    const [message, setMessage] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
 
     const mutateLibrary = useMutateLibrary({
@@ -86,7 +86,7 @@ const LibrarySegment = () => {
 
     // Handle insert of a new Library
     const handleInsert: HandleLibrary = async (theLibrary) => {
-        setTitle(theLibrary._title);
+        setMessage(`Inserting Library '${theLibrary._title}'`);
         const inserted = await mutateLibrary.insert(theLibrary);
         logger.debug({
             context: "LibrarySegment.handleInsert",
@@ -98,7 +98,7 @@ const LibrarySegment = () => {
 
     // Handle remove of an existing Library
     const handleRemove: HandleLibrary = async (theLibrary) => {
-        setTitle(theLibrary._title);
+        setMessage(`Removing Library '${theLibrary._title}'`);
         const removed = await mutateLibrary.remove(theLibrary);
         logger.debug({
             context: "LibrarySegment.handleRemove",
@@ -118,7 +118,7 @@ const LibrarySegment = () => {
 
     // Handle request to update an existing Library
     const handleUpdate: HandleLibrary = async (theLibrary) => {
-        setTitle(theLibrary._title);
+        setMessage(`Updating Library '${theLibrary._title}'`);
         const updated = await mutateLibrary.update(theLibrary);
         logger.debug({
             context: "LibrarySegment.handleUpdate",
@@ -131,10 +131,10 @@ const LibrarySegment = () => {
     return (
         <>
 
-            <SavingProgress
+            <MutatingProgress
                 error={mutateLibrary.error}
                 executing={mutateLibrary.executing}
-                title={title}
+                message={message}
             />
 
             {(view === View.DETAILS) ? (

@@ -10,7 +10,7 @@ import React, {useContext, useEffect, useState} from "react";
 
 import UserDetails from "./UserDetails";
 import UserOptions from "./UserOptions";
-import SavingProgress from "../general/SavingProgress";
+import MutatingProgress from "../general/MutatingProgress";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleUser, Scope} from "../../types";
 import useMutateUser from "../../hooks/useMutateUser";
@@ -32,7 +32,7 @@ const UserSegment = () => {
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
-    const [title, setTitle] = useState<string>("");
+    const [message, setMessage] = useState<string>("");
     const [user, setUser] = useState<User>(new User());
     const [view, setView] = useState<View>(View.OPTIONS);
 
@@ -86,7 +86,7 @@ const UserSegment = () => {
 
     // Handle insert of a new User
     const handleInsert: HandleUser = async (theUser) => {
-        setTitle(theUser.username);
+        setMessage(`Inserting User '${theUser.username}'`);
         const inserted = await mutateUser.insert(theUser);
         logger.debug({
             context: "UserSegment.handleInsert",
@@ -97,7 +97,7 @@ const UserSegment = () => {
 
     // Handle remove of an existing User
     const handleRemove: HandleUser = async (theUser) => {
-        setTitle(theUser.username);
+        setMessage(`Removing User '${theUser.username}'`);
         const removed = await mutateUser.remove(theUser);
         logger.debug({
             context: "UserSegment.remove",
@@ -116,7 +116,7 @@ const UserSegment = () => {
 
     // Handle request to update an existing User
     const handleUpdate: HandleUser = async (theUser) => {
-        setTitle(theUser.username);
+        setMessage(`Updating User '${theUser.username}'`);
         const updated = await mutateUser.update(theUser);
         logger.debug({
             context: "UserSegment.handleUpdate",
@@ -128,10 +128,10 @@ const UserSegment = () => {
     return (
         <>
 
-            <SavingProgress
+            <MutatingProgress
                 error={mutateUser.error}
                 executing={mutateUser.executing}
-                title={title}
+                message={message}
             />
 
             {(view === View.DETAILS) ? (
