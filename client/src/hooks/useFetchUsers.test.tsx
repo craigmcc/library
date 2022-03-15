@@ -1,10 +1,19 @@
-import {act, renderHook} from "@testing-library/react-hooks";
+// useFetchUsers.test --------------------------------------------------------
+
+// Unit tests for useFetchUsers.
+
+// External Modules ----------------------------------------------------------
+
+import {waitFor} from "@testing-library/react";
+import {renderHook} from "@testing-library/react-hooks";
+
+// Internal Modules ----------------------------------------------------------
 
 import useFetchUsers from "./useFetchUsers";
-import {LoginContextProvider} from "../components/login/LoginContext";
+import LoginContext, {State} from "../components/login/LoginContext";
 import * as SeedData from "../test/SeedData";
-import TestLogin from "../test/TestLogin";
-import TestLogout from "../test/TestLogout";
+
+// Test Infrastructure -------------------------------------------------------
 
 // Default props for useFetchUsers() calls
 const PROPS = {
@@ -14,37 +23,87 @@ const PROPS = {
     pageSize: 10,
 }
 
-// Wrapper for LoginContext around children
+// Test Methods --------------------------------------------------------------
 
-xtest("logged in as superuser should return all users", async () => {
+describe("When logged in", () => {
 
-    // @ts-ignore
-    const wrapper = ({children}) => {
-        return (
-            <LoginContextProvider>
-                <TestLogin scope={SeedData.USER_SCOPE_SUPERUSER}/>
-                {children}
-                <TestLogout/>
-            </LoginContextProvider>
-        )
-    }
-    const {result} = renderHook(() => useFetchUsers(PROPS), { wrapper });
+    it("should return all users", async () => {
 
-    expect(result.current.error).toBeNull();
-    expect(result.current.loading).toBeFalsy();
-    expect(result.current.users).not.toBeNull();
-    expect(result.current.users.length).toBe(SeedData.USERS.length);
+        // @ts-ignore
+        const wrapper = ({children}) => {
+            return (
+                <LoginContext.Provider value={LOGGED_IN_STATE}>
+                    {children}
+                </LoginContext.Provider>
+            )
+        }
+        const {result} = renderHook(() => useFetchUsers(PROPS), { wrapper });
 
-});
+        await waitFor(() => {
+            expect(result.current.error).toBeNull();
+            expect(result.current.loading).toBeFalsy();
+            expect(result.current.users).not.toBeNull();
+            expect(result.current.users.length).toBe(SeedData.USERS.length);
+        });
 
-test("not logged in should return zero users", () => {
+    })
 
-    const {result} = renderHook(() => useFetchUsers(PROPS));
+})
 
-    expect(result.current.error).toBeNull();
-    expect(result.current.loading).toBeFalsy();
-    expect(result.current.users).not.toBeNull();
-    expect(result.current.users.length).toBe(0);
+describe("When logged out", () => {
 
-});
+    it("should return no users", async () => {
+
+        // @ts-ignore
+        const wrapper = ({children}) => {
+            return (
+                <LoginContext.Provider value={LOGGED_OUT_STATE}>
+                    {children}
+                </LoginContext.Provider>
+            )
+        }
+        const {result} = renderHook(() => useFetchUsers(PROPS), { wrapper })
+
+        await waitFor(() => {
+            expect(result.current.error).toBeNull();
+            expect(result.current.loading).toBeFalsy();
+            expect(result.current.users).not.toBeNull();
+            expect(result.current.users.length).toBe(0);
+        });
+
+    })
+
+})
+
+// Private Methods -----------------------------------------------------------
+
+const LOGGED_IN_STATE: State = {
+    data: {
+        accessToken: "accesstoken",
+        expires: new Date(),
+        loggedIn: true,
+        refreshToken: "refreshtoken",
+        scope: "test:admin",
+        username: "username",
+    },
+    handleLogin: jest.fn(),
+    handleLogout: jest.fn(),
+    validateLibrary: jest.fn(),
+    validateScope: jest.fn(),
+}
+
+const LOGGED_OUT_STATE: State = {
+    data: {
+        accessToken: null,
+        expires: null,
+        loggedIn: false,
+        refreshToken: null,
+        scope: null,
+        username: null,
+    },
+    handleLogin: jest.fn(),
+    handleLogout: jest.fn(),
+    validateLibrary: jest.fn(),
+    validateScope: jest.fn(),
+}
 

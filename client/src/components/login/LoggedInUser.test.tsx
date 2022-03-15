@@ -11,7 +11,7 @@ import {render, screen} from "@testing-library/react";
 // Internal Modules ----------------------------------------------------------
 
 import LoggedInUser from "./LoggedInUser";
-import LoginContext, {Data, State} from "./LoginContext";
+import LoginContext, {State} from "./LoginContext";
 
 // Test Infrastructure -------------------------------------------------------
 
