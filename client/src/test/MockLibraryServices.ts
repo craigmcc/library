@@ -35,7 +35,7 @@ export const all = (query: any): Library[] => {
 /**
  * Return the Library with the specified name, if any.
  */
-export const exact = (name: string, query: any): Library => {
+export const exact = (name: string, query?: any): Library => {
     let found: Library | undefined = undefined;
     for (const library of map.values()) {
         if (library.name === name) {

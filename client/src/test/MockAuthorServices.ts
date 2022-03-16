@@ -37,7 +37,7 @@ export const all = (libraryId: number, query: any): Author[] => {
 /**
  * Return the Author with the specified name, for the specified Library, if any.
  */
-export const exact = (libraryId: number, firstName: string, lastName: string, query: any): Author => {
+export const exact = (libraryId: number, firstName: string, lastName: string, query?: any): Author => {
     MockLibraryServices.find(libraryId, {});
     let found: Author | undefined = undefined;
     for (const author of map.values()) {

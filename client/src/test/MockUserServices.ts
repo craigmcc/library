@@ -34,7 +34,7 @@ export const all = (query: any): User[] => {
 /**
  * Return the User with the specified name, if any.
  */
-export const exact = (username: string, query: any): User => {
+export const exact = (username: string, query?: any): User => {
     let found: User | undefined = undefined;
     for (const user of map.values()) {
         if (user.username === username) {

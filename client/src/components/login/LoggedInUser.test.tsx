@@ -11,7 +11,10 @@ import {render, screen} from "@testing-library/react";
 // Internal Modules ----------------------------------------------------------
 
 import LoggedInUser from "./LoggedInUser";
-import LoginContext, {State} from "./LoginContext";
+import LoginContext from "./LoginContext";
+import * as MockUserServices from "../../test/MockUserServices";
+import * as SeedData from "../../test/SeedData";
+import * as State from "../../test/State";
 
 // Test Infrastructure -------------------------------------------------------
 
@@ -46,8 +49,10 @@ describe('When logged in', function () {
 
     it("should show logged in presentation", () => {
 
+        const user = MockUserServices.exact(SeedData.USER_USERNAME_REGULAR);
+        // NOTE - we need the Router because the component uses useNavigate
         render(
-            <LoginContext.Provider value={LOGGED_IN_STATE}>
+            <LoginContext.Provider value={State.loginContext(user)}>
                 <Router>
                     <LoggedInUser/>
                 </Router>
@@ -55,7 +60,7 @@ describe('When logged in', function () {
         );
 
         const {loggedInUsername, logIn, logOut} = elements();
-        expect(loggedInUsername).toHaveValue(LOGGED_IN_STATE.data.username);
+        expect(loggedInUsername).toHaveValue(user.username);
         expect(logIn).not.toBeInTheDocument();
         expect(logOut).toBeInTheDocument();
 
@@ -68,7 +73,8 @@ describe('When logged out', function () {
     it("should show logged out presentation", () => {
 
         render(
-            <LoginContext.Provider value={LOGGED_OUT_STATE}>
+            // NOTE - we need the Router because the component uses useNavigate
+            <LoginContext.Provider value={State.loginContext(null)}>
                 <Router>
                     <LoggedInUser/>
                 </Router>
@@ -84,9 +90,8 @@ describe('When logged out', function () {
 
 })
 
+/*
 // Private Objects -----------------------------------------------------------
-
-
 
 const LOGGED_IN_STATE: State = {
     data: {
@@ -117,4 +122,5 @@ const LOGGED_OUT_STATE: State = {
     validateLibrary: jest.fn(),
     validateScope: jest.fn(),
 }
+*/
 

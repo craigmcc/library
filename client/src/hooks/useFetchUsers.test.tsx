@@ -10,8 +10,9 @@ import {renderHook} from "@testing-library/react-hooks";
 // Internal Modules ----------------------------------------------------------
 
 import useFetchUsers from "./useFetchUsers";
-import LoginContext, {State} from "../components/login/LoginContext";
+import * as MockUserServices from "../test/MockUserServices";
 import * as SeedData from "../test/SeedData";
+import * as Wrapper from "../test/Wrapper";
 
 // Test Infrastructure -------------------------------------------------------
 
@@ -29,14 +30,11 @@ describe("When logged in", () => {
 
     it("should return all users", async () => {
 
+        const user = MockUserServices.exact(SeedData.USER_USERNAME_ADMIN)
         // @ts-ignore
         const wrapper = ({children}) => {
-            return (
-                <LoginContext.Provider value={LOGGED_IN_STATE}>
-                    {children}
-                </LoginContext.Provider>
-            )
-        }
+            return Wrapper.loginContext({children}, user);
+        };
         const {result} = renderHook(() => useFetchUsers(PROPS), { wrapper });
 
         await waitFor(() => {
@@ -56,12 +54,8 @@ describe("When logged out", () => {
 
         // @ts-ignore
         const wrapper = ({children}) => {
-            return (
-                <LoginContext.Provider value={LOGGED_OUT_STATE}>
-                    {children}
-                </LoginContext.Provider>
-            )
-        }
+            return Wrapper.loginContext({children}, null);
+        };
         const {result} = renderHook(() => useFetchUsers(PROPS), { wrapper })
 
         await waitFor(() => {
@@ -74,36 +68,4 @@ describe("When logged out", () => {
     })
 
 })
-
-// Private Methods -----------------------------------------------------------
-
-const LOGGED_IN_STATE: State = {
-    data: {
-        accessToken: "accesstoken",
-        expires: new Date(),
-        loggedIn: true,
-        refreshToken: "refreshtoken",
-        scope: "test:admin",
-        username: "username",
-    },
-    handleLogin: jest.fn(),
-    handleLogout: jest.fn(),
-    validateLibrary: jest.fn(),
-    validateScope: jest.fn(),
-}
-
-const LOGGED_OUT_STATE: State = {
-    data: {
-        accessToken: null,
-        expires: null,
-        loggedIn: false,
-        refreshToken: null,
-        scope: null,
-        username: null,
-    },
-    handleLogin: jest.fn(),
-    handleLogout: jest.fn(),
-    validateLibrary: jest.fn(),
-    validateScope: jest.fn(),
-}
 
