@@ -132,7 +132,7 @@ export const update = (libraryId: number, library: Library): Library => {
  */
 const includes = (library: Library, query: any): Library => {
     const result = new Library(library);
-    if (query.withAuthors) {
+    if ("" === query.withAuthors) {
         result.authors = MockAuthorServices.all(library.id, {});
     }
     // NOTE - implement withSeries

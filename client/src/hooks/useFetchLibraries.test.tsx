@@ -13,7 +13,6 @@ import useFetchLibraries, {Props} from "./useFetchLibraries";
 import * as MockUserServices from "../test/MockUserServices";
 import * as SeedData from "../test/SeedData";
 import * as Wrapper from "../test/Wrapper";
-import useFetchUsers from "./useFetchUsers";
 
 // Test Infrastructure -------------------------------------------------------
 
