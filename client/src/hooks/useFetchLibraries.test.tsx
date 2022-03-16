@@ -1,6 +1,6 @@
-// useFetchUsers.test --------------------------------------------------------
+// useFetchLibraries.test ----------------------------------------------------
 
-// Unit tests for useFetchUsers.
+// Unit tests for useFetchLibraries.
 
 // External Modules ----------------------------------------------------------
 
@@ -9,10 +9,11 @@ import {renderHook} from "@testing-library/react-hooks";
 
 // Internal Modules ----------------------------------------------------------
 
-import useFetchUsers, {Props} from "./useFetchUsers";
+import useFetchLibraries, {Props} from "./useFetchLibraries";
 import * as MockUserServices from "../test/MockUserServices";
 import * as SeedData from "../test/SeedData";
 import * as Wrapper from "../test/Wrapper";
+import useFetchUsers from "./useFetchUsers";
 
 // Test Infrastructure -------------------------------------------------------
 
@@ -28,21 +29,21 @@ const PROPS: Props = {
 
 describe("When logged in", () => {
 
-    it("should return all Users", async () => {
+    it("should return all Libraries", async () => {
 
         const user = MockUserServices.exact(SeedData.USER_USERNAME_ADMIN);
         // @ts-ignore
         const wrapper = ({children}) => {
             return Wrapper.loginContext({children}, user);
-        };
-        const {result} = renderHook(() => useFetchUsers(PROPS), { wrapper });
+        }
+        const {result} = renderHook(() => useFetchLibraries(PROPS), { wrapper });
 
         await waitFor(() => {
             expect(result.current.error).toBeNull();
             expect(result.current.loading).toBeFalsy();
-            expect(result.current.users).not.toBeNull();
-            expect(result.current.users.length).toBe(SeedData.USERS.length);
-        });
+            expect(result.current.libraries).not.toBeNull();
+            expect(result.current.libraries.length).toBe(SeedData.LIBRARIES.length);
+        })
 
     })
 
@@ -50,20 +51,20 @@ describe("When logged in", () => {
 
 describe("When logged out", () => {
 
-    it("should return no Users", async () => {
+    it("should return no Libraries", async () => {
 
         // @ts-ignore
         const wrapper = ({children}) => {
             return Wrapper.loginContext({children}, null);
-        };
-        const {result} = renderHook(() => useFetchUsers(PROPS), { wrapper })
+        }
+        const {result} = renderHook(() => useFetchLibraries(PROPS), { wrapper });
 
         await waitFor(() => {
             expect(result.current.error).toBeNull();
             expect(result.current.loading).toBeFalsy();
-            expect(result.current.users).not.toBeNull();
-            expect(result.current.users.length).toBe(0);
-        });
+            expect(result.current.libraries).not.toBeNull();
+            expect(result.current.libraries.length).toBe(0);
+        })
 
     })
 
