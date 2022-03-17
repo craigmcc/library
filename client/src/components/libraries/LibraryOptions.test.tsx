@@ -283,7 +283,7 @@ test("validation passes on no change update", async () => {
 
 describe("When logged in", () => {
 
-    it("should list all Libraries", () => {
+    xit("should list all Libraries", () => {
 
         const library: Library | null = null;
         const user: User | null = MockUserServices.exact(SeedData.USER_USERNAME_REGULAR);
