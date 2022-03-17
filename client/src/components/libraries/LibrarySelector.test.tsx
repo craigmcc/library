@@ -5,7 +5,7 @@
 // External Modules ----------------------------------------------------------
 
 import React from "react";
-import {render, screen} from "@testing-library/react";
+import {fireEvent, render, screen} from "@testing-library/react";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -47,8 +47,6 @@ const elements = function (): Elements {
 
 describe("When logged in", function () {
 
-    // NOTE - need test for selecting a particular library
-
     it("should show the available Libraries with none selected", () => {
 
         const library: Library | null = null;
@@ -86,6 +84,30 @@ describe("When logged in", function () {
         expect(select).toHaveValue(String(INDEX));
         expect(select.childElementCount).toBe(SeedData.LIBRARIES.length + 1);
         expect(PROPS.handleLibrary).not.toBeCalled();
+
+    })
+
+    it("should change state when a different option is selected", () => {
+
+        const INDEX = SeedData.LIBRARIES.length - 1; // Last Library in list
+        const libraries = MockLibraryServices.all({});
+        const library = null;
+        const user = MockUserServices.exact(SeedData.USER_USERNAME_REGULAR);
+        render(
+            <LoginContext.Provider value={State.loginContext(user)}>
+                <LibraryContext.Provider value={State.libraryContext(user, library)}>
+                    <LibrarySelector {...PROPS}/>
+                </LibraryContext.Provider>
+            </LoginContext.Provider>
+        );
+
+        const {select} = elements();
+        expect(select).toHaveValue(String(-1));
+
+        fireEvent.change(select, { target: { value: String(INDEX) } });
+
+        expect(select).toHaveValue(String(INDEX));
+        expect(PROPS.handleLibrary).toBeCalledWith(libraries[INDEX]);
 
     })
 
