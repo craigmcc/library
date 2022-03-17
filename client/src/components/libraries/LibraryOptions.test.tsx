@@ -1,10 +1,31 @@
+// LibraryOptions.test -------------------------------------------------------
+
+// Unit tests for LibraryOptions.
+
+// External Modules -----------------------------------------------------------
+
 import React from "react";
-import {render, screen/*, waitFor*/} from "@testing-library/react";
+import {act, render, screen/*, waitFor */} from "@testing-library/react";
 //import userEvent from "@testing-library/user-event";
 
-import LibraryOptions from "./LibraryOptions";
-//import Library from "../../models/Library";
-//import * as MockLibraryServices from "../../test/MockLibraryServices";
+// Internal Modules -----------------------------------------------------------
+
+import LibraryContext from "./LibraryContext";
+import LibraryOptions, {Props} from "./LibraryOptions";
+import LoginContext from "../login/LoginContext";
+import Library from "../../models/Library";
+import User from "../../models/User";
+import * as MockLibraryServices from "../../test/MockLibraryServices";
+import * as MockUserServices from "../../test/MockUserServices";
+import * as SeedData from "../../test/SeedData";
+import * as State from "../../test/State";
+
+// Test Infrastructure -------------------------------------------------------
+
+const PROPS: Props = {
+    handleAdd: jest.fn(),
+    handleEdit: jest.fn(),
+}
 
 type Elements = {
     // Fields
@@ -24,10 +45,7 @@ const elements = function (): Elements {
     const activeOnly = screen.getByLabelText("Active Libraries Only?");
     expect(activeOnly).toBeInTheDocument();
     expect(activeOnly).not.toHaveAccessibleDescription("checked");
-    const rows = screen.getAllByRole("row"); // NOTE - just finds the one in <thead>
-    // NOTE - We really only want the rows inside <tbody>
-    // NOTE - Should be SeedData.LIBRARIES.length of them
-    // NOTE - Need to mock authentication to see actual data
+    const rows = screen.getAllByRole("row");  // Includes header row
     const searchBar = screen.getByLabelText("Search For Libraries:");
     expect(searchBar).toBeInTheDocument();
 
@@ -54,6 +72,7 @@ const elements = function (): Elements {
 
 }
 
+/*
 test("disabled buttons on no handlers", async () => {
 
     render(<LibraryOptions/>);
@@ -71,6 +90,7 @@ test("disabled buttons on no handlers", async () => {
     expect(pagePrevious).toBeDisabled();
 
 });
+*/
 
 /*
 test("empty data does not submit", async () => {
@@ -261,3 +281,65 @@ test("validation passes on no change update", async () => {
 });
 */
 
+describe("When logged in", () => {
+
+    it("should list all Libraries", () => {
+
+        const library: Library | null = null;
+        const user: User | null = MockUserServices.exact(SeedData.USER_USERNAME_REGULAR);
+        act(() => {
+            render(
+                <LoginContext.Provider value={State.loginContext(user)}>
+                    <LibraryContext.Provider value={State.libraryContext(user, library)}>
+                        <LibraryOptions {...PROPS}/>
+                    </LibraryContext.Provider>
+                </LoginContext.Provider>
+            )
+        })
+
+        const {activeOnly, rows,// searchBar,
+            add0, add1, pageNext, pageNumber, pagePrevious}
+            = elements();
+
+        expect(activeOnly).not.toBeChecked();
+        expect(add0).toBeEnabled();
+        expect(add1).toBeEnabled();
+        expect(pageNext).toBeDisabled();
+        expect(pageNumber).toBeDisabled();
+        expect(pagePrevious).toBeDisabled();
+        expect(rows.length).toBe(SeedData.LIBRARIES.length + 1);  // The header row + all Libraries
+
+    })
+
+})
+
+describe("When logged out", () => {
+
+    it("should list no Libraries", async () => {
+
+        const library: Library | null = null;
+        const user: User | null = null;
+        act(() => {
+            render(
+                <LoginContext.Provider value={State.loginContext(user)}>
+                    <LibraryContext.Provider value={State.libraryContext(user, library)}>
+                        <LibraryOptions {...PROPS}/>
+                    </LibraryContext.Provider>
+                </LoginContext.Provider>
+            )
+        })
+
+        const {activeOnly, rows,// searchBar,
+            add0, add1, pageNext, pageNumber, pagePrevious}
+            = elements();
+        expect(activeOnly).not.toBeChecked();
+        expect(add0).toBeDisabled();
+        expect(add1).toBeDisabled();
+        expect(pageNext).toBeDisabled();
+        expect(pageNumber).toBeDisabled();
+        expect(pagePrevious).toBeDisabled();
+        expect(rows.length).toBe(1);  // The header row
+
+    })
+
+})

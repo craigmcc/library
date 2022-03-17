@@ -12,8 +12,6 @@ import {State as LoginContextState} from "../components/login/LoginContext";
 import Library from "../models/Library";
 import User from "../models/User";
 import * as MockLibraryServices from "../test/MockLibraryServices";
-import * as MockUserServices from "../test/MockUserServices";
-import * as SeedData from "../test/SeedData";
 
 // Public Objects ------------------------------------------------------------
 

@@ -140,7 +140,7 @@ const LibraryOptions = (props: Props) => {
                 </Col>
                 <Col className="text-end">
                     <Button
-                        disabled={!props.handleAdd}
+                        disabled={!loginContext.data.loggedIn || !props.handleAdd}
                         onClick={handleAdd}
                         size="sm"
                         variant="primary"
@@ -194,7 +194,7 @@ const LibraryOptions = (props: Props) => {
             <Row className="mb-3">
                 <Col className="text-end">
                     <Button
-                        disabled={!props.handleAdd}
+                        disabled={!loginContext.data.loggedIn || !props.handleAdd}
                         onClick={handleAdd}
                         size="sm"
                         variant="primary"
