@@ -191,7 +191,7 @@ const useMutateSeries = (props: Props = {}): State => {
                 context: "useMutateSeries.update",
                 series: Abridgers.SERIES(updated),
                 url: url,
-            }, alertPopup);
+            });
         } catch (anError) {
             setError(anError as Error);
             ReportError("useMutateSeries.update", anError, {

@@ -283,11 +283,11 @@ test("validation passes on no change update", async () => {
 
 describe("When logged in", () => {
 
-    xit("should list all Libraries", () => {
+    it("should list all Libraries", async () => {
 
         const library: Library | null = null;
         const user: User | null = MockUserServices.exact(SeedData.USER_USERNAME_REGULAR);
-        act(() => {
+        await act(async () => {
             render(
                 <LoginContext.Provider value={State.loginContext(user)}>
                     <LibraryContext.Provider value={State.libraryContext(user, library)}>
@@ -319,7 +319,7 @@ describe("When logged out", () => {
 
         const library: Library | null = null;
         const user: User | null = null;
-        act(() => {
+        await act(async () => {
             render(
                 <LoginContext.Provider value={State.loginContext(user)}>
                     <LibraryContext.Provider value={State.libraryContext(user, library)}>
