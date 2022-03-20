@@ -1,10 +1,20 @@
+// LibraryDetails.test -------------------------------------------------------
+
+// Unit tests for LibraryDetails.
+
+// External Modules ----------------------------------------------------------
+
 import React from "react";
-import {render, screen, waitFor} from "@testing-library/react";
+import {act, render, screen, waitFor} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import LibraryDetails from "./LibraryDetails";
+// Internal Modules ----------------------------------------------------------
+
+import LibraryDetails, {Props} from "./LibraryDetails";
 import Library from "../../models/Library";
 import * as MockLibraryServices from "../../test/MockLibraryServices";
+
+// Test Infrastructure -------------------------------------------------------
 
 const elements = (): {
     // Fields
@@ -45,207 +55,241 @@ const elements = (): {
 
 }
 
-test("disabled buttons on no handlers", async () => {
+// Test Methods --------------------------------------------------------------
 
-    const LIBRARY = new Library({
-        id: -1,
-        active: true,
-        name: null,
-        notes: null,
-        scope: null,
-    });
-    const handleBack = jest.fn();
-    render(<LibraryDetails
-        handleReturn={handleBack}
-        library={LIBRARY}
-    />)
+describe("Invalid Data", () => {
 
-    const {back, save, remove} = elements();
-    expect(save).toHaveAttribute("disabled");
-    expect(remove).toHaveAttribute("disabled");
+    it("should fail validation on duplicate name update", async () => {
 
-    userEvent.click(back);
+        const LIBRARIES = MockLibraryServices.all({});
+        const LIBRARY = {
+            ...LIBRARIES[0],
+            name: LIBRARIES[1].name,
+        }
+        const PROPS: Props = {
+            handleInsert: jest.fn(),
+            handleRemove: jest.fn(),
+            handleReturn: jest.fn(),
+            handleUpdate: jest.fn(),
+            library: LIBRARY,
+        }
+        await act(async () => {
+            render(<LibraryDetails {...PROPS}/>);
+        })
 
-    await waitFor(() => {
-        expect(handleBack).toBeCalled();
-    });
+        const {save} = elements();
+        userEvent.click(save);
 
-});
+        await waitFor(() => {
+            expect(PROPS.handleInsert).not.toBeCalled();
+            expect(PROPS.handleRemove).not.toBeCalled();
+            expect(PROPS.handleUpdate).not.toBeCalled();
+            screen.getByText("That name is already in use");
+        });
 
-test("empty data does not submit", async () => {
-
-    const LIBRARY = new Library({
-        id: -1,
-        active: true,
-        name: null,
-        notes: null,
-        scope: null,
-    });
-    const handleBack = jest.fn();
-    const handleInsert = jest.fn();
-    const handleRemove = jest.fn();
-    const handleUpdate = jest.fn();
-    render(<LibraryDetails
-        handleReturn={handleBack}
-        handleInsert={handleInsert}
-        handleRemove={handleRemove}
-        handleUpdate={handleUpdate}
-        library={LIBRARY}
-    />)
-
-    const {save} = elements();
-
-    userEvent.click(save);
-
-    await waitFor(() => {
-        expect(handleBack).not.toBeCalled();
-        expect(handleInsert).not.toBeCalled();
-        expect(handleRemove).not.toBeCalled();
-        expect(handleUpdate).not.toBeCalled();
     });
 
-});
+    it("should fail validation on empty insert", async () => {
 
-test("validation fails on duplicate name update", async () => {
+        const library = new Library({
+            id: -1,
+            active: true,
+            name: null,
+            notes: null,
+            scope: null,
+        });
+        const PROPS: Props = {
+            handleInsert: jest.fn(),
+            handleReturn: jest.fn(),
+            handleUpdate: jest.fn(),
+            library: library,
+        }
+        await act(async () => {
+            render(<LibraryDetails {...PROPS}/>);
+        })
 
-    const LIBRARIES = MockLibraryServices.all({});
-    const LIBRARY = {
-        ...LIBRARIES[0],
-        name: LIBRARIES[1].name,
-    }
-    const handleBack = jest.fn();
-    const handleInsert = jest.fn();
-    const handleUpdate = jest.fn();
-    render(<LibraryDetails
-        handleReturn={handleBack}
-        handleInsert={handleInsert}
-        handleUpdate={handleUpdate}
-        library={LIBRARY}
-    />);
-    const {save} = elements();
+        const {save} = elements();
+        userEvent.click(save);
 
-    userEvent.click(save);
+        await waitFor(() => {
+            expect(PROPS.handleInsert).not.toBeCalled();
+            expect(PROPS.handleReturn).not.toBeCalled();
+            expect(PROPS.handleUpdate).not.toBeCalled();
+            screen.getByText("Name is required");
+            screen.getByText("Scope is required");
+        });
 
-    await waitFor(() => {
-        expect(handleBack).not.toBeCalled();
-        expect(handleInsert).not.toBeCalled();
-        expect(handleUpdate).not.toBeCalled();
-        screen.getByText("That name is already in use");
     });
 
-});
+    it("should not submit empty data", async () => {
 
-test("validation fails on empty insert", async () => {
+        const LIBRARY = new Library({
+            id: -1,
+            active: true,
+            name: null,
+            notes: null,
+            scope: null,
+        });
+        const PROPS: Props = {
+            handleInsert: jest.fn(),
+            handleRemove: jest.fn(),
+            handleReturn: jest.fn(),
+            handleUpdate: jest.fn(),
+            library: LIBRARY,
+        }
+        await act(async () => {
+            render(<LibraryDetails {...PROPS}/>);
+        })
 
-    const handleBack = jest.fn();
-    const handleInsert = jest.fn();
-    const handleUpdate = jest.fn();
-    const library = new Library({
-        id: -1,
-        active: true,
-        name: null,
-        notes: null,
-        scope: null,
-    });
-    render(<LibraryDetails
-        handleReturn={handleBack}
-        handleInsert={handleInsert}
-        handleUpdate={handleUpdate}
-        library={library}
-    />)
-    const {save} = elements();
+        const {save} = elements();
+        userEvent.click(save);
 
-    userEvent.click(save);
+        await waitFor(() => {
+            expect(PROPS.handleInsert).not.toBeCalled();
+            expect(PROPS.handleRemove).not.toBeCalled();
+            expect(PROPS.handleReturn).not.toBeCalled();
+            expect(PROPS.handleUpdate).not.toBeCalled();
+        });
 
-    await waitFor(() => {
-        expect(handleBack).not.toBeCalled();
-        expect(handleInsert).not.toBeCalled();
-        expect(handleUpdate).not.toBeCalled();
-        screen.getByText("Name is required");
-        screen.getByText("Scope is required");
-    });
-
-});
-
-test("validation passes on new name update", async () => {
-
-    const ORIGINAL = MockLibraryServices.find(MockLibraryServices.id(0), {});
-    const LIBRARY = {
-        ...ORIGINAL,
-        name: ORIGINAL.name + " Modified",
-    }
-    const handleBack = jest.fn();
-    const handleInsert = jest.fn();
-    const handleRemove = jest.fn();
-    const handleUpdate = jest.fn();
-    render(<LibraryDetails
-        handleReturn={handleBack}
-        handleInsert={handleInsert}
-        handleRemove={handleRemove}
-        handleUpdate={handleUpdate}
-        library={LIBRARY}
-    />);
-    const {save} = elements();
-
-    userEvent.click(save);
-
-    await waitFor(() => {
-        expect(handleBack).not.toBeCalled();
-        expect(handleInsert).not.toBeCalled();
-        expect(handleRemove).not.toBeCalled();
-        expect(handleUpdate).toBeCalledTimes(1);
     });
 
-});
+})
 
-test("validation passes on no change remove", async () => {
+describe("No Handlers", () => {
 
-    const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(1), {});
-    const handleBack = jest.fn();
-    const handleInsert = jest.fn();
-    const handleRemove = jest.fn();
-    const handleUpdate = jest.fn();
-    render(<LibraryDetails
-        handleReturn={handleBack}
-        handleInsert={handleInsert}
-        handleRemove={handleRemove}
-        handleUpdate={handleUpdate}
-        library={LIBRARY}
-    />);
-    const {remove} = elements();
+    it("should disable buttons", async () => {
 
-    userEvent.click(remove);
+        const LIBRARY = new Library({
+            id: -1,
+            active: true,
+            name: null,
+            notes: null,
+            scope: null,
+        });
+        const PROPS: Props = {
+            handleReturn: jest.fn(),
+            library: LIBRARY
+        }
+        await act(async () => {
+            render(
+                <LibraryDetails {...PROPS}/>
+            )
+        })
 
-    await waitFor(() => {
-        expect(handleBack).not.toBeCalled();
-        expect(handleInsert).not.toBeCalled();
-        // NOTE - not called? because of modal? expect(handleRemove).toBeCalledTimes(1);
-        expect(handleUpdate).not.toBeCalled();
+        const {back, save, remove} = elements();
+        expect(save).toHaveAttribute("disabled");
+        expect(remove).toHaveAttribute("disabled");
+        userEvent.click(back);
+
+        await waitFor(() => {
+            expect(PROPS.handleReturn).toBeCalledTimes(1);
+        });
+
     })
 
-});
+})
 
-test("validation passes on no change update", async () => {
+describe("Valid Data", () => {
 
-    const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0), {});
-    const handleBack = jest.fn();
-    const handleInsert = jest.fn();
-    const handleUpdate = jest.fn();
-    render(<LibraryDetails
-        handleReturn={handleBack}
-        handleInsert={handleInsert}
-        handleUpdate={handleUpdate}
-        library={LIBRARY}
-    />);
-    const {save} = elements();
+    it("should pass validation on insert", async () => {
 
-    userEvent.click(save);
+        const LIBRARY: Library = new Library({
+            id: -1,
+            name: "Brand New Library",
+            scope: "brand",
+        });
+        const PROPS: Props = {
+            handleInsert: jest.fn(),
+            handleReturn: jest.fn(),
+            library: LIBRARY,
+        }
+        await act(async () => {
+            render(<LibraryDetails {...PROPS}/>);
+        })
 
-    await waitFor(() => {
-        expect(handleBack).not.toBeCalled();
-        expect(handleInsert).not.toBeCalled();
-        expect(handleUpdate).toBeCalledTimes(1);
-    });
+        const {save} = elements();
+        userEvent.click(save);
 
-});
+        await waitFor(() => {
+            expect(PROPS.handleInsert).toBeCalledTimes(1);
+            expect(PROPS.handleReturn).not.toBeCalled();
+        });
+
+    })
+
+    it("should pass validation on name update", async () => {
+
+        const ORIGINAL = MockLibraryServices.find(MockLibraryServices.id(0), {});
+        const LIBRARY = {
+            ...ORIGINAL,
+            name: ORIGINAL.name + " Modified",
+        }
+        const PROPS: Props = {
+            handleInsert: jest.fn(),
+            handleRemove: jest.fn(),
+            handleReturn: jest.fn(),
+            handleUpdate: jest.fn(),
+            library: LIBRARY,
+        }
+        await act(async () => {
+            render(<LibraryDetails {...PROPS}/>);
+        })
+
+        const {save} = elements();
+        userEvent.click(save);
+
+        await waitFor(() => {
+            expect(PROPS.handleInsert).not.toBeCalled();
+            expect(PROPS.handleRemove).not.toBeCalled();
+            expect(PROPS.handleReturn).not.toBeCalled();
+            expect(PROPS.handleUpdate).toBeCalledTimes(1);
+        });
+
+    })
+
+    it("should pass validation on no change remove", async () => {
+
+        const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(1), {});
+        const PROPS: Props = {
+            handleRemove: jest.fn(),
+            handleReturn: jest.fn(),
+            library: LIBRARY,
+        }
+        await act(async () => {
+            render(<LibraryDetails {...PROPS}/>);
+        })
+
+        const {remove} = elements();
+        userEvent.click(remove);
+
+        await waitFor(() => {
+            // NOTE - not called because of modal - expect(PROPS.handleRemove).toBeCalledTimes(1);
+            expect(PROPS.handleReturn).not.toBeCalled();
+        })
+
+    })
+
+    it("should pass validation on no change update", async () => {
+
+        const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0), {});
+        const PROPS: Props = {
+            handleReturn: jest.fn(),
+            handleUpdate: jest.fn(),
+            library: LIBRARY,
+        }
+        await act(async () => {
+            render(<LibraryDetails {...PROPS}/>);
+        })
+
+        const {save} = elements();
+        userEvent.click(save);
+
+        await waitFor(() => {
+            expect(PROPS.handleReturn).not.toBeCalled();
+            expect(PROPS.handleUpdate).toBeCalledTimes(1);
+        });
+
+    })
+
+})
 
