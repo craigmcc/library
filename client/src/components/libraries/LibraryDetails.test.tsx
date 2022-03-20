@@ -13,6 +13,7 @@ import userEvent from "@testing-library/user-event";
 import LibraryDetails, {Props} from "./LibraryDetails";
 import Library from "../../models/Library";
 import * as MockLibraryServices from "../../test/MockLibraryServices";
+import * as SeedData from "../../test/SeedData";
 
 // Test Infrastructure -------------------------------------------------------
 
@@ -220,7 +221,7 @@ describe("Valid Data", () => {
 
     it("should pass validation on name update", async () => {
 
-        const ORIGINAL = MockLibraryServices.find(MockLibraryServices.id(0), {});
+        const ORIGINAL = MockLibraryServices.exact(SeedData.LIBRARY_ONE_NAME);
         const LIBRARY = {
             ...ORIGINAL,
             name: ORIGINAL.name + " Modified",
@@ -250,7 +251,7 @@ describe("Valid Data", () => {
 
     it("should pass validation on no change update", async () => {
 
-        const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0), {});
+        const LIBRARY = MockLibraryServices.exact(SeedData.LIBRARY_ZERO_NAME);
         const PROPS: Props = {
             handleReturn: jest.fn(),
             handleUpdate: jest.fn(),
@@ -272,7 +273,7 @@ describe("Valid Data", () => {
 
     it("should pass validation on remove", async () => {
 
-        const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(1), {});
+        const LIBRARY = MockLibraryServices.exact(SeedData.LIBRARY_TWO_NAME);
         const PROPS: Props = {
             handleRemove: jest.fn(),
             handleReturn: jest.fn(),

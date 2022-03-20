@@ -12,9 +12,9 @@ import User from "../models/User";
 
 // ----- Common Identifiers --------------------------------------------------
 
-export const LIBRARY_ZERO_NAME = "Library Zero";
-export const LIBRARY_ONE_NAME = "Library One";
-export const LIBRARY_TWO_NAME = "Library Two";
+export const LIBRARY_ZERO_NAME = "Library 0";
+export const LIBRARY_ONE_NAME = "Library 1";
+export const LIBRARY_TWO_NAME = "Library 2";
 
 export const LIBRARY_SCOPE = "test";
 

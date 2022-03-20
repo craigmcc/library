@@ -255,7 +255,7 @@ const AuthorOptions = (props: Props) => {
                 </Col>
                 <Col className="text-end">
                     <Button
-                        disabled={!props.handleAdd}
+                        disabled={!loginContext.data.loggedIn || !props.handleAdd}
                         onClick={props.handleAdd}
                         size="sm"
                         variant="primary"
@@ -394,7 +394,7 @@ const AuthorOptions = (props: Props) => {
             <Row className="mb-3">
                 <Col className="text-end">
                     <Button
-                        disabled={!props.handleAdd}
+                        disabled={!loginContext.data.loggedIn || !props.handleAdd}
                         onClick={props.handleAdd}
                         size="sm"
                         variant="primary"

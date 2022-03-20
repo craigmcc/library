@@ -86,7 +86,7 @@ describe("Invalid Data", () => {
             handleUpdate: jest.fn(),
             parent: LIBRARY,
         }
-        await act(() => {
+        await act(async () => {
             render(<AuthorDetails {...PROPS}/>);
         });
 
