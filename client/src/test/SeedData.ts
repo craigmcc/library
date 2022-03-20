@@ -64,6 +64,33 @@ export const AUTHORS1: Author[] = [
     }),
 ];
 
+export const AUTHORS2: Author[] = [
+    new Author({
+        active: true,
+        firstName: "George",
+        lastName: "Jetson",
+        notes: null,
+    }),
+    new Author({
+        active: true,
+        firstName: "Jane",
+        lastName: "Jetson",
+        notes: null,
+    }),
+    new Author({
+        active: false,
+        firstName: "Judy",
+        lastName: "Jetson",
+        notes: null,
+    }),
+    new Author({
+        active: true,
+        firstName: "Elroy",
+        lastName: "Jetson",
+        notes: null,
+    }),
+];
+
 // ----- Libraries -----------------------------------------------------------
 
 // Must populate id field.

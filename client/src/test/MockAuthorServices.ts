@@ -94,7 +94,7 @@ export const insert = (libraryId: number, author: Author): Author => {
 export const remove = (libraryId: number, authorId: number): Author => {
     const removed = find(libraryId, authorId, {});
     map.delete(authorId);
-    return new Author(removed);
+    return removed;
 }
 
 /**
@@ -132,12 +132,14 @@ export const update = (libraryId: number, authorId: number, author: Author): Aut
  */
 const includes = (author: Author, query: any): Author => {
     const result = new Author(author);
-    if (query.withLibrary) {
-        result.library = MockLibraryServices.find(author.id, {});
+    if (query) {
+        if ("" === query.withLibrary) {
+            result.library = MockLibraryServices.find(author.libraryId, {});
+        }
+        // NOTE - implement withSeries
+        // NOTE - implement withStories
+        // NOTE - implement withVolumes
     }
-    // NOTE - implement withSeries
-    // NOTE - implement withStories
-    // NOTE - implement withVolumes
     return result;
 }
 
@@ -149,9 +151,11 @@ const includes = (author: Author, query: any): Author => {
  */
 const matches = (author: Author, query: any): boolean => {
     let result = true;
-    if (query.active && !author.active) {
-        result = false;
+    if (query) {
+        if (("" === query.active) && !author.active) {
+            result = false;
+        }
+        // NOTE - implement name
     }
-    // NOTE - implement name
     return result;
 }

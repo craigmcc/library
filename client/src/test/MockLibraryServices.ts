@@ -85,7 +85,7 @@ export const insert = (library: Library): Library => {
     });
     ids.push(inserted.id);
     map.set(inserted.id, inserted);
-    return new Library(inserted);
+    return inserted;
 }
 
 /**
@@ -94,7 +94,7 @@ export const insert = (library: Library): Library => {
 export const remove = (libraryId: number): Library => {
     const removed = find(libraryId, {});
     map.delete(libraryId);
-    return new Library(removed);
+    return removed;
 }
 
 /**
@@ -132,12 +132,14 @@ export const update = (libraryId: number, library: Library): Library => {
  */
 const includes = (library: Library, query: any): Library => {
     const result = new Library(library);
-    if ("" === query.withAuthors) {
-        result.authors = MockAuthorServices.all(library.id, {});
+    if (query) {
+        if ("" === query.withAuthors) {
+            result.authors = MockAuthorServices.all(library.id, {});
+        }
+        // NOTE - implement withSeries
+        // NOTE - implement withStories
+        // NOTE - implement withVolumes
     }
-    // NOTE - implement withSeries
-    // NOTE - implement withStories
-    // NOTE - implement withVolumes
     return result;
 }
 
@@ -149,12 +151,14 @@ const includes = (library: Library, query: any): Library => {
  */
 const matches = (library: Library, query: any): boolean => {
     let result = true;
-    if (query.active && !library.active) {
-        result = false;
-    }
-    // NOTE - implement name
-    if (query.scope && (query.scope !== library.scope)) {
-        result = false;
+    if (query) {
+        if (("" === query.active) && !library.active) {
+            result = false;
+        }
+        // NOTE - implement name
+        if (query.scope && (query.scope !== library.scope)) {
+            result = false;
+        }
     }
     return result;
 }

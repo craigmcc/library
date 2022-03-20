@@ -114,7 +114,7 @@ export const authorQuery = (searchParams: URLSearchParams, matches: boolean = fa
     }
     // Match Parameters
     if (matches) {
-        if (searchParams.get("active")) {
+        if ("" === searchParams.get("active")) {
             result.active = "";
         }
         if (searchParams.get("name")) {

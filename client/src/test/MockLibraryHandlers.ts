@@ -9,6 +9,8 @@ import {DefaultRequestBody, MockedRequest, rest, RestHandler} from "msw";
 // Internal Modules ----------------------------------------------------------
 
 import {HttpError} from "./HttpErrors";
+import {authorQuery} from "./MockAuthorHandlers";
+import * as MockAuthorServices from "./MockAuthorServices";
 import * as MockLibraryServices from "./MockLibraryServices";
 
 // Public Objects ------------------------------------------------------------
@@ -20,11 +22,46 @@ export const libraryHandlers: RestHandler<MockedRequest<DefaultRequestBody>>[] =
     // all -------------------------------------------------------------------
     rest.get(`${PREFIX}`, (req, res, ctx) => {
         const query = libraryQuery(req.url.searchParams, true);
-        const libraries = MockLibraryServices.all(query);
-        return res(
-            ctx.status(200),
-            ctx.json(libraries),
-        )
+        try {
+            const libraries = MockLibraryServices.all(query);
+            return res(
+                ctx.status(200),
+                ctx.json(libraries),
+            );
+        } catch (error) {
+            const httpError = error as HttpError;
+            return res(
+                ctx.status(httpError.status),
+                ctx.json({
+                    context: httpError.context,
+                    message: httpError.message,
+                    status: httpError.status,
+                }),
+            );
+        }
+    }),
+
+    rest.get(`${PREFIX}/:libraryId/authors`, (req, res, ctx) => {
+        const {libraryId} = req.params;
+        try {
+            const query = authorQuery(req.url.searchParams, true);
+            const library = MockLibraryServices.find(Number(libraryId), query);
+            const authors = MockAuthorServices.all(library.id, query);
+            return res(
+                ctx.status(200),
+                ctx.json(authors),
+            );
+        } catch (error) {
+            const httpError = error as HttpError;
+            return res(
+                ctx.status(httpError.status),
+                ctx.json({
+                    context: httpError.context,
+                    message: httpError.message,
+                    status: httpError.status,
+                }),
+            );
+        }
     }),
 
     // exact -----------------------------------------------------------------
@@ -99,7 +136,7 @@ export const libraryQuery = (searchParams: URLSearchParams, matches: boolean = f
     }
     // Match Parameters
     if (matches) {
-        if (searchParams.get("active")) {
+        if ("" === searchParams.get("active")) {
             result.active = "";
         }
         if (searchParams.get("name")) {

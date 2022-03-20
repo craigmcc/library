@@ -17,7 +17,7 @@ import * as Wrapper from "../test/Wrapper";
 // Test Infrastructure -------------------------------------------------------
 
 // Default props for useFetchUsers() calls
-const PROPS: Props = {
+const BASE_PROPS: Props = {
     active: false,
     alertPopup: false,
     currentPage: 1,
@@ -28,14 +28,36 @@ const PROPS: Props = {
 
 describe("When logged in", () => {
 
-    it("should return all Libraries", async () => {
+    it("should return active Libraries", async () => {
 
-        const user = MockUserServices.exact(SeedData.USER_USERNAME_ADMIN);
+        const USER = MockUserServices.exact(SeedData.USER_USERNAME_ADMIN);
+        const PROPS: Props = {
+            ...BASE_PROPS,
+            active: true,
+        }
+        let actives: number = 0;
+        SeedData.LIBRARIES.forEach(library => {
+            if (library.active) {
+                actives++;
+            }
+        })
+
         // @ts-ignore
         const wrapper = ({children}) => {
-            return Wrapper.loginContext({children}, user);
+            return Wrapper.loginContext({children}, USER);
         }
         const {result} = renderHook(() => useFetchLibraries(PROPS), { wrapper });
+
+    })
+
+    it("should return all Libraries", async () => {
+
+        const USER = MockUserServices.exact(SeedData.USER_USERNAME_ADMIN);
+        // @ts-ignore
+        const wrapper = ({children}) => {
+            return Wrapper.loginContext({children}, USER);
+        }
+        const {result} = renderHook(() => useFetchLibraries(BASE_PROPS), { wrapper });
 
         await waitFor(() => {
             expect(result.current.error).toBeNull();
@@ -56,7 +78,7 @@ describe("When logged out", () => {
         const wrapper = ({children}) => {
             return Wrapper.loginContext({children}, null);
         }
-        const {result} = renderHook(() => useFetchLibraries(PROPS), { wrapper });
+        const {result} = renderHook(() => useFetchLibraries(BASE_PROPS), { wrapper });
 
         await waitFor(() => {
             expect(result.current.error).toBeNull();

@@ -32,6 +32,7 @@ export const reset = (): void => {
     loadLibraries(SeedData.LIBRARIES);
     loadAuthors(MockLibraryServices.id(0), SeedData.AUTHORS0);
     loadAuthors(MockLibraryServices.id(1), SeedData.AUTHORS1);
+    loadAuthors(MockLibraryServices.id(2), SeedData.AUTHORS2);
 
 }
 
