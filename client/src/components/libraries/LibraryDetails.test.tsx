@@ -171,14 +171,15 @@ describe("No Handlers", () => {
             library: LIBRARY
         }
         await act(async () => {
-            render(
-                <LibraryDetails {...PROPS}/>
-            )
+            render(<LibraryDetails {...PROPS}/>);
         })
 
         const {back, save, remove} = elements();
-        expect(save).toHaveAttribute("disabled");
-        expect(remove).toHaveAttribute("disabled");
+        await waitFor(() => {
+            expect(save).toHaveAttribute("disabled");
+            expect(remove).toHaveAttribute("disabled");
+        })
+
         userEvent.click(back);
 
         await waitFor(() => {
@@ -247,28 +248,6 @@ describe("Valid Data", () => {
 
     })
 
-    it("should pass validation on no change remove", async () => {
-
-        const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(1), {});
-        const PROPS: Props = {
-            handleRemove: jest.fn(),
-            handleReturn: jest.fn(),
-            library: LIBRARY,
-        }
-        await act(async () => {
-            render(<LibraryDetails {...PROPS}/>);
-        })
-
-        const {remove} = elements();
-        userEvent.click(remove);
-
-        await waitFor(() => {
-            // NOTE - not called because of modal - expect(PROPS.handleRemove).toBeCalledTimes(1);
-            expect(PROPS.handleReturn).not.toBeCalled();
-        })
-
-    })
-
     it("should pass validation on no change update", async () => {
 
         const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(0), {});
@@ -288,6 +267,28 @@ describe("Valid Data", () => {
             expect(PROPS.handleReturn).not.toBeCalled();
             expect(PROPS.handleUpdate).toBeCalledTimes(1);
         });
+
+    })
+
+    it("should pass validation on remove", async () => {
+
+        const LIBRARY = MockLibraryServices.find(MockLibraryServices.id(1), {});
+        const PROPS: Props = {
+            handleRemove: jest.fn(),
+            handleReturn: jest.fn(),
+            library: LIBRARY,
+        }
+        await act(async () => {
+            render(<LibraryDetails {...PROPS}/>);
+        })
+
+        const {remove} = elements();
+        userEvent.click(remove);
+
+        await waitFor(() => {
+            // NOTE - not called because of modal - expect(PROPS.handleRemove).toBeCalledTimes(1);
+            expect(PROPS.handleReturn).not.toBeCalled();
+        })
 
     })
 
