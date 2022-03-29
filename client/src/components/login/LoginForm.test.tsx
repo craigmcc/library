@@ -1,5 +1,5 @@
 import React from "react";
-import {render, screen, waitFor} from "@testing-library/react";
+import {act, render, screen, waitFor} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import LoginForm from "./LoginForm";
@@ -31,10 +31,13 @@ const elements = (): {
 test("invalid data does not submit", async () => {
 
     const handleCredentials = jest.fn();
-    render(<LoginForm handleLogin={handleCredentials}/>);
+    await act(async () => {
+        render(<LoginForm handleLogin={handleCredentials}/>);
+    });
     const {login} = elements();
 
-    userEvent.click(login);
+    const client = userEvent.setup();
+    await client.click(login);
 
     await waitFor(() => {
         expect(handleCredentials).not.toBeCalled();
@@ -50,8 +53,9 @@ test("valid data with enter after last field", async () => {
     render(<LoginForm handleLogin={handleCredentials}/>);
     const {username, password} = elements();
 
-    userEvent.type(username, VALID_USERNAME);
-    userEvent.type(password, VALID_PASSWORD + "{enter}");
+    const client = userEvent.setup();
+    await client.type(username, VALID_USERNAME);
+    await client.type(password, VALID_PASSWORD + "{enter}");
 
     await waitFor(() => {
         expect(handleCredentials).toHaveBeenCalledWith({
@@ -70,9 +74,10 @@ test("valid data with submit button", async () => {
     render(<LoginForm handleLogin={handleCredentials}/>);
     const {username, password, login} = elements();
 
-    userEvent.type(username, VALID_USERNAME);
-    userEvent.type(password, VALID_PASSWORD);
-    userEvent.click(login);
+    const client = userEvent.setup();
+    await client.type(username, VALID_USERNAME);
+    await client.type(password, VALID_PASSWORD);
+    await client.click(login);
 
     await waitFor(() => {
         expect(handleCredentials).toHaveBeenCalledWith({

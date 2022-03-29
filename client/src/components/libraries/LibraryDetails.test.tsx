@@ -79,7 +79,8 @@ describe("Invalid Data", () => {
         })
 
         const {save} = elements();
-        userEvent.click(save);
+        const client = userEvent.setup();
+        await client.click(save);
 
         await waitFor(() => {
             expect(PROPS.handleInsert).not.toBeCalled();
@@ -110,7 +111,8 @@ describe("Invalid Data", () => {
         })
 
         const {save} = elements();
-        userEvent.click(save);
+        const client = userEvent.setup();
+        await client.click(save);
 
         await waitFor(() => {
             expect(PROPS.handleInsert).not.toBeCalled();
@@ -143,7 +145,8 @@ describe("Invalid Data", () => {
         })
 
         const {save} = elements();
-        userEvent.click(save);
+        const client = userEvent.setup();
+        await client.click(save);
 
         await waitFor(() => {
             expect(PROPS.handleInsert).not.toBeCalled();
@@ -177,11 +180,12 @@ describe("No Handlers", () => {
 
         const {back, save, remove} = elements();
         await waitFor(() => {
-            expect(save).toHaveAttribute("disabled");
-            expect(remove).toHaveAttribute("disabled");
+            expect(save).toBeDisabled();
+            expect(remove).toBeDisabled();
         })
 
-        userEvent.click(back);
+        const client = userEvent.setup();
+        await client.click(back);
 
         await waitFor(() => {
             expect(PROPS.handleReturn).toBeCalledTimes(1);
@@ -210,7 +214,8 @@ describe("Valid Data", () => {
         })
 
         const {save} = elements();
-        userEvent.click(save);
+        const client = userEvent.setup();
+        await client.click(save);
 
         await waitFor(() => {
             expect(PROPS.handleInsert).toBeCalledTimes(1);
@@ -238,7 +243,8 @@ describe("Valid Data", () => {
         })
 
         const {save} = elements();
-        userEvent.click(save);
+        const client = userEvent.setup();
+        await client.click(save);
 
         await waitFor(() => {
             expect(PROPS.handleInsert).not.toBeCalled();
@@ -262,7 +268,8 @@ describe("Valid Data", () => {
         })
 
         const {save} = elements();
-        userEvent.click(save);
+        const client = userEvent.setup();
+        await client.click(save);
 
         await waitFor(() => {
             expect(PROPS.handleReturn).not.toBeCalled();
@@ -284,7 +291,8 @@ describe("Valid Data", () => {
         })
 
         const {remove} = elements();
-        userEvent.click(remove);
+        const client = userEvent.setup();
+        await client.click(remove);
 
         await waitFor(() => {
             // NOTE - not called because of modal - expect(PROPS.handleRemove).toBeCalledTimes(1);
