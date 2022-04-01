@@ -165,7 +165,9 @@ describe("Invalid Data", () => {
 
         const {save} = elements();
         const client = userEvent.setup();
-        await client.click(save);
+        await act(async () => {
+            await client.click(save);
+        });
 
         await waitFor(() => {
             expect(PROPS.handleBack).not.toBeCalled();
@@ -221,40 +223,6 @@ describe("Valid Data", () => {
     it("should pass validation on name update", async () => {
 
         const LIBRARY = MockLibraryServices.exact(SeedData.LIBRARY_TWO_NAME);
-        const AUTHORS = MockAuthorServices.all(LIBRARY.id, {});
-        const AUTHOR = {
-            ...AUTHORS[0],
-            firstName: "Someone",
-            lastName: "Else",
-        };
-        const PROPS: Props = {
-            author: AUTHOR,
-            handleBack: jest.fn(),
-            handleInsert: jest.fn(),
-            handleRemove: jest.fn(),
-            handleUpdate: jest.fn(),
-            parent: new Library(),
-        }
-        await act(async () => {
-            render(<AuthorDetails {...PROPS}/>);
-        });
-
-        const {save} = elements();
-        const client = userEvent.setup();
-        await client.click(save);
-
-        await waitFor(() => {
-            expect(PROPS.handleBack).not.toBeCalled();
-            expect(PROPS.handleInsert).not.toBeCalled();
-            expect(PROPS.handleRemove).not.toBeCalled();
-            expect(PROPS.handleUpdate).toBeCalledTimes(1);
-        });
-
-    });
-
-    it("should pass validation on name update", async () => {
-
-        const LIBRARY = MockLibraryServices.exact(SeedData.LIBRARY_ZERO_NAME);
         const AUTHORS = MockAuthorServices.all(LIBRARY.id, {});
         const AUTHOR = {
             ...AUTHORS[0],
