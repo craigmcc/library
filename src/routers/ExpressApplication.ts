@@ -10,6 +10,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 const rfs = require("rotating-file-stream");
+import {Timestamps} from "@craigmcc/shared-utils";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -18,7 +19,6 @@ import {handleOAuthError} from "../oauth/OAuthMiddleware";
 import OAuthRouter from "../oauth/OAuthRouter";
 import {handleHttpError, handleServerError, handleValidationError} from "../util/Middleware";
 import logger from "../util/ServerLogger";
-import { toLocalISO } from "../util/Timestamps";
 
 // Public Objects ------------------------------------------------------------
 
@@ -29,7 +29,7 @@ app.use(helmet());
 // Configure access log management
 const ACCESS_LOG = process.env.ACCESS_LOG ? process.env.ACCESS_LOG : "stderr";
 morgan.token("date", (req, res): string => {
-    return toLocalISO(new Date());
+    return Timestamps.iso();
 });
 const REMOTE_USER_HEADER = "x-username";
 morgan.token("remote-user", (req, res): string => {
