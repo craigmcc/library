@@ -25,7 +25,7 @@ import {
     validateLibraryNameUnique,
 } from "../../util/AsyncValidators";
 import * as ToModel from "../../util/ToModel";
-import {validateLibraryScope} from "../../util/Validators";
+import {validateLibraryScope} from "../../util/ApplicationValidators";
 
 // Incoming Properties ------------------------------------------------------
 

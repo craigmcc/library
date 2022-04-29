@@ -7,18 +7,11 @@
 
 // Public Objects -----------------------------------------------------------
 
-export const validateLibraryScope = (scope: string): boolean => {
-    if (scope) {
-        if (scope.length < 1) {
-            return false;
-        } else if (scope.split(" ").length > 1) {
-            return false;
-        } else {
-            return true;
-        }
-    } else {
+export const validateLibraryScope = (scope: string | undefined): boolean => {
+    if (!scope || (scope.length === 0)) {
         return true;
     }
+    return scope.match(LIBRARY_SCOPE_PATTERN) !== null;
 }
 
 export const validateVolumeLocation = (location: string | null | undefined): boolean => {
@@ -28,6 +21,8 @@ export const validateVolumeLocation = (location: string | null | undefined): boo
         return VALID_VOLUME_LOCATIONS.has(location);
     }
 }
+
+export const LIBRARY_SCOPE_PATTERN: RegExp = /^[a-zA-Z0-9]+$/;
 
 export const VALID_VOLUME_LOCATIONS: Map<string, string> = new Map();
 VALID_VOLUME_LOCATIONS.set("Box",           "Book in a Box (see Notes)");
