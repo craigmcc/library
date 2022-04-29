@@ -5,11 +5,11 @@
 // External Modules ----------------------------------------------------------
 
 import React, {useEffect, useState} from "react";
+import {FetchingProgress} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
 import GoogleBooksOptions from "./GoogleBooksOptions";
-import FetchingProgress from "../general/FetchingProgress";
 import useFetchMe from "../../hooks/useFetchMe";
 import logger from "../../util/ClientLogger";
 

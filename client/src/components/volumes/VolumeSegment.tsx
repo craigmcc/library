@@ -6,13 +6,13 @@
 // External Modules ----------------------------------------------------------
 
 import React, {useContext, useEffect, useState} from "react";
+import {MutatingProgress} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
 import VolumeDetails from "./VolumeDetails";
 import VolumeOptions from "./VolumeOptions";
 import AuthorSegment from "../authors/AuthorSegment";
-import MutatingProgress from "../general/MutatingProgress";
 import StorySegment from "../stories/StorySegment";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";

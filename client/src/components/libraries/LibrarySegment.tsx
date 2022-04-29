@@ -5,13 +5,13 @@
 // External Modules ----------------------------------------------------------
 
 import React, {useContext, useEffect, useState} from "react";
+import {MutatingProgress} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
 import LibraryContext from "./LibraryContext";
 import LibraryDetails from "./LibraryDetails";
 import LibraryOptions from "./LibraryOptions";
-import MutatingProgress from "../general/MutatingProgress";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleLibrary, Scope} from "../../types";
 import useMutateLibrary from "../../hooks/useMutateLibrary";
