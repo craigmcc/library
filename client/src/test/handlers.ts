@@ -4,7 +4,7 @@
 
 // External Modules ----------------------------------------------------------
 
-import {DefaultRequestBody, MockedRequest, RestHandler} from "msw";
+import {DefaultBodyType, MockedRequest, RestHandler} from "msw";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -14,7 +14,7 @@ import {userHandlers} from "./MockUserHandlers";
 
 // Public Logic --------------------------------------------------------------
 
-const handlers: RestHandler<MockedRequest<DefaultRequestBody>>[] = [
+const handlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [
     ...authorHandlers,
     ...libraryHandlers,
     ...userHandlers,

@@ -4,7 +4,7 @@
 
 // External Modules ----------------------------------------------------------
 
-import {DefaultRequestBody, MockedRequest, rest, RestHandler} from "msw";
+import {DefaultBodyType, MockedRequest, rest, RestHandler} from "msw";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -15,7 +15,7 @@ import * as MockUserServices from "./MockUserServices";
 
 const PREFIX = "/api/users";
 
-export const userHandlers: RestHandler<MockedRequest<DefaultRequestBody>>[] = [
+export const userHandlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [
 
     // all -------------------------------------------------------------------
     rest.get(`${PREFIX}`, (req, res, ctx) => {
