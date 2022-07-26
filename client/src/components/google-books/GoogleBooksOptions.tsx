@@ -12,10 +12,11 @@ import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
 import {SubmitHandler, useForm} from "react-hook-form";
-import {CheckBox, FetchingProgress, Pagination, TextField} from "@craigmcc/shared-react";
+import {CheckBox, Pagination, TextField} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
+import FetchingProgress from "../shared/FetchingProgress";
 import {HandleAction, HandleBoolean} from "../../types";
 import useFetchGoogleBooks from "../../hooks/useFetchGoogleBooks";
 import GoogleVolume from "../../models/GoogleVolume";

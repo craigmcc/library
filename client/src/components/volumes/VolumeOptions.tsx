@@ -11,12 +11,13 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
-import {CheckBox, FetchingProgress, Pagination, SearchBar} from "@craigmcc/shared-react";
+import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
+import FetchingProgress from "../shared/FetchingProgress";
 import {HandleAction, HandleBoolean, HandleValue, HandleVolume, Parent} from "../../types";
 import useFetchFocused from "../../hooks/useFetchFocused";
 import useFetchVolumes from "../../hooks/useFetchVolumes";
