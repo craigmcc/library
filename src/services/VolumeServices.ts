@@ -134,7 +134,7 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
             return options;
         }
         const where: any = options.where ? options.where : {};
-        if ("" === query.active) {
+        if (("" === query.active) || ("true" === query.active)) {
             where.active = true;
         }
         if (query.googleId) {

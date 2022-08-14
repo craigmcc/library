@@ -150,7 +150,7 @@ class UserServices extends BaseParentServices<User> {
             return options;
         }
         const where: any = options.where ? options.where : {};
-        if ("" === query.active) {
+        if (("" === query.active) || ("true" === query.active)) {
             where.active = true;
         }
         if (query.username) {
