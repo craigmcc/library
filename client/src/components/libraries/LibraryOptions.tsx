@@ -41,7 +41,7 @@ const LibraryOptions = (props: Props) => {
     const [active, setActive] = useState<boolean>(false);
     const [availables, setAvailables] = useState<Library[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [pageSize] = useState<number>(100);
+    const pageSize = 100;
     const [searchText, setSearchText] = useState<string>("");
 
     const fetchLibraries = useFetchLibraries({

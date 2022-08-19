@@ -53,7 +53,7 @@ const StoryOptions = (props: Props) => {
 
     const [active, setActive] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [pageSize] = useState<number>(100);
+    const pageSize = 100;
     const [refresh, setRefresh] = useState<boolean>(false);
     const [searchText, setSearchText] = useState<string>("");
 
