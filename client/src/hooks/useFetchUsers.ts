@@ -40,7 +40,7 @@ const useFetchUsers = (props: Props): State => {
 
     const loginContext = useContext(LoginContext);
 
-    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
+    const alertPopup = (props.alertPopup !== undefined) ? props.alertPopup : true;
     const [error, setError] = useState<Error | null>(null);
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState<boolean>(false);

@@ -56,7 +56,7 @@ const useFetchAuthors = (props: Props): State => {
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
-    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
+    const alertPopup = (props.alertPopup !== undefined) ? props.alertPopup : true;
     const [authors, setAuthors] = useState<Author[]>([]);
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);

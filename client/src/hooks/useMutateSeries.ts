@@ -43,7 +43,7 @@ const useMutateSeries = (props: Props = {}): State => {
 
     const libraryContext = useContext(LibraryContext);
 
-    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
+    const alertPopup = (props.alertPopup !== undefined) ? props.alertPopup : true;
     const [error, setError] = useState<Error | null>(null);
     const [executing, setExecuting] = useState<boolean>(false);
 

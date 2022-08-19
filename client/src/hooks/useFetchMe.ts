@@ -37,7 +37,7 @@ const useFetchMe = (props: Props = {}): State => {
 
     const loginContext = useContext(LoginContext);
 
-    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
+    const alertPopup = (props.alertPopup !== undefined) ? props.alertPopup : true;
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [me, setMe] = useState<User>(new User());

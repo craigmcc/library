@@ -34,7 +34,7 @@ export interface State {
 
 const useMutateUser = (props: Props = {}): State => {
 
-    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
+    const alertPopup = (props.alertPopup !== undefined) ? props.alertPopup : true;
     const [error, setError] = useState<Error | null>(null);
     const [executing, setExecuting] = useState<boolean>(false);
 

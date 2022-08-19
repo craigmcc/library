@@ -36,7 +36,7 @@ export interface State {
 
 const useFetchGoogleBooks = (props: Props): State => {
 
-    const [alertPopup] = useState<boolean>((props.alertPopup !== undefined) ? props.alertPopup : true);
+    const alertPopup = (props.alertPopup !== undefined) ? props.alertPopup : true;
     const [books, setBooks] = useState<object>({});
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
