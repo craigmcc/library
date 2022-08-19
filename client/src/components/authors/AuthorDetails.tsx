@@ -40,7 +40,7 @@ export interface Props {
 
 const AuthorDetails = (props: Props) => {
 
-    const [adding] = useState<boolean>(props.author.id < 0);
+    const adding = (props.author.id < 0);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
     const onConfirm = (): void => {

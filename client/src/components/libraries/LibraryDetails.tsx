@@ -41,8 +41,9 @@ export interface Props {
 
 const LibraryDetails = (props: Props) => {
 
-    const [adding] = useState<boolean>(props.library.id < 0);
+    const adding = (props.library.id < 0);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
+
 
     const onConfirm = (): void => {
         setShowConfirm(true);

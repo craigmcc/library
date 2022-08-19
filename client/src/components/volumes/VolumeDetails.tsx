@@ -40,7 +40,7 @@ export interface Props {
 
 const VolumeDetails = (props: Props) => {
 
-    const [adding] = useState<boolean>(props.volume.id < 0);
+    const adding = (props.volume.id < 0);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
     const onConfirm = (): void => {

@@ -39,7 +39,7 @@ export interface Props {
 
 const UserDetails = (props: Props) => {
 
-    const [adding] = useState<boolean>(props.user.id < 0);
+    const adding = (props.user.id < 0);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
     const onConfirm = (): void => {

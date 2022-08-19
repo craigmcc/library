@@ -39,7 +39,7 @@ export interface Props {
 
 const SeriesDetails = (props: Props) => {
 
-    const [adding] = useState<boolean>(props.series.id < 0);
+    const adding = (props.series.id < 0);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
     const onConfirm = (): void => {
