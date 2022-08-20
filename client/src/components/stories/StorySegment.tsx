@@ -234,7 +234,7 @@ const StorySegment = (props: Props) => {
                     autoFocus
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
-                    handleBack={handleReturn}
+                    handleReturn={handleReturn}
                     handleUpdate={canUpdate ? handleUpdate : undefined}
                     parent={props.parent ? props.parent : libraryContext.library}
                     showOrdinal={(props.showOrdinal !== undefined) ? props.showOrdinal : undefined}

@@ -11,6 +11,7 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
+import {CaretLeftSquare} from "react-bootstrap-icons";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -28,9 +29,9 @@ import {/*toEmptyStrings, */toNullValues} from "../../util/Transformations";
 
 export interface Props {
     autoFocus?: boolean;                // First element receive autoFocus? [false]
-    handleBack: HandleAction;           // Handle return to previous view
     handleInsert?: HandleUser;          // Handle User insert request [not allowed]
     handleRemove?: HandleUser;          // Handle User remove request [not allowed]
+    handleReturn: HandleAction;           // Handle return to previous view
     handleUpdate?: HandleUser;          // Handle User update request [not allowed]
     user: User;                         // Initial values (id < 0 for adding)
 }
@@ -113,6 +114,12 @@ const UserDetails = (props: Props) => {
             <Container id="UserDetails">
 
                 <Row className="mb-3">
+                    <Col className="text-start">
+                        <CaretLeftSquare
+                            onClick={props.handleReturn}
+                            size={32}
+                        />
+                    </Col>
                     <Col className="text-center">
                         <strong>
                         {(adding)? (
@@ -124,12 +131,6 @@ const UserDetails = (props: Props) => {
                         </strong>
                     </Col>
                     <Col className="text-end">
-                        <Button
-                            onClick={() => props.handleBack()}
-                            size="sm"
-                            type="button"
-                            variant="secondary"
-                        >Back</Button>
                     </Col>
                 </Row>
 

@@ -11,6 +11,7 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
+import {CaretLeftSquare} from "react-bootstrap-icons";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -28,9 +29,9 @@ import {VALID_VOLUME_LOCATIONS, VALID_VOLUME_TYPES} from "../../util/Application
 
 export interface Props {
     autoFocus?: boolean;                // Should the first element receive autofocus? [false]
-    handleBack: HandleAction;           // Handle return to previous view
     handleInsert?: HandleVolume;        // Handle (Volume) insert request [not allowed]
     handleRemove?: HandleVolume;        // Handle (Volume) remove request [not allowed]
+    handleReturn: HandleAction;           // Handle return to previous view
     handleUpdate?: HandleVolume;        // Handle (Volume) update request [not allowed]
     parent: Parent;                     // Owning parent object
     volume: Volume;                     // Initial values (id<0 for adding)
@@ -124,6 +125,12 @@ const VolumeDetails = (props: Props) => {
             <Container id="VolumeDetails">
 
                 <Row className="mb-3">
+                    <Col className="text-start">
+                        <CaretLeftSquare
+                            onClick={props.handleReturn}
+                            size={32}
+                        />
+                    </Col>
                     <Col className="text-center">
                         <strong>
                         {(adding) ? (
@@ -138,12 +145,6 @@ const VolumeDetails = (props: Props) => {
                         </strong>
                     </Col>
                     <Col className="text-end">
-                        <Button
-                            onClick={() => props.handleBack()}
-                            size="sm"
-                            type="button"
-                            variant="secondary"
-                        >Back</Button>
                     </Col>
                 </Row>
 

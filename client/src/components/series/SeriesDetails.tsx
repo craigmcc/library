@@ -11,6 +11,7 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
+import {CaretLeftSquare} from "react-bootstrap-icons";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -27,9 +28,9 @@ import * as ToModel from "../../util/ToModel";
 
 export interface Props {
     autoFocus?: boolean;                // Should the first element receive autoFocus? [false]
-    handleBack: HandleAction;           // Handle return to previous view
     handleInsert?: HandleSeries;        // Handle (Series) insert request [not allowed]
     handleRemove?: HandleSeries;        // Handle (Series) remove request [not allowed]
+    handleReturn: HandleAction;           // Handle return to previous view
     handleUpdate?: HandleSeries;        // Handle (Series) update request [not allowed]
     parent: Parent;                     // Owning parent object
     series: Series;                     // Initial values (id<0 for adding)
@@ -98,6 +99,12 @@ const SeriesDetails = (props: Props) => {
             <Container id="SeriesDetails">
 
                 <Row className="mb-3">
+                    <Col className="text-start">
+                        <CaretLeftSquare
+                            onClick={props.handleReturn}
+                            size={32}
+                        />
+                    </Col>
                     <Col className="text-center">
                         <strong>
                         {(adding) ? (
@@ -112,12 +119,6 @@ const SeriesDetails = (props: Props) => {
                         </strong>
                     </Col>
                     <Col className="text-end">
-                        <Button
-                            onClick={() => props.handleBack()}
-                            size="sm"
-                            type="button"
-                            variant="secondary"
-                        >Back</Button>
                     </Col>
                 </Row>
 

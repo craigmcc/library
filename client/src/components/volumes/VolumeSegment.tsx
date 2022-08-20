@@ -221,7 +221,7 @@ const VolumeSegment = (props: Props) => {
             {(view === View.DETAILS) ? (
                 <VolumeDetails
                     autoFocus
-                    handleBack={handleReturn}
+                    handleReturn={handleReturn}
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
                     handleUpdate={canUpdate ? handleUpdate : undefined}
