@@ -45,7 +45,7 @@ const elements = (showPrincipal: boolean = false): {
         expect(principal).toBeInTheDocument();
     }
 
-    const back = screen.getByRole("button", { name: "Back" });
+    const back = screen.getByTestId("back");
     expect(back).toBeInTheDocument();
     const save = screen.getByRole("button", { name: "Save" });
     expect(save).toBeInTheDocument();

@@ -127,6 +127,7 @@ const VolumeDetails = (props: Props) => {
                 <Row className="mb-3">
                     <Col className="text-start">
                         <CaretLeftSquare
+                            data-testid="back"
                             onClick={props.handleReturn}
                             size={32}
                         />

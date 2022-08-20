@@ -37,7 +37,7 @@ const elements = (): {
     expect(notes).toBeInTheDocument();
     const scope = screen.getByLabelText("Scope:");
 
-    const back = screen.getByRole("button", { name: "Back" });
+    const back = screen.getByTestId("back");
     expect(back).toBeInTheDocument();
     const save = screen.getByRole("button", { name: "Save" });
     expect(save).toBeInTheDocument();
