@@ -93,12 +93,6 @@ const StoryOptions = (props: Props) => {
         setActive(theActive);
     }
 
-    const handleBack: HandleAction = () => {
-        if (props.handleReturn) {
-            props.handleReturn();
-        }
-    }
-
     const handleChange: HandleValue = (theSearchText) => {
         setSearchText(theSearchText);
     }
