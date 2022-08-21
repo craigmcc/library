@@ -14,7 +14,7 @@ import AuthorList from "./AuthorList";
 import SeriesView from "../series/SeriesView";
 import MutatingProgress from "../shared/MutatingProgress";
 import StoryView from "../stories/StoryView";
-import VolumeSegment from "../volumes/VolumeSegment";
+import VolumeView from "../volumes/VolumeView";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleAuthor, Parent, Scope} from "../../types";
@@ -260,7 +260,7 @@ const AuthorView = (props: Props) => {
             ) : null }
 
             {(view === View.VOLUMES) ? (
-                <VolumeSegment
+                <VolumeView
                     handleReturn={handleReturn}
                     parent={author}
                 />

@@ -1,4 +1,4 @@
-// VolumeOptions -------------------------------------------------------------
+// VolumeList ----------------------------------------------------------------
 
 // List Volumes that match search criteria, offering callbacks for adding,
 // editing, and removing Volume.  Optionally, include relevant actions.
@@ -44,7 +44,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-const VolumeOptions = (props: Props) => {
+const VolumeList = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -374,4 +374,4 @@ const VolumeOptions = (props: Props) => {
 
 }
 
-export default VolumeOptions;
+export default VolumeList;

@@ -1,4 +1,4 @@
-// VolumeDetails -------------------------------------------------------------
+// VolumeForm ----------------------------------------------------------------
 
 // Details editing form for Volume objects.
 
@@ -39,7 +39,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-const VolumeDetails = (props: Props) => {
+const VolumeForm = (props: Props) => {
 
     const adding = (props.volume.id < 0);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -310,4 +310,4 @@ const VolumeDetails = (props: Props) => {
 
 }
 
-export default VolumeDetails;
+export default VolumeForm;

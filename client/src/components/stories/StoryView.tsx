@@ -14,7 +14,7 @@ import StoryList from "./StoryList";
 import AuthorView from "../authors/AuthorView";
 import SeriesView from "../series/SeriesView";
 import MutatingProgress from "../shared/MutatingProgress";
-import VolumeSegment from "../volumes/VolumeSegment";
+import VolumeView from "../volumes/VolumeView";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleStory, Parent, Scope} from "../../types";
@@ -261,7 +261,7 @@ const StoryView = (props: Props) => {
             ) : null }
 
             {(view === View.VOLUMES) ? (
-                <VolumeSegment
+                <VolumeView
                     handleReturn={handleReturn}
                     parent={story}
                 />

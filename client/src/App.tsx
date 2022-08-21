@@ -22,7 +22,7 @@ import LibraryView from "./components/libraries/LibraryView";
 import SeriesView from "./components/series/SeriesView";
 import StoryView from "./components/stories/StoryView";
 import UserView from "./components/users/UserView";
-import VolumeSegment from "./components/volumes/VolumeSegment";
+import VolumeView from "./components/volumes/VolumeView";
 
 // Component Details ---------------------------------------------------------
 
@@ -49,7 +49,7 @@ function App() {
                             <Route path="series" element={<SeriesView/>}/>
                             <Route path="stories" element={<StoryView/>}/>
                             <Route path="users" element={<UserView/>}/>
-                            <Route path="volumes" element={<VolumeSegment/>}/>
+                            <Route path="volumes" element={<VolumeView/>}/>
                             <Route path="" element={<HomeView/>}/>
                         </Route>
                     </Routes>

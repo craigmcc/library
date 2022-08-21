@@ -1,7 +1,7 @@
-// VolumeSegment -------------------------------------------------------------
+// VolumeView -------------------------------------------------------------
 
-// Consolidated segment for listing and editing Volume objects, as well as
-// navigating to segments for related child objects.
+// Consolidated view for listing and editing Volume objects, as well as
+// navigating to view for related child objects.
 
 // External Modules ----------------------------------------------------------
 
@@ -9,8 +9,8 @@ import React, {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import VolumeDetails from "./VolumeDetails";
-import VolumeOptions from "./VolumeOptions";
+import VolumeForm from "./VolumeForm";
+import VolumeList from "./VolumeList";
 import AuthorView from "../authors/AuthorView";
 import MutatingProgress from "../shared/MutatingProgress";
 import StoryView from "../stories/StoryView";
@@ -39,7 +39,7 @@ enum View {
     STORIES = "Stories",
 }
 
-const VolumeSegment = (props: Props) => {
+const VolumeView = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -208,7 +208,7 @@ const VolumeSegment = (props: Props) => {
             />
 
             {(view === View.DETAILS) ? (
-                <VolumeDetails
+                <VolumeForm
                     autoFocus
                     handleReturn={handleReturn}
                     handleInsert={canInsert ? handleInsert : undefined}
@@ -220,7 +220,7 @@ const VolumeSegment = (props: Props) => {
             ) : null }
 
             {(view === View.OPTIONS) ? (
-                <VolumeOptions
+                <VolumeList
                     handleAdd={handleAdd}
                     handleReturn={props.handleReturn ? props.handleReturn : undefined}
                     handleEdit={handleEdit}
@@ -251,4 +251,4 @@ const VolumeSegment = (props: Props) => {
 
 }
 
-export default VolumeSegment;
+export default VolumeView;
