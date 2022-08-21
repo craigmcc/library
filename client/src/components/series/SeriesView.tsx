@@ -1,7 +1,7 @@
-// SeriesSegment -------------------------------------------------------------
+// SeriesView ----------------------------------------------------------------
 
-// Consolidated segment for listing and editing Series objects, as well as
-// navigating to segments for related child objects.
+// Consolidated view for listing and editing Series objects, as well as
+// navigating to views for related child objects.
 
 // External Modules ----------------------------------------------------------
 
@@ -9,8 +9,8 @@ import React, {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import SeriesDetails from "./SeriesDetails";
-import SeriesOptions from "./SeriesOptions";
+import SeriesForm from "./SeriesForm";
+import SeriesList from "./SeriesList";
 import AuthorView from "../authors/AuthorView";
 import MutatingProgress from "../shared/MutatingProgress";
 import StorySegment from "../stories/StorySegment";
@@ -39,7 +39,7 @@ enum View {
     STORIES = "Stories",
 }
 
-const SeriesSegment = (props: Props) => {
+const SeriesView = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -203,7 +203,7 @@ const SeriesSegment = (props: Props) => {
             />
 
             {(view === View.DETAILS) ? (
-                <SeriesDetails
+                <SeriesForm
                     autoFocus
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
@@ -215,7 +215,7 @@ const SeriesSegment = (props: Props) => {
             ) : null }
 
             {(view === View.OPTIONS) ? (
-                <SeriesOptions
+                <SeriesList
                     handleAdd={handleAdd}
                     handleEdit={handleEdit}
                     handleExclude={props.parent && !(props.parent instanceof Library) && canUpdate ? handleExclude : undefined}
@@ -247,4 +247,4 @@ const SeriesSegment = (props: Props) => {
 
 }
 
-export default SeriesSegment;
+export default SeriesView;

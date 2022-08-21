@@ -19,7 +19,7 @@ import HomeView from "./components/general/HomeView";
 import Navigation from "./components/general/Navigation";
 import GoogleBooksSegment from "./components/google-books/GoogleBooksSegment";
 import LibraryView from "./components/libraries/LibraryView";
-import SeriesSegment from "./components/series/SeriesSegment";
+import SeriesView from "./components/series/SeriesView";
 import StorySegment from "./components/stories/StorySegment";
 import UserSegment from "./components/users/UserSegment";
 import VolumeSegment from "./components/volumes/VolumeSegment";
@@ -46,7 +46,7 @@ function App() {
                             <Route path="authors" element={<AuthorView/>}/>
                             <Route path="browse-google" element={<GoogleBooksSegment/>}/>
                             <Route path="libraries" element={<LibraryView/>}/>
-                            <Route path="series" element={<SeriesSegment/>}/>
+                            <Route path="series" element={<SeriesView/>}/>
                             <Route path="stories" element={<StorySegment/>}/>
                             <Route path="users" element={<UserSegment/>}/>
                             <Route path="volumes" element={<VolumeSegment/>}/>

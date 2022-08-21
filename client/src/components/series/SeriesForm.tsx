@@ -1,4 +1,4 @@
-// SeriesDetails -------------------------------------------------------------
+// SeriesForm ----------------------------------------------------------------
 
 // Details editing form for Series objects.
 
@@ -38,7 +38,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-const SeriesDetails = (props: Props) => {
+const SeriesForm = (props: Props) => {
 
     const adding = (props.series.id < 0);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -242,4 +242,4 @@ const SeriesDetails = (props: Props) => {
 
 }
 
-export default SeriesDetails;
+export default SeriesForm;

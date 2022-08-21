@@ -1,4 +1,4 @@
-// SeriesOptions -------------------------------------------------------------
+// SeriesList ----------------------------------------------------------------
 
 // List Series that match search criteria, offering callbacks for adding,
 // editing, and removing Series.  Optionally, include relevant actions.
@@ -44,7 +44,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-const SeriesOptions = (props: Props) => {
+const SeriesList = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -374,4 +374,4 @@ const SeriesOptions = (props: Props) => {
 
 }
 
-export default SeriesOptions;
+export default SeriesList;

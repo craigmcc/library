@@ -12,7 +12,7 @@ import React, {useContext, useEffect, useState} from "react";
 import StoryDetails from "./StoryDetails";
 import StoryOptions from "./StoryOptions";
 import AuthorView from "../authors/AuthorView";
-import SeriesSegment from "../series/SeriesSegment";
+import SeriesView from "../series/SeriesView";
 import MutatingProgress from "../shared/MutatingProgress";
 import VolumeSegment from "../volumes/VolumeSegment";
 import LibraryContext from "../libraries/LibraryContext";
@@ -254,7 +254,7 @@ const StorySegment = (props: Props) => {
             ) : null }
 
             {(view === View.SERIES) ? (
-                <SeriesSegment
+                <SeriesView
                     handleReturn={handleReturn}
                     parent={story}
                 />
