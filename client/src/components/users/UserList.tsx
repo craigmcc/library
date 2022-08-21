@@ -1,4 +1,4 @@
-// UserOptions -----------------------------------------------------------------
+// UserList --------------------------------------------------------------------
 
 // List Users that match search criteria, offering callbacks for adding,
 // editing, and removing Users.
@@ -32,7 +32,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-const UserOptions = (props: Props) => {
+const UserList = (props: Props) => {
 
     const loginContext = useContext(LoginContext);
 
@@ -204,4 +204,4 @@ const UserOptions = (props: Props) => {
 
 }
 
-export default UserOptions;
+export default UserList;

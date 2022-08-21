@@ -1,4 +1,4 @@
-// UserDetails ---------------------------------------------------------------
+// UserForm ------------------------------------------------------------------
 
 // Detail editing form for User objects.
 
@@ -38,7 +38,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-const UserDetails = (props: Props) => {
+const UserForm = (props: Props) => {
 
     const adding = (props.user.id < 0);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -267,4 +267,4 @@ const UserDetails = (props: Props) => {
     )
 }
 
-export default UserDetails;
+export default UserForm;

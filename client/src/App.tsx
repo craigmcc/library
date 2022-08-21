@@ -21,7 +21,7 @@ import GoogleBooksSegment from "./components/google-books/GoogleBooksSegment";
 import LibraryView from "./components/libraries/LibraryView";
 import SeriesView from "./components/series/SeriesView";
 import StoryView from "./components/stories/StoryView";
-import UserSegment from "./components/users/UserSegment";
+import UserView from "./components/users/UserView";
 import VolumeSegment from "./components/volumes/VolumeSegment";
 
 // Component Details ---------------------------------------------------------
@@ -48,7 +48,7 @@ function App() {
                             <Route path="libraries" element={<LibraryView/>}/>
                             <Route path="series" element={<SeriesView/>}/>
                             <Route path="stories" element={<StoryView/>}/>
-                            <Route path="users" element={<UserSegment/>}/>
+                            <Route path="users" element={<UserView/>}/>
                             <Route path="volumes" element={<VolumeSegment/>}/>
                             <Route path="" element={<HomeView/>}/>
                         </Route>

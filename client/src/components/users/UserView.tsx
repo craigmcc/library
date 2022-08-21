@@ -8,8 +8,8 @@ import React, {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import UserDetails from "./UserDetails";
-import UserOptions from "./UserOptions";
+import UserForm from "./UserForm";
+import UserList from "./UserList";
 import LoginContext from "../login/LoginContext";
 import MutatingProgress from "../shared/MutatingProgress";
 import {HandleAction, HandleUser, Scope} from "../../types";
@@ -25,7 +25,7 @@ enum View {
     OPTIONS = "Options",
 }
 
-const UserSegment = () => {
+const UserView = () => {
 
     const loginContext = useContext(LoginContext);
 
@@ -135,7 +135,7 @@ const UserSegment = () => {
             />
 
             {(view === View.DETAILS) ? (
-                <UserDetails
+                <UserForm
                     autoFocus
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
@@ -146,7 +146,7 @@ const UserSegment = () => {
             ) : null }
 
             {(view === View.OPTIONS) ? (
-                <UserOptions
+                <UserList
                     handleAdd={handleAdd}
                     handleEdit={handleEdit}
                 />
@@ -157,4 +157,4 @@ const UserSegment = () => {
 
 }
 
-export default UserSegment;
+export default UserView;
