@@ -1,4 +1,4 @@
-// StoryDetails --------------------------------------------------------------
+// StoryForm -----------------------------------------------------------------
 
 // Details editing form for Story objects.
 
@@ -39,7 +39,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-const StoryDetails = (props: Props) => {
+const StoryForm = (props: Props) => {
 
     const adding = (props.story.id < 0);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -255,4 +255,4 @@ const StoryDetails = (props: Props) => {
 
 }
 
-export default StoryDetails;
+export default StoryForm;

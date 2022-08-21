@@ -1,4 +1,4 @@
-// StoryOptions -------------------------------------------------------------
+// StoryList -----------------------------------------------------------------
 
 // List Stories that match search criteria, offering callbacks for adding,
 // editing, and removing Story.  Optionally, include relevant actions.
@@ -47,7 +47,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-const StoryOptions = (props: Props) => {
+const StoryList = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -402,4 +402,4 @@ const StoryOptions = (props: Props) => {
 
 }
 
-export default StoryOptions;
+export default StoryList;

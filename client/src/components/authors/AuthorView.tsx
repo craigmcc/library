@@ -13,7 +13,7 @@ import AuthorForm from "./AuthorForm";
 import AuthorList from "./AuthorList";
 import SeriesView from "../series/SeriesView";
 import MutatingProgress from "../shared/MutatingProgress";
-import StorySegment from "../stories/StorySegment";
+import StoryView from "../stories/StoryView";
 import VolumeSegment from "../volumes/VolumeSegment";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
@@ -253,7 +253,7 @@ const AuthorView = (props: Props) => {
             ) : null }
 
             {(view === View.STORIES) ? (
-                <StorySegment
+                <StoryView
                     handleReturn={handleReturn}
                     parent={author}
                 />

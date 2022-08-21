@@ -1,7 +1,7 @@
-// StorySegment -------------------------------------------------------------
+// StoryView -----------------------------------------------------------------
 
-// Consolidated segment for listing and editing Story objects, as well as
-// navigating to segments for related child objects.
+// Consolidated view for listing and editing Story objects, as well as
+// navigating to views for related child objects.
 
 // External Modules ----------------------------------------------------------
 
@@ -9,8 +9,8 @@ import React, {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import StoryDetails from "./StoryDetails";
-import StoryOptions from "./StoryOptions";
+import StoryForm from "./StoryForm";
+import StoryList from "./StoryList";
 import AuthorView from "../authors/AuthorView";
 import SeriesView from "../series/SeriesView";
 import MutatingProgress from "../shared/MutatingProgress";
@@ -42,7 +42,7 @@ enum View {
     VOLUMES = "Volumes",
 }
 
-const StorySegment = (props: Props) => {
+const StoryView = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -219,7 +219,7 @@ const StorySegment = (props: Props) => {
             />
 
             {(view === View.DETAILS) ? (
-                <StoryDetails
+                <StoryForm
                     autoFocus
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
@@ -232,7 +232,7 @@ const StorySegment = (props: Props) => {
             ) : null }
 
             {(view === View.OPTIONS) ? (
-                <StoryOptions
+                <StoryList
                     handleAdd={handleAdd}
                     handleEdit={handleEdit}
                     handleExclude={props.parent && !(props.parent instanceof Library) && canUpdate ? handleExclude : undefined}
@@ -272,4 +272,4 @@ const StorySegment = (props: Props) => {
 
 }
 
-export default StorySegment;
+export default StoryView;

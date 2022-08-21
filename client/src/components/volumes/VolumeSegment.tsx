@@ -13,7 +13,7 @@ import VolumeDetails from "./VolumeDetails";
 import VolumeOptions from "./VolumeOptions";
 import AuthorView from "../authors/AuthorView";
 import MutatingProgress from "../shared/MutatingProgress";
-import StorySegment from "../stories/StorySegment";
+import StoryView from "../stories/StoryView";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleVolume, Parent, Scope} from "../../types";
@@ -240,7 +240,7 @@ const VolumeSegment = (props: Props) => {
             ) : null }
 
             {(view === View.STORIES) ? (
-                <StorySegment
+                <StoryView
                     handleReturn={handleReturn}
                     parent={volume}
                 />

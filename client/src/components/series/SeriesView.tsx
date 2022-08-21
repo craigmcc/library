@@ -13,7 +13,7 @@ import SeriesForm from "./SeriesForm";
 import SeriesList from "./SeriesList";
 import AuthorView from "../authors/AuthorView";
 import MutatingProgress from "../shared/MutatingProgress";
-import StorySegment from "../stories/StorySegment";
+import StoryView from "../stories/StoryView";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import {HandleAction, HandleSeries, Parent, Scope} from "../../types";
@@ -235,7 +235,7 @@ const SeriesView = (props: Props) => {
             ) : null }
 
             {(view === View.STORIES) ? (
-                <StorySegment
+                <StoryView
                     handleReturn={handleReturn}
                     parent={series}
                     showOrdinal={true}
