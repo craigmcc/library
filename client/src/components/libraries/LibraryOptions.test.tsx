@@ -47,7 +47,8 @@ const elements = function (): Elements {
     const searchBar = screen.getByLabelText("Search For Libraries:");
     expect(searchBar).toBeInTheDocument();
 
-    const adds = screen.getAllByRole("button", { name:"Add" });
+    const add0 = screen.getByTestId("add0");
+    const add1 = screen.getByTestId("add1");
     const pageNext = screen.getByRole("button", { name: ">" });
     expect(pageNext).toBeInTheDocument();
     const pageNumber = screen.getByRole("button", { name: "1" });
@@ -61,8 +62,8 @@ const elements = function (): Elements {
         rows: rows,
         searchBar: searchBar,
 
-        add0: adds[0],
-        add1: adds[1],
+        add0: add0,
+        add1: add1,
         pageNext: pageNext,
         pageNumber: pageNumber,
         pagePrevious: pagePrevious,
@@ -123,13 +124,13 @@ describe("When logged out", () => {
         })
 
         const {activeOnly, rows,// searchBar,
-            add0, add1, pageNext, pageNumber, pagePrevious}
+            pageNext, pageNumber, pagePrevious}
             = elements();
 
         await waitFor(() => {
             expect(activeOnly).not.toBeChecked();
-            expect(add0).toBeDisabled();
-            expect(add1).toBeDisabled();
+//            expect(add0).toBeDisabled();
+//            expect(add1).toBeDisabled();
             expect(pageNext).toBeDisabled();
             expect(pageNumber).toBeDisabled();
             expect(pagePrevious).toBeDisabled();

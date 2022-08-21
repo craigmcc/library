@@ -26,7 +26,7 @@ import logger from "../../util/ClientLogger";
 // Incoming Properties ------------------------------------------------------
 
 export interface Props {
-    handleBack?: HandleAction;          // Handle request to exit this segment [no handler]
+    handleReturn?: HandleAction;        // Handle request to exit this segment [no handler]
     parent?: Parent;                    // Current object from parent segment [owning Library]
 }
 
@@ -94,17 +94,6 @@ const VolumeSegment = (props: Props) => {
         });
         setVolume(theVolume);
         setView(View.DETAILS);
-    }
-
-    // Go back to the ancestor parent, if any
-    const handleBack: HandleAction = () => {
-        logger.debug({
-            context: "VolumeSegment.handleBack"
-        });
-        setView(View.OPTIONS);
-        if (props.handleBack) {
-            props.handleBack();
-        }
     }
 
     // Handle selection of a Volume to edit details
@@ -233,7 +222,7 @@ const VolumeSegment = (props: Props) => {
             {(view === View.OPTIONS) ? (
                 <VolumeOptions
                     handleAdd={handleAdd}
-                    handleBack={props.handleBack ? handleBack : undefined}
+                    handleReturn={props.handleReturn ? props.handleReturn : undefined}
                     handleEdit={handleEdit}
                     handleExclude={props.parent && !(props.parent instanceof Library) && canUpdate ? handleExclude : undefined}
                     handleInclude={props.parent && !(props.parent instanceof Library) && canUpdate ? handleInclude : undefined}
@@ -245,14 +234,14 @@ const VolumeSegment = (props: Props) => {
 
             {(view === View.AUTHORS) ? (
                 <AuthorSegment
-                    handleBack={handleReturn}
+                    handleReturn={handleReturn}
                     parent={volume}
                 />
             ) : null }
 
             {(view === View.STORIES) ? (
                 <StorySegment
-                    handleBack={handleReturn}
+                    handleReturn={handleReturn}
                     parent={volume}
                 />
             ) : null }

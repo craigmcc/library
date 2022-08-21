@@ -11,6 +11,7 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
+import {CaretLeftSquare, PlusCircleFill} from "react-bootstrap-icons";
 import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
@@ -33,10 +34,10 @@ import Volume from "../../models/Volume";
 
 export interface Props {
     handleAdd?: HandleAction;           // Handle request to add an Author [not allowed]
-    handleBack?: HandleAction;          // Handle request to leave segment [no handler]
     handleEdit?: HandleAuthor;          // Handle request to edit an Author [not allowed]
     handleExclude?: HandleAuthor;       // Handle request to exclude an Author [not allowed]
     handleInclude?: HandleAuthor;       // Handle request to include an Author [not allowed]
+    handleReturn?: HandleAction;        // Handle request to leave segment [no handler]
     handleShowSeries?: HandleAuthor;    // Handle request to show related Series [not allowed]
     handleShowStories?: HandleAuthor;   // Handle request to show related Stories [not allowed]
     handleShowVolumes?: HandleAuthor;   // Handle request to show related Volumes [not allowed]
@@ -90,12 +91,6 @@ const AuthorOptions = (props: Props) => {
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
-    }
-
-    const handleBack: HandleAction = () => {
-        if (props.handleBack) {
-            props.handleBack();
-        }
     }
 
     const handleChange: HandleValue = (theSearchText) => {
@@ -204,23 +199,21 @@ const AuthorOptions = (props: Props) => {
             />
 
             <Row className="mb-3">
-                <Col/>
+                {props.handleReturn ? (
+                    <Col className="text-start">
+                        <CaretLeftSquare
+                            onClick={props.handleReturn}
+                            size={32}
+                        />
+                    </Col>
+                ) : <Col/> }
                 <Col className="text-center">
                     <strong>
                     <span>Manage Authors for {props.parent._model}:&nbsp;</span>
                     <span className="text-info">{props.parent._title}</span>
                     </strong>
                 </Col>
-                {props.handleBack ? (
-                    <Col className="text-end">
-                        <Button
-                            onClick={() => handleBack()}
-                            size="sm"
-                            type="button"
-                            variant="success"
-                        >Back</Button>
-                    </Col>
-                ) : <Col/> }
+                <Col/>
             </Row>
 
             <Row className="mb-3">
@@ -252,12 +245,12 @@ const AuthorOptions = (props: Props) => {
                     />
                 </Col>
                 <Col className="text-end">
-                    <Button
-                        disabled={!loginContext.data.loggedIn || !props.handleAdd}
-                        onClick={props.handleAdd}
-                        size="sm"
-                        variant="primary"
-                    >Add</Button>
+                    <PlusCircleFill
+                        color="primary"
+                        data-testid="add0"
+                        onClick={(loginContext.data.loggedIn && props.handleAdd) ? props.handleAdd : undefined}
+                        size={32}
+                    />
                 </Col>
             </Row>
 
@@ -391,12 +384,12 @@ const AuthorOptions = (props: Props) => {
 
             <Row className="mb-3">
                 <Col className="text-end">
-                    <Button
-                        disabled={!loginContext.data.loggedIn || !props.handleAdd}
-                        onClick={props.handleAdd}
-                        size="sm"
-                        variant="primary"
-                    >Add</Button>
+                    <PlusCircleFill
+                        color="primary"
+                        data-testid="add1"
+                        onClick={(loginContext.data.loggedIn && props.handleAdd) ? props.handleAdd : undefined}
+                        size={32}
+                    />
                 </Col>
             </Row>
 

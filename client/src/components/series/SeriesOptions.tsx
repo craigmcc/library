@@ -11,6 +11,7 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
+import {CaretLeftSquare, PlusCircleFill} from "react-bootstrap-icons";
 import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
@@ -32,10 +33,10 @@ import {authorsNames, listValue} from "../../util/Transformations";
 
 export interface Props {
     handleAdd?: HandleAction;           // Handle request to add a Series [not allowed]
-    handleBack?: HandleAction;          // Handle request to leave segment [no handler]
     handleEdit?: HandleSeries;          // Handle request to edit a Series [not allowed]
     handleExclude?: HandleSeries;       // Handle request to exclude a Series [not allowed]
     handleInclude?: HandleSeries;       // Handle request to include a Series [not allowed]
+    handleReturn?: HandleAction;        // Handle request to leave segment [no handler]
     handleShowAuthors?: HandleSeries;   // Handle request to show related Authors [not allowed]
     handleShowStories?: HandleSeries;   // Handle request to show related Stories [not allowed]
     parent: Parent;                     // Parent object for Serieses
@@ -86,12 +87,6 @@ const SeriesOptions = (props: Props) => {
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
-    }
-
-    const handleBack: HandleAction = () => {
-        if (props.handleBack) {
-            props.handleBack();
-        }
     }
 
     const handleChange: HandleValue = (theSearchText) => {
@@ -192,23 +187,21 @@ const SeriesOptions = (props: Props) => {
             />
 
             <Row className="mb-3">
-                <Col/>
+                {props.handleReturn ? (
+                    <Col className="text-start">
+                        <CaretLeftSquare
+                            onClick={props.handleReturn}
+                            size={32}
+                        />
+                    </Col>
+                ) : <Col/> }
                 <Col className="text-center">
                     <strong>
                     <span>Manage Series for {props.parent._model}:&nbsp;</span>
                     <span className="text-info">{props.parent._title}</span>
                     </strong>
                 </Col>
-                {props.handleBack ? (
-                    <Col className="text-end">
-                        <Button
-                            onClick={() => handleBack()}
-                            size="sm"
-                            type="button"
-                            variant="success"
-                        >Back</Button>
-                    </Col>
-                ) : <Col/> }
+                <Col/>
             </Row>
 
             <Row className="mb-3">
@@ -240,12 +233,12 @@ const SeriesOptions = (props: Props) => {
                     />
                 </Col>
                 <Col className="text-end">
-                    <Button
-                        disabled={!props.handleAdd}
-                        onClick={props.handleAdd}
-                        size="sm"
-                        variant="primary"
-                    >Add</Button>
+                    <PlusCircleFill
+                        color="primary"
+                        data-testid="add0"
+                        onClick={(loginContext.data.loggedIn && props.handleAdd) ? props.handleAdd : undefined}
+                        size={32}
+                    />
                 </Col>
             </Row>
 
@@ -367,12 +360,12 @@ const SeriesOptions = (props: Props) => {
 
             <Row className="mb-3">
                 <Col className="text-end">
-                    <Button
-                        disabled={!props.handleAdd}
-                        onClick={props.handleAdd}
-                        size="sm"
-                        variant="primary"
-                    >Add</Button>
+                    <PlusCircleFill
+                        color="primary"
+                        data-testid="add1"
+                        onClick={(loginContext.data.loggedIn && props.handleAdd) ? props.handleAdd : undefined}
+                        size={32}
+                    />
                 </Col>
             </Row>
 

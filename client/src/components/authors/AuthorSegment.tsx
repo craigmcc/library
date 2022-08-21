@@ -27,7 +27,7 @@ import logger from "../../util/ClientLogger";
 // Incoming Properties ------------------------------------------------------
 
 export interface Props {
-    handleBack?: HandleAction;          // Handle request to exit this segment [no handler]
+    handleReturn?: HandleAction;        // Handle request to exit this segment [no handler]
     parent?: Parent;                    // Current object from parent segment [owning Library]
 }
 
@@ -91,17 +91,6 @@ const AuthorSegment = (props: Props) => {
         });
         setAuthor(theAuthor);
         setView(View.DETAILS);
-    }
-
-    // Go back to the ancestor parent, if any
-    const handleBack: HandleAction = () => {
-        logger.debug({
-            context: "AuthorSegment.handleBack"
-        });
-        setView(View.OPTIONS);
-        if (props.handleBack) {
-            props.handleBack();
-        }
     }
 
     // Handle selection of an Author to edit details
@@ -244,10 +233,10 @@ const AuthorSegment = (props: Props) => {
             {(view === View.OPTIONS) ? (
                 <AuthorOptions
                     handleAdd={handleAdd}
-                    handleBack={props.handleBack ? handleBack : undefined}
                     handleEdit={handleEdit}
                     handleExclude={props.parent && !(props.parent instanceof Library) && canUpdate ? handleExclude : undefined}
                     handleInclude={props.parent && !(props.parent instanceof Library) && canUpdate? handleInclude : undefined}
+                    handleReturn={props.handleReturn ? props.handleReturn : undefined}
                     handleShowSeries={handleShowSeries}
                     handleShowStories={handleShowStories}
                     handleShowVolumes={handleShowVolumes}
@@ -258,21 +247,21 @@ const AuthorSegment = (props: Props) => {
 
             {(view === View.SERIES) ? (
                 <SeriesSegment
-                    handleBack={handleReturn}
+                    handleReturn={handleReturn}
                     parent={author}
                 />
             ) : null }
 
             {(view === View.STORIES) ? (
                 <StorySegment
-                    handleBack={handleReturn}
+                    handleReturn={handleReturn}
                     parent={author}
                 />
             ) : null }
 
             {(view === View.VOLUMES) ? (
                 <VolumeSegment
-                    handleBack={handleReturn}
+                    handleReturn={handleReturn}
                     parent={author}
                 />
             ) : null }

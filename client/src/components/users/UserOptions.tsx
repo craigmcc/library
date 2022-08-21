@@ -6,11 +6,11 @@
 // External Modules ----------------------------------------------------------
 
 import React, {useContext, useEffect, useState} from "react";
-import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
+import {PlusCircleFill} from "react-bootstrap-icons";
 import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
@@ -135,12 +135,12 @@ const UserOptions = (props: Props) => {
                     />
                 </Col>
                 <Col className="text-end">
-                    <Button
-                        disabled={!props.handleAdd}
-                        onClick={handleAdd}
-                        size="sm"
-                        variant="primary"
-                    >Add</Button>
+                    <PlusCircleFill
+                        color="primary"
+                        data-testid="add0"
+                        onClick={(loginContext.data.loggedIn && props.handleAdd) ? handleAdd : undefined}
+                        size={32}
+                    />
                 </Col>
             </Row>
 
@@ -189,12 +189,12 @@ const UserOptions = (props: Props) => {
 
             <Row className="mb-3">
                 <Col className="text-end">
-                    <Button
-                        disabled={!props.handleAdd}
-                        onClick={handleAdd}
-                        size="sm"
-                        variant="primary"
-                    >Add</Button>
+                    <PlusCircleFill
+                        color="primary"
+                        data-testid="add1"
+                        onClick={(loginContext.data.loggedIn && props.handleAdd) ? handleAdd : undefined}
+                        size={32}
+                    />
                 </Col>
             </Row>
 

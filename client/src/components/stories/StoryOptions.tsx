@@ -28,15 +28,16 @@ import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 import {authorsNames, listValue} from "../../util/Transformations";
+import {CaretLeftSquare} from "react-bootstrap-icons";
 
 // Incoming Properties -------------------------------------------------------
 
 export interface Props {
     handleAdd?: HandleAction;           // Handle request to add a Story [not allowed]
-    handleBack?: HandleAction;          // Handle request to leave segment [no handler]
     handleEdit?: HandleStory;           // Handle request to edit a Story [not allowed]
     handleExclude?: HandleStory;        // Handle request to exclude a Story [not allowed]
     handleInclude?: HandleStory;        // Handle request to include a Story [not allowed]
+    handleReturn?: HandleAction;        // Handle request to leave segment [no handler]
     handleShowAuthors?: HandleStory;    // Handle request to show related Authors [not allowed]
     handleShowSeries?: HandleStory;     // Handle request to show related Stories [not allowed]
     handleShowVolumes?: HandleStory;    // Handle request to show related Volumes [not allowed]
@@ -93,8 +94,8 @@ const StoryOptions = (props: Props) => {
     }
 
     const handleBack: HandleAction = () => {
-        if (props.handleBack) {
-            props.handleBack();
+        if (props.handleReturn) {
+            props.handleReturn();
         }
     }
 
@@ -203,23 +204,21 @@ const StoryOptions = (props: Props) => {
             />
 
             <Row className="mb-3">
-                <Col/>
+                {props.handleReturn ? (
+                    <Col className="text-start">
+                        <CaretLeftSquare
+                            onClick={props.handleReturn}
+                            size={32}
+                        />
+                    </Col>
+                ) : <Col/> }
                 <Col className="text-center">
                     <strong>
                     <span>Manage Stories for {props.parent._model}:&nbsp;</span>
                     <span className="text-info">{props.parent._title}</span>
                     </strong>
                 </Col>
-                {props.handleBack ? (
-                    <Col className="text-end">
-                        <Button
-                            onClick={() => handleBack()}
-                            size="sm"
-                            type="button"
-                            variant="success"
-                        >Back</Button>
-                    </Col>
-                ) : <Col/> }
+                <Col/>
             </Row>
 
             <Row className="mb-3">
