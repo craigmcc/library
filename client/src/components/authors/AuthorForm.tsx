@@ -1,4 +1,4 @@
-// AuthorDetails ----------------------------------------------------------------
+// AuthorForm ----------------------------------------------------------------
 
 // Detail editing form for Author objects.
 
@@ -39,7 +39,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-const AuthorDetails = (props: Props) => {
+const AuthorForm = (props: Props) => {
 
     const adding = (props.author.id < 0);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -253,4 +253,4 @@ const AuthorDetails = (props: Props) => {
 
 }
 
-export default AuthorDetails;
+export default AuthorForm;

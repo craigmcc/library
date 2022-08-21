@@ -12,7 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Internal Modules ----------------------------------------------------------
 
-import AuthorSegment from "./components/authors/AuthorSegment";
+import AuthorView from "./components/authors/AuthorView";
 import {LibraryContextProvider} from "./components/libraries/LibraryContext";
 import {LoginContextProvider} from "./components/login/LoginContext";
 import HomeView from "./components/general/HomeView";
@@ -43,7 +43,7 @@ function App() {
                 <Router>
                     <Routes>
                         <Route path="/" element={<Navigation/>}>
-                            <Route path="authors" element={<AuthorSegment/>}/>
+                            <Route path="authors" element={<AuthorView/>}/>
                             <Route path="browse-google" element={<GoogleBooksSegment/>}/>
                             <Route path="libraries" element={<LibrarySegment/>}/>
                             <Route path="series" element={<SeriesSegment/>}/>

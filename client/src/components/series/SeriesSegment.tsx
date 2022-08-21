@@ -11,7 +11,7 @@ import React, {useContext, useEffect, useState} from "react";
 
 import SeriesDetails from "./SeriesDetails";
 import SeriesOptions from "./SeriesOptions";
-import AuthorSegment from "../authors/AuthorSegment";
+import AuthorView from "../authors/AuthorView";
 import MutatingProgress from "../shared/MutatingProgress";
 import StorySegment from "../stories/StorySegment";
 import LibraryContext from "../libraries/LibraryContext";
@@ -228,7 +228,7 @@ const SeriesSegment = (props: Props) => {
             ) : null }
 
             {(view === View.AUTHORS) ? (
-                <AuthorSegment
+                <AuthorView
                     handleReturn={handleReturn}
                     parent={series}
                 />

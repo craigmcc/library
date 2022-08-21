@@ -11,7 +11,7 @@ import React, {useContext, useEffect, useState} from "react";
 
 import VolumeDetails from "./VolumeDetails";
 import VolumeOptions from "./VolumeOptions";
-import AuthorSegment from "../authors/AuthorSegment";
+import AuthorView from "../authors/AuthorView";
 import MutatingProgress from "../shared/MutatingProgress";
 import StorySegment from "../stories/StorySegment";
 import LibraryContext from "../libraries/LibraryContext";
@@ -233,7 +233,7 @@ const VolumeSegment = (props: Props) => {
             ) : null }
 
             {(view === View.AUTHORS) ? (
-                <AuthorSegment
+                <AuthorView
                     handleReturn={handleReturn}
                     parent={volume}
                 />

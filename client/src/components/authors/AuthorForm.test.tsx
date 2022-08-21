@@ -1,6 +1,6 @@
-// AuthorDetails.test --------------------------------------------------------
+// AuthorForm.test -----------------------------------------------------------
 
-// Unit tests for AuthorDetails.
+// Unit tests for AuthorForm.
 
 // External Modules ----------------------------------------------------------
 
@@ -10,7 +10,7 @@ import userEvent from "@testing-library/user-event";
 
 // Internal Modules ----------------------------------------------------------
 
-import AuthorDetails, {Props} from "./AuthorDetails";
+import AuthorForm, {Props} from "./AuthorForm";
 import Author from "../../models/Author";
 import Library from "../../models/Library";
 import * as MockAuthorServices from "../../test/MockAuthorServices";
@@ -87,7 +87,7 @@ describe("Invalid Data", () => {
             parent: LIBRARY,
         }
         await act(async () => {
-            render(<AuthorDetails {...PROPS}/>);
+            render(<AuthorForm {...PROPS}/>);
         });
 
         const {save} = elements();
@@ -124,7 +124,7 @@ describe("Invalid Data", () => {
             parent: LIBRARY,
         }
         await act(async () => {
-            render(<AuthorDetails {...PROPS}/>);
+            render(<AuthorForm {...PROPS}/>);
         });
 
         const {save} = elements();
@@ -160,7 +160,7 @@ describe("Invalid Data", () => {
             parent: new Library(),
         }
         await act(async () => {
-            render(<AuthorDetails {...PROPS}/>);
+            render(<AuthorForm {...PROPS}/>);
         });
 
         const {save} = elements();
@@ -198,7 +198,7 @@ describe("No Handlers", () => {
             parent: new Library(),
         }
         await act(async () => {
-            render(<AuthorDetails {...PROPS}/>);
+            render(<AuthorForm {...PROPS}/>);
         });
 
         const {back, save, remove} = elements();
@@ -238,7 +238,7 @@ describe("Valid Data", () => {
             parent: new Library(),
         }
         await act(async () => {
-            render(<AuthorDetails {...PROPS}/>);
+            render(<AuthorForm {...PROPS}/>);
         });
 
         const {save} = elements();
@@ -267,7 +267,7 @@ describe("Valid Data", () => {
             parent: LIBRARY,
         }
         await act(async () => {
-            render(<AuthorDetails {...PROPS}/>);
+            render(<AuthorForm {...PROPS}/>);
         });
 
         const {save} = elements();
@@ -296,7 +296,7 @@ describe("Valid Data", () => {
             parent: LIBRARY,
         }
         await act(async () => {
-            render(<AuthorDetails {...PROPS}/>);
+            render(<AuthorForm {...PROPS}/>);
         });
 
         const {remove} = elements();

@@ -1,7 +1,7 @@
-// AuthorSegment -------------------------------------------------------------
+// AuthorView -------------------------------------------------------------===
 
-// Consolidated segment for listing and editing Author objects, as well as
-// navigating to segments for related child objects.
+// Consolidated view for listing and editing Author objects, as well as
+// navigating to views for related child objects.
 
 // External Modules ----------------------------------------------------------
 
@@ -9,8 +9,8 @@ import React, {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import AuthorDetails from "./AuthorDetails";
-import AuthorOptions from "./AuthorOptions";
+import AuthorForm from "./AuthorForm";
+import AuthorList from "./AuthorList";
 import SeriesSegment from "../series/SeriesSegment";
 import MutatingProgress from "../shared/MutatingProgress";
 import StorySegment from "../stories/StorySegment";
@@ -41,7 +41,7 @@ enum View {
     VOLUMES = "Volumes",
 }
 
-const AuthorSegment = (props: Props) => {
+const AuthorView = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -218,7 +218,7 @@ const AuthorSegment = (props: Props) => {
             />
 
             {(view === View.DETAILS) ? (
-                <AuthorDetails
+                <AuthorForm
                     author={author}
                     autoFocus
                     handleInsert={canInsert ? handleInsert : undefined}
@@ -231,7 +231,7 @@ const AuthorSegment = (props: Props) => {
             ) : null }
 
             {(view === View.OPTIONS) ? (
-                <AuthorOptions
+                <AuthorList
                     handleAdd={handleAdd}
                     handleEdit={handleEdit}
                     handleExclude={props.parent && !(props.parent instanceof Library) && canUpdate ? handleExclude : undefined}
@@ -271,4 +271,4 @@ const AuthorSegment = (props: Props) => {
 
 }
 
-export default AuthorSegment;
+export default AuthorView;

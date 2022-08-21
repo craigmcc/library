@@ -1,13 +1,13 @@
-// AuthorOptions.test --------------------------------------------------------
+// AuthorList.test -----------------------------------------------------------
 
-// Unit tests for AuthorOptions.
+// Unit tests for AuthorList.
 
 import React from "react";
 import {act, render, screen, waitFor} from "@testing-library/react";
 
 // Internal Modules -----------------------------------------------------------
 
-import AuthorOptions, {Props} from "./AuthorOptions";
+import AuthorList, {Props} from "./AuthorList";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import Author from "../../models/Author";
@@ -89,7 +89,7 @@ describe("When logged in", () => {
             render(
                 <LoginContext.Provider value={State.loginContext(USER)}>
                     <LibraryContext.Provider value={State.libraryContext(USER, LIBRARY)}>
-                        <AuthorOptions {...PROPS}/>
+                        <AuthorList {...PROPS}/>
                     </LibraryContext.Provider>
                 </LoginContext.Provider>
 
@@ -128,7 +128,7 @@ describe("When logged out", () => {
             render(
                 <LoginContext.Provider value={State.loginContext(USER)}>
                     <LibraryContext.Provider value={State.libraryContext(USER, LIBRARY)}>
-                        <AuthorOptions {...BASE_PROPS}/>
+                        <AuthorList {...BASE_PROPS}/>
                     </LibraryContext.Provider>
                 </LoginContext.Provider>
 

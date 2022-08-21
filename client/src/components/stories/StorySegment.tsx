@@ -11,7 +11,7 @@ import React, {useContext, useEffect, useState} from "react";
 
 import StoryDetails from "./StoryDetails";
 import StoryOptions from "./StoryOptions";
-import AuthorSegment from "../authors/AuthorSegment";
+import AuthorView from "../authors/AuthorView";
 import SeriesSegment from "../series/SeriesSegment";
 import MutatingProgress from "../shared/MutatingProgress";
 import VolumeSegment from "../volumes/VolumeSegment";
@@ -247,7 +247,7 @@ const StorySegment = (props: Props) => {
             ) : null }
 
             {(view === View.AUTHORS) ? (
-                <AuthorSegment
+                <AuthorView
                     handleReturn={handleReturn}
                     parent={story}
                 />

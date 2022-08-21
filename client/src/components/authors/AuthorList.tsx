@@ -47,7 +47,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-const AuthorOptions = (props: Props) => {
+const AuthorList = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -398,4 +398,4 @@ const AuthorOptions = (props: Props) => {
 
 }
 
-export default AuthorOptions;
+export default AuthorList;
