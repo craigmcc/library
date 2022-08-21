@@ -1,6 +1,6 @@
-// LibraryOptions.test -------------------------------------------------------
+// LibraryList.test ----------------------------------------------------------
 
-// Unit tests for LibraryOptions.
+// Unit tests for LibraryList.
 
 // External Modules -----------------------------------------------------------
 
@@ -10,7 +10,7 @@ import {act, render, screen, waitFor} from "@testing-library/react";
 // Internal Modules -----------------------------------------------------------
 
 import LibraryContext from "./LibraryContext";
-import LibraryOptions, {Props} from "./LibraryOptions";
+import LibraryList, {Props} from "./LibraryList";
 import LoginContext from "../login/LoginContext";
 import Library from "../../models/Library";
 import User from "../../models/User";
@@ -83,7 +83,7 @@ describe("When logged in", () => {
             render(
                 <LoginContext.Provider value={State.loginContext(USER)}>
                     <LibraryContext.Provider value={State.libraryContext(USER, LIBRARY)}>
-                        <LibraryOptions {...PROPS}/>
+                        <LibraryList {...PROPS}/>
                     </LibraryContext.Provider>
                 </LoginContext.Provider>
             )
@@ -117,7 +117,7 @@ describe("When logged out", () => {
             render(
                 <LoginContext.Provider value={State.loginContext(USER)}>
                     <LibraryContext.Provider value={State.libraryContext(USER, LIBRARY)}>
-                        <LibraryOptions {...PROPS}/>
+                        <LibraryList {...PROPS}/>
                     </LibraryContext.Provider>
                 </LoginContext.Provider>
             )

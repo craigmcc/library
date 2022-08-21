@@ -1,4 +1,4 @@
-// LibraryOptions ------------------------------------------------------------
+// LibraryList ---------------------------------------------------------------
 
 // List Libraries that match search criteria, offering callbacks for adding,
 // editing, and removing Libraries.
@@ -33,7 +33,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-const LibraryOptions = (props: Props) => {
+const LibraryList = (props: Props) => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -205,4 +205,4 @@ const LibraryOptions = (props: Props) => {
 
 }
 
-export default LibraryOptions;
+export default LibraryList;

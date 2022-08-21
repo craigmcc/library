@@ -1,6 +1,6 @@
 // LibrarySegment ------------------------------------------------------------
 
-// Consolidated segment for listing and editing Library objects.
+// Consolidated view for listing and editing Library objects.
 
 // External Modules ----------------------------------------------------------
 
@@ -9,8 +9,8 @@ import React, {useContext, useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import LibraryContext from "./LibraryContext";
-import LibraryDetails from "./LibraryDetails";
-import LibraryOptions from "./LibraryOptions";
+import LibraryForm from "./LibraryForm";
+import LibraryList from "./LibraryList";
 import LoginContext from "../login/LoginContext";
 import MutatingProgress from "../shared/MutatingProgress";
 import {HandleAction, HandleLibrary, Scope} from "../../types";
@@ -26,7 +26,7 @@ enum View {
     OPTIONS = "Options",
 }
 
-const LibrarySegment = () => {
+const LibraryView = () => {
 
     const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
@@ -138,7 +138,7 @@ const LibrarySegment = () => {
             />
 
             {(view === View.DETAILS) ? (
-                <LibraryDetails
+                <LibraryForm
                     autoFocus
                     handleInsert={canInsert ? handleInsert : undefined}
                     handleRemove={canRemove ? handleRemove : undefined}
@@ -149,7 +149,7 @@ const LibrarySegment = () => {
             ) : null }
 
             {(view === View.OPTIONS) ? (
-                <LibraryOptions
+                <LibraryList
                     handleAdd={handleAdd}
                     handleEdit={handleEdit}
                 />
@@ -160,4 +160,4 @@ const LibrarySegment = () => {
 
 }
 
-export default LibrarySegment;
+export default LibraryView;

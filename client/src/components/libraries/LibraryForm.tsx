@@ -1,4 +1,4 @@
-// LibraryDetails ------------------------------------------------------------
+// LibraryForm ---------------------------------------------------------------
 
 // Detail editing form for Library objects.
 
@@ -40,7 +40,7 @@ export interface Props {
 
 // Component Details ---------------------------------------------------------
 
-const LibraryDetails = (props: Props) => {
+const LibraryForm = (props: Props) => {
 
     const adding = (props.library.id < 0);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -256,4 +256,4 @@ const LibraryDetails = (props: Props) => {
     )
 }
 
-export default LibraryDetails;
+export default LibraryForm;

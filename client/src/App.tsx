@@ -18,7 +18,7 @@ import {LoginContextProvider} from "./components/login/LoginContext";
 import HomeView from "./components/general/HomeView";
 import Navigation from "./components/general/Navigation";
 import GoogleBooksSegment from "./components/google-books/GoogleBooksSegment";
-import LibrarySegment from "./components/libraries/LibrarySegment";
+import LibraryView from "./components/libraries/LibraryView";
 import SeriesSegment from "./components/series/SeriesSegment";
 import StorySegment from "./components/stories/StorySegment";
 import UserSegment from "./components/users/UserSegment";
@@ -45,7 +45,7 @@ function App() {
                         <Route path="/" element={<Navigation/>}>
                             <Route path="authors" element={<AuthorView/>}/>
                             <Route path="browse-google" element={<GoogleBooksSegment/>}/>
-                            <Route path="libraries" element={<LibrarySegment/>}/>
+                            <Route path="libraries" element={<LibraryView/>}/>
                             <Route path="series" element={<SeriesSegment/>}/>
                             <Route path="stories" element={<StorySegment/>}/>
                             <Route path="users" element={<UserSegment/>}/>

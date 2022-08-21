@@ -1,6 +1,6 @@
-// LibraryDetails.test -------------------------------------------------------
+// LibraryForm.test ----------------------------------------------------------
 
-// Unit tests for LibraryDetails.
+// Unit tests for LibraryForm.
 
 // External Modules ----------------------------------------------------------
 
@@ -10,7 +10,7 @@ import userEvent from "@testing-library/user-event";
 
 // Internal Modules ----------------------------------------------------------
 
-import LibraryDetails, {Props} from "./LibraryDetails";
+import LibraryForm, {Props} from "./LibraryForm";
 import Library from "../../models/Library";
 import * as MockLibraryServices from "../../test/MockLibraryServices";
 import * as SeedData from "../../test/SeedData";
@@ -75,7 +75,7 @@ describe("Invalid Data", () => {
             library: LIBRARY,
         }
         await act(async () => {
-            render(<LibraryDetails {...PROPS}/>);
+            render(<LibraryForm {...PROPS}/>);
         });
 
         const {save} = elements();
@@ -110,7 +110,7 @@ describe("Invalid Data", () => {
             library: library,
         }
         await act(async () => {
-            render(<LibraryDetails {...PROPS}/>);
+            render(<LibraryForm {...PROPS}/>);
         })
 
         const {save} = elements();
@@ -147,7 +147,7 @@ describe("Invalid Data", () => {
             library: LIBRARY,
         }
         await act(async () => {
-            render(<LibraryDetails {...PROPS}/>);
+            render(<LibraryForm {...PROPS}/>);
         })
 
         const {save} = elements();
@@ -184,7 +184,7 @@ describe("No Handlers", () => {
             library: LIBRARY
         }
         await act(async () => {
-            render(<LibraryDetails {...PROPS}/>);
+            render(<LibraryForm {...PROPS}/>);
         })
 
         const {back, save, remove} = elements();
@@ -222,7 +222,7 @@ describe("Valid Data", () => {
             library: LIBRARY,
         }
         await act(async () => {
-            render(<LibraryDetails {...PROPS}/>);
+            render(<LibraryForm {...PROPS}/>);
         })
 
         const {save} = elements();
@@ -254,7 +254,7 @@ describe("Valid Data", () => {
             library: LIBRARY,
         }
         await act(async () => {
-            render(<LibraryDetails {...PROPS}/>);
+            render(<LibraryForm {...PROPS}/>);
         })
 
         const {save} = elements();
@@ -282,7 +282,7 @@ describe("Valid Data", () => {
             library: LIBRARY,
         }
         await act(async () => {
-            render(<LibraryDetails {...PROPS}/>);
+            render(<LibraryForm {...PROPS}/>);
         })
 
         const {save} = elements();
@@ -308,7 +308,7 @@ describe("Valid Data", () => {
             library: LIBRARY,
         }
         await act(async () => {
-            render(<LibraryDetails {...PROPS}/>);
+            render(<LibraryForm {...PROPS}/>);
         })
 
         const {remove} = elements();
