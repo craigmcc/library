@@ -5,7 +5,6 @@
 
 // External Modules ----------------------------------------------------------
 
-import {OAuthError} from "@craigmcc/oauth-orchestrator/dist/errors";
 import {PasswordTokenRequest, RefreshTokenRequest, TokenResponse} from "@craigmcc/oauth-orchestrator/dist/types";
 
 // Internal Modules ----------------------------------------------------------
@@ -30,7 +29,7 @@ const loginData = new LocalStorage<LoginData>(LOGIN_DATA_KEY);
  *
  * @returns                             Updated LoginData after login
  *
- * @throws OAuthError                   If login was not successful
+ * @throws Error                        If login was not successful
  */
 export const login = async (credentials: Credentials): Promise<LoginData> => {
 
@@ -40,7 +39,7 @@ export const login = async (credentials: Credentials): Promise<LoginData> => {
         password: credentials.password,
         username: credentials.username,
     }
-    // Will throw OAuthError on login failure
+    // Will throw Error on login failure
     const tokenResponse: TokenResponse =
         (await OAuth.post("/token", tokenRequest)).data;
     logger.debug({
@@ -85,7 +84,7 @@ export const logout = async (): Promise<LoginData> => {
                 context: "loginDataUtils.logout",
                 msg: "Logout failed",
                 username: currentData.username,
-                error: (error as OAuthError).message,
+                error: (error as Error).message,
             });
             // Ignore any error
         }
