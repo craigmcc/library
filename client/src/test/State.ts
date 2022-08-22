@@ -8,7 +8,7 @@
 // Internal Modules ----------------------------------------------------------
 
 import {State as LibraryContextState} from "../components/libraries/LibraryContext";
-import {State as LoginContextState} from "../components/login/LoginContext";
+import {LoginState as LoginContextState} from "../components/login/LoginContext";
 import Library from "../models/Library";
 import User from "../models/User";
 import * as MockLibraryServices from "../test/MockLibraryServices";
@@ -47,6 +47,7 @@ export const loginContext = (user: User | null): LoginContextState => {
             scope: (user) ? user.scope : null,
             username: (user) ? user.username : null,
         },
+        user: user ? user : new User(),
         handleLogin: jest.fn(),
         handleLogout: jest.fn(),
         validateLibrary: jest.fn(),

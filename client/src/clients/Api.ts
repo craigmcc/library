@@ -9,7 +9,7 @@ import axios, {AxiosInstance} from "axios";
 
 // Internal Modules ----------------------------------------------------------
 
-import {LOGIN_DATA} from "../components/login/LoginContext";
+import {refresh} from "../util/LoginDataUtils";
 
 // Public Objects ------------------------------------------------------------
 
@@ -23,14 +23,15 @@ const Api: AxiosInstance = axios.create({
     timeout: REQUEST_TIMEOUT,
 });
 
-Api.interceptors.request.use(function (config) {
-    if (LOGIN_DATA.accessToken) {
+Api.interceptors.request.use(async function (config) {
+    const currentData = await refresh();
+    if (currentData.accessToken) {
         // @ts-ignore
-        config.headers["Authorization"] = `Bearer ${LOGIN_DATA.accessToken}`;
+        config.headers["Authorization"] = `Bearer ${currentData.accessToken}`;
     }
-    if (LOGIN_DATA.username) {
+    if (currentData.username) {
         // @ts-ignore
-        config.headers["X-Username"] = LOGIN_DATA.username;
+        config.headers["X-Username"] = currentData.username;
     }
     return config;
 })

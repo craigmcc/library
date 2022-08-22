@@ -10,46 +10,51 @@ import React, {createContext, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import {Scope} from "../../types";
+import {LOGIN_DATA_KEY, LOGIN_USER_KEY} from "../../constants";
+import {LoginData, Scope} from "../../types";
+import OAuth from "../../clients/OAuth";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import Credentials from "../../models/Credentials";
 import Library from "../../models/Library";
-import TokenResponse from "../../models/TokenResponse";
+import User from "../../models/User";
+import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
+import {login, logout} from "../../util/LoginDataUtils";
+import * as ToModel from "../../util/ToModel";
 
 // Context Properties -------------------------------------------------------
 
-const NODE_ENV = process.env.NODE_ENV;
-
 // Data that is visible to HTTP clients not part of the React component hierarchy
-export interface Data {
-    accessToken: string | null;         // Current access token (if logged in)
-    expires: Date | null;               // Absolute expiration time
-    loggedIn: boolean;                  // Is a user currently logged in?
-    refreshToken: string | null;        // Current refresh token (if logged in and returned)
-    scope: string | null;               // Allowed scope(s) (if logged in)
-    username: string | null;            // Logged in username (if logged in)
-}
+const LOGIN_DATA: LoginData = {
+    accessToken: null,
+    expires: null,
+    loggedIn: false,
+    refreshToken: null,
+    scope: null,
+    username: null,
+};
+
+// Dummy initial values for User
+const LOGIN_USER: User = new User({
+    active: false,
+    firstName: "-----",
+    lastName: "-----",
+});
 
 // State (including data) visible to LoginContext consumers
-export interface State {
-    data: Data;
-    handleLogin: (username: string, tokenResponse: TokenResponse) => void;
+export interface LoginState {
+    data: LoginData;
+    user: User;
+    handleLogin: (credentials: Credentials) => void;
     handleLogout: () => void;
     validateLibrary: (library: Library, scope?: Scope) => boolean;
-    // Can the logged in User access this Library?
     validateScope: (scope: string) => boolean;
-    // Does the logged in User have the specified scope?
 }
 
-export const LoginContext = createContext<State>({
-    data: {
-        accessToken: null,
-        expires: null,
-        loggedIn: false,
-        refreshToken: null,
-        scope: null,
-        username: null,
-    },
-    handleLogin: (username, tokenResponse): void => {
+export const LoginContext = createContext<LoginState>({
+    data: LOGIN_DATA,
+    user: LOGIN_USER,
+    handleLogin: (credentials: Credentials): void => {
         // Will be replaced in the real returned context information
     },
     handleLogout: (): void => {
@@ -61,42 +66,38 @@ export const LoginContext = createContext<State>({
 
 // Context Provider ----------------------------------------------------------
 
-// For use by HTTP clients to include in their requests
-export let LOGIN_DATA: Data = {
-    accessToken: null,
-    expires: null,
-    loggedIn: false,
-    refreshToken: null,
-    scope: null,
-    username: null,
-};
-
 // Log level configuration
 export const LOG_DEFAULT = "info";      // Default log level
 export const LOG_PREFIX = "log:";       // Prefix for scope values defining log level
 
-export const LoginContextProvider = (props: any) => {
+// @ts-ignore
+export const LoginContextProvider = ({ children }) => {
 
     const [alloweds, setAlloweds] = useState<string[]>([]);
-    const [data, setData] = useState<Data>({
-        accessToken: null,
-        expires: null,
-        loggedIn: false,
-        refreshToken: null,
-        scope: null,
-        username: null,
-    });
+    const [data, setData] = useLocalStorage<LoginData>(LOGIN_DATA_KEY, LOGIN_DATA);
+    const [user, setUser] = useLocalStorage<User>(LOGIN_USER_KEY, LOGIN_USER);
 
-    const handleLogin = async (username: string, tokenResponse: TokenResponse): Promise<void> => {
+    /**
+     * Attempt a login and record the results.
+     *
+     * @param credentials               Login credentials to authenticate
+     *
+     * @throws OAuthError               If authentication fails
+     */
+    const handleLogin = async (credentials: Credentials): Promise<void> => {
+
+        // Attempt to authenticate the specified credentials
+        const newData = await login(credentials);
+        setData(newData);
 
         // Save allowed scope(s) and set logging level
         let logLevel = LOG_DEFAULT;
-        if (tokenResponse.scope) {
-            const theAlloweds = tokenResponse.scope.split(" ");
+        if (newData.scope) {
+            const theAlloweds = newData.scope.split(" ");
             setAlloweds(theAlloweds);
             theAlloweds.forEach(allowed => {
                 if (allowed.startsWith(LOG_PREFIX)) {
-                    logLevel = allowed.substr(LOG_PREFIX.length);
+                    logLevel = allowed.substring(LOG_PREFIX.length);
                 }
             })
         } else {
@@ -107,33 +108,19 @@ export const LoginContextProvider = (props: any) => {
         // Document this login
         logger.info({
             context: "LoginContext.handleLogin",
-            username: username,
-            scope: tokenResponse.scope,
+            username: newData.username,
+            scope: newData.scope,
             logLevel: logLevel,
-            environment: NODE_ENV,
         });
 
-        // Prepare the data that will be visible to components and statically
-        const theData: Data = {
-            accessToken: tokenResponse.access_token,
-            expires: new Date((new Date()).getTime() + (tokenResponse.expires_in * 1000)),
-            loggedIn: true,
-            refreshToken: tokenResponse.refresh_token ? tokenResponse.refresh_token : null,
-            scope: tokenResponse.scope,
-            username: username,
-        }
-        LOGIN_DATA = {    // No corrupting real internal state allowed
-            ...theData,
-        }
-        logger.trace({
-            context: "LoginContext.handleLogin",
-            msg: "Setting context data after login",
-            data: theData,
-        });
-        setData(theData);
+        // Refresh the current User information
+        await refreshUser(newData);
 
     }
 
+    /**
+     * Handle a successful logout.
+     */
     const handleLogout = async (): Promise<void> => {
 
         logger.info({
@@ -141,29 +128,52 @@ export const LoginContextProvider = (props: any) => {
             username: data.username,
         });
 
-        const theData = {
-            accessToken: null,
-            expires: null,
-            loggedIn: false,
-            refreshToken: null,
-            scope: null,
-            username: null,
-        };
-        LOGIN_DATA = {    // No corrupting real internal state allowed
-            ...theData
-        };
-        logger.trace({
-            context: "LoginContext.handleLogout",
-            msg: "Setting context data after logout",
-            data: theData,
-        });
-        setData(theData);
-
+        // Reset logging to the default level
         logger.setLevel(LOG_DEFAULT);
+
+        // Perform logout on the server
+        setData(await logout());
+
+        // Erase our currently logged in User information
+        setUser(LOGIN_USER);
 
     }
 
-    // Does the currently logged in User possess access to the specified Library?
+    /**
+     * Refresh the User object (will be null if a user is not logged on).
+     *
+     * @param theData                   Optional LoginData (needed during handleLogin
+     *                                  but can be omitted if calling this independently)
+     */
+    const refreshUser = async (theData?: LoginData): Promise<void> => {
+        const useData: LoginData = theData ? theData : data;
+        logger.debug({
+            context: "LoginContext.refreshUser",
+            data: useData,
+        });
+        if (useData.loggedIn) {
+            const user: User = ToModel.USER((await OAuth.get("/me")).data);
+            logger.info({
+                context: "LoginContext.refreshUser",
+                user: Abridgers.USER(user),
+            });
+            setUser(user);
+        } else {
+            logger.info({
+                context: "LoginContext.refreshUser",
+                msg: "Not logged in",
+            });
+            setUser(LOGIN_USER);
+        }
+    }
+
+    /**
+     * Return true if the currently logged in User has specified scope
+     * permissions on the specified Library.
+     *
+     * @param library                   Library to be tested for
+     * @param scope                     Scope to be tested for [admin or regular]
+     */
     const validateLibrary = (library: Library, scope?: Scope): boolean => {
         if (scope) {
             return validateScope(`${library.scope}:${scope}`);
@@ -173,7 +183,12 @@ export const LoginContextProvider = (props: any) => {
         }
     }
 
-    // Does the currently logged in User possess the requested scope permissions?
+    /**
+     * Return true if the currently logged in User has the specified
+     * scope permissions.
+     *
+     * @param scope                     Scope to be tested for
+     */
     const validateScope = (scope: string): boolean => {
 
         // Users not logged in will never pass scope requirements
@@ -211,8 +226,9 @@ export const LoginContextProvider = (props: any) => {
 
     }
 
-    const loginContext: State = {
+    const loginContext: LoginState = {
         data: data,
+        user: user,
         handleLogin: handleLogin,
         handleLogout: handleLogout,
         validateLibrary: validateLibrary,
@@ -221,7 +237,7 @@ export const LoginContextProvider = (props: any) => {
 
     return (
         <LoginContext.Provider value={loginContext}>
-            {props.children}
+            {children}
         </LoginContext.Provider>
     )
 

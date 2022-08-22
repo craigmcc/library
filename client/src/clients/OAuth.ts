@@ -6,9 +6,14 @@
 // External Modules ----------------------------------------------------------
 
 import axios, {AxiosInstance} from "axios";
-import {LOGIN_DATA} from "../components/login/LoginContext";
 
 // Internal Modules ----------------------------------------------------------
+
+import {LOGIN_DATA_KEY} from "../constants";
+import {LoginData} from "../types";
+import LocalStorage from "../util/LocalStorage";
+
+const loginData = new LocalStorage<LoginData>(LOGIN_DATA_KEY);
 
 const REQUEST_TIMEOUT = 5000; // Request timeout in milliseconds (0 means none)
 
@@ -20,9 +25,14 @@ const OAuth: AxiosInstance = axios.create({
 });
 
 OAuth.interceptors.request.use(function (config) {
-    if (LOGIN_DATA.accessToken) {
+    const currentData = loginData.value;
+    if (currentData.accessToken) {
         // @ts-ignore
-        config.headers["Authorization"] = `Bearer ${LOGIN_DATA.accessToken}`;
+        config.headers["Authorization"] = `Bearer ${currentData.accessToken}`;
+    }
+    if (currentData.username) {
+        // @ts-ignore
+        config.headers["X-Username"] = currentData.username;
     }
     return config;
 })

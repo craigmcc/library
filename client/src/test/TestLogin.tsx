@@ -31,12 +31,7 @@ const TestLogin = (props: Props) => {
             context: "TestLogin.useEffect",
             scope: props.scope,
         });
-        loginContext.handleLogin("testuser", {
-            access_token: "accesstoken",
-            expires_in: 60 * 60,
-            scope: props.scope,
-            token_type: "Bearer",
-        })
+        loginContext.handleLogin({ username: "testuser", password: "testpass"})
     }, [props.scope]);
 
     return null;

@@ -7,82 +7,31 @@
 import React, {useContext, useEffect, useState} from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import {useNavigate} from "react-router-dom";
 
 // Internal Modules ----------------------------------------------------------
 
 import LoginContext from "./LoginContext";
 import LoginForm from "./LoginForm";
-import OAuth from "../../clients/OAuth";
-import Credentials from "../../models/Credentials";
-import PasswordTokenRequest from "../../models/PasswordTokenRequest";
-import TokenResponse from "../../models/TokenResponse";
-import logger from "../../util/ClientLogger";
-import ReportError from "../../util/ReportError";
+import {HandleCredentials} from "../../types";
 
 // Component Details ---------------------------------------------------------
 
 export const LoggedInUser = () => {
 
     const loginContext = useContext(LoginContext);
-    const navigate = useNavigate();
 
     const [showCredentials, setShowCredentials] = useState<boolean>(false);
 
     useEffect(() => {
-        // Just trigger rerender when login or logout occurs
+        // Trigger rerender when loggedIn state changes
     }, [loginContext.data.loggedIn]);
 
-    const handleLogin = async (credentials: Credentials) => {
-        const tokenRequest: PasswordTokenRequest = {
-            grant_type: "password",
-            password: credentials.password,
-            username: credentials.username,
-        }
+    const handleLogin: HandleCredentials = async (credentials) => {
         try {
-            logger.info({
-                context: "LoggedInUser.handleLogin",
-                username: credentials.username,
-                password: "*REDACTED*",
-            });
-            const tokenResponse: TokenResponse =
-                (await OAuth.post("/token", tokenRequest)).data;
+            await loginContext.handleLogin(credentials);
             setShowCredentials(false);
-            loginContext.handleLogin(credentials.username, tokenResponse);
-            logger.debug({
-                context: "LoggedInUser.handleLogin",
-                msg: "Successfully logged in",
-                tokenResponse: JSON.stringify(tokenResponse),
-            });
         } catch (error) {
-            ReportError("LoggedInUser.handleLogin", error, {
-                username: credentials.username,
-                password: "*REDACTED*",
-            });
-        }
-    }
-
-    const handleLogout = async (): Promise<void> => {
-        const accessToken = loginContext.data.accessToken;
-        const username = loginContext.data.username;
-        try {
-            logger.info({
-                context: "LoggedInUser.handleLogout",
-                username: username,
-            })
-            await loginContext.handleLogout();
-            navigate("/");
-            if (accessToken) {
-                await OAuth.delete("/token", {
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`
-                    }
-                });
-            }
-        } catch (error) {
-            ReportError("LoggedInUser.handleLogout", error, {
-                username: username,
-            });
+            alert("Login Error: " + (error as Error).message);
         }
     }
 
@@ -99,7 +48,7 @@ export const LoggedInUser = () => {
             <div className="form-inline">
                 {(loginContext.data.loggedIn) ? (
                     <Button
-                        onClick={handleLogout}
+                        onClick={loginContext.handleLogout}
                         size="sm"
                         type="button"
                         variant="outline-dark"

@@ -10,8 +10,10 @@ import React, {createContext, useContext, useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import LoginContext from "../login/LoginContext";
+import {LIBRARIES_KEY, LIBRARY_KEY} from "../../constants";
 import {HandleAction, HandleLibrary} from "../../types";
 import useFetchLibraries from "../../hooks/useFetchLibraries";
+import useLocalStorage from "../../hooks/useLocalStorage";
 import Library from "../../models/Library";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
@@ -45,8 +47,8 @@ export const LibraryContextProvider = (props: any) => {
     const loginContext = useContext(LoginContext);
 
     const [active, setActive] = useState<boolean>(true);
-    const [availables, setAvailables] = useState<Library[]>([]);
-    const [library, setLibrary] = useState<Library>(UNSELECTED);
+    const [availables, setAvailables] = useLocalStorage<Library[]>(LIBRARIES_KEY, []);
+    const [library, setLibrary] = useLocalStorage<Library>(LIBRARY_KEY, UNSELECTED);
 
     const fetchLibraries = useFetchLibraries({
         active: active,
@@ -118,6 +120,7 @@ export const LibraryContextProvider = (props: any) => {
             return;
         }
         let found = false;
+        // @ts-ignore
         availables.forEach(aLibrary => {
             if (theLibrary.id === aLibrary.id) {
                 setLibrary(aLibrary);
