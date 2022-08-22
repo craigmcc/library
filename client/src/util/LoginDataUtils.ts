@@ -5,8 +5,6 @@
 
 // External Modules ----------------------------------------------------------
 
-import {PasswordTokenRequest, RefreshTokenRequest, TokenResponse} from "@craigmcc/oauth-orchestrator/dist/types";
-
 // Internal Modules ----------------------------------------------------------
 
 import logger from "./ClientLogger";
@@ -14,6 +12,9 @@ import LocalStorage from "./LocalStorage";
 import {LOGIN_DATA_KEY} from "../constants";
 import {LoginData} from "../types";
 import Credentials from "../models/Credentials";
+import PasswordTokenRequest from "../models/PasswordTokenRequest";
+import RefreshTokenRequest from "../models/RefreshTokenRequest";
+import TokenResponse from "../models/TokenResponse";
 import OAuth from "../clients/OAuth";
 
 // Private Objects ----------------------------------------------------------
