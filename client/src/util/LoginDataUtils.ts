@@ -12,10 +12,39 @@ import LocalStorage from "./LocalStorage";
 import {LOGIN_DATA_KEY} from "../constants";
 import {LoginData} from "../types";
 import Credentials from "../models/Credentials";
-import PasswordTokenRequest from "../models/PasswordTokenRequest";
-import RefreshTokenRequest from "../models/RefreshTokenRequest";
-import TokenResponse from "../models/TokenResponse";
 import OAuth from "../clients/OAuth";
+
+// Models --------------------------------------------------------------------
+
+/**
+ * Authentication request parameters for an OAuth authentication server
+ * with credentials to be authenticated.
+ */
+export interface PasswordTokenRequest {
+    grant_type: string;                 // Request type "password"
+    password: string;                   // Request password
+    username: string;                   // Request username
+}
+
+/**
+ * Authentication request parameters for an OAuth authentication server
+ * with a refresh token to exchange for new access token.
+ */
+export interface RefreshTokenRequest {
+    grant_type: string;                 // Request type "refresh_token"
+    refresh_token: string;              // Refresh token to exchange
+}
+
+/**
+ * Authentication successful response from an OAuth authentication server.
+ */
+export interface TokenResponse {
+    access_token: string;               // Assigned access token
+    expires_in: number;                 // Number of seconds before the access token expires
+    refresh_token?: string;             // Assigned refresh token (if any)
+    scope: string;                      // Authorized scope(s) - space separated
+    token_type: string;                 // Token type supported by this server
+}
 
 // Private Objects ----------------------------------------------------------
 
