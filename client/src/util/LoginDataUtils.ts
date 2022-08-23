@@ -81,6 +81,7 @@ export const login = async (credentials: Credentials): Promise<LoginData> => {
     // Construct, save, and return LoginData representing the new state
     const newData: LoginData = {
         accessToken: tokenResponse.access_token,
+        alloweds: tokenResponse.scope ? tokenResponse.scope.split(" ") : [],
         expires: new Date((new Date()).getTime() + (tokenResponse.expires_in * 1000)),
         loggedIn: true,
         refreshToken: tokenResponse.refresh_token ? tokenResponse.refresh_token : null,
@@ -123,6 +124,7 @@ export const logout = async (): Promise<LoginData> => {
     // Update, store, and return login data after the logout
     currentData = {
         accessToken: null,
+        alloweds: [],
         expires: null,
         loggedIn: false,
         refreshToken: null,
@@ -177,6 +179,7 @@ export const refresh = async (): Promise<LoginData> => {
         const tokenResponse: TokenResponse =
             (await OAuth.post("/token", tokenRequest)).data;
         currentData.accessToken = tokenResponse.access_token;
+        currentData.alloweds = tokenResponse.scope ? tokenResponse.scope.split(" ") : [];
         currentData.expires = new Date((new Date()).getTime() + (tokenResponse.expires_in * 1000));
         currentData.loggedIn = true;
         if (tokenResponse.refresh_token) {

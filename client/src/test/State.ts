@@ -41,6 +41,7 @@ export const loginContext = (user: User | null): LoginContextState => {
     return {
         data: {
             accessToken: (user) ? "accesstoken" : null,
+            alloweds: (user) ? user.scope.split(" ") : null,
             expires: (user) ? new Date() : null,
             loggedIn: (user) ? true : false,
             refreshToken: (user) ? "refreshtoken" : null,

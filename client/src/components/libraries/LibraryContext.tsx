@@ -5,7 +5,7 @@
 
 // External Modules ----------------------------------------------------------
 
-import React, {createContext, useContext, useEffect, useState} from "react";
+import React, {createContext, useContext, useEffect, useMemo, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -16,6 +16,7 @@ import useFetchLibraries from "../../hooks/useFetchLibraries";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import Library from "../../models/Library";
 import * as Abridgers from "../../util/Abridgers";
+import LocalStorage from "../../util/LocalStorage";
 import logger from "../../util/ClientLogger";
 
 // Context Properties --------------------------------------------------------
@@ -47,69 +48,66 @@ export const LibraryContextProvider = (props: any) => {
     const loginContext = useContext(LoginContext);
 
     const [active, setActive] = useState<boolean>(true);
-    const [availables, setAvailables] = useLocalStorage<Library[]>(LIBRARIES_KEY, []);
     const [library, setLibrary] = useLocalStorage<Library>(LIBRARY_KEY, UNSELECTED);
 
+    /**
+     * API interface for fetching all possible Libraries.
+     */
     const fetchLibraries = useFetchLibraries({
         active: active,
         currentPage: 1,
         pageSize: 100,
     });
 
-    useEffect(() => {
-
-        // Offer only those Libraries available to the logged in User
-        const theAvailables: Library[] = [];
-        if (loginContext.data.loggedIn) {
-            fetchLibraries.libraries.forEach(theAvailable => {
-                if (loginContext.validateLibrary(theAvailable)) {
-                    theAvailables.push(theAvailable);
-                }
-            });
-        }
-        logger.debug({
-            context: "LibraryContext.useEffect",
-            loggedIn: loginContext.data.loggedIn,
-            libraries: Abridgers.LIBRARIES(fetchLibraries.libraries),
-            availables: Abridgers.LIBRARIES(theAvailables),
+    /**
+     * The list of Libraries available to the logged in User.
+     */
+    const libraries = useMemo(() => {
+        const theLibraries: Library[] = [];
+        fetchLibraries.libraries.forEach(library => {
+            if (loginContext.validateLibrary(library)) {
+                theLibraries.push(library);
+            }
         });
-        setAvailables(theAvailables);
+        logger.debug({
+            context: "LibraryContext.calculateLibraries",
+            librariesIn: fetchLibraries.libraries,
+            librariesOut: theLibraries,
+        })
+        return theLibraries;
+    }, [loginContext, fetchLibraries.libraries]);
 
-        // Select or reselect the appropriate Library
-        if (theAvailables.length === 1) {
-            logger.debug({
-                context: "FacilityContext.useEffect",
-                msg: "Autoselect the only available Library",
-                library: Abridgers.LIBRARY(theAvailables[0]),
-            });
-            setLibrary(theAvailables[0]);
-        } else if (library.id > 0) {
-            let found: Library = new Library({id: -1, name: "NOT SELECTED"});
-            theAvailables.forEach(option => {
-                if (library.id === option.id) {
-                    found = option;
-                }
-            });
-            logger.debug({
-                context: "LibraryContext.useEffect",
-                msg: "Reset to currently selected Library",
-                library: Abridgers.LIBRARY(found),
-            });
-            setLibrary(found);
-        }
+    /**
+     * Local Storage interface for persisting available Libraries
+     */
+    const availables = useMemo(() => {
+        return new LocalStorage<Library[]>(LIBRARIES_KEY);
+    }, []);
 
-    }, [active, library.id, fetchLibraries.libraries,
-        loginContext, loginContext.data.loggedIn]);
+    /**
+     * Persist the list of available Libraries whenever it changes.
+     */
+    useEffect(() => {
+        availables.value = libraries;
+    }, [availables, libraries]);
 
+    /**
+     * Handle a request to refresh the list of available Libraries.
+     */
     const handleRefresh: HandleAction = () => {
         logger.debug({
             context: "LibraryContext.handleRefresh",
         });
-        // Trigger useFetchFacilities to fetch again
+        // Trigger useFetchLibraries to fetch again
         setActive(false);
         setActive(true);
     }
 
+    /**
+     * Handle a request to select the specified Library.
+     *
+     * @param theLibrary                The Library to be selected
+     */
     const handleSelect: HandleLibrary = (theLibrary) => {
         logger.debug({
             context: "LibraryContext.handleSelect",
@@ -121,7 +119,7 @@ export const LibraryContextProvider = (props: any) => {
         }
         let found = false;
         // @ts-ignore
-        availables.forEach(aLibrary => {
+        libraries.forEach(aLibrary => {
             if (theLibrary.id === aLibrary.id) {
                 setLibrary(aLibrary);
                 found = true;
@@ -139,7 +137,7 @@ export const LibraryContextProvider = (props: any) => {
     }
 
     const libraryContext: State = {
-        libraries: availables,
+        libraries: libraries,
         library: library,
         handleRefresh: handleRefresh,
         handleSelect: handleSelect,

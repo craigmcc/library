@@ -6,7 +6,7 @@
 
 // External Modules ----------------------------------------------------------
 
-import React, {createContext, useState} from "react";
+import React, {createContext} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -27,6 +27,7 @@ import * as ToModel from "../../util/ToModel";
 // Data that is visible to HTTP clients not part of the React component hierarchy
 const LOGIN_DATA: LoginData = {
     accessToken: null,
+    alloweds: null,
     expires: null,
     loggedIn: false,
     refreshToken: null,
@@ -73,7 +74,6 @@ export const LOG_PREFIX = "log:";       // Prefix for scope values defining log 
 // @ts-ignore
 export const LoginContextProvider = ({ children }) => {
 
-    const [alloweds, setAlloweds] = useState<string[]>([]);
     const [data, setData] = useLocalStorage<LoginData>(LOGIN_DATA_KEY, LOGIN_DATA);
     const [user, setUser] = useLocalStorage<User>(LOGIN_USER_KEY, LOGIN_USER);
 
@@ -92,17 +92,14 @@ export const LoginContextProvider = ({ children }) => {
 
         // Save allowed scope(s) and set logging level
         let logLevel = LOG_DEFAULT;
-        if (newData.scope) {
-            const theAlloweds = newData.scope.split(" ");
-            setAlloweds(theAlloweds);
-            theAlloweds.forEach(allowed => {
+        if (newData.alloweds) {
+            newData.alloweds.forEach(allowed => {
                 if (allowed.startsWith(LOG_PREFIX)) {
                     logLevel = allowed.substring(LOG_PREFIX.length);
                 }
             })
-        } else {
-            setAlloweds([]);
         }
+        // TODO - this is not saved across page reloads
         logger.setLevel(logLevel);
 
         // Document this login
@@ -197,7 +194,7 @@ export const LoginContextProvider = ({ children }) => {
         }
 
         // Special handling for superuser scope
-        if (alloweds.includes(Scope.SUPERUSER)) {
+        if (data.alloweds.includes(Scope.SUPERUSER)) {
             return true;
         }
 
@@ -213,7 +210,7 @@ export const LoginContextProvider = ({ children }) => {
         }
         let missing = false;
         requireds.forEach(required => {
-            if (!alloweds.includes(required)) {
+            if (!data.alloweds.includes(required)) {
                 missing = true;
             }
         });
