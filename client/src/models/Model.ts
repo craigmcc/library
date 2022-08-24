@@ -5,6 +5,7 @@
 
 // Public Objects ------------------------------------------------------------
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 class Model<M> {
 
     constructor(id?: number) {
