@@ -11,7 +11,7 @@ import {State as LibraryContextState} from "../components/libraries/LibraryConte
 import {LoginState as LoginContextState} from "../components/login/LoginContext";
 import Library from "../models/Library";
 import User from "../models/User";
-import * as MockLibraryServices from "./services/MockLibraryServices";
+import MockLibraryServices from "./services/MockLibraryServices";
 
 // Public Objects ------------------------------------------------------------
 
@@ -24,7 +24,7 @@ import * as MockLibraryServices from "./services/MockLibraryServices";
  */
 export const libraryContext = (user: User | null, library: Library | null): LibraryContextState => {
     return {
-        libraries: (user) ? MockLibraryServices.all({}) : [],
+        libraries: (user) ? MockLibraryServices.all() : [],
         library: (library) ? library : new Library(),
         handleRefresh: jest.fn(),
         handleSelect: jest.fn(),

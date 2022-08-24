@@ -7,7 +7,7 @@
 // Internal Modules ----------------------------------------------------------
 
 import * as MockAuthorServices from "./MockAuthorServices";
-import * as MockLibraryServices from "./MockLibraryServices";
+import MockLibraryServices from "./MockLibraryServices";
 import * as MockUserServices from "./MockUserServices";
 import * as SeedData from "../SeedData";
 import Author from "../../models/Author";
@@ -28,31 +28,38 @@ export const reset = (): void => {
     MockUserServices.reset();
 
     // Load model data, with Users and Libraries first
-    loadUsers(SeedData.USERS);
-    loadLibraries(SeedData.LIBRARIES);
-    loadAuthors(MockLibraryServices.id(0), SeedData.AUTHORS0);
-    loadAuthors(MockLibraryServices.id(1), SeedData.AUTHORS1);
-    loadAuthors(MockLibraryServices.id(2), SeedData.AUTHORS2);
+    /*const users = */loadUsers(SeedData.USERS);
+    const libraries = loadLibraries(SeedData.LIBRARIES);
+
+    loadAuthors(libraries[0].id, SeedData.AUTHORS0);
+    loadAuthors(libraries[1].id, SeedData.AUTHORS1);
+    loadAuthors(libraries[2].id, SeedData.AUTHORS2);
 
 }
 
 // Private Methods -----------------------------------------------------------
 
-const loadAuthors = (libraryId: number, authors: Author[]): void => {
+const loadAuthors = (libraryId: number, authors: Author[]): Author[] => {
+    const results: Author[] = [];
     authors.forEach(author => {
-        MockAuthorServices.insert(libraryId, author);
+        results.push(MockAuthorServices.insert(libraryId, author));
     });
+    return results;
 }
 
-const loadLibraries = (libraries: Library[]): void => {
+const loadLibraries = (libraries: Library[]): Library[] => {
+    const results: Library[] = [];
     libraries.forEach(library => {
-        MockLibraryServices.insert(library);
+        results.push(MockLibraryServices.insert(library));
     });
+    return results;
 }
 
-const loadUsers = (users: User[]): void => {
+const loadUsers = (users: User[]): User[] => {
+    const results: User[] = [];
     users.forEach(user => {
-        MockUserServices.insert(user);
+        results.push(MockUserServices.insert(user));
     });
+    return results;
 }
 

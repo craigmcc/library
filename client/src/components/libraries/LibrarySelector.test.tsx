@@ -14,7 +14,7 @@ import LibraryContext from "./LibraryContext";
 import LoginContext from "../login/LoginContext";
 import Library from "../../models/Library";
 import User from "../../models/User";
-import * as MockLibraryServices from "../../test/services/MockLibraryServices";
+import MockLibraryServices from "../../test/services/MockLibraryServices";
 import * as MockUserServices from "../../test/services/MockUserServices";
 import * as SeedData from "../../test/SeedData";
 import * as State from "../../test/State";
@@ -68,7 +68,7 @@ describe("When logged in", function () {
 
     it("should show the available Libraries with one selected", () => {
 
-        const libraries = MockLibraryServices.all({});
+        const libraries = MockLibraryServices.all();
         const INDEX = 1;
         const library = libraries[INDEX];
         const user = MockUserServices.exact(SeedData.USER_USERNAME_REGULAR);
@@ -90,7 +90,7 @@ describe("When logged in", function () {
     it("should change state when a different option is selected", () => {
 
         const INDEX = SeedData.LIBRARIES.length - 1; // Last Library in list
-        const libraries = MockLibraryServices.all({});
+        const libraries = MockLibraryServices.all();
         const library = null;
         const user = MockUserServices.exact(SeedData.USER_USERNAME_REGULAR);
         render(

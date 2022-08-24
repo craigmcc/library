@@ -12,7 +12,7 @@ import userEvent from "@testing-library/user-event";
 
 import LibraryForm, {Props} from "./LibraryForm";
 import Library from "../../models/Library";
-import * as MockLibraryServices from "../../test/services/MockLibraryServices";
+import MockLibraryServices from "../../test/services/MockLibraryServices";
 import * as SeedData from "../../test/SeedData";
 
 // Test Infrastructure -------------------------------------------------------
@@ -62,7 +62,7 @@ describe("Invalid Data", () => {
 
     it("should fail validation on duplicate name update", async () => {
 
-        const LIBRARIES = MockLibraryServices.all({});
+        const LIBRARIES = MockLibraryServices.all();
         const LIBRARY = {
             ...LIBRARIES[0],
             name: LIBRARIES[1].name,

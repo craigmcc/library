@@ -10,7 +10,7 @@ import {DefaultBodyType, MockedRequest, rest, RestHandler} from "msw";
 
 import {HttpErrorResponse} from "../Helpers";
 import * as MockAuthorServices from "../services/MockAuthorServices";
-import * as MockLibraryServices from "../services/MockLibraryServices";
+import MockLibraryServices from "../services/MockLibraryServices";
 import {CREATED, OK} from "../../util/HttpErrors";
 
 // Public Objects ------------------------------------------------------------

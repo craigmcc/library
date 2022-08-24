@@ -7,7 +7,7 @@
 // Internal Modules ----------------------------------------------------------
 
 import {NotFound} from "../HttpErrors";
-import * as MockLibraryServices from "./MockLibraryServices";
+import MockLibraryServices from "./MockLibraryServices";
 import Author from "../../models/Author";
 import * as Sorters from "../../util/Sorters";
 
@@ -22,7 +22,7 @@ let nextId = 0;                         // Next used ID value
  * Return a sorted array of all Authors for the specified Library.
  */
 export const all = (libraryId: number, query: any): Author[] => {
-    MockLibraryServices.find(libraryId, {});
+    MockLibraryServices.find(libraryId);
     const results: Author[] = [];
     for (const author of map.values()) {
         if (author.libraryId === libraryId) {
@@ -38,7 +38,7 @@ export const all = (libraryId: number, query: any): Author[] => {
  * Return the Author with the specified name, for the specified Library, if any.
  */
 export const exact = (libraryId: number, firstName: string, lastName: string, query?: any): Author => {
-    MockLibraryServices.find(libraryId, {});
+    MockLibraryServices.find(libraryId);
     let found: Author | undefined = undefined;
     for (const author of map.values()) {
         if ((author.libraryId === libraryId) &&
@@ -61,7 +61,7 @@ export const exact = (libraryId: number, firstName: string, lastName: string, qu
  * Return the Author with the specified id, for the specified Library, if any.
  */
 export const find = (libraryId: number, authorId: number, query: any): Author => {
-    MockLibraryServices.find(libraryId, {});
+    MockLibraryServices.find(libraryId);
     const found = map.get(authorId);
     if (found && (found.libraryId === libraryId)) {
         return includes(found, query);
@@ -77,7 +77,7 @@ export const find = (libraryId: number, authorId: number, query: any): Author =>
  * Insert and return a new Author for the specified Library, after assigning it a new ID.
  */
 export const insert = (libraryId: number, author: Author): Author => {
-    MockLibraryServices.find(libraryId, {});
+    MockLibraryServices.find(libraryId);
     // NOTE - Check for duplicate key violations?
     const inserted = new Author({
         ...author,
@@ -134,7 +134,7 @@ const includes = (author: Author, query: any): Author => {
     const result = new Author(author);
     if (query) {
         if ("" === query.withLibrary) {
-            result.library = MockLibraryServices.find(author.libraryId, {});
+            result.library = MockLibraryServices.find(author.libraryId);
         }
         // NOTE - implement withSeries
         // NOTE - implement withStories

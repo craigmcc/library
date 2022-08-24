@@ -11,7 +11,7 @@ import {renderHook, waitFor} from "@testing-library/react";
 
 import useFetchAuthors, {Props} from "./useFetchAuthors";
 import User from "../models/User";
-import * as MockLibraryServices from "../test/services/MockLibraryServices";
+import MockLibraryServices from "../test/services/MockLibraryServices";
 import * as MockUserServices from "../test/services/MockUserServices";
 import * as SeedData from "../test/SeedData";
 import * as Wrapper from "../test/Wrapper";

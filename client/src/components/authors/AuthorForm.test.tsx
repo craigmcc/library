@@ -14,7 +14,7 @@ import AuthorForm, {Props} from "./AuthorForm";
 import Author from "../../models/Author";
 import Library from "../../models/Library";
 import * as MockAuthorServices from "../../test/services/MockAuthorServices";
-import * as MockLibraryServices from "../../test/services/MockLibraryServices";
+import MockLibraryServices from "../../test/services/MockLibraryServices";
 import * as SeedData from "../../test/SeedData";
 
 // Test Infrastructure -------------------------------------------------------
