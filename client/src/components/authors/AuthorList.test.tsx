@@ -13,9 +13,8 @@ import LoginContext from "../login/LoginContext";
 import Author from "../../models/Author";
 import Library from "../../models/Library";
 import User from "../../models/User";
-import * as MockAuthorServices from "../../test/services/MockAuthorServices";
 import MockLibraryServices from "../../test/services/MockLibraryServices";
-import * as MockUserServices from "../../test/services/MockUserServices";
+import MockUserServices from "../../test/services/MockUserServices";
 import * as SeedData from "../../test/SeedData";
 import * as State from "../../test/State";
 

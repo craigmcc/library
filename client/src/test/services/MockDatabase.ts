@@ -8,7 +8,7 @@
 
 import * as MockAuthorServices from "./MockAuthorServices";
 import MockLibraryServices from "./MockLibraryServices";
-import * as MockUserServices from "./MockUserServices";
+import MockUserServices from "./MockUserServices";
 import * as SeedData from "../SeedData";
 import Author from "../../models/Author";
 import Library from "../../models/Library";

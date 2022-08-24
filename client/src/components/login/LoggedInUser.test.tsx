@@ -12,7 +12,7 @@ import {render, screen} from "@testing-library/react";
 
 import LoggedInUser from "./LoggedInUser";
 import LoginContext from "./LoginContext";
-import * as MockUserServices from "../../test/services/MockUserServices";
+import MockUserServices from "../../test/services/MockUserServices";
 import * as SeedData from "../../test/SeedData";
 import * as State from "../../test/State";
 

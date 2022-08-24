@@ -1,4 +1,4 @@
-// MockUserHandlers ----------------------------------------------------------
+// MockUserHandlers -----------------------------------------------------------
 
 // Mock service worker handlers for User models.
 
@@ -8,8 +8,9 @@ import {DefaultBodyType, MockedRequest, rest, RestHandler} from "msw";
 
 // Internal Modules ----------------------------------------------------------
 
-import {HttpError} from "../HttpErrors";
-import * as MockUserServices from "../services/MockUserServices";
+import {HttpErrorResponse} from "../Helpers";
+import MockUserServices from "../services/MockUserServices";
+import {CREATED, OK} from "../../util/HttpErrors";
 
 // Public Objects ------------------------------------------------------------
 
@@ -19,86 +20,87 @@ export const userHandlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [
 
     // all -------------------------------------------------------------------
     rest.get(`${PREFIX}`, (req, res, ctx) => {
-        const query = userQuery(req.url.searchParams, true);
-        const users = MockUserServices.all(query);
+        const results = MockUserServices.all(req.url.searchParams);
         return res(
-            ctx.status(200),
-            ctx.json(users),
-        )
+            ctx.status(OK),
+            ctx.json(results),
+        );
     }),
 
     // exact -----------------------------------------------------------------
     rest.get(`${PREFIX}/exact/:username`, (req, res, ctx) => {
-        const {username} = req.params;
         try {
-            const query = userQuery(req.url.searchParams);
-            const user = MockUserServices.exact(username as string, query);
+            const {username} = req.params;
+            // @ts-ignore
+            const result = MockUserServices.exact(username, req.url.searchParams);
             return res(
-                ctx.status(200),
-                ctx.json(user),
+                ctx.status(OK),
+                ctx.json(result),
             );
         } catch (error) {
-            const httpError = error as HttpError;
-            return res(
-                ctx.status(httpError.status),
-                ctx.json({
-                    context: httpError.context,
-                    message: httpError.message,
-                    status: httpError.status,
-                }),
-            );
+            return HttpErrorResponse(res, ctx, error);
         }
     }),
 
     // find ------------------------------------------------------------------
     rest.get(`${PREFIX}/:userId`, (req, res, ctx) => {
-        const {userId} = req.params;
         try {
-            const query = userQuery(req.url.searchParams);
-            const user = MockUserServices.find(Number(userId), query);
+            const {userId} = req.params;
+            // @ts-ignore
+            const user = MockUserServices.find(Number(userId), req.url.searchParams);
             return res(
-                ctx.status(200),
+                ctx.status(OK),
                 ctx.json(user),
             );
         } catch (error) {
-            const httpError = error as HttpError;
-            return res(
-                ctx.status(httpError.status),
-                ctx.json({
-                    context: httpError.context,
-                    message: httpError.message,
-                    status: httpError.status,
-                }),
-            );
+            return HttpErrorResponse(res, ctx, error);
         }
-    })
+    }),
+
+    // insert ----------------------------------------------------------------
+    rest.post(`${PREFIX}`, (req, res, ctx) => {
+        try {
+            // @ts-ignore
+            const user = new User(req.json);
+            const inserted = MockUserServices.insert(user);
+            return res(
+                ctx.status(CREATED),
+                ctx.json(inserted),
+            );
+        } catch (error) {
+            return HttpErrorResponse(res, ctx, error);
+        }
+    }),
+
+    // remove ----------------------------------------------------------------
+    rest.delete(`${PREFIX}/:userId`, (req, res, ctx) => {
+        try {
+            const {userId} = req.params;
+            // @ts-ignore
+            const user = MockUserServices.remove(Number(userId));
+            return res(
+                ctx.status(OK),
+                ctx.json(user),
+            );
+        } catch (error) {
+            return HttpErrorResponse(res, ctx, error);
+        }
+    }),
+
+    // update ----------------------------------------------------------------
+    rest.put(`${PREFIX}/:userId`, (req, res, ctx) => {
+        try {
+            const {userId} = req.params;
+            // @ts-ignore
+            const user = new User(req.json);
+            const updated = MockUserServices.insert(user);
+            return res(
+                ctx.status(OK),
+                ctx.json(updated),
+            );
+        } catch (error) {
+            return HttpErrorResponse(res, ctx, error);
+        }
+    }),
 
 ];
-
-/**
- * Return a query object based on relevant query parameters from this request.
- * Include parameters are always added, but match parameters are conditional.
- *
- * @param searchParams                  URLSearchParams from this request
- * @param matches                       Add match parameters as well?
- */
-export const userQuery = (searchParams: URLSearchParams, matches: boolean = false): any => {
-    let result: any = {};
-    // Include Parameters
-    if (searchParams.get("withAccessTokens")) {
-        result.withAccessTokens = "";
-    }
-    if (searchParams.get("withRefreshTokens")) {
-        result.withRefreshTokens = "";
-    }
-    // Match Parameters
-    if (matches) {
-        if (searchParams.get("active")) {
-            result.active = "";
-        }
-        if (searchParams.get("username")) {
-            result.username = searchParams.get("username");
-        }
-    }
-    return result;
-}
