@@ -6,6 +6,7 @@
 
 import Author from "./Author";
 import Library from "./Library";
+import Model from "./Model";
 import Story from "./Story";
 import * as ToModel from "../util/ToModel";
 
@@ -13,9 +14,10 @@ import * as ToModel from "../util/ToModel";
 
 export const SERIES_BASE = "/series";
 
-export class SeriesData {
+export class SeriesData extends Model<Series> {
 
     constructor(data: any = {}) {
+        super();
         this.id = data.id ? data.id : -1;
         this.active = (data.active !== undefined) ? data.active : true;
         this.copyright = data.copyright ? data.copyright : null;

@@ -5,6 +5,7 @@
 // Internal Modules ----------------------------------------------------------
 
 import AccessToken from "./AccessToken";
+import Model from "./Model";
 import RefreshToken from "./RefreshToken";
 import * as ToModel from "../util/ToModel";
 
@@ -12,9 +13,10 @@ import * as ToModel from "../util/ToModel";
 
 export const USERS_BASE = "/users";
 
-export class UserData {
+export class UserData extends Model<User> {
 
     constructor (data: any = {}) {
+        super();
         this.id = data.id ? data.id : -1;
         this.active = (data.active !== undefined) ? data.active : true;
         this.googleBooksApiKey = data.googleBooksApiKey ? data.googleBooksApiKey : null;

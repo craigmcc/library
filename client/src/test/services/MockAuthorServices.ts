@@ -6,10 +6,10 @@
 
 // Internal Modules ----------------------------------------------------------
 
-import {NotFound} from "./HttpErrors";
+import {NotFound} from "../HttpErrors";
 import * as MockLibraryServices from "./MockLibraryServices";
-import Author from "../models/Author";
-import * as Sorters from "../util/Sorters";
+import Author from "../../models/Author";
+import * as Sorters from "../../util/Sorters";
 
 // Private Objects -----------------------------------------------------------
 

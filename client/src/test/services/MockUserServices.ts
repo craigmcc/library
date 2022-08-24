@@ -6,9 +6,9 @@
 
 // Internal Modules ----------------------------------------------------------
 
-import {NotFound} from "./HttpErrors";
-import User from "../models/User";
-import * as Sorters from "../util/Sorters";
+import {NotFound} from "../HttpErrors";
+import User from "../../models/User";
+import * as Sorters from "../../util/Sorters";
 
 // Private Objects -----------------------------------------------------------
 

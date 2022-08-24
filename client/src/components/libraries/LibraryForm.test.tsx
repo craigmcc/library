@@ -12,7 +12,7 @@ import userEvent from "@testing-library/user-event";
 
 import LibraryForm, {Props} from "./LibraryForm";
 import Library from "../../models/Library";
-import * as MockLibraryServices from "../../test/MockLibraryServices";
+import * as MockLibraryServices from "../../test/services/MockLibraryServices";
 import * as SeedData from "../../test/SeedData";
 
 // Test Infrastructure -------------------------------------------------------

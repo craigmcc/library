@@ -9,7 +9,7 @@ import {renderHook, waitFor} from "@testing-library/react";
 // Internal Modules ----------------------------------------------------------
 
 import useFetchLibraries, {Props} from "./useFetchLibraries";
-import * as MockUserServices from "../test/MockUserServices";
+import * as MockUserServices from "../test/services/MockUserServices";
 import * as SeedData from "../test/SeedData";
 import * as Wrapper from "../test/Wrapper";
 

@@ -9,10 +9,10 @@
 import * as MockAuthorServices from "./MockAuthorServices";
 import * as MockLibraryServices from "./MockLibraryServices";
 import * as MockUserServices from "./MockUserServices";
-import * as SeedData from "./SeedData";
-import Author from "../models/Author";
-import Library from "../models/Library";
-import User from "../models/User";
+import * as SeedData from "../SeedData";
+import Author from "../../models/Author";
+import Library from "../../models/Library";
+import User from "../../models/User";
 
 // Public Functions ---------------------------------------------------------
 

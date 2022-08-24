@@ -7,6 +7,7 @@
 
 import Author from "./Author";
 import Library from "./Library";
+import Model from "./Model";
 import Story from "./Story";
 import * as ToModel from "../util/ToModel";
 
@@ -14,9 +15,10 @@ import * as ToModel from "../util/ToModel";
 
 export const VOLUMES_BASE = "/volumes";
 
-export class VolumeData {
+export class VolumeData extends Model<Volume> {
 
     constructor(data: any = {}) {
+        super();
         this.id = data.id ? data.id : -1;
         this.active = (data.active !== undefined) ? data.active : true;
         this.copyright = data.copyright ? data.copyright : null;

@@ -8,9 +8,9 @@ import {DefaultBodyType, MockedRequest, RestHandler} from "msw";
 
 // Internal Modules ----------------------------------------------------------
 
-import {authorHandlers} from "./MockAuthorHandlers";
-import {libraryHandlers} from "./MockLibraryHandlers";
-import {userHandlers} from "./MockUserHandlers";
+import {authorHandlers} from "./handlers/MockAuthorHandlers";
+import {libraryHandlers} from "./handlers/MockLibraryHandlers";
+import {userHandlers} from "./handlers/MockUserHandlers";
 
 // Public Logic --------------------------------------------------------------
 

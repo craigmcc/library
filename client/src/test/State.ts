@@ -11,7 +11,7 @@ import {State as LibraryContextState} from "../components/libraries/LibraryConte
 import {LoginState as LoginContextState} from "../components/login/LoginContext";
 import Library from "../models/Library";
 import User from "../models/User";
-import * as MockLibraryServices from "../test/MockLibraryServices";
+import * as MockLibraryServices from "./services/MockLibraryServices";
 
 // Public Objects ------------------------------------------------------------
 

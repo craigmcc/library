@@ -8,10 +8,10 @@ import {DefaultBodyType, MockedRequest, rest, RestHandler} from "msw";
 
 // Internal Modules ----------------------------------------------------------
 
-import {HttpError} from "./HttpErrors";
+import {HttpError} from "../HttpErrors";
 import {authorQuery} from "./MockAuthorHandlers";
-import * as MockAuthorServices from "./MockAuthorServices";
-import * as MockLibraryServices from "./MockLibraryServices";
+import * as MockAuthorServices from "../services/MockAuthorServices";
+import * as MockLibraryServices from "../services/MockLibraryServices";
 
 // Public Objects ------------------------------------------------------------
 

@@ -5,6 +5,7 @@
 // Internal Modules ----------------------------------------------------------
 
 import Author from "./Author";
+import Model from "./Model";
 import Series from "./Series";
 import Story from "./Story";
 import Volume from "./Volume";
@@ -14,9 +15,10 @@ import * as ToModel from "../util/ToModel";
 
 export const LIBRARIES_BASE = "/libraries";
 
-export class LibraryData {
+export class LibraryData extends Model<Library> {
 
     constructor(data: any = {}) {
+        super();
         this.id = data.id ? data.id : -1;
         this.active = (data.active !== undefined) ? data.active : true;
         this.name = data.name ? data.name : null;
