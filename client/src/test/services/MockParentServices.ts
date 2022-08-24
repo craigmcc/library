@@ -6,8 +6,6 @@
 
 // External Modules ----------------------------------------------------------
 
-const uuid = require("uuid");
-
 // Internal Modules ----------------------------------------------------------
 
 import MockCommonServices, {ModelStatic} from "./MockCommonServices";
@@ -35,9 +33,16 @@ abstract class MockParentServices<M extends Model<M>> extends MockCommonServices
     // Protected Data --------------------------------------------------------
 
     /**
+     * The last ID value that has been used.  Should be incremented
+     * in insert() processing if a new ID is needed, and reset to zero
+     * in reset().
+     */
+    protected lastId = 0;
+
+    /**
      * Model objects in this mock database, keyed by id.
      */
-    protected map = new Map<number, M>;
+    protected map = new Map<number, M>();
 
     // Standard CRUD Operations ----------------------------------------------
 
@@ -76,8 +81,8 @@ abstract class MockParentServices<M extends Model<M>> extends MockCommonServices
      * @throws NotUnique                Object with this ID already exists
      */
     public insert(model: M): M {
-        if (!model.id) {
-            model.id = uuid.v4();
+        if (!model.id || (model.id < 0)) {
+            model.id = ++this.lastId;
         }
         if (this.map.has(model.id)) {
             throw new NotUnique(`id: Duplicate ${this.name} identifier`,
@@ -147,13 +152,14 @@ abstract class MockParentServices<M extends Model<M>> extends MockCommonServices
      * Reset the internal "database" to contain no instances.
      */
     public reset() {
+        this.lastId = 0;
         this.map.clear();
     }
 
     // Abstract Helper Methods -----------------------------------------------
 
     /**
-     * Return a decorated instanceo of this model with extra fields for any
+     * Return a decorated instance of this model with extra fields for any
      * specified child models based on the query parameters.
      *
      * @param model                     Model to be decorated

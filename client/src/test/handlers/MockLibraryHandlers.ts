@@ -8,10 +8,10 @@ import {DefaultBodyType, MockedRequest, rest, RestHandler} from "msw";
 
 // Internal Modules ----------------------------------------------------------
 
-import {HttpError} from "../HttpErrors";
-import {authorQuery} from "./MockAuthorHandlers";
+import {HttpErrorResponse} from "../Helpers";
 import * as MockAuthorServices from "../services/MockAuthorServices";
 import * as MockLibraryServices from "../services/MockLibraryServices";
+import {CREATED, OK} from "../../util/HttpErrors";
 
 // Public Objects ------------------------------------------------------------
 
@@ -21,130 +21,108 @@ export const libraryHandlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [
 
     // all -------------------------------------------------------------------
     rest.get(`${PREFIX}`, (req, res, ctx) => {
-        const query = libraryQuery(req.url.searchParams, true);
-        try {
-            const libraries = MockLibraryServices.all(query);
-            return res(
-                ctx.status(200),
-                ctx.json(libraries),
-            );
-        } catch (error) {
-            const httpError = error as HttpError;
-            return res(
-                ctx.status(httpError.status),
-                ctx.json({
-                    context: httpError.context,
-                    message: httpError.message,
-                    status: httpError.status,
-                }),
-            );
-        }
+        const results = MockLibraryServices.all(req.url.searchParams);
+        return res(
+            ctx.status(OK),
+            ctx.json(results),
+        );
     }),
 
+    // authors ---------------------------------------------------------------
     rest.get(`${PREFIX}/:libraryId/authors`, (req, res, ctx) => {
-        const {libraryId} = req.params;
         try {
-            const query = authorQuery(req.url.searchParams, true);
-            const library = MockLibraryServices.find(Number(libraryId), query);
-            const authors = MockAuthorServices.all(library.id, query);
+            const {libraryId} = req.params;
+            // @ts-ignore
+            const authors = MockAuthorServices.all(Number(libraryId), req.url.searchParams);
             return res(
-                ctx.status(200),
+                ctx.status(OK),
                 ctx.json(authors),
             );
         } catch (error) {
-            const httpError = error as HttpError;
-            return res(
-                ctx.status(httpError.status),
-                ctx.json({
-                    context: httpError.context,
-                    message: httpError.message,
-                    status: httpError.status,
-                }),
-            );
+            return HttpErrorResponse(res, ctx, error);
         }
     }),
 
     // exact -----------------------------------------------------------------
     rest.get(`${PREFIX}/exact/:name`, (req, res, ctx) => {
-        const {name} = req.params;
         try {
-            const query = libraryQuery(req.url.searchParams);
-            const library = MockLibraryServices.exact(name as string, query);
+            const {name} = req.params;
+            // @ts-ignore
+            const result = MockLibraryServices.exact(name, req.url.searchParams);
             return res(
-                ctx.status(200),
-                ctx.json(library),
+                ctx.status(OK),
+                ctx.json(result),
             );
         } catch (error) {
-            const httpError = error as HttpError;
-            return res(
-                ctx.status(httpError.status),
-                ctx.json({
-                    context: httpError.context,
-                    message: httpError.message,
-                    status: httpError.status,
-                }),
-            );
+            return HttpErrorResponse(res, ctx, error);
         }
     }),
 
     // find ------------------------------------------------------------------
     rest.get(`${PREFIX}/:libraryId`, (req, res, ctx) => {
-        const {libraryId} = req.params;
         try {
-            const query = libraryQuery(req.url.searchParams);
-            const library = MockLibraryServices.find(Number(libraryId), query);
+            const {libraryId} = req.params;
+            // @ts-ignore
+            const library = MockLibraryServices.find(Number(libraryId), req.url.searchParams);
             return res(
-                ctx.status(200),
+                ctx.status(OK),
                 ctx.json(library),
             );
         } catch (error) {
-            const httpError = error as HttpError;
-            return res(
-                ctx.status(httpError.status),
-                ctx.json({
-                    context: httpError.context,
-                    message: httpError.message,
-                    status: httpError.status,
-                }),
-            );
+            return HttpErrorResponse(res, ctx, error);
         }
-    })
+    }),
+
+    // insert ----------------------------------------------------------------
+    rest.post(`${PREFIX}`, (req, res, ctx) => {
+        try {
+            // @ts-ignore
+            const library = new Library(req.json);
+            const inserted = MockLibraryServices.insert(library);
+            return res(
+                ctx.status(CREATED),
+                ctx.json(inserted),
+            );
+        } catch (error) {
+            return HttpErrorResponse(res, ctx, error);
+        }
+    }),
+
+    // remove ----------------------------------------------------------------
+    rest.delete(`${PREFIX}/:libraryId`, (req, res, ctx) => {
+        try {
+            const {libraryId} = req.params;
+            // @ts-ignore
+            const library = MockLibraryServices.remove(Number(libraryId));
+            return res(
+                ctx.status(OK),
+                ctx.json(library),
+            );
+        } catch (error) {
+            return HttpErrorResponse(res, ctx, error);
+        }
+    }),
+
+    // TODO - series
+
+    // TODO - stories
+
+    // update ----------------------------------------------------------------
+    rest.put(`${PREFIX}/:libraryId`, (req, res, ctx) => {
+        try {
+            const {libraryId} = req.params;
+            // @ts-ignore
+            const library = new Library(req.json);
+            const updated = MockLibraryServices.insert(library);
+            return res(
+                ctx.status(OK),
+                ctx.json(updated),
+            );
+        } catch (error) {
+            return HttpErrorResponse(res, ctx, error);
+        }
+    }),
+
+    // TODO - volumes
 
 ];
-
-/**
- * Return a query object based on relevant query parameters from this request.
- * Include parameters are always added, but match parameters are conditional.
- *
- * @param searchParams                  URLSearchParams from this request
- * @param matches                       Add match parameters as well?
- */
-export const libraryQuery = (searchParams: URLSearchParams, matches: boolean = false): any => {
-    let result: any = {};
-    // Include Parameters
-    if (searchParams.get("withAuthors")) {
-        result.withAuthors = "";
-    }
-    if (searchParams.get("withSeries")) {
-        result.withSeries = "";
-    }
-    if (searchParams.get("withStories")) {
-        result.withStories = "";
-    }
-    if (searchParams.get("withVolumes")) {
-        result.withVolumes = "";
-    }
-    // Match Parameters
-    if (matches) {
-        if ("" === searchParams.get("active")) {
-            result.active = "";
-        }
-        if (searchParams.get("name")) {
-            result.name = searchParams.get("name");
-        }
-        if (searchParams.get("scope")) {
-            result.scope = searchParams.get("scope");
-        }
-    }
-    return result;
-}

@@ -6,8 +6,6 @@
 
 // External Modules ----------------------------------------------------------
 
-const uuid = require("uuid");
-
 // Internal Modules ----------------------------------------------------------
 
 import MockCommonServices, {ModelStatic} from "./MockCommonServices";
@@ -41,9 +39,16 @@ abstract class MockChildServices<C extends Model<C>, P extends Model<P>> extends
     // Protected Data --------------------------------------------------------
 
     /**
+     * The last ID value that has been used.  Should be incremented
+     * in insert() processing if a new ID is needed, and reset to zero
+     * in reset().
+     */
+    protected lastId = 0;
+
+    /**
      * Model objects in this mock database, keyed by id.
      */
-    protected map = new Map<number, C>;
+    protected map = new Map<number, C>();
 
     // Readonly Data --------------------------------------------------------
 
@@ -104,8 +109,8 @@ abstract class MockChildServices<C extends Model<C>, P extends Model<P>> extends
      */
     public insert(parentId: number, child: C): C {
         const parent = this.parentInstance.read(`${this.name}Services.insert`, parentId);
-        if (!child.id) {
-            child.id = uuid.v4();
+        if (!child.id || (child.id < 0)) {
+            child.id = ++this.lastId;
         }
         if (this.map.has(child.id)) {
             throw new NotUnique(`id: Duplicate ${this.name} identifier`,
@@ -202,6 +207,7 @@ abstract class MockChildServices<C extends Model<C>, P extends Model<P>> extends
      * Reset the internal "database" to contain no instances.
      */
     public reset() {
+        this.lastId = 0;
         this.map.clear();
     }
 
