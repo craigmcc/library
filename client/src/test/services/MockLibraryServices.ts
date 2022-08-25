@@ -6,8 +6,9 @@
 
 // Internal Modules ----------------------------------------------------------
 
-//import * as MockAuthorServices from "./MockAuthorServices";
+import MockAuthorServices from "./MockAuthorServices";
 import MockParentServices from "./MockParentServices";
+import Author from "../../models/Author";
 import Library from "../../models/Library";
 import {NotFound} from "../../util/HttpErrors";
 
@@ -20,6 +21,16 @@ class MockLibraryServices extends MockParentServices<Library> {
     }
 
     // Model Specific Methods ------------------------------------------------
+
+    /**
+     * Return all Authors belonging to the specified Library that match
+     * the specified selection criteria.
+     *
+     * @param libraryId                 ID of the Library for which to retrieve Authors
+     */
+    public authors(libraryId: number, query?: URLSearchParams): Author[] {
+        return MockAuthorServices.all(libraryId, query);
+    }
 
     /**
      * Return the Library with the specified name (if any), or throw NotFound.
@@ -36,7 +47,7 @@ class MockLibraryServices extends MockParentServices<Library> {
             }
         }
         throw new NotFound(
-            `name Missing Library '${name}'`,
+            `name: Missing Library '${name}'`,
             `${this.name}Services.exact`,
         );
     }

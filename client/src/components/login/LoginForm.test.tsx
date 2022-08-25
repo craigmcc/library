@@ -48,8 +48,7 @@ test("invalid data does not submit", async () => {
 
 });
 
-// NOTE - whines about "Warning: The current testing environment is not configured to support act(...)"
-xtest("valid data with enter after last field", async () => {
+test("valid data with enter after last field", async () => {
 
     const VALID_USERNAME = "myusername";
     const VALID_PASSWORD = "mypassword";

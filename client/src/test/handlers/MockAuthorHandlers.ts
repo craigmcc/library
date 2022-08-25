@@ -4,122 +4,112 @@
 
 // External Modules ----------------------------------------------------------
 
-import {DefaultBodyType, MockedRequest, rest, RestHandler} from "msw";
+import {rest, RestHandler} from "msw";
 
 // Internal Modules ----------------------------------------------------------
 
-import {HttpError} from "../HttpErrors";
-import * as MockAuthorServices from "../services/MockAuthorServices";
+import {HttpErrorResponse} from "../Helpers";
+import MockAuthorServices from "../services/MockAuthorServices";
+import {CREATED, OK} from "../../util/HttpErrors";
 
-// Public Logic --------------------------------------------------------------
+// Public Objects ------------------------------------------------------------
 
 const PREFIX = "/api/authors";
 
-export const authorHandlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [
+export const authorHandlers: RestHandler[] = [
 
     // all -------------------------------------------------------------------
     rest.get(`${PREFIX}/:libraryId`, (req, res, ctx) => {
-        const {libraryId} = req.params;
-        const query = authorQuery(req.url.searchParams, true);
         try {
-            const authors = MockAuthorServices.all(Number(libraryId), query);
+            const {libraryId} = req.params;
+            // @ts-ignore
+            const authors = MockAuthorServices.all(libraryId, req.url.searchParams);
             return res(
-                ctx.status(200),
+                ctx.status(OK),
                 ctx.json(authors),
             );
         } catch (error) {
-            const httpError = error as HttpError;
-            return res(
-                ctx.status(httpError.status),
-                ctx.json({
-                    context: httpError.context,
-                    message: httpError.message,
-                    status: httpError.status,
-                }),
-            );
+            return HttpErrorResponse(res, ctx, error);
         }
     }),
 
     // exact -----------------------------------------------------------------
     rest.get(`${PREFIX}/:libraryId/exact/:firstName/:lastName`, (req, res, ctx) => {
-        const {libraryId, firstName, lastName} = req.params;
         try {
-            const query = authorQuery(req.url.searchParams);
-            const author = MockAuthorServices.exact(Number(libraryId),
-                firstName as string, lastName as string, query);
+            const {libraryId, firstName, lastName} = req.params;
+            // @ts-ignore
+            const author = MockAuthorServices.exact(libraryId, firstName, lastName, req.url.searchParams);
             return res(
-                ctx.status(200),
+                ctx.status(OK),
                 ctx.json(author),
             );
         } catch (error) {
-            const httpError = error as HttpError;
-            return res(
-                ctx.status(httpError.status),
-                ctx.json({
-                    context: httpError.context,
-                    message: httpError.message,
-                    status: httpError.status,
-                }),
-            );
+            return HttpErrorResponse(res, ctx, error);
         }
     }),
 
     // find ------------------------------------------------------------------
     rest.get(`${PREFIX}/:libraryId/:authorId`, (req, res, ctx) => {
-        const {libraryId, authorId} = req.params;
         try {
-            const query = authorQuery(req.url.searchParams);
-            const author = MockAuthorServices.find(Number(libraryId),
-                Number(authorId), query);
+            const {authorId, libraryId} = req.params;
+            // @ts-ignore
+            const author = MockAuthorServices.find(libraryId, authorId);
             return res(
-                ctx.status(200),
+                ctx.status(OK),
                 ctx.json(author),
             );
         } catch (error) {
-            const httpError = error as HttpError;
+            return HttpErrorResponse(res, ctx, error);
+        }
+    }),
+
+    // insert ----------------------------------------------------------------
+    rest.post(`${PREFIX}/:libraryId`, (req, res, ctx) => {
+        try {
+            const {libraryId} = req.params;
+            // @ts-ignore
+            const author = new Author(req.json);
+            // @ts-ignore
+            const inserted = MockAuthorServices.insert(libraryId, author);
             return res(
-                ctx.status(httpError.status),
-                ctx.json({
-                    context: httpError.context,
-                    message: httpError.message,
-                    status: httpError.status,
-                }),
+                ctx.status(CREATED),
+                ctx.json(inserted),
             );
+        } catch (error) {
+            return HttpErrorResponse(res, ctx, error);
+        }
+    }),
+
+    // remove ----------------------------------------------------------------
+    rest.delete(`${PREFIX}/:libraryId/:authorId`, (req, res, ctx) => {
+        try {
+            const {authorId, libraryId} = req.params;
+            // @ts-ignore
+            const author = MockAuthorServices.remove(libraryId, authorId);
+            return res(
+                ctx.status(OK),
+                ctx.json(author),
+            );
+        } catch (error) {
+            return HttpErrorResponse(res, ctx, error);
+        }
+    }),
+
+    // update ----------------------------------------------------------------
+    rest.put(`${PREFIX}/:libraryId/:authorId`, (req, res, ctx) => {
+        try {
+            const {authorId, libraryId} = req.params;
+            // @ts-ignore
+            const author = new Author(req.json);
+            // @ts-ignore
+            const updated = MockAuthorServices.update(libraryId, authorId, author);
+            return res(
+                ctx.status(OK),
+                ctx.json(updated),
+            );
+        } catch (error) {
+            return HttpErrorResponse(res, ctx, error);
         }
     }),
 
 ];
-
-/**
- * Return a query object based on relevant query parameters from this request.
- * Include parameters are always added, but match parameters are conditional.
- *
- * @param searchParams                  URLSearchParams from this request
- * @param matches                       Add match parameters as well?
- */
-export const authorQuery = (searchParams: URLSearchParams, matches: boolean = false): any => {
-    let result: any = {};
-    // Include Parameters
-    if (searchParams.get("withLibrary")) {
-        result.withLibrary = "";
-    }
-    if (searchParams.get("withSeries")) {
-        result.withSeries = "";
-    }
-    if (searchParams.get("withStories")) {
-        result.withStories = "";
-    }
-    if (searchParams.get("withVolumes")) {
-        result.withVolumes = "";
-    }
-    // Match Parameters
-    if (matches) {
-        if ("" === searchParams.get("active")) {
-            result.active = "";
-        }
-        if (searchParams.get("name")) {
-            result.name = searchParams.get("name");
-        }
-    }
-    return result;
-}

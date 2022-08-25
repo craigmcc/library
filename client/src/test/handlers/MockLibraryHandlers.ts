@@ -9,7 +9,6 @@ import {DefaultBodyType, MockedRequest, rest, RestHandler} from "msw";
 // Internal Modules ----------------------------------------------------------
 
 import {HttpErrorResponse} from "../Helpers";
-import * as MockAuthorServices from "../services/MockAuthorServices";
 import MockLibraryServices from "../services/MockLibraryServices";
 import {CREATED, OK} from "../../util/HttpErrors";
 
@@ -33,7 +32,7 @@ export const libraryHandlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [
         try {
             const {libraryId} = req.params;
             // @ts-ignore
-            const authors = MockAuthorServices.all(Number(libraryId), req.url.searchParams);
+            const authors = MockLibraryServices.authors(Number(libraryId), req.url.searchParams);
             return res(
                 ctx.status(OK),
                 ctx.json(authors),

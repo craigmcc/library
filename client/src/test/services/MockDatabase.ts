@@ -6,7 +6,7 @@
 
 // Internal Modules ----------------------------------------------------------
 
-import * as MockAuthorServices from "./MockAuthorServices";
+import MockAuthorServices from "./MockAuthorServices";
 import MockLibraryServices from "./MockLibraryServices";
 import MockUserServices from "./MockUserServices";
 import * as SeedData from "../SeedData";
