@@ -244,7 +244,7 @@ const SeriesList = (props: Props) => {
 
             <Row className="g-2">
                 <Table
-                    bordered={true}
+                    //bordered={true}
                     hover={true}
                     size="sm"
                     striped={true}
