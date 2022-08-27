@@ -18,9 +18,10 @@ import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 import LibraryContext from "./LibraryContext";
 import LoginContext from "../login/LoginContext";
 import FetchingProgress from "../shared/FetchingProgress";
-import {HandleAction, HandleBoolean, HandleLibrary, HandleValue, Scope} from "../../types";
+import {HandleAction, HandleBoolean, HandleLibrary, HandleValue/*, Scope*/} from "../../types";
+import {useAppSelector} from "../../Hooks";
 import useFetchLibraries from "../../hooks/useFetchLibraries";
-import Library from "../../models/Library";
+//import Library from "../../models/Library";
 import logger from "../../util/ClientLogger";
 import {listValue} from "../../util/Transformations";
 
@@ -39,7 +40,7 @@ const LibraryList = (props: Props) => {
     const loginContext = useContext(LoginContext);
 
     const [active, setActive] = useState<boolean>(false);
-    const [availables, setAvailables] = useState<Library[]>([]);
+//    const [availables, setAvailables] = useState<Library[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const pageSize = 100;
     const [searchText, setSearchText] = useState<string>("");
@@ -51,6 +52,9 @@ const LibraryList = (props: Props) => {
         name: (searchText.length > 0) ? searchText : undefined,
         pageSize: pageSize,
     });
+    // TODO - implement the actual fetch with conditions
+    // TODO - implement filtering down to availables somewhere
+    const libraries = useAppSelector(state => state.libraries.libraries);
 
     useEffect(() => {
 
@@ -60,12 +64,14 @@ const LibraryList = (props: Props) => {
             name: searchText,
         });
 
-        const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
-        if (isSuperuser) {
-            setAvailables(fetchLibraries.libraries);
-        } else {
-            setAvailables(libraryContext.libraries);
-        }
+        /*
+                const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
+                if (isSuperuser) {
+                    setAvailables(fetchLibraries.libraries);
+                } else {
+                    setAvailables(libraryContext.libraries);
+                }
+        */
 
     }, [libraryContext.libraries, loginContext, loginContext.data.loggedIn,
         active, searchText,
@@ -131,8 +137,8 @@ const LibraryList = (props: Props) => {
                         currentPage={currentPage}
                         handleNext={handleNext}
                         handlePrevious={handlePrevious}
-                        lastPage={(availables.length === 0) ||
-                            (availables.length < pageSize)}
+                        lastPage={(libraries.length === 0) ||
+                            (libraries.length < pageSize)}
                         variant="secondary"
                     />
                 </Col>
@@ -164,7 +170,7 @@ const LibraryList = (props: Props) => {
                     </thead>
 
                     <tbody>
-                    {availables.map((library, rowIndex) => (
+                    {libraries.map((library, rowIndex) => (
                         <tr
                             className="table-default"
                             key={1000 + (rowIndex * 100)}
