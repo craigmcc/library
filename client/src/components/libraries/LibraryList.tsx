@@ -16,10 +16,11 @@ import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 // Internal Modules ----------------------------------------------------------
 
 import LibraryContext from "./LibraryContext";
+import {selectLibraries} from "./LibrarySlice";
 import LoginContext from "../login/LoginContext";
 import FetchingProgress from "../shared/FetchingProgress";
-import {HandleAction, HandleBoolean, HandleLibrary, HandleValue/*, Scope*/} from "../../types";
 import {useAppSelector} from "../../Hooks";
+import {HandleAction, HandleBoolean, HandleLibrary, HandleValue/*, Scope*/} from "../../types";
 import useFetchLibraries from "../../hooks/useFetchLibraries";
 //import Library from "../../models/Library";
 import logger from "../../util/ClientLogger";
@@ -54,7 +55,7 @@ const LibraryList = (props: Props) => {
     });
     // TODO - implement the actual fetch with conditions
     // TODO - implement filtering down to availables somewhere
-    const libraries = useAppSelector(state => state.libraries.libraries);
+    const libraries = useAppSelector(selectLibraries);
 
     useEffect(() => {
 

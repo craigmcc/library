@@ -5,16 +5,16 @@
 // External Modules ----------------------------------------------------------
 
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import type {RootState} from "../../Store";
 
 // Internal Modules ----------------------------------------------------------
 
 import Library from "../../models/Library";
+import {RootState} from "../../Store";
 
 // Private Objects -----------------------------------------------------------
 
 const initialState: LibraryState = {
-    libraries: [
+    data: [
         new Library({
             id: 1,
             active: true,
@@ -37,23 +37,37 @@ const initialState: LibraryState = {
     ],
 }
 
-// Public Objects ------------------------------------------------------------
+// Type Definitions ----------------------------------------------------------
 
 /**
  * Type definition for the State of this slice.
  */
 interface LibraryState {
-    libraries: Library[],
+    data: Library[],
 }
 
-/**
- * Configure this slice.
- */
+// Slice Configuration -------------------------------------------------------
+
 const LibrarySlice = createSlice({
     name: "libraries",
     initialState,
     reducers: {
+        insertLibrary: (state, action: PayloadAction<Library>) => {
+            state.data.push(action.payload);
+        },
     }
 });
 
 export default LibrarySlice;
+
+// Selectors -----------------------------------------------------------------
+
+export const selectLibraries = (state: RootState) =>
+    state.libraries.data;
+
+export const selectLibraryById = (state: RootState, libraryId: number) =>
+    state.libraries.data.find(library => library.id === libraryId);
+
+export const selectLibraryByName = (state: RootState, name: string) =>
+    state.libraries.data.find(library => library.name === name);
+
