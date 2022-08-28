@@ -11,33 +11,12 @@ import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../../Store";
 import Api from "../../clients/Api";
 import Library, {LIBRARIES_BASE} from "../../models/Library";
+import * as ToModel from "../../util/ToModel";
 
 // Private Objects -----------------------------------------------------------
 
 const initialState: LibraryState = {
-    data: [
-/*
-        new Library({
-            id: 1,
-            active: true,
-            name: "First Library",
-            scope: "first",
-        }),
-        new Library({
-            id: 2,
-            active: true,
-            name: "Second Library",
-            notes: "Notes on Second Library",
-            scope: "second",
-        }),
-        new Library({
-            id: 3,
-            active: true,
-            name: "Third Library",
-            scope: "third",
-        }),
-*/
-    ],
+    data: [],
     error: null,
     status: "idle",
 }
@@ -48,8 +27,8 @@ const initialState: LibraryState = {
  * Generic status of API slices.
  */
 interface Status {
-    error: string | null,
-    status: "failed" | "idle" | "loading" | "succeeded",
+    error: Error | null,
+    status: "executing" | "failed" | "idle" | "loading" | "succeeded",
 }
 
 /**
@@ -61,17 +40,26 @@ interface LibraryState extends Status {
 
 // Thunks --------------------------------------------------------------------
 
-export const allLibraries = createAsyncThunk("libraries/all", async () => {
-    const url = LIBRARIES_BASE;         // TODO - query parameters
-    const tryFetch = true;              // TODO - only if logged in
-    if (tryFetch) {
-        const theLibraries = (await Api.get<Library[]>(url)).data;
-        return theLibraries;
-    } else {
-        return [];
-    }
+export const allLibraries = createAsyncThunk(
+    "libraries/all",
+    async () => {
+        const url = LIBRARIES_BASE;         // TODO - query parameters
+        const tryFetch = true;              // TODO - only if logged in
+        if (tryFetch) {
+            const theLibraries = ToModel.LIBRARIES((await Api.get<Library[]>(url)).data);
+            return theLibraries;
+        } else {
+            return [];
+        }
+    });
 
-});
+export const insertLibrary = createAsyncThunk(
+    "libraries/insert",
+    async (library: Library) => {
+        const url = LIBRARIES_BASE;
+        const inserted = ToModel.LIBRARY((await Api.post<Library>(url, library)).data);
+        return inserted;
+    });
 
 // Slice Configuration -------------------------------------------------------
 
@@ -103,10 +91,22 @@ const LibrarySlice = createSlice({
                 state.data = action.payload;
             })
             .addCase(allLibraries.rejected, (state, action) => {
-                state.error = action.error.message ? action.error.message : null;
+                state.error = new Error(action.error.message!);
                 state.status = "failed";
-            });
-    }
+            })
+            .addCase(insertLibrary.pending, (state, action) => {
+                state.status = "executing";
+            })
+            .addCase(insertLibrary.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.data.push(action.payload);
+            })
+            .addCase(insertLibrary.rejected, (state, action) => {
+                state.error = new Error(action.error.message!);
+                state.status = "failed";
+            })
+        ;
+    },
 });
 
 export default LibrarySlice;

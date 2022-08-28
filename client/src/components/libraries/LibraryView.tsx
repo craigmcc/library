@@ -11,8 +11,10 @@ import React, {useContext, useEffect, useState} from "react";
 import LibraryContext from "./LibraryContext";
 import LibraryForm from "./LibraryForm";
 import LibraryList from "./LibraryList";
+import {insertLibrary} from "./LibrarySlice";
 import LoginContext from "../login/LoginContext";
 import MutatingProgress from "../shared/MutatingProgress";
+import {useAppDispatch} from "../../Hooks";
 import {HandleAction, HandleLibrary, Scope} from "../../types";
 import useMutateLibrary from "../../hooks/useMutateLibrary";
 import Library from "../../models/Library";
@@ -41,6 +43,8 @@ const LibraryView = () => {
     const mutateLibrary = useMutateLibrary({
         alertPopup: false,
     });
+
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
 
@@ -87,11 +91,14 @@ const LibraryView = () => {
     // Handle insert of a new Library
     const handleInsert: HandleLibrary = async (theLibrary) => {
         setMessage(`Inserting Library '${theLibrary._title}'`);
-        const inserted = await mutateLibrary.insert(theLibrary);
-        logger.debug({
-            context: "LibrarySegment.handleInsert",
-            library: Abridgers.LIBRARY(inserted),
-        });
+        /*
+            const inserted = await mutateLibrary.insert(theLibrary);
+            logger.debug({
+                context: "LibrarySegment.handleInsert",
+                library: Abridgers.LIBRARY(inserted.payload),
+            });
+        */
+        await dispatch(insertLibrary(theLibrary));
         setView(View.OPTIONS);
         libraryContext.handleRefresh();
     }
