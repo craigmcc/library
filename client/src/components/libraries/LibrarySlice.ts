@@ -22,24 +22,14 @@ const SLICE_NAME = "libraries";
 
 const initialState: LibraryState = {
     data: [],
-    error: null,
-    status: "idle",
 }
 
 // Type Definitions ----------------------------------------------------------
 
 /**
- * Generic status of API slices.
- */
-interface Status {
-    error: Error | null,
-    status: "executing" | "failed" | "idle" | "loading" | "succeeded",
-}
-
-/**
  * Type definition for the State of this slice.
  */
-interface LibraryState extends Status {
+interface LibraryState {
     data: Library[],
 }
 
@@ -208,16 +198,8 @@ const LibrarySlice = createSlice({
     },
     extraReducers(builder) {
         builder
-            .addCase(allLibraries.pending, (state, action) => {
-                state.status = "loading";
-            })
             .addCase(allLibraries.fulfilled, (state, action) => {
-                state.status = "succeeded";
                 state.data = action.payload;
-            })
-            .addCase(allLibraries.rejected, (state, action) => {
-                state.error = new Error(action.error.message!);
-                state.status = "failed";
             })
             .addCase(insertLibrary.fulfilled, (state, action) => {
                 state.data.push(action.payload);
@@ -246,11 +228,3 @@ export const selectLibraryById = (state: RootState, libraryId: number) =>
 
 export const selectLibraryByName = (state: RootState, name: string) =>
     state.libraries.data.find(library => library.name === name);
-
-export const selectLibraryStatus = (state: RootState) => {
-    return {
-        error: state.libraries.error,
-        status: state.libraries.status,
-    } as Status;
-}
-
