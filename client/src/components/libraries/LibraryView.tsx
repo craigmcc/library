@@ -11,12 +11,11 @@ import React, {useContext, useEffect, useState} from "react";
 import LibraryContext from "./LibraryContext";
 import LibraryForm from "./LibraryForm";
 import LibraryList from "./LibraryList";
-import {insertLibrary} from "./LibrarySlice";
+import {insertLibrary, removeLibrary, updateLibrary} from "./LibrarySlice";
 import LoginContext from "../login/LoginContext";
 import MutatingProgress from "../shared/MutatingProgress";
 import {useAppDispatch} from "../../Hooks";
 import {HandleAction, HandleLibrary, Scope} from "../../types";
-import useMutateLibrary from "../../hooks/useMutateLibrary";
 import Library from "../../models/Library";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
@@ -36,13 +35,11 @@ const LibraryView = () => {
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+    const [executing, setExecuting] = useState<boolean>(false);
     const [library, setLibrary] = useState<Library>(new Library());
     const [message, setMessage] = useState<string>("");
     const [view, setView] = useState<View>(View.OPTIONS);
-
-    const mutateLibrary = useMutateLibrary({
-        alertPopup: false,
-    });
 
     const dispatch = useAppDispatch();
 
@@ -90,29 +87,32 @@ const LibraryView = () => {
 
     // Handle insert of a new Library
     const handleInsert: HandleLibrary = async (theLibrary) => {
-        setMessage(`Inserting Library '${theLibrary._title}'`);
-        /*
-            const inserted = await mutateLibrary.insert(theLibrary);
-            logger.debug({
-                context: "LibrarySegment.handleInsert",
-                library: Abridgers.LIBRARY(inserted.payload),
-            });
-        */
-        await dispatch(insertLibrary(theLibrary));
-        setView(View.OPTIONS);
-        libraryContext.handleRefresh();
+        try {
+            setExecuting(true);
+            setMessage(`Inserting Library '${theLibrary._title}'`);
+            await dispatch(insertLibrary(theLibrary));
+        } catch (error) {
+            setError(error as Error);
+        } finally {
+            setExecuting(false);
+            setView(View.OPTIONS);
+            libraryContext.handleRefresh();
+        }
     }
 
     // Handle remove of an existing Library
     const handleRemove: HandleLibrary = async (theLibrary) => {
-        setMessage(`Removing Library '${theLibrary._title}'`);
-        const removed = await mutateLibrary.remove(theLibrary);
-        logger.debug({
-            context: "LibrarySegment.handleRemove",
-            library: Abridgers.LIBRARY(removed),
-        });
-        setView(View.OPTIONS);
-        libraryContext.handleRefresh();
+        try {
+            setExecuting(true);
+            setMessage(`Removing Library '${theLibrary._title}'`);
+            await dispatch(removeLibrary(theLibrary));
+        } catch (error) {
+            setError(error as Error);
+        } finally {
+            setExecuting(false);
+            setView(View.OPTIONS);
+            libraryContext.handleRefresh();
+        }
     }
 
     // Handle return from View.DETAILS to redisplay View.OPTIONS
@@ -125,22 +125,25 @@ const LibraryView = () => {
 
     // Handle request to update an existing Library
     const handleUpdate: HandleLibrary = async (theLibrary) => {
-        setMessage(`Updating Library '${theLibrary._title}'`);
-        const updated = await mutateLibrary.update(theLibrary);
-        logger.debug({
-            context: "LibrarySegment.handleUpdate",
-            library: Abridgers.LIBRARY(updated),
-        });
-        setView(View.OPTIONS);
-        libraryContext.handleRefresh();
+        try {
+            setExecuting(true);
+            setMessage(`Updating Library '${theLibrary._title}'`);
+            await dispatch(updateLibrary(theLibrary));
+        } catch (error) {
+            setError(error as Error);
+        } finally {
+            setExecuting(false);
+            setView(View.OPTIONS);
+            libraryContext.handleRefresh();
+        }
     }
 
     return (
         <>
 
             <MutatingProgress
-                error={mutateLibrary.error}
-                executing={mutateLibrary.executing}
+                error={error}
+                executing={executing}
                 message={message}
             />
 

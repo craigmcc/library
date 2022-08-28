@@ -72,15 +72,6 @@ interface matchLibraryParams {
     scope?: string;                     // Exact match on scope
 }
 
-export interface removeLibraryParams {
-    libraryId: number;                  // ID of the Library to remove
-}
-
-export interface updateLibraryParams {
-    libraryId: number;                  // ID of the Library to update
-    library: Partial<Library>;          // Library properties to update
-}
-
 // Thunks --------------------------------------------------------------------
 
 export const allLibraries = createAsyncThunk<
@@ -89,7 +80,7 @@ export const allLibraries = createAsyncThunk<
     {
         rejectValue: HttpError,         // Error response type
     }
->(
+    >(
     `${SLICE_NAME}/all`,
     async (params: allLibrariesParams, thunkAPI) => {
         const url = `${LIBRARIES_BASE}${queryParameters(params)}`;
@@ -111,7 +102,7 @@ export const exactLibrary = createAsyncThunk<
     {
         rejectValue: HttpError,         // Error response type
     }
->(
+    >(
     `${SLICE_NAME}/exact`,
     async (params: exactLibraryParams, thunkAPI) => {
         const url = `${LIBRARIES_BASE}/exact/${params.name}${queryParameters(params)}`;
@@ -122,8 +113,24 @@ export const exactLibrary = createAsyncThunk<
         } catch (error) {
             return thunkAPI.rejectWithValue(error as HttpError);
         }
+    });
+
+export const findLibrary = createAsyncThunk<
+    Library,                            // Success response type
+    findLibraryParams,                  // Argument type
+    {
+        rejectValue: HttpError,         // Error response type
     }
-)
+    >(
+    `${SLICE_NAME}/find`,
+    async (params, thunkAPI) => {
+        const url = `${LIBRARIES_BASE}/${params.libraryId}${queryParameters(params.params)}`;
+        try {
+            return ToModel.LIBRARY((await Api.get<Library>(url)).data);
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error as HttpError);
+        }
+    });
 
 export const insertLibrary = createAsyncThunk<
     Library,                            // Success response type
@@ -131,7 +138,7 @@ export const insertLibrary = createAsyncThunk<
     {
         rejectValue: HttpError;         // Error response type
     }
->(
+    >(
     `${SLICE_NAME}/insert`,
     async (library: Library, thunkAPI) => {
         const url = LIBRARIES_BASE;
@@ -143,27 +150,61 @@ export const insertLibrary = createAsyncThunk<
         }
     });
 
+export const removeLibrary = createAsyncThunk<
+    Library,                            // Success response type
+    Library,                            // Argument type
+    {
+        rejectValue: HttpError,         // Error response type
+    }
+    >(
+    `${SLICE_NAME}/remove`,
+    async (library, thunkAPI) => {
+        const url = `${LIBRARIES_BASE}/${library.id}`;
+        try {
+            return ToModel.LIBRARY((await Api.delete<Library>(url)).data);
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error as HttpError);
+        }
+    });
+
+export const updateLibrary = createAsyncThunk<
+    Library,                            // Success response type
+    Partial<Library>,                   // Argument type
+    {
+        rejectValue: HttpError,         // Error response type
+    }
+    >(
+    `${SLICE_NAME}/update`,
+    async (library, thunkAPI) => {
+        const url = `${LIBRARIES_BASE}/${library.id}`;
+        try {
+            return ToModel.LIBRARY((await Api.put<Library>(url, library)).data);
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error as HttpError);
+        }
+    });
+
 // Slice Configuration -------------------------------------------------------
 
 const LibrarySlice = createSlice({
     name: SLICE_NAME,
     initialState,
     reducers: {
-/*
-        libraryAdded: (state, action: PayloadAction<Library>) => {
-            state.data.push(action.payload);
-        },
-        libraryRemoved: (state, action: PayloadAction<number>) => {
-            state.data = state.data.filter(library => library.id !== action.payload);
-        },
-        libraryUpdated: (state, action: PayloadAction<Library>) => {
-            const {id: libraryId} = action.payload;
-            let existing = state.data.find(library => library.id === libraryId);
-            if (existing) {
-                existing = action.payload; // TODO - is this seen as a mutation?
-            }
-        }
-*/
+        /*
+                libraryAdded: (state, action: PayloadAction<Library>) => {
+                    state.data.push(action.payload);
+                },
+                libraryRemoved: (state, action: PayloadAction<number>) => {
+                    state.data = state.data.filter(library => library.id !== action.payload);
+                },
+                libraryUpdated: (state, action: PayloadAction<Library>) => {
+                    const {id: libraryId} = action.payload;
+                    let existing = state.data.find(library => library.id === libraryId);
+                    if (existing) {
+                        existing = action.payload; // TODO - is this seen as a mutation?
+                    }
+                }
+        */
     },
     extraReducers(builder) {
         builder
@@ -178,27 +219,15 @@ const LibrarySlice = createSlice({
                 state.error = new Error(action.error.message!);
                 state.status = "failed";
             })
-            .addCase(exactLibrary.pending, (state, action) => {
-                state.status = "loading";
-            })
-            .addCase(exactLibrary.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                // TODO - use action.payload to cache this?
-            })
-            .addCase(exactLibrary.rejected, (state, action) => {
-                state.error = action.payload!;
-                state.status = "failed";
-            })
-            .addCase(insertLibrary.pending, (state, action) => {
-                state.status = "executing";
-            })
             .addCase(insertLibrary.fulfilled, (state, action) => {
-                state.status = "succeeded";
                 state.data.push(action.payload);
             })
-            .addCase(insertLibrary.rejected, (state, action) => {
-                state.error = new Error(action.error.message!);
-                state.status = "failed";
+            .addCase(removeLibrary.fulfilled, (state,action) => {
+                state.data = state.data.filter(library => library.id !== action.payload.id);
+            })
+            .addCase(updateLibrary.fulfilled, (state, action) => {
+                state.data = state.data.filter(library => library.id !== action.payload.id);
+                state.data.push(action.payload);
             })
         ;
     },
