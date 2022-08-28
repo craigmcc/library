@@ -4,14 +4,19 @@
 
 // External Modules ----------------------------------------------------------
 
-import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice/*, PayloadAction*/} from "@reduxjs/toolkit";
 
 // Internal Modules ----------------------------------------------------------
 
 import {RootState} from "../../Store";
+import {paginationParams} from "../../types";
 import Api from "../../clients/Api";
 import Library, {LIBRARIES_BASE} from "../../models/Library";
+import {HttpError} from "../../util/HttpErrors";
+import {queryParameters} from "../../util/QueryParameters";
 import * as ToModel from "../../util/ToModel";
+
+const SLICE_NAME = "libraries";
 
 // Private Objects -----------------------------------------------------------
 
@@ -38,35 +43,113 @@ interface LibraryState extends Status {
     data: Library[],
 }
 
+// Parameter Types -----------------------------------------------------------
+
+export interface allLibrariesParams
+    extends includeLibraryParams, matchLibraryParams, paginationParams {
+}
+
+export interface exactLibraryParams {
+    name: string;                       // Exact match on name
+    params?: includeLibraryParams;      // Other parameters
+}
+
+export interface findLibraryParams {
+    libraryId: number;                  // ID of the requested Library
+    params?: includeLibraryParams;      // Other parameters
+}
+
+interface includeLibraryParams {
+    withAuthors?: boolean;              // Include child Authors
+    withSeries?: boolean;               // Include child Series
+    withStories?: boolean;              // Include child Stories
+    withVolumes?: boolean;              // Include child Volumes
+}
+
+interface matchLibraryParams {
+    active?: boolean;                   // Select active Libraries
+    name?: string;                      // Wildcard match on name
+    scope?: string;                     // Exact match on scope
+}
+
+export interface removeLibraryParams {
+    libraryId: number;                  // ID of the Library to remove
+}
+
+export interface updateLibraryParams {
+    libraryId: number;                  // ID of the Library to update
+    library: Partial<Library>;          // Library properties to update
+}
+
 // Thunks --------------------------------------------------------------------
 
-export const allLibraries = createAsyncThunk(
-    "libraries/all",
-    async () => {
-        const url = LIBRARIES_BASE;         // TODO - query parameters
+export const allLibraries = createAsyncThunk<
+    Library[],                          // Success response type
+    allLibrariesParams,                 // Argument type
+    {
+        rejectValue: HttpError,         // Error response type
+    }
+>(
+    `${SLICE_NAME}/all`,
+    async (params: allLibrariesParams, thunkAPI) => {
+        const url = `${LIBRARIES_BASE}${queryParameters(params)}`;
         const tryFetch = true;              // TODO - only if logged in
         if (tryFetch) {
-            const theLibraries = ToModel.LIBRARIES((await Api.get<Library[]>(url)).data);
-            return theLibraries;
+            try {
+                return ToModel.LIBRARIES((await Api.get<Library[]>(url)).data);
+            } catch (error) {
+                return thunkAPI.rejectWithValue(error as HttpError);
+            }
         } else {
             return [];
         }
     });
 
-export const insertLibrary = createAsyncThunk(
-    "libraries/insert",
-    async (library: Library) => {
+export const exactLibrary = createAsyncThunk<
+    Library,                            // Success response type
+    exactLibraryParams,                 // Argument type
+    {
+        rejectValue: HttpError,         // Error response type
+    }
+>(
+    `${SLICE_NAME}/exact`,
+    async (params: exactLibraryParams, thunkAPI) => {
+        const url = `${LIBRARIES_BASE}/exact/${params.name}${queryParameters(params)}`;
+        try {
+            const library = ToModel.LIBRARY((await Api.get<Library>(url)).data);
+            // TODO - cache this library by ID?
+            return library;
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error as HttpError);
+        }
+    }
+)
+
+export const insertLibrary = createAsyncThunk<
+    Library,                            // Success response type
+    Library,                            // Argument type
+    {
+        rejectValue: HttpError;         // Error response type
+    }
+>(
+    `${SLICE_NAME}/insert`,
+    async (library: Library, thunkAPI) => {
         const url = LIBRARIES_BASE;
-        const inserted = ToModel.LIBRARY((await Api.post<Library>(url, library)).data);
-        return inserted;
+        try {
+            const inserted = ToModel.LIBRARY((await Api.post<Library>(url, library)).data);
+            return inserted;
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error as HttpError);
+        }
     });
 
 // Slice Configuration -------------------------------------------------------
 
 const LibrarySlice = createSlice({
-    name: "libraries",
+    name: SLICE_NAME,
     initialState,
     reducers: {
+/*
         libraryAdded: (state, action: PayloadAction<Library>) => {
             state.data.push(action.payload);
         },
@@ -80,6 +163,7 @@ const LibrarySlice = createSlice({
                 existing = action.payload; // TODO - is this seen as a mutation?
             }
         }
+*/
     },
     extraReducers(builder) {
         builder
@@ -92,6 +176,17 @@ const LibrarySlice = createSlice({
             })
             .addCase(allLibraries.rejected, (state, action) => {
                 state.error = new Error(action.error.message!);
+                state.status = "failed";
+            })
+            .addCase(exactLibrary.pending, (state, action) => {
+                state.status = "loading";
+            })
+            .addCase(exactLibrary.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                // TODO - use action.payload to cache this?
+            })
+            .addCase(exactLibrary.rejected, (state, action) => {
+                state.error = action.payload!;
                 state.status = "failed";
             })
             .addCase(insertLibrary.pending, (state, action) => {
@@ -110,7 +205,7 @@ const LibrarySlice = createSlice({
 });
 
 export default LibrarySlice;
-export const { libraryAdded } = LibrarySlice.actions;
+//export const { libraryAdded } = LibrarySlice.actions;
 
 // Selectors -----------------------------------------------------------------
 

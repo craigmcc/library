@@ -66,6 +66,13 @@ export interface LoginData {
     username: string | null;            // Logged in username (if logged in)
 }
 
+// Params --------------------------------------------------------------------
+
+export interface paginationParams {
+    limit?: number;                     // Maximum number of rows to return [no limit]
+    offset?: number;                    // Zero-relative offset to first returned row [0]
+}
+
 // HTML Event Handlers -------------------------------------------------------
 
 export type OnAction = () => void; // Nothing to pass, just trigger action

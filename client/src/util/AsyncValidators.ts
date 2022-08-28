@@ -14,14 +14,22 @@
 
 // Internal Modules ----------------------------------------------------------
 
+import Store from "../Store";
 import Api from "../clients/Api";
+import {
+    allLibraries,
+    allLibrariesParams,
+    exactLibrary,
+    exactLibraryParams
+} from "../components/libraries/LibrarySlice";
 import Author, {AUTHORS_BASE} from "../models/Author";
-import Library, {LIBRARIES_BASE} from "../models/Library";
+import Library from "../models/Library";
 import Series, {SERIES_BASE} from "../models/Series";
 import Story, {STORIES_BASE} from "../models/Story";
 import User, {USERS_BASE} from "../models/User";
 import Volume, {VOLUMES_BASE} from "../models/Volume";
-import {queryParameters} from "./QueryParameters";
+
+const dispatch = Store.dispatch;
 
 // Public Objects ------------------------------------------------------------
 
@@ -41,11 +49,23 @@ export const validateAuthorNameUnique = async (author: Author): Promise<boolean>
 
 export const validateLibraryNameUnique = async (library: Library): Promise<boolean> => {
     if (library && library.name) {
+/*
         try {
             const result = (await Api.get(LIBRARIES_BASE
                 + `/exact/${library.name}`)).data;
             return (result.id === library.id);
         } catch (error) {
+            return true; // Definitely unique
+        }
+*/
+        const params: exactLibraryParams = {
+            name: library.name,
+        }
+        const result = await dispatch(exactLibrary(params));
+        const answer = result.payload;
+        if (answer instanceof Library) {
+            return (answer.id === library.id);
+        } else {
             return true; // Definitely unique
         }
     } else {
@@ -55,6 +75,21 @@ export const validateLibraryNameUnique = async (library: Library): Promise<boole
 
 export const validateLibraryScopeUnique = async (library: Library): Promise<boolean> => {
     if (library && library.scope) {
+        const params: allLibrariesParams = {
+            scope: library.scope,
+        }
+        const result = await dispatch(allLibraries(params));
+        const answer = result.payload;
+        if (Array.isArray(answer)) {
+            if (answer.length === 0) {
+                return true;
+            } else {
+                return answer[0].id === library.id;
+            }
+        } else {
+            return true; // Definitely unique
+        }
+/*
         try {
             const parameters = {
                 scope: library.scope,
@@ -65,6 +100,7 @@ export const validateLibraryScopeUnique = async (library: Library): Promise<bool
         } catch (error) {
             return true; // Definitely unique
         }
+*/
     } else {
         return true;
     }

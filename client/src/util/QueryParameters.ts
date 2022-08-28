@@ -4,7 +4,7 @@
 
 // Public Objects ------------------------------------------------------------
 
-export const queryParameters = (parameters: object | null): string => {
+export const queryParameters = (parameters: object | null | undefined): string => {
     let result = "";
     if (!parameters) {
         return result;

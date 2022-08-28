@@ -15,13 +15,13 @@ import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
-import LibraryContext from "./LibraryContext";
-import {allLibraries, selectLibraries, selectLibraryStatus} from "./LibrarySlice";
+//import LibraryContext from "./LibraryContext";
+import {allLibraries, allLibrariesParams, selectLibraries, selectLibraryStatus} from "./LibrarySlice";
 import LoginContext from "../login/LoginContext";
 import FetchingProgress from "../shared/FetchingProgress";
 import {useAppDispatch, useAppSelector} from "../../Hooks";
 import {HandleAction, HandleBoolean, HandleLibrary, HandleValue/*, Scope*/} from "../../types";
-import useFetchLibraries from "../../hooks/useFetchLibraries";
+//import useFetchLibraries from "../../hooks/useFetchLibraries";
 //import Library from "../../models/Library";
 import logger from "../../util/ClientLogger";
 import {listValue} from "../../util/Transformations";
@@ -37,7 +37,7 @@ export interface Props {
 
 const LibraryList = (props: Props) => {
 
-    const libraryContext = useContext(LibraryContext);
+//    const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
     const [active, setActive] = useState<boolean>(false);
@@ -46,6 +46,7 @@ const LibraryList = (props: Props) => {
     const pageSize = 100;
     const [searchText, setSearchText] = useState<string>("");
 
+/*
     const fetchLibraries = useFetchLibraries({
         active: active,
         alertPopup: false,
@@ -53,11 +54,13 @@ const LibraryList = (props: Props) => {
         name: (searchText.length > 0) ? searchText : undefined,
         pageSize: pageSize,
     });
+*/
 
     const dispatch = useAppDispatch();
-    // TODO - implement the actual fetch with conditions
     // TODO - implement filtering down to availables somewhere
-    const libraries = useAppSelector(selectLibraries);
+    const libraries = useAppSelector(selectLibraries)
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name));
     const status = useAppSelector(selectLibraryStatus)
 
     useEffect(() => {
@@ -79,12 +82,18 @@ const LibraryList = (props: Props) => {
         */
 
         if (status.status === "idle") {
-            dispatch(allLibraries());
+            const params: allLibrariesParams = {
+                active: active,
+                name: (searchText.length > 0) ? searchText : undefined,
+                limit: pageSize,
+                offset: (currentPage - 1) * pageSize,
+            }
+            dispatch(allLibraries(params));
         }
 
-    }, [libraryContext.libraries, loginContext, loginContext.data.loggedIn,
-        active, searchText,
-        fetchLibraries.libraries,
+    }, [/*libraryContext.libraries, */loginContext, loginContext.data.loggedIn,
+        active, currentPage, searchText,
+        /*fetchLibraries.libraries,*/
         status, dispatch]);
 
     const handleActive: HandleBoolean = (theActive) => {
@@ -119,8 +128,8 @@ const LibraryList = (props: Props) => {
         <Container fluid id="LibraryOptions">
 
             <FetchingProgress
-                error={fetchLibraries.error}
-                loading={fetchLibraries.loading}
+                error={status.error}
+                loading={status.status === "loading"}
                 message="Fetching selected Libraries"
             />
 
