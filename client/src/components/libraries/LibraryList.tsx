@@ -16,10 +16,10 @@ import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 // Internal Modules ----------------------------------------------------------
 
 import LibraryContext from "./LibraryContext";
-import {selectLibraries} from "./LibrarySlice";
+import {allLibraries, selectLibraries, selectLibraryStatus} from "./LibrarySlice";
 import LoginContext from "../login/LoginContext";
 import FetchingProgress from "../shared/FetchingProgress";
-import {useAppSelector} from "../../Hooks";
+import {useAppDispatch, useAppSelector} from "../../Hooks";
 import {HandleAction, HandleBoolean, HandleLibrary, HandleValue/*, Scope*/} from "../../types";
 import useFetchLibraries from "../../hooks/useFetchLibraries";
 //import Library from "../../models/Library";
@@ -53,9 +53,12 @@ const LibraryList = (props: Props) => {
         name: (searchText.length > 0) ? searchText : undefined,
         pageSize: pageSize,
     });
+
+    const dispatch = useAppDispatch();
     // TODO - implement the actual fetch with conditions
     // TODO - implement filtering down to availables somewhere
     const libraries = useAppSelector(selectLibraries);
+    const status = useAppSelector(selectLibraryStatus)
 
     useEffect(() => {
 
@@ -63,6 +66,7 @@ const LibraryList = (props: Props) => {
             context: "LibraryOptions.useEffect",
             active: active,
             name: searchText,
+            status: status,
         });
 
         /*
@@ -74,9 +78,14 @@ const LibraryList = (props: Props) => {
                 }
         */
 
+        if (status.status === "idle") {
+            dispatch(allLibraries());
+        }
+
     }, [libraryContext.libraries, loginContext, loginContext.data.loggedIn,
         active, searchText,
-        fetchLibraries.libraries]);
+        fetchLibraries.libraries,
+        status, dispatch]);
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
