@@ -15,11 +15,8 @@ import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
-//import LibraryContext from "./LibraryContext";
-import {allLibraries, allLibrariesParams, selectLibraries} from "./LibrarySlice";
+import LibraryContext from "./LibraryContext";
 import LoginContext from "../login/LoginContext";
-import FetchingProgress from "../shared/FetchingProgress";
-import {useAppDispatch, useAppSelector} from "../../Hooks";
 import {HandleAction, HandleBoolean, HandleLibrary, HandleValue/*, Scope*/} from "../../types";
 import logger from "../../util/ClientLogger";
 import {listValue} from "../../util/Transformations";
@@ -35,57 +32,25 @@ export interface Props {
 
 const LibraryList = (props: Props) => {
 
-//    const libraryContext = useContext(LibraryContext);
+    const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
     const [active, setActive] = useState<boolean>(false);
-//    const [availables, setAvailables] = useState<Library[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [error, setError] = useState<Error | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
     const pageSize = 100;
     const [searchText, setSearchText] = useState<string>("");
-
-    const dispatch = useAppDispatch();
-    // TODO - implement filtering down to availables somewhere
-    const libraries = useAppSelector(selectLibraries)
-        .slice()
-        .sort((a, b) => a.name.localeCompare(b.name));
 
     useEffect(() => {
 
         logger.info({
-            context: "LibraryOptions.useEffect",
+            context: "LibraryList.useEffect",
             active: active,
-            loading: loading,
+            currentPage: currentPage,
             name: searchText,
         });
 
-        /*
-                const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
-                if (isSuperuser) {
-                    setAvailables(fetchLibraries.libraries);
-                } else {
-                    setAvailables(libraryContext.libraries);
-                }
-        */
-
-        const params: allLibrariesParams = {
-            active: active,
-            name: (searchText.length > 0) ? searchText : undefined,
-            limit: pageSize,
-            offset: (currentPage - 1) * pageSize,
-        }
-        try {
-            dispatch(allLibraries(params));
-        } catch (error) {
-            setError(error as Error);
-        }
-        setLoading(false);
-
-    }, [loginContext, loginContext.data.loggedIn,
-        active, currentPage, loading, searchText,
-        /*status, */dispatch]);
+    }, [libraryContext.libraries, loginContext, loginContext.data.loggedIn,
+        active, currentPage, searchText]);
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
@@ -118,12 +83,6 @@ const LibraryList = (props: Props) => {
     return (
         <Container fluid id="LibraryOptions">
 
-            <FetchingProgress
-                error={error}
-                loading={loading}
-                message="Fetching selected Libraries"
-            />
-
             <Row className="mb-3">
                 <Col className="col-6">
                     <SearchBar
@@ -147,8 +106,8 @@ const LibraryList = (props: Props) => {
                         currentPage={currentPage}
                         handleNext={handleNext}
                         handlePrevious={handlePrevious}
-                        lastPage={(libraries.length === 0) ||
-                            (libraries.length < pageSize)}
+                        lastPage={(libraryContext.libraries.length === 0) ||
+                            (libraryContext.libraries.length < pageSize)}
                         variant="secondary"
                     />
                 </Col>
@@ -180,7 +139,7 @@ const LibraryList = (props: Props) => {
                     </thead>
 
                     <tbody>
-                    {libraries.map((library, rowIndex) => (
+                    {libraryContext.libraries.map((library, rowIndex) => (
                         <tr
                             className="table-default"
                             key={1000 + (rowIndex * 100)}
