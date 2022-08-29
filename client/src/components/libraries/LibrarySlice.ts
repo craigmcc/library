@@ -9,10 +9,12 @@ import {createAsyncThunk, createSlice/*, PayloadAction*/} from "@reduxjs/toolkit
 // Internal Modules ----------------------------------------------------------
 
 import {RootState} from "../../Store";
-import {paginationParams} from "../../types";
+import {LOGIN_DATA_KEY} from "../../constants";
+import {LoginData, paginationParams} from "../../types";
 import Api from "../../clients/Api";
 import Library, {LIBRARIES_BASE} from "../../models/Library";
 import {HttpError} from "../../util/HttpErrors";
+import LocalStorage from "../../util/LocalStorage";
 import {queryParameters} from "../../util/QueryParameters";
 import * as ToModel from "../../util/ToModel";
 
@@ -73,8 +75,9 @@ export const allLibraries = createAsyncThunk<
     >(
     `${SLICE_NAME}/all`,
     async (params: allLibrariesParams, thunkAPI) => {
+        const loginData = new LocalStorage<LoginData>(LOGIN_DATA_KEY);
         const url = `${LIBRARIES_BASE}${queryParameters(params)}`;
-        const tryFetch = true;              // TODO - only if logged in
+        const tryFetch = loginData.value.loggedIn;
         if (tryFetch) {
             try {
                 return ToModel.LIBRARIES((await Api.get<Library[]>(url)).data);

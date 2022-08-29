@@ -7,11 +7,14 @@
 
 // Internal Modules ----------------------------------------------------------
 
+import {LoginData} from "../types";
 import {State as LibraryContextState} from "../components/libraries/LibraryContext";
 import {LoginState as LoginContextState} from "../components/login/LoginContext";
 import Library from "../models/Library";
 import User from "../models/User";
 import MockLibraryServices from "./services/MockLibraryServices";
+import LocalStorage from "../util/LocalStorage";
+import {LOGIN_DATA_KEY} from "../constants";
 
 // Public Objects ------------------------------------------------------------
 
@@ -38,16 +41,18 @@ export const libraryContext = (user: User | null, library: Library | null): Libr
  * @param user                          User to be logged in [not logged in]
  */
 export const loginContext = (user: User | null): LoginContextState => {
+    const loginDataData: LoginData = {
+        accessToken: (user) ? "accesstoken" : null,
+        alloweds: (user) ? user.scope.split(" ") : null,
+        expires: (user) ? new Date() : null,
+        loggedIn: (user) ? true : false,
+        refreshToken: (user) ? "refreshtoken" : null,
+        scope: (user) ? user.scope : null,
+        username: (user) ? user.username : null,
+    }
+    const loginData = new LocalStorage(LOGIN_DATA_KEY, loginDataData);
     return {
-        data: {
-            accessToken: (user) ? "accesstoken" : null,
-            alloweds: (user) ? user.scope.split(" ") : null,
-            expires: (user) ? new Date() : null,
-            loggedIn: (user) ? true : false,
-            refreshToken: (user) ? "refreshtoken" : null,
-            scope: (user) ? user.scope : null,
-            username: (user) ? user.username : null,
-        },
+        data: loginDataData,
         user: user ? user : new User(),
         handleLogin: jest.fn(),
         handleLogout: jest.fn(),

@@ -5,6 +5,7 @@
 // External Modules -----------------------------------------------------------
 
 import React from "react";
+import {Provider} from "react-redux";
 import {act, render, screen, waitFor} from "@testing-library/react";
 
 // Internal Modules -----------------------------------------------------------
@@ -12,11 +13,13 @@ import {act, render, screen, waitFor} from "@testing-library/react";
 import LibraryContext from "./LibraryContext";
 import LibraryList, {Props} from "./LibraryList";
 import LoginContext from "../login/LoginContext";
+import {Store} from "../../Store";
 import Library from "../../models/Library";
 import User from "../../models/User";
 import MockUserServices from "../../test/services/MockUserServices";
 import * as SeedData from "../../test/SeedData";
 import * as State from "../../test/State";
+import {loginContext} from "../../test/Wrapper";
 
 // Test Infrastructure -------------------------------------------------------
 
@@ -81,11 +84,13 @@ describe("When logged in", () => {
         const USER: User | null = MockUserServices.exact(SeedData.USER_USERNAME_REGULAR);
         await act(async () => {
             render(
-                <LoginContext.Provider value={State.loginContext(USER)}>
-                    <LibraryContext.Provider value={State.libraryContext(USER, LIBRARY)}>
-                        <LibraryList {...PROPS}/>
-                    </LibraryContext.Provider>
-                </LoginContext.Provider>
+                <Provider store={Store}>
+                    <LoginContext.Provider value={State.loginContext(USER)}>
+                        <LibraryContext.Provider value={State.libraryContext(USER, LIBRARY)}>
+                            <LibraryList {...PROPS}/>
+                        </LibraryContext.Provider>
+                    </LoginContext.Provider>
+                </Provider>
             )
         })
 
@@ -115,11 +120,13 @@ describe("When logged out", () => {
         const USER: User | null = null;
         await act(async () => {
             render(
-                <LoginContext.Provider value={State.loginContext(USER)}>
-                    <LibraryContext.Provider value={State.libraryContext(USER, LIBRARY)}>
-                        <LibraryList {...PROPS}/>
-                    </LibraryContext.Provider>
-                </LoginContext.Provider>
+                <Provider store={Store}>
+                    <LoginContext.Provider value={State.loginContext(USER)}>
+                        <LibraryContext.Provider value={State.libraryContext(USER, LIBRARY)}>
+                            <LibraryList {...PROPS}/>
+                        </LibraryContext.Provider>
+                    </LoginContext.Provider>
+                </Provider>
             )
         })
 

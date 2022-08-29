@@ -4,9 +4,12 @@
 
 // External Modules ----------------------------------------------------------
 
+import {Provider} from "react-redux";
+
 // Internal Modules ----------------------------------------------------------
 
 import * as State from "./State";
+import {Store} from "../Store";
 import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
 import Library from "../models/Library";
@@ -27,11 +30,13 @@ export const libraryContext = ({children}, user: User | null, library: Library |
     const libraryState = State.libraryContext(user, library);
     const loginState = State.loginContext(user);
     return (
-        <LoginContext.Provider value={loginState}>
-            <LibraryContext.Provider value={libraryState}>
-                {children}
-            </LibraryContext.Provider>
-        </LoginContext.Provider>
+        <Provider store={Store}>
+            <LoginContext.Provider value={loginState}>
+                <LibraryContext.Provider value={libraryState}>
+                    {children}
+                </LibraryContext.Provider>
+            </LoginContext.Provider>
+        </Provider>
     )
 }
 
@@ -46,9 +51,11 @@ export const libraryContext = ({children}, user: User | null, library: Library |
 export const loginContext = ({children}, user: User | null): JSX.Element => {
     const loginState = State.loginContext(user);
     return (
-        <LoginContext.Provider value={loginState}>
-            {children}
-        </LoginContext.Provider>
+        <Provider store={Store}>
+            <LoginContext.Provider value={loginState}>
+                {children}
+            </LoginContext.Provider>
+        </Provider>
     )
 }
 

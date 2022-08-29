@@ -25,7 +25,8 @@ const BASE_PROPS: Props = {
 
 // Test Methods --------------------------------------------------------------
 
-describe("When logged in", () => {
+// TODO - this module is no longer used
+xdescribe("When logged in", () => {
 
     it("should return active Libraries", async () => {
 
@@ -69,7 +70,8 @@ describe("When logged in", () => {
 
 })
 
-describe("When logged out", () => {
+// TODO - this module is no longer used
+xdescribe("When logged out", () => {
 
     it("should return no Libraries", async () => {
 

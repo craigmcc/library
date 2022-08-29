@@ -10,6 +10,7 @@ import {DefaultBodyType, MockedRequest, RestHandler} from "msw";
 
 import {authorHandlers} from "./handlers/MockAuthorHandlers";
 import {libraryHandlers} from "./handlers/MockLibraryHandlers";
+import {oauthHandlers} from "./handlers/MockOAuthHandlers";
 import {userHandlers} from "./handlers/MockUserHandlers";
 
 // Public Logic --------------------------------------------------------------
@@ -17,6 +18,7 @@ import {userHandlers} from "./handlers/MockUserHandlers";
 const handlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [
     ...authorHandlers,
     ...libraryHandlers,
+    ...oauthHandlers,
     ...userHandlers,
 ];
 
