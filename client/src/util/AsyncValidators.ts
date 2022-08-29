@@ -20,13 +20,17 @@ import {
     allLibraries,
     allLibrariesParams,
     exactLibrary,
-    exactLibraryParams
+    exactLibraryParams,
 } from "../components/libraries/LibrarySlice";
+import {
+    exactUser,
+    exactUserParams
+} from "../components/users/UserSlice";
 import Author, {AUTHORS_BASE} from "../models/Author";
 import Library from "../models/Library";
 import Series, {SERIES_BASE} from "../models/Series";
 import Story, {STORIES_BASE} from "../models/Story";
-import User, {USERS_BASE} from "../models/User";
+import User from "../models/User";
 import Volume, {VOLUMES_BASE} from "../models/Volume";
 
 const dispatch = Store.dispatch;
@@ -49,15 +53,6 @@ export const validateAuthorNameUnique = async (author: Author): Promise<boolean>
 
 export const validateLibraryNameUnique = async (library: Library): Promise<boolean> => {
     if (library && library.name) {
-/*
-        try {
-            const result = (await Api.get(LIBRARIES_BASE
-                + `/exact/${library.name}`)).data;
-            return (result.id === library.id);
-        } catch (error) {
-            return true; // Definitely unique
-        }
-*/
         const params: exactLibraryParams = {
             name: library.name,
         }
@@ -136,11 +131,14 @@ export const validateStoryNameUnique = async (story: Story): Promise<boolean> =>
 
 export const validateUserUsernameUnique = async (user: User): Promise<boolean> => {
     if (user && user.username) {
-        try {
-            const result = (await Api.get(USERS_BASE
-                + `/exact/${user.username}`)).data;
-            return (result.id === user.id);
-        } catch (error) {
+        const params: exactUserParams = {
+            username: user.username,
+        }
+        const result = await dispatch(exactUser(params));
+        const answer = result.payload;
+        if (answer instanceof User) {
+            return (answer.id === user.id);
+        } else {
             return true; // Definitely unique
         }
     } else {

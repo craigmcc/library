@@ -1,4 +1,4 @@
-// UserList --------------------------------------------------------------------
+// UserList ------------------------------------------------------------------
 
 // List Users that match search criteria, offering callbacks for adding,
 // editing, and removing Users.
@@ -15,11 +15,11 @@ import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
+import {allUsers, allUsersParams, selectUsers} from "./UserSlice";
 import LoginContext from "../login/LoginContext";
 import FetchingProgress from "../shared/FetchingProgress";
-import {HandleAction, HandleBoolean, HandleUser, HandleValue, Scope} from "../../types";
-import useFetchUsers from "../../hooks/useFetchUsers";
-import User from "../../models/User";
+import {useAppDispatch, useAppSelector} from "../../Hooks";
+import {HandleAction, HandleBoolean, HandleUser, HandleValue} from "../../types";
 import logger from "../../util/ClientLogger";
 import {listValue} from "../../util/Transformations";
 
@@ -37,37 +37,42 @@ const UserList = (props: Props) => {
     const loginContext = useContext(LoginContext);
 
     const [active, setActive] = useState<boolean>(false);
-    const [availables, setAvailables] = useState<User[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [error, setError] = useState<Error | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
     const pageSize = 100;
     const [searchText, setSearchText] = useState<string>("");
 
-    const fetchUsers = useFetchUsers({
-        active: active,
-        alertPopup: false,
-        currentPage: currentPage,
-        pageSize: pageSize,
-        username: (searchText.length > 0) ? searchText : undefined,
-    });
+    const dispatch = useAppDispatch();
+    const users = useAppSelector(selectUsers)
+        .slice()
+        .sort((a, b) => a.username.localeCompare(b.username));
 
     useEffect(() => {
 
         logger.debug({
             context: "UserOptions.useEffect",
             active: active,
+            loading: loading,
             searchText: searchText,
         });
 
-        const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
-        if (isSuperuser) {
-            setAvailables(fetchUsers.users);
-        } else {
-            setAvailables([]);
+        const params: allUsersParams = {
+            active: active,
+            limit: pageSize,
+            offset: (currentPage - 1) * pageSize,
+            username: (searchText.length > 0) ? searchText : undefined,
         }
+        try {
+            dispatch(allUsers(params));
+        } catch (error) {
+            setError(error as Error);
+        }
+        setLoading(false);
 
     }, [loginContext, loginContext.data.loggedIn,
-        active, searchText,
-        fetchUsers.users]);
+        active, currentPage, loading, searchText,
+        dispatch]);
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
@@ -101,8 +106,8 @@ const UserList = (props: Props) => {
         <Container fluid id="UserOptions">
 
             <FetchingProgress
-                error={fetchUsers.error}
-                loading={fetchUsers.loading}
+                error={error}
+                loading={loading}
                 message="Fetching selected Users"
             />
 
@@ -129,8 +134,8 @@ const UserList = (props: Props) => {
                         currentPage={currentPage}
                         handleNext={handleNext}
                         handlePrevious={handlePrevious}
-                        lastPage={(availables.length === 0) ||
-                            (availables.length < pageSize)}
+                        lastPage={(users.length === 0) ||
+                            (users.length < pageSize)}
                         variant="secondary"
                     />
                 </Col>
@@ -162,7 +167,7 @@ const UserList = (props: Props) => {
                     </thead>
 
                     <tbody>
-                    {availables.map((user, rowIndex) => (
+                    {users.map((user, rowIndex) => (
                         <tr
                             className="table-default"
                             key={1000 + (rowIndex * 100)}

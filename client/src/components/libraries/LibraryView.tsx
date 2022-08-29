@@ -1,4 +1,4 @@
-// LibrarySegment ------------------------------------------------------------
+// LibraryView ---------------------------------------------------------------
 
 // Consolidated view for listing and editing Library objects.
 

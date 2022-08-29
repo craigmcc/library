@@ -9,12 +9,14 @@ import {configureStore, Action, ThunkAction} from "@reduxjs/toolkit";
 // Internal Modules ----------------------------------------------------------
 
 import LibrarySlice from "./components/libraries/LibrarySlice";
+import UserSlice from "./components/users/UserSlice";
 
 // Public Objects ------------------------------------------------------------
 
 export const Store = configureStore({
     reducer: {
         [LibrarySlice.name]: LibrarySlice.reducer,
+        [UserSlice.name]: UserSlice.reducer,
     },
 });
 

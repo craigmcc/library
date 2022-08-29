@@ -1,4 +1,4 @@
-// UserSegment ---------------------------------------------------------------
+// UserView ------------------------------------------------------------------
 
 // Top-level view for managing User objects.
 
@@ -10,10 +10,11 @@ import React, {useContext, useEffect, useState} from "react";
 
 import UserForm from "./UserForm";
 import UserList from "./UserList";
+import {insertUser, removeUser, updateUser} from "./UserSlice";
 import LoginContext from "../login/LoginContext";
 import MutatingProgress from "../shared/MutatingProgress";
+import {useAppDispatch} from "../../Hooks";
 import {HandleAction, HandleUser, Scope} from "../../types";
-import useMutateUser from "../../hooks/useMutateUser";
 import User from "../../models/User";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
@@ -32,13 +33,13 @@ const UserView = () => {
     const [canInsert, setCanInsert] = useState<boolean>(false);
     const [canRemove, setCanRemove] = useState<boolean>(false);
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+    const [executing, setExecuting] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
     const [user, setUser] = useState<User>(new User());
     const [view, setView] = useState<View>(View.OPTIONS);
 
-    const mutateUser = useMutateUser({
-        alertPopup: false,
-    });
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
 
@@ -86,24 +87,30 @@ const UserView = () => {
 
     // Handle insert of a new User
     const handleInsert: HandleUser = async (theUser) => {
-        setMessage(`Inserting User '${theUser.username}'`);
-        const inserted = await mutateUser.insert(theUser);
-        logger.debug({
-            context: "UserSegment.handleInsert",
-            user: Abridgers.USER(inserted),
-        })
-        setView(View.OPTIONS);
+        try {
+            setExecuting(true);
+            setMessage(`Inserting User '${theUser.username}'`);
+            await dispatch(insertUser(theUser));
+        } catch (error) {
+            setError(error as Error);
+        } finally {
+            setExecuting(false);
+            setView(View.OPTIONS);
+        }
     }
 
     // Handle remove of an existing User
     const handleRemove: HandleUser = async (theUser) => {
-        setMessage(`Removing User '${theUser.username}'`);
-        const removed = await mutateUser.remove(theUser);
-        logger.debug({
-            context: "UserSegment.remove",
-            user: Abridgers.USER(removed),
-        });
-        setView(View.OPTIONS);
+        try {
+            setExecuting(true);
+            setMessage(`Removing User '${theUser.username}'`);
+            await dispatch(removeUser(theUser));
+        } catch (error) {
+            setError(error as Error);
+        } finally {
+            setExecuting(false);
+            setView(View.OPTIONS);
+        }
     }
 
     // Handle return from View.DETAILS to redisplay View.OPTIONS
@@ -116,21 +123,24 @@ const UserView = () => {
 
     // Handle request to update an existing User
     const handleUpdate: HandleUser = async (theUser) => {
-        setMessage(`Updating User '${theUser.username}'`);
-        const updated = await mutateUser.update(theUser);
-        logger.debug({
-            context: "UserSegment.handleUpdate",
-            user: Abridgers.USER(updated),
-        })
-        setView(View.OPTIONS);
+        try {
+            setExecuting(true);
+            setMessage(`Updating User '${theUser.username}'`);
+            await dispatch(updateUser(theUser));
+        } catch (error) {
+            setError(error as Error);
+        } finally {
+            setExecuting(false);
+            setView(View.OPTIONS);
+        }
     }
 
     return (
         <>
 
             <MutatingProgress
-                error={mutateUser.error}
-                executing={mutateUser.executing}
+                error={error}
+                executing={executing}
                 message={message}
             />
 
