@@ -5,14 +5,15 @@
 
 // External Modules ----------------------------------------------------------
 
-import React, {createContext, useContext, useEffect, useMemo, useState} from "react";
+import React, {createContext, useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
+import {allLibraries, allLibrariesParams, selectLibraries} from "./LibrarySlice";
 import LoginContext from "../login/LoginContext";
 import {LIBRARIES_KEY, LIBRARY_KEY} from "../../constants";
-import {HandleAction, HandleLibrary} from "../../types";
-import useFetchLibraries from "../../hooks/useFetchLibraries";
+import {useAppDispatch, useAppSelector} from "../../Hooks";
+import {HandleAction, HandleLibrary, Scope} from "../../types";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import Library from "../../models/Library";
 import * as Abridgers from "../../util/Abridgers";
@@ -46,50 +47,49 @@ export const LibraryContextProvider = (props: any) => {
     const UNSELECTED = new Library({name: "(Please Select)"});
 
     const loginContext = useContext(LoginContext);
+    const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
 
-    const [active, setActive] = useState<boolean>(true);
+    const libraries = new LocalStorage<Library[]>(LIBRARIES_KEY);
     const [library, setLibrary] = useLocalStorage<Library>(LIBRARY_KEY, UNSELECTED);
+    const pageSize = 50;
+    const [refresh, setRefresh] = useState<boolean>(false);
 
-    /**
-     * API interface for fetching all possible Libraries.
-     */
-    const fetchLibraries = useFetchLibraries({
-        active: active,
-        currentPage: 1,
-        pageSize: 100,
+    const dispatch = useAppDispatch();
+    const possibles = useAppSelector(selectLibraries)
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name));
+    const theLibraries: Library[] = [];
+    possibles.forEach(possible => {
+        if (loginContext.validateLibrary(possible, Scope.REGULAR)) {
+            theLibraries.push(possible);
+        }
     });
+    libraries.value = theLibraries;
 
-    /**
-     * The list of Libraries available to the logged in User.
-     */
-    const libraries = useMemo(() => {
-        const theLibraries: Library[] = [];
-        fetchLibraries.libraries.forEach(library => {
-            if (loginContext.validateLibrary(library)) {
-                theLibraries.push(library);
-            }
-        });
-        logger.debug({
-            context: "LibraryContext.calculateLibraries",
-            librariesIn: fetchLibraries.libraries,
-            librariesOut: theLibraries,
-        })
-        return theLibraries;
-    }, [loginContext, fetchLibraries.libraries]);
-
-    /**
-     * Local Storage interface for persisting available Libraries
-     */
-    const availables = useMemo(() => {
-        return new LocalStorage<Library[]>(LIBRARIES_KEY);
-    }, []);
-
-    /**
-     * Persist the list of available Libraries whenever it changes.
-     */
     useEffect(() => {
-        availables.value = libraries;
-    }, [availables, libraries]);
+
+        logger.info({
+            context: "LibraryContext.useEffect",
+            isSuperuser: isSuperuser,
+            refresh: refresh,
+        })
+
+        try {
+            const params: allLibrariesParams = {
+                active: isSuperuser ? undefined : true,
+                limit: pageSize,
+                offset: 0,
+            }
+            dispatch(allLibraries(params));
+        } catch (error) {
+            alert(`Error fetching Libraries: ${(error as Error).message}`);
+        }
+        setRefresh(false);
+
+    }, [loginContext, loginContext.data.loggedIn,
+        refresh,
+        dispatch, isSuperuser]);
+
 
     /**
      * Handle a request to refresh the list of available Libraries.
@@ -98,9 +98,7 @@ export const LibraryContextProvider = (props: any) => {
         logger.debug({
             context: "LibraryContext.handleRefresh",
         });
-        // Trigger useFetchLibraries to fetch again
-        setActive(false);
-        setActive(true);
+        setRefresh(true);
     }
 
     /**
@@ -119,7 +117,7 @@ export const LibraryContextProvider = (props: any) => {
         }
         let found = false;
         // @ts-ignore
-        libraries.forEach(aLibrary => {
+        libraries.value.forEach(aLibrary => {
             if (theLibrary.id === aLibrary.id) {
                 setLibrary(aLibrary);
                 found = true;
@@ -137,7 +135,7 @@ export const LibraryContextProvider = (props: any) => {
     }
 
     const libraryContext: State = {
-        libraries: libraries,
+        libraries: libraries.value,
         library: library,
         handleRefresh: handleRefresh,
         handleSelect: handleSelect,

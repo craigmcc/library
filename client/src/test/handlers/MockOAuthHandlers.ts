@@ -20,7 +20,7 @@ export const oauthHandlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [
     // token ----------------------------------------------------------------
     rest.post(`${PREFIX}/token`, (req, res, ctx) => {
         try {
-            const tokenRequest = req.json();
+//            const tokenRequest = req.json();
             const tokenResponse = {
                 access_token: "my_access_token",
                 expires_in: 60 * 60,    // One hour
