@@ -10,13 +10,19 @@ import {configureStore, Action, ThunkAction} from "@reduxjs/toolkit";
 
 import LibrarySlice from "./components/libraries/LibrarySlice";
 import UserSlice from "./components/users/UserSlice";
+import {VolumeApi} from "./components/volumes/VolumeApi";
 
 // Public Objects ------------------------------------------------------------
 
 export const Store = configureStore({
+    middleware: (getDefaultMiddleware) => {
+        return getDefaultMiddleware()
+            .concat(VolumeApi.middleware);
+    },
     reducer: {
         [LibrarySlice.name]: LibrarySlice.reducer,
         [UserSlice.name]: UserSlice.reducer,
+        [VolumeApi.reducerPath]: VolumeApi.reducer,
     },
 });
 

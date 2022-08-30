@@ -19,6 +19,16 @@ import Volume from "./models/Volume";
 export type Focus = Author | Library | Series | Story | Volume;
 export type Parent = Author | Library | Series | Story | Volume;
 
+// API Prefixes --------------------------------------------------------------
+
+export const AUTHOR: string = "Author";
+export const LIBRARY: string = "Library";
+export const SERIES: string = "Series";
+export const STORY: string = "Story";
+export const LOGIN: string = "Login";
+export const USER: string = "User";
+export const VOLUME :string = "Volume";
+
 // Enumerations --------------------------------------------------------------
 
 // Logging levels
