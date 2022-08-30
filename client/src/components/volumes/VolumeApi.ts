@@ -9,11 +9,13 @@ import {createApi} from "@reduxjs/toolkit/query/react";
 // Internal Modules ----------------------------------------------------------
 
 import {paginationParams, Parent, VOLUME} from "../../types";
-import Author from "../../models/Author";
-import Story from "../../models/Story";
+import Author, {AUTHORS_BASE} from "../../models/Author";
+import Library, {LIBRARIES_BASE} from "../../models/Library";
+import Story, {STORIES_BASE} from "../../models/Story";
 import Volume, {VOLUMES_BASE} from "../../models/Volume";
 import {apiBaseQuery} from "../../util/ApiUtil";
 import {queryParameters} from "../../util/QueryParameters";
+import * as Sorters from "../../util/Sorters";
 
 // Parameter Types ----------------------------------------------------------
 
@@ -97,7 +99,36 @@ export const VolumeApi = createApi({
             query: (params) =>
                 `${VOLUMES_BASE}/${params.libraryId}/${params.volumeId}/stories`,
         }),
-        // TODO: allVolumes - see useFetchVolumes for considerations
+        allVolumes: builder.query<Volume[], allVolumesParams>({
+            // TODO: providesTags?
+            // Build query URL based on instanceof Parent
+            query: (params) => {
+                let libraryId = (params.parent instanceof Library)
+                    ? params.parent.id : params.parent.libraryId;
+                let url = `${LIBRARIES_BASE}/${libraryId}${VOLUMES_BASE}`;
+                if (params.parent instanceof Author) {
+                    url = `${AUTHORS_BASE}/${libraryId}/${params.parent.id}${VOLUMES_BASE}`;
+                } else if (params.parent instanceof Story) {
+                    url = `${STORIES_BASE}/${libraryId}/${params.parent.id}${VOLUMES_BASE}`;
+                }
+                return url + queryParameters(params);
+            },
+            // Sort child authors and stories if present
+            transformResponse: (rawResult: { result: { volumes: Volume[] }}) => {
+                const transforms: Volume[] = [];
+                rawResult.result.volumes.forEach(volume => {
+                    let transform = new Volume(volume);
+                    if (transform.authors && (transform.authors.length > 0)) {
+                        transform.authors = Sorters.AUTHORS(transform.authors);
+                    }
+                    if (transform.stories && (transform.stories.length > 0)) {
+                        transform.stories = Sorters.STORIES(transform.stories);
+                    }
+                    transforms.push(transform);
+                });
+                return transforms;
+            }
+        }),
         associateVolumeStory: builder.mutation<Story, associateVolumeStoryParams>({
             // TODO: tag impacts?
             query: (params) => ({
@@ -165,7 +196,7 @@ export const VolumeApi = createApi({
 export const {
     useAllVolumeAuthorsQuery,
     useAllVolumeStoriesQuery,
-//    useAllVolumesQuery,
+    useAllVolumesQuery,
     useAssociateVolumeStoryMutation,
     useDisassociateVolumeStoryMutation,
     useExactVolumeQuery,
