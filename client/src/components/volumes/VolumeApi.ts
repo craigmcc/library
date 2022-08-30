@@ -25,12 +25,12 @@ export interface allVolumesParams
     parent: Parent;                     // Parent object of these Volumes
 }
 
-export interface allVolumeAuthorsParams /* extends includeAuthorParams, matchAuthorParams */ {
+export interface allVolumeAuthorsParams /* TODO extends includeAuthorParams, matchAuthorParams */ {
     libraryId: number;                  // ID of the parent Library
     volumeId: number;                   // ID of the requested Volume
 }
 
-export interface allVolumeStoriesParams /* extends includeStoryParams, matchStoryParams */ {
+export interface allVolumeStoriesParams /* TODO extends includeStoryParams, matchStoryParams */ {
     libraryId: number;                  // ID of the parent Library
     volumeId: number;                   // ID of the requested Volume
 }
@@ -65,6 +65,11 @@ export interface includeVolumeParams {
     withStories?: boolean;              // Include related Stories
 }
 
+export interface insertVolumeParams {
+    libraryId: number;                  // ID of parent Library
+    volume: Partial<Volume>;            // Volume properties to insert
+}
+
 export interface matchVolumeParams {
     active?: boolean;                   // Select active Volumes
     googleId?: string;                  // Select Volumes on matching googleId
@@ -94,14 +99,22 @@ export const VolumeApi = createApi({
             // TODO: providesTags?
             query: (params) =>
                 `${VOLUMES_BASE}/${params.libraryId}/${params.volumeId}/authors`,
+            transformResponse: (results: Author[]) => ToModel.AUTHORS(results),
         }),
         allVolumeStories: builder.query<Story[], allVolumeStoriesParams>({
             // TODO: providesTags?
             query: (params) =>
                 `${VOLUMES_BASE}/${params.libraryId}/${params.volumeId}/stories`,
+            transformResponse: (results: Story[]) => ToModel.STORIES(results),
         }),
         allVolumes: builder.query<Volume[], allVolumesParams>({
-            // TODO: providesTags?
+            providesTags: (result) =>
+                result
+                    ? [
+                        ...result.map(({ id }) => ({ type: VOLUME, id: id ? id : "ALL" })),
+                        { type: VOLUME, id: "ALL" },
+                    ]
+                    : [{ type: VOLUME, id: "ALL" }],
             // Build query URL based on instanceof Parent
             query: (params) => {
                 const parent = ToModel.PARENT(params.parent);
@@ -137,6 +150,7 @@ export const VolumeApi = createApi({
                 method: "POST",
                 url: `${VOLUMES_BASE}/${params.libraryId}/${params.volumeId}/stories/${params.storyId}`,
             }),
+            transformResponse: (result: Story) => ToModel.STORY(result),
         }),
         disassociateVolumeStory: builder.mutation<Story, disassociateVolumeStoryParams>({
             // TODO: tag impacts?
@@ -144,6 +158,7 @@ export const VolumeApi = createApi({
                 method: "DELETE",
                 url: `${VOLUMES_BASE}/${params.libraryId}/${params.volumeId}/stories/${params.storyId}`,
             }),
+            transformResponse: (result: Story) => ToModel.STORY(result),
         }),
         exactVolume: builder.query<Volume, exactVolumeParams>({
             providesTags: (result, error, arg) => [
@@ -151,6 +166,7 @@ export const VolumeApi = createApi({
             ],
             query: (params) =>
                 `${VOLUMES_BASE}/${params.libraryId}/exact/${params.name}${queryParameters(params.params)}`,
+            transformResponse: (result: Volume) => ToModel.VOLUME(result),
         }),
         findVolume: builder.query<Volume, findVolumeParams>({
             providesTags: (result, error, arg) => [
@@ -158,16 +174,18 @@ export const VolumeApi = createApi({
             ],
             query: (params) =>
                 `${VOLUMES_BASE}/${params.libraryId}/${params.volumeId}`,
+            transformResponse: (result: Volume) => ToModel.VOLUME(result),
         }),
-        insertVolume: builder.mutation<Volume, Partial<Volume>>({
+        insertVolume: builder.mutation<Volume, insertVolumeParams>({
             invalidatesTags: [
                 { type: VOLUME, id: "ALL" }
             ],
-            query: (volume) => ({
-                body: volume,
+            query: (params) => ({
+                body: params.volume,
                 method: "POST",
-                url: `${VOLUMES_BASE}/${volume.libraryId}`,
+                url: `${VOLUMES_BASE}/${params.libraryId}`,
             }),
+            transformResponse: (result: Volume) => ToModel.VOLUME(result),
         }),
         removeVolume: builder.mutation<Volume, removeVolumeParams>({
             invalidatesTags: (result, error, params) => [
@@ -178,6 +196,7 @@ export const VolumeApi = createApi({
                 method: "DELETE",
                 url: `${VOLUMES_BASE}/${params.libraryId}/${params.volumeId}`,
             }),
+            transformResponse: (result: Volume) => ToModel.VOLUME(result),
         }),
         updateVolume: builder.mutation<Volume, updateVolumeParams>({
             invalidatesTags: (result, error, params) => [
@@ -189,6 +208,7 @@ export const VolumeApi = createApi({
                 method: "PUT",
                 url: `${VOLUMES_BASE}/${params.libraryId}/${params.volumeId}`,
             }),
+            transformResponse: (result: Volume) => ToModel.VOLUME(result),
         }),
     }),
     reducerPath: "volumes",

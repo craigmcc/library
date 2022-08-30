@@ -1,4 +1,4 @@
-// VolumeView -------------------------------------------------------------
+// VolumeView ----------------------------------------------------------------
 
 // Consolidated view for listing and editing Volume objects, as well as
 // navigating to view for related child objects.
@@ -9,6 +9,11 @@ import React, {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
+import {
+    useInsertVolumeMutation,
+    useRemoveVolumeMutation,
+    useUpdateVolumeMutation
+} from "./VolumeApi";
 import VolumeForm from "./VolumeForm";
 import VolumeList from "./VolumeList";
 import AuthorView from "../authors/AuthorView";
@@ -55,9 +60,13 @@ const VolumeView = (props: Props) => {
         alertPopup: false,
     });
 
+    const [insertVolume, {error: insertError, isLoading: insertLoading}] = useInsertVolumeMutation();
+    const [removeVolume, {error: removeError, isLoading: removeLoading}] = useRemoveVolumeMutation();
+    const [updateVolume, {error: updateError, isLoading: updateLoading}] = useUpdateVolumeMutation();
+
     useEffect(() => {
         logger.debug({
-            context: "VolumeSegment.useEffect",
+            context: "VolumeView.useEffect",
             library: libraryContext.library.id > 0 ? Abridgers.LIBRARY(libraryContext.library) : undefined,
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             volume: volume ? Abridgers.VOLUME(volume): undefined,
@@ -89,7 +98,7 @@ const VolumeView = (props: Props) => {
             type: "Single",
         });
         logger.debug({
-            context: "VolumeSegment.handleAdd",
+            context: "VolumeView.handleAdd",
             volume: theVolume,
         });
         setVolume(theVolume);
@@ -99,7 +108,7 @@ const VolumeView = (props: Props) => {
     // Handle selection of a Volume to edit details
     const handleEdit: HandleVolume = (theVolume) => {
         logger.debug({
-            context: "VolumeSegment.handleEdit",
+            context: "VolumeView.handleEdit",
             volume: Abridgers.VOLUME(theVolume),
         });
         setVolume(theVolume);
@@ -109,7 +118,7 @@ const VolumeView = (props: Props) => {
     // Handle excluding a Volume from its parent
     const handleExclude: HandleVolume = async (theVolume) => {
         logger.debug({
-            context: "VolumeSegment.handleExclude",
+            context: "VolumeView.handleExclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             volume: Abridgers.VOLUME(theVolume),
         });
@@ -124,7 +133,7 @@ const VolumeView = (props: Props) => {
     // Handle including a Volume into its Ancestor
     const handleInclude: HandleVolume = async (theVolume) => {
         logger.debug({
-            context: "VolumeSegment.handleInclude",
+            context: "VolumeView.handleInclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             volume: Abridgers.VOLUME(theVolume),
         });
@@ -139,9 +148,12 @@ const VolumeView = (props: Props) => {
     // Handle insert of a new Volume
     const handleInsert: HandleVolume = async (theVolume) => {
         setMessage(`Inserting Volume ${theVolume._title}`);
-        const inserted = await mutateVolume.insert(theVolume);
-        logger.debug({
-            context: "VolumeSegment.handleInsert",
+        const inserted = await insertVolume({
+            libraryId: libraryContext.library.id,
+            volume: theVolume,
+        }).unwrap();
+        logger.info({
+            context: "VolumeView.handleInsert",
             volume: Abridgers.VOLUME(inserted),
         });
         handleInclude(inserted);
@@ -151,9 +163,12 @@ const VolumeView = (props: Props) => {
     // Handle remove of an existing Volume
     const handleRemove: HandleVolume = async (theVolume) => {
         setMessage(`Removing Volume ${theVolume._title}`);
-        const removed = await mutateVolume.remove(theVolume);
-        logger.debug({
-            context: "VolumeSegment.handleRemove",
+        const removed = await removeVolume({
+            libraryId: libraryContext.library.id,
+            volumeId: theVolume.id,
+        }).unwrap();
+        logger.info({
+            context: "VolumeView.handleRemove",
             volume: Abridgers.VOLUME(removed),
         });
         setView(View.OPTIONS);
@@ -162,7 +177,7 @@ const VolumeView = (props: Props) => {
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
         logger.debug({
-            context: "VolumeSegment.handleReturn",
+            context: "VolumeView.handleReturn",
         });
         setView(View.OPTIONS);
     }
@@ -170,7 +185,7 @@ const VolumeView = (props: Props) => {
     // Handle request to show AuthorSegment for a parent Volume
     const handleShowAuthors: HandleVolume = (theVolume) => {
         logger.debug({
-            context: "VolumeSegment.handleShowAuthors",
+            context: "VolumeView.handleShowAuthors",
             volume: Abridgers.VOLUME(theVolume),
         });
         setVolume(theVolume);
@@ -180,7 +195,7 @@ const VolumeView = (props: Props) => {
     // Handle request to show StorySegment for a parent Volume
     const handleShowStories: HandleVolume = (theVolume) => {
         logger.debug({
-            context: "VolumeSegment.handleShowStories",
+            context: "VolumeView.handleShowStories",
             volume: Abridgers.VOLUME(theVolume),
         });
         setVolume(theVolume);
@@ -190,10 +205,15 @@ const VolumeView = (props: Props) => {
     // Handle update of an existing Volume
     const handleUpdate: HandleVolume = async (theVolume) => {
         setMessage(`Updating Volume ${theVolume._title}`);
-        const updated = await mutateVolume.update(theVolume);
-        logger.debug({
-            context: "VolumeSegment.handleUpdate",
-            volume: Abridgers.VOLUME(updated),
+        const updated = await updateVolume({
+            libraryId: libraryContext.library.id,
+            volumeId: theVolume.id,
+            volume: theVolume,
+        }).unwrap();
+        logger.info({
+            context: "VolumeView.handleUpdate",
+            volumeIn: theVolume,
+            volumeOut: updated,
         });
         setView(View.OPTIONS);
     }
@@ -202,8 +222,18 @@ const VolumeView = (props: Props) => {
         <>
 
             <MutatingProgress
-                error={mutateVolume.error}
-                executing={mutateVolume.executing}
+                error={insertError as Error}
+                executing={insertLoading}
+                message={message}
+            />
+            <MutatingProgress
+                error={removeError as Error}
+                executing={removeLoading}
+                message={message}
+            />
+            <MutatingProgress
+                error={updateError as Error}
+                executing={updateLoading}
                 message={message}
             />
 
