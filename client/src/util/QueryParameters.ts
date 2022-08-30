@@ -10,16 +10,18 @@ export const queryParameters = (parameters: object | null): string => {
         return result;
     }
     for (let [key, value] of Object.entries(parameters)) {
-        if (value || (value === "")) {
-            if (result.length === 0) {
-                result += "?";
-            } else {
-                result += "&";
-            }
-            if (value === "") {
-                result += key;
-            } else {
-                result += key + "=" + value;
+        if (typeof value !== "object") {
+            if (value || (value === "")) {
+                if (result.length === 0) {
+                    result += "?";
+                } else {
+                    result += "&";
+                }
+                if ((value === "") || (value === true)) {
+                    result += key;
+                } else {
+                    result += key + "=" + value;
+                }
             }
         }
     }
