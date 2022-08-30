@@ -104,13 +104,13 @@ class VolumeServices extends BaseChildServices<Volume, Library> {
         }
         options = appendPaginationOptions(options, query);
         const include: any = options.include ? options.include : [];
-        if ("" === query.withAuthors) {
+        if (("" === query.withAuthors) || ("true" === query.withAuthors)) {
             include.push(Author);
         }
-        if ("" === query.withLibrary) {
+        if (("" === query.withLibrary) || ("true" === query.withLibrary)) {
             include.push(Library);
         }
-        if ("" === query.withStories) {
+        if (("" === query.withStories) || ("true" === query.withStories)) {
             include.push(Story);
         }
         if (include.length > 0) {

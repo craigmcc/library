@@ -4,6 +4,7 @@
 
 // Internal Modules ----------------------------------------------------------
 
+import {Parent} from "../types";
 import AccessToken from "../models/AccessToken";
 import Author from "../models/Author";
 import Library from "../models/Library";
@@ -49,6 +50,25 @@ export const LIBRARIES = (values: any[]): Library[] => {
         results.push(LIBRARY(value));
     });
     return results;
+}
+
+/**
+ * Convert based on _type if present
+ */
+export const PARENT = (value: any): Parent => {
+    if (value._model === "Author") {
+        return new Author(value);
+    } else if (value._model === "Library") {
+        return new Library(value);
+    } else if (value._model === "Series") {
+        return new Series(value);
+    } else if (value._model === "Story") {
+        return new Story(value);
+    } else if (value._model === "Volume") {
+        return new Volume(value);
+    } else {
+        return value;
+    }
 }
 
 export const REFRESH_TOKEN = (value: any): RefreshToken => {

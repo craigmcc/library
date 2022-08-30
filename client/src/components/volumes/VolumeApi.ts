@@ -16,6 +16,7 @@ import Volume, {VOLUMES_BASE} from "../../models/Volume";
 import {apiBaseQuery} from "../../util/ApiUtil";
 import {queryParameters} from "../../util/QueryParameters";
 import * as Sorters from "../../util/Sorters";
+import * as ToModel from "../../util/ToModel";
 
 // Parameter Types ----------------------------------------------------------
 
@@ -103,20 +104,21 @@ export const VolumeApi = createApi({
             // TODO: providesTags?
             // Build query URL based on instanceof Parent
             query: (params) => {
-                let libraryId = (params.parent instanceof Library)
-                    ? params.parent.id : params.parent.libraryId;
+                const parent = ToModel.PARENT(params.parent);
+                const libraryId = (parent instanceof Library)
+                    ? parent.id : parent.libraryId;
                 let url = `${LIBRARIES_BASE}/${libraryId}${VOLUMES_BASE}`;
-                if (params.parent instanceof Author) {
+                if (parent instanceof Author) {
                     url = `${AUTHORS_BASE}/${libraryId}/${params.parent.id}${VOLUMES_BASE}`;
-                } else if (params.parent instanceof Story) {
+                } else if (parent instanceof Story) {
                     url = `${STORIES_BASE}/${libraryId}/${params.parent.id}${VOLUMES_BASE}`;
                 }
                 return url + queryParameters(params);
             },
             // Sort child authors and stories if present
-            transformResponse: (rawResult: { result: { volumes: Volume[] }}) => {
+            transformResponse: (results: Volume[]) => {
                 const transforms: Volume[] = [];
-                rawResult.result.volumes.forEach(volume => {
+                results.forEach(volume => {
                     let transform = new Volume(volume);
                     if (transform.authors && (transform.authors.length > 0)) {
                         transform.authors = Sorters.AUTHORS(transform.authors);

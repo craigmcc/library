@@ -13,15 +13,16 @@ import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
 import {CaretLeftSquare, PlusCircleFill} from "react-bootstrap-icons";
 import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
+import {skipToken} from "@reduxjs/toolkit/query";
 
 // Internal Modules ----------------------------------------------------------
 
+import {allVolumesParams, useAllVolumesQuery} from "./VolumeApi";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import FetchingProgress from "../shared/FetchingProgress";
 import {HandleAction, HandleBoolean, HandleValue, HandleVolume, Parent} from "../../types";
 import useFetchFocused from "../../hooks/useFetchFocused";
-import useFetchVolumes from "../../hooks/useFetchVolumes";
 import Author from "../../models/Author";
 import Story from "../../models/Story";
 import Volume from "../../models/Volume";
@@ -51,39 +52,38 @@ const VolumeList = (props: Props) => {
 
     const [active, setActive] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [params, setParams] = useState<allVolumesParams | null>(null);
     const pageSize = 100;
-    const [refresh, setRefresh] = useState<boolean>(false);
     const [searchText, setSearchText] = useState<string>("");
 
+    // TODO - need to deal with this somehow
     const fetchFocused = useFetchFocused({
         focusee: props.parent,
     });
-    const fetchVolumes = useFetchVolumes({
-        active: active,
-        alertPopup: false,
-        currentPage: currentPage,
-        name: (searchText.length > 0) ? searchText : undefined,
-        pageSize: pageSize,
-        parent: props.parent,
-        withAuthors: true,
-        withStories: true,
-    });
+    const { data, error, isFetching } = useAllVolumesQuery(params ?? skipToken);
+    const volumes = data ? data : [];
 
     useEffect(() => {
         logger.debug({
-            context: "VolumeOptions.useEffect",
+            context: "VolumeList.useEffect",
             library: Abridgers.LIBRARY(libraryContext.library),
             parent: Abridgers.ANY(props.parent),
             active: active,
             name: searchText,
-            refresh: refresh,
         });
-        setRefresh(false);
+        const theParams: allVolumesParams = {
+            active: active,
+            limit: pageSize,
+            name: searchText.length > 0 ? searchText : undefined,
+            offset: (currentPage - 1) * pageSize,
+            parent: props.parent,
+            withAuthors: true,
+        }
+        setParams(theParams);
     }, [props.parent,
         libraryContext.library, libraryContext.library.id,
         loginContext.data.loggedIn,
-        active, refresh, searchText,
-        fetchVolumes.volumes]);
+        active, currentPage, searchText]);
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
@@ -102,9 +102,7 @@ const VolumeList = (props: Props) => {
     const handleExclude: HandleVolume = (theVolume) => {
         if (props.handleExclude) {
             props.handleExclude(theVolume);
-            //fetchVolumes.refresh();
             //fetchFocused.refresh();
-            //setRefresh(true);
             // NOTE - Messing with fetchFocused.focused is really lame
             // @ts-ignore
             if (fetchFocused.focused.volumes) {
@@ -127,9 +125,7 @@ const VolumeList = (props: Props) => {
     const handleInclude: HandleVolume = (theVolume) => {
         if (props.handleInclude) {
             props.handleInclude(theVolume);
-            //fetchVolumes.refresh();
             //fetchFocused.refresh();
-            //setRefresh(true);
             // NOTE - Messing with fetchFocused.focused is really lame
             // @ts-ignore
             if (fetchFocused.focused.volumes) {
@@ -181,8 +177,8 @@ const VolumeList = (props: Props) => {
         <Container fluid id="VolumeOptions">
 
             <FetchingProgress
-                error={fetchVolumes.error}
-                loading={fetchVolumes.loading}
+                error={error ? error as Error : null}
+                loading={isFetching}
                 message="Fetching selected Volumes"
             />
 
@@ -227,8 +223,8 @@ const VolumeList = (props: Props) => {
                         currentPage={currentPage}
                         handleNext={handleNext}
                         handlePrevious={handlePrevious}
-                        lastPage={(fetchVolumes.volumes.length === 0) ||
-                            (fetchVolumes.volumes.length < pageSize)}
+                        lastPage={(volumes.length === 0) ||
+                            (volumes.length < pageSize)}
                         variant="secondary"
                     />
                 </Col>
@@ -279,7 +275,7 @@ const VolumeList = (props: Props) => {
                     </thead>
 
                     <tbody>
-                    {fetchVolumes.volumes.map((volume, rowIndex) => (
+                    {volumes.map((volume, rowIndex) => (
                         <tr
                             className="table-default"
                             key={1000 + (rowIndex * 100)}
