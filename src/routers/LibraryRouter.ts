@@ -117,6 +117,16 @@ LibraryRouter.get("/:libraryId/stories",
         ));
     });
 
+// GET /:libraryId/users - Find matching Users for this Library
+LibraryRouter.get("/:libraryId/users",
+    requireAdmin,
+    async (req, res) => {
+        res.send(await LibraryServices.users(
+            parseInt(req.params.libraryId, 10),
+            req.query
+        ));
+    });
+
 // GET /:libraryId/volumes - Find matching Volumes for this Library
 LibraryRouter.get("/:libraryId/volumes",
     requireRegular,

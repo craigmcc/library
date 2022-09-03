@@ -10,6 +10,7 @@ import React, {useContext, useEffect, useState} from "react";
 
 import UserForm from "./UserForm";
 import UserList from "./UserList";
+import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import MutatingProgress from "../shared/MutatingProgress";
 import {HandleAction, HandleUser, Scope} from "../../types";
@@ -27,6 +28,7 @@ enum View {
 
 const UserView = () => {
 
+    const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
     const [canInsert, setCanInsert] = useState<boolean>(false);
@@ -42,18 +44,22 @@ const UserView = () => {
 
     useEffect(() => {
 
-        logger.debug({
-            context: "UserSegment.useEffect",
+
+        const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
+        const isAdmin = loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
+        setCanInsert(isSuperuser || isAdmin);
+        setCanRemove(isSuperuser);
+        setCanUpdate(isSuperuser || isAdmin);
+        logger.info({
+            context: "UserView.useEffect",
+            isAdmin: isAdmin,
+            isSuperuser: isSuperuser,
             user: Abridgers.USER(user),
             view: view.toString(),
         });
 
-        const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
-        setCanInsert(isSuperuser);
-        setCanRemove(isSuperuser);
-        setCanUpdate(isSuperuser);
-
-    }, [loginContext, loginContext.data.loggedIn,
+    }, [libraryContext.library,
+        loginContext, loginContext.data.loggedIn,
         user, view]);
 
     // Create an empty User to be added
@@ -147,8 +153,8 @@ const UserView = () => {
 
             {(view === View.OPTIONS) ? (
                 <UserList
-                    handleAdd={handleAdd}
-                    handleEdit={handleEdit}
+                    handleAdd={canInsert ? handleAdd : undefined}
+                    handleEdit={canUpdate ? handleEdit : undefined}
                 />
             ) : null }
 

@@ -15,6 +15,7 @@ import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
+import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import FetchingProgress from "../shared/FetchingProgress";
 import {HandleAction, HandleBoolean, HandleUser, HandleValue, Scope} from "../../types";
@@ -34,6 +35,7 @@ export interface Props {
 
 const UserList = (props: Props) => {
 
+    const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
     const [active, setActive] = useState<boolean>(false);
@@ -59,13 +61,15 @@ const UserList = (props: Props) => {
         });
 
         const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
-        if (isSuperuser) {
+        const isAdmin = loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
+        if (isSuperuser || isAdmin) {
             setAvailables(fetchUsers.users);
         } else {
             setAvailables([]);
         }
 
-    }, [loginContext, loginContext.data.loggedIn,
+    }, [libraryContext.library,
+        loginContext, loginContext.data.loggedIn,
         active, searchText,
         fetchUsers.users]);
 

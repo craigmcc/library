@@ -12,11 +12,13 @@ import BaseParentServices from "./BaseParentServices";
 import AuthorServices from "./AuthorServices";
 import SeriesServices from "./SeriesServices";
 import StoryServices from "./StoryServices";
+import UserServices from "./UserServices";
 import VolumeServices from "./VolumeServices";
 import Author from "../models/Author";
 import Library from "../models/Library";
 import Series from "../models/Series";
 import Story from "../models/Story";
+import User from "../models/User";
 import Volume from "../models/Volume";
 import {NotFound} from "../util/HttpErrors";
 import {appendPaginationOptions} from "../util/QueryParameters";
@@ -72,6 +74,33 @@ class LibraryServices extends BaseParentServices<Library> {
             order: SortOrder.STORIES,
         }, query);
         return library.$get("stories", options);
+    }
+
+    /**
+     * Return all users whose scope includes a scope value that starts with
+     * the scope prefix for this Library.
+     *
+     * @param libraryId                 ID of this Library
+     * @param query                     Optional query options
+     */
+    public async users(libraryId: number, query?: any): Promise<User[]> {
+        const library = await this.read("LibraryServices.users", libraryId);
+        const pattern = `${library.scope}:`;
+        const results = await UserServices.all(query);
+        const users: User[] = [];
+        results.forEach(result => {
+            let match = false;
+            const alloweds = result.scope.split(" ");
+            alloweds.forEach(allowed => {
+                if (allowed.startsWith(pattern)) {
+                    match = true;
+                }
+            });
+            if (match) {
+                users.push(result);
+            }
+        })
+        return users;
     }
 
     public async volumes(libraryId: number, query?: any): Promise<Volume[]> {

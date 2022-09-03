@@ -8,8 +8,11 @@ import {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
+import {Scope} from "../types";
 import Api from "../clients/Api";
+import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
+import {LIBRARIES_BASE} from "../models/Library";
 import User, {USERS_BASE} from "../models/User";
 import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
@@ -38,6 +41,7 @@ export interface State {
 
 const useFetchUsers = (props: Props): State => {
 
+    const libraryContext = useContext(LibraryContext);
     const loginContext = useContext(LoginContext);
 
     const alertPopup = (props.alertPopup !== undefined) ? props.alertPopup : true;
@@ -64,15 +68,25 @@ const useFetchUsers = (props: Props): State => {
                 withRefreshTokens: props.withRefreshTokens ? "" : undefined,
             }
 
+
             try {
                 if (loginContext.data.loggedIn) {
-                    theUsers = (await Api.get(USERS_BASE
-                        + `${queryParameters(parameters)}`)).data;
-                    logger.debug({
-                        context: "useFetchUsers.fetchUsers",
-                        parameters: parameters,
-                        users: Abridgers.USERS(theUsers),
-                    });
+                    const isSuperuser = loginContext.validateScope(Scope.SUPERUSER);
+                    const isAdmin = loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
+                    let url = "";
+                    if (isSuperuser) {
+                        url = `${USERS_BASE}${queryParameters(parameters)}`;
+                    } else if (isAdmin) {
+                        url = `${LIBRARIES_BASE}/${libraryContext.library.id}/users${queryParameters(parameters)}`;
+                    }
+                    if (url !== "") {
+                        theUsers = (await Api.get(url)).data;
+                        logger.info({
+                            context: "useFetchUsers.fetchUsers",
+                            url: url,
+                            users: Abridgers.USERS(theUsers),
+                        });
+                    }
                 }
             } catch (anError) {
                 setError(anError as Error);
@@ -91,7 +105,8 @@ const useFetchUsers = (props: Props): State => {
     }, [props.active, props.currentPage, props.pageSize,
         props.username, props.withAccessTokens, props.withRefreshTokens,
         alertPopup,
-        loginContext.data.loggedIn]);
+        libraryContext.library,
+        loginContext, loginContext.data.loggedIn]);
 
     return {
         error: error ? error : null,
