@@ -60,7 +60,7 @@ export const LoginForm = (props: Props) => {
                 <Row className="g-3 mb-3" id="usernameRow">
                     <TextField
                         autoFocus={(props.autoFocus !== undefined) ? props.autoFocus : undefined}
-                        errors={errors}
+                        error={errors.username}
                         label="Username:"
                         name="username"
                         register={register}
@@ -70,7 +70,7 @@ export const LoginForm = (props: Props) => {
 
                 <Row className="g-3 mb-3" id="passwordRow">
                     <TextField
-                        errors={errors}
+                        error={errors.password}
                         label="Password:"
                         name="password"
                         register={register}

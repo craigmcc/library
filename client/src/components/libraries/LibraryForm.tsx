@@ -147,14 +147,14 @@ const LibraryForm = (props: Props) => {
                             <Row className="g-3 mb-3" id="nameScopeRow">
                                 <TextField
                                     autoFocus={(props.autoFocus !== undefined) ? props.autoFocus : undefined}
-                                    errors={errors}
+                                    error={errors.name}
                                     label="Name:"
                                     name="name"
                                     register={register}
                                     valid="Name of this Library (must be unique)."
                                 />
                                 <TextField
-                                    errors={errors}
+                                    error={errors.scope}
                                     label="Scope:"
                                     name="scope"
                                     register={register}
@@ -164,7 +164,7 @@ const LibraryForm = (props: Props) => {
 
                             <Row className="g-3 mb-3" id="notesRow">
                                 <TextField
-                                    errors={errors}
+                                    error={errors.notes}
                                     label="Notes:"
                                     name="notes"
                                     register={register}
@@ -174,7 +174,7 @@ const LibraryForm = (props: Props) => {
 
                             <Row className="g-3 mb-3" id="activeRow">
                                 <CheckBoxField
-                                    errors={errors}
+                                    error={errors.active}
                                     label="Active?"
                                     name="active"
                                     register={register}

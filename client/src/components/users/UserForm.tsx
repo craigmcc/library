@@ -144,14 +144,14 @@ const UserForm = (props: Props) => {
                     <Row className="g-3 mb-3" id="nameScopeRow">
                         <TextField
                             autoFocus={(props.autoFocus !== undefined) ? props.autoFocus : undefined}
-                            errors={errors}
+                            error={errors.name}
                             label="Name:"
                             name="name"
                             register={register}
                             valid="Name of this User."
                         />
                         <TextField
-                            errors={errors}
+                            error={errors.scope}
                             label="Scope:"
                             name="scope"
                             register={register}
@@ -161,14 +161,14 @@ const UserForm = (props: Props) => {
 
                     <Row className="g-3 mb-3" id="usernamePasswordRow">
                         <TextField
-                            errors={errors}
+                            error={errors.username}
                             label="Username:"
                             name="username"
                             register={register}
                             valid="Login username of this User (must be unique)."
                         />
                         <TextField
-                            errors={errors}
+                            error={errors.password}
                             label="Password:"
                             name="password"
                             register={register}
@@ -178,14 +178,14 @@ const UserForm = (props: Props) => {
 
                     <Row className="g-3 mb-3" id="googleBooksApiKeyActiveRow">
                         <TextField
-                            errors={errors}
+                            error={errors.googleBooksApiKey}
                             label="Google Books API Key:"
                             name="googleBooksApiKey"
                             register={register}
                             valid="This User's API Key for Google Books (if any)."
                         />
                         <CheckBoxField
-                            errors={errors}
+                            error={errors.active}
                             label="Active?"
                             name="active"
                             register={register}

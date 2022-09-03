@@ -133,7 +133,7 @@ const StoryForm = (props: Props) => {
                     <Row className="g-3 mb-3" id="nameOrdinalRow">
                         <TextField
                             autoFocus={(props.autoFocus !== undefined) ? props.autoFocus : undefined}
-                            errors={errors}
+                            error={errors.name}
                             label="Name:"
                             name="name"
                             register={register}
@@ -142,7 +142,7 @@ const StoryForm = (props: Props) => {
                         {props.showOrdinal ? (
                             <TextField
                                 className="col-2"
-                                errors={errors}
+                                error={errors.ordinal}
                                 label="Ordinal:"
                                 name="ordinal"
                                 register={register}
@@ -154,7 +154,7 @@ const StoryForm = (props: Props) => {
 
                     <Row className="g-3 mb-3" id="notesCopyrightRow">
                         <TextField
-                            errors={errors}
+                            error={errors.notes}
                             label="Notes:"
                             name="notes"
                             register={register}
@@ -162,7 +162,7 @@ const StoryForm = (props: Props) => {
                         />
                         <TextField
                             className="col-2"
-                            errors={errors}
+                            error={errors.copyright}
                             label="Copyright:"
                             name="copyright"
                             register={register}
@@ -172,7 +172,7 @@ const StoryForm = (props: Props) => {
 
                     <Row className="g-3 mb-3" id="activeRow">
                         <CheckBoxField
-                            errors={errors}
+                            error={errors.active}
                             label="Active?"
                             name="active"
                             register={register}

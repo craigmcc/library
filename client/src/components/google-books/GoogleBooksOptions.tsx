@@ -159,7 +159,7 @@ const GoogleBooksOptions = (props: Props) => {
                     >
                         <TextField
                             autoFocus
-                            errors={errors}
+                            error={errors.searchText}
                             name="searchText"
                             placeholder="Enter Google Books query terms"
                             register={register}

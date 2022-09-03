@@ -135,14 +135,14 @@ const AuthorForm = (props: Props) => {
                     <Row className="g-3 mb-3" id="firstNameLastNameRow">
                         <TextField
                             autoFocus={(props.autoFocus !== undefined) ? props.autoFocus : undefined}
-                            errors={errors}
+                            error={errors.firstName}
                             label="First Name:"
                             name="firstName"
                             register={register}
                             valid="First name of this Author"
                         />
                         <TextField
-                            errors={errors}
+                            error={errors.lastName}
                             label="Last Name:"
                             name="lastName"
                             register={register}
@@ -152,7 +152,7 @@ const AuthorForm = (props: Props) => {
 
                     <Row className="g-3 mb-3" id="notesRow">
                         <TextField
-                            errors={errors}
+                            error={errors.notes}
                             label="Notes:"
                             name="notes"
                             register={register}
@@ -163,14 +163,14 @@ const AuthorForm = (props: Props) => {
                     <Row className="g-3 mb-3" id="principalActiveRow">
                         {props.showPrincipal ? (
                             <CheckBoxField
-                                errors={errors}
+                                error={errors.principal}
                                 label="Principal Author?"
                                 name="principal"
                                 register={register}
                             />
                         ) : null }
                         <CheckBoxField
-                            errors={errors}
+                            error={errors.active}
                             label="Active?"
                             name="active"
                             register={register}

@@ -158,7 +158,7 @@ const VolumeForm = (props: Props) => {
                     <Row className="g-3 mb-3" id="nameRow">
                         <TextField
                             autoFocus={(props.autoFocus !== undefined) ? props.autoFocus : undefined}
-                            errors={errors}
+                            error={errors.name}
                             label="Name:"
                             name="name"
                             register={register}
@@ -168,7 +168,7 @@ const VolumeForm = (props: Props) => {
 
                     <Row className="g-3 mb-3" id="locationTypeRow">
                         <SelectField
-                            errors={errors}
+                            error={errors.location}
                             label="Location:"
                             name="location"
                             options={validLocations()}
@@ -176,7 +176,7 @@ const VolumeForm = (props: Props) => {
                             valid="Physical location of this volume."
                         />
                         <SelectField
-                            errors={errors}
+                            error={errors.type}
                             label="Volume Type:"
                             name="type"
                             options={validTypes()}
@@ -187,7 +187,7 @@ const VolumeForm = (props: Props) => {
 
                     <Row className="g-3 mb-3" id="notesRow">
                         <TextField
-                            errors={errors}
+                            error={errors.notes}
                             label="Notes:"
                             name="notes"
                             register={register}
@@ -197,21 +197,21 @@ const VolumeForm = (props: Props) => {
 
                     <Row className="g-3 mb-3" id="copyrightGoogleIdIsbnRow">
                         <TextField
-                            errors={errors}
+                            error={errors.copyright}
                             label="Copyright:"
                             name="copyright"
                             register={register}
                             valid="Copyright Year (YYYY) of this Volume."
                         />
                         <TextField
-                            errors={errors}
+                            error={errors.googleId}
                             label="Google ID:"
                             name="googleId"
                             register={register}
                             valid="Google Books identifier of this Volume."
                         />
                         <TextField
-                            errors={errors}
+                            error={errors.isbn}
                             label="ISBN:"
                             name="isbn"
                             register={register}
@@ -221,13 +221,13 @@ const VolumeForm = (props: Props) => {
 
                     <Row className="g-3 mb-3" id="readActiveRow">
                         <CheckBoxField
-                            errors={errors}
+                            error={errors.read}
                             label="Already Read?"
                             name="read"
                             register={register}
                         />
                         <CheckBoxField
-                            errors={errors}
+                            error={errors.active}
                             label="Active?"
                             name="active"
                             register={register}

@@ -132,7 +132,7 @@ const SeriesForm = (props: Props) => {
                     <Row className="g-3 mb-3" id="nameRow">
                         <TextField
                             autoFocus={(props.autoFocus !== undefined) ? props.autoFocus : undefined}
-                            errors={errors}
+                            error={errors.name}
                             label="Name:"
                             name="name"
                             register={register}
@@ -142,7 +142,7 @@ const SeriesForm = (props: Props) => {
 
                     <Row className="g-3 mb-3" id="notesRow">
                         <TextField
-                            errors={errors}
+                            error={errors.notes}
                             label="Notes:"
                             name="notes"
                             register={register}
@@ -152,14 +152,14 @@ const SeriesForm = (props: Props) => {
 
                     <Row className="g-3 mb-3" id="copyrightActiveRow">
                         <TextField
-                            errors={errors}
+                            error={errors.copyright}
                             label="Copyright:"
                             name="copyright"
                             register={register}
                             valid="Copyright Year (YYYY) of this Series."
                         />
                         <CheckBoxField
-                            errors={errors}
+                            error={errors.active}
                             label="Active?"
                             name="active"
                             register={register}
