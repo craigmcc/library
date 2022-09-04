@@ -4,17 +4,20 @@
 
 // External Modules ----------------------------------------------------------
 
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import {ProcessUser} from "../types";
+import {ProcessUser, Scope} from "../types";
 import Api from "../clients/Api";
+import LibraryContext from "../components/libraries/LibraryContext";
+import LoginContext from "../components/login/LoginContext";
 import User, {USERS_BASE} from "../models/User";
 import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
 import ReportError from "../util/ReportError";
 import * as ToModel from "../util/ToModel";
+import {LIBRARIES_BASE} from "../models/Library";
 
 // Incoming Properties and Outgoing State ------------------------------------
 
@@ -34,6 +37,9 @@ export interface State {
 
 const useMutateUser = (props: Props = {}): State => {
 
+    const libraryContext = useContext(LibraryContext);
+    const loginContext = useContext(LoginContext);
+
     const alertPopup = (props.alertPopup !== undefined) ? props.alertPopup : true;
     const [error, setError] = useState<Error | null>(null);
     const [executing, setExecuting] = useState<boolean>(false);
@@ -46,7 +52,11 @@ const useMutateUser = (props: Props = {}): State => {
 
     const insert: ProcessUser = async (theUser) => {
 
-        const url = USERS_BASE;
+        const isAdmin =
+            loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
+        const url = isAdmin
+          ? `${LIBRARIES_BASE}/${libraryContext.library.id}/users`
+          : USERS_BASE;
         let inserted = new User();
         setError(null);
         setExecuting(true);
@@ -73,8 +83,12 @@ const useMutateUser = (props: Props = {}): State => {
 
     const remove: ProcessUser = async (theUser) => {
 
-        const url = USERS_BASE
-            + `/${theUser.id}`;
+        const isAdmin =
+            loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
+        const url = isAdmin
+            ? `${LIBRARIES_BASE}/${libraryContext.library.id}/users/${theUser.id}`
+            : `${USERS_BASE}/${theUser.id}`;
+
         let removed = new User();
         setError(null);
         setExecuting(true);
@@ -101,8 +115,12 @@ const useMutateUser = (props: Props = {}): State => {
 
     const update: ProcessUser = async (theUser) => {
 
-        const url = USERS_BASE
-            + `/${theUser.id}`;
+        const isAdmin =
+            loginContext.validateLibrary(libraryContext.library, Scope.ADMIN);
+        const url = isAdmin
+            ? `${LIBRARIES_BASE}/${libraryContext.library.id}/users/${theUser.id}`
+            : `${USERS_BASE}/${theUser.id}`;
+
         let updated = new User();
         setError(null);
         setExecuting(true);

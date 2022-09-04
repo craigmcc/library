@@ -50,7 +50,7 @@ const UserView = () => {
         setCanInsert(isSuperuser || isAdmin);
         setCanRemove(isSuperuser);
         setCanUpdate(isSuperuser || isAdmin);
-        logger.info({
+        logger.debug({
             context: "UserView.useEffect",
             isAdmin: isAdmin,
             isSuperuser: isSuperuser,
@@ -69,7 +69,7 @@ const UserView = () => {
             googleBooksApiKey: null,
             name: null,
             password: null,
-            scope: null,
+            scope: `${libraryContext.library.scope}:regular log:info`,
             username: null,
         });
         logger.debug({

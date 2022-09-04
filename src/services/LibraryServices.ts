@@ -103,6 +103,26 @@ class LibraryServices extends BaseParentServices<Library> {
         return users;
     }
 
+    public async usersExact(libraryId: number, username: string, query?: any): Promise<User> {
+        await this.read("LibraryServices.users", libraryId);
+        return await UserServices.exact(username, query);
+    }
+
+    public async usersInsert(libraryId: number, user: User): Promise<User> {
+        await this.read("LibraryServices.usersInsert", libraryId);
+        return await UserServices.insert(user);
+    }
+
+    public async usersRemove(libraryId: number, userId: number): Promise<User> {
+        await this.read("LibraryServices.usersRemove", libraryId);
+        return await UserServices.remove(userId);
+    }
+
+    public async usersUpdate(libraryId: number, userId: number, user: User): Promise<User> {
+        await this.read("LibraryServices.usersUpdate", libraryId);
+        return await UserServices.update(userId, user);
+    }
+
     public async volumes(libraryId: number, query?: any): Promise<Volume[]> {
         const library = await this.read("LibraryServices.volumes", libraryId);
         const options: FindOptions = VolumeServices.appendMatchOptions({

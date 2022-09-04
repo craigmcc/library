@@ -16,14 +16,14 @@ import {CaretLeftSquare} from "react-bootstrap-icons";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import {CheckBoxField, TextField} from "@craigmcc/shared-react";
+import {CheckBoxField, SelectField, SelectOption, TextField} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
 import LibraryContext from "../libraries/LibraryContext";
 import {HandleAction, HandleUser} from "../../types";
 import User, {UserData} from "../../models/User";
-import {validateUserUsernameUnique} from "../../util/AsyncValidators";
+import {validateUserUsernameLibraryUnique} from "../../util/AsyncValidators";
 import logger from "../../util/ClientLogger";
 import * as ToModel from "../../util/ToModel";
 import {toNullValues} from "../../util/Transformations";
@@ -49,10 +49,22 @@ interface Permission {
 class UserDataExtended extends UserData {
     constructor(data: any = {}) {
         super(data);
+        this.logLevel = data.logLevel ? data.logLevel : "info";
         this.permissions = [];
     }
+    logLevel: string;                   // Preferred logging level
     permissions: Permission[];          // Permissions for available Libraries
 }
+
+const LOG_LEVEL_OPTIONS: SelectOption[] = [
+    {label: "Trace", value: "trace"},
+    {label: "Debug", value: "debug"},
+    {label: "Info",  value: "info"},
+    {label: "Warn",  value: "warn"},
+    {label: "Error", value: "error"},
+    {label: "Fatal", value: "fatal"},
+];
+const LOG_LEVEL_PREFIX = "log:"
 
 const UserForm = (props: Props) => {
 
@@ -69,6 +81,11 @@ const UserForm = (props: Props) => {
                 admin: alloweds.includes(`${library.scope}:admin`),
                 regular: alloweds.includes(`${library.scope}:regular`),
             });
+        });
+        alloweds.forEach(allowed => {
+            if (allowed.startsWith(LOG_LEVEL_PREFIX)) {
+                defaultValues.logLevel = allowed.substring(LOG_LEVEL_PREFIX.length);
+            }
         })
         return defaultValues;
     }
@@ -83,6 +100,9 @@ const UserForm = (props: Props) => {
                 alloweds.push(`${library.scope}:regular`);
             }
         });
+        if (values.logLevel !== "") {
+            alloweds.push(`${LOG_LEVEL_PREFIX}${values.logLevel}`);
+        }
         return alloweds.join(" ");
     }
 
@@ -103,11 +123,10 @@ const UserForm = (props: Props) => {
 
     const onSubmit: SubmitHandler<UserDataExtended> = (values) => {
         values.scope = calculateScope(values);
-        logger.info({
+        logger.debug({
             context: "UserForm.onSubmit",
             values: values,
         });
-/*
         const theUser = new User({
             ...props.user,
             ...values,
@@ -117,7 +136,6 @@ const UserForm = (props: Props) => {
         } else if (!adding && props.handleUpdate) {
             props.handleUpdate(theUser);
         }
-*/
     }
 
     // NOTE - there is no server-side equivalent for this because there is
@@ -146,7 +164,7 @@ const UserForm = (props: Props) => {
             .test("unique-username",
                 "That username is already in use",
                 async function (this) {
-                    return validateUserUsernameUnique(ToModel.USER(toNullValues(this.parent)))
+                    return validateUserUsernameLibraryUnique(ToModel.USER(toNullValues(this.parent)), libraryContext.library)
                 }),
         });
 
@@ -235,7 +253,17 @@ const UserForm = (props: Props) => {
                             register={register}
                             valid="This User's API Key for Google Books (if any)."
                         />
+                        <SelectField
+                            className="col-3"
+                            error={errors.logLevel}
+                            header={{label: "(Default)", value: ""}}
+                            label="Log Detail Level:"
+                            name="logLevel"
+                            options={LOG_LEVEL_OPTIONS}
+                            register={register}
+                        />
                         <CheckBoxField
+                            className="col-3"
                             error={errors.active}
                             label="Active?"
                             name="active"

@@ -112,6 +112,20 @@ export const validateUserUsernameUnique = async (user: User): Promise<boolean> =
     }
 }
 
+export const validateUserUsernameLibraryUnique = async (user: User, library: Library): Promise<boolean> => {
+    if (user && user.username) {
+        try {
+            const result = (await Api.get(LIBRARIES_BASE
+                + `/${library.id}/users/exact/${user.username}`)).data;
+            return (result.id === user.id);
+        } catch (error) {
+            return true; // Definitely unique
+        }
+    } else {
+        return true;
+    }
+}
+
 export const validateVolumeNameUnique = async (volume: Volume): Promise<boolean> => {
     if (volume && volume.name) {
         try {

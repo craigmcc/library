@@ -55,7 +55,7 @@ const UserList = (props: Props) => {
     useEffect(() => {
 
         logger.debug({
-            context: "UserOptions.useEffect",
+            context: "UserList.useEffect",
             active: active,
             searchText: searchText,
         });
@@ -102,7 +102,7 @@ const UserList = (props: Props) => {
     }
 
     return (
-        <Container fluid id="UserOptions">
+        <Container fluid id="UserList">
 
             <FetchingProgress
                 error={fetchUsers.error}

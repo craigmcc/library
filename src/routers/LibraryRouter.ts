@@ -127,6 +127,48 @@ LibraryRouter.get("/:libraryId/users",
         ));
     });
 
+// POST /:libraryId/users - Insert new User for this Library
+LibraryRouter.post("/:libraryId/users",
+    requireAdmin,
+    async (req, res) => {
+        res.send(await LibraryServices.usersInsert(
+            parseInt(req.params.libraryId, 10),
+            req.body
+        ));
+    });
+
+// DELETE /:libraryId/users/:userId - Remove existing User for this Library
+LibraryRouter.delete("/:libraryId/users/:userId",
+    requireAdmin,
+    async (req, res) => {
+        res.send(await LibraryServices.usersRemove(
+            parseInt(req.params.libraryId, 10),
+            parseInt(req.params.userId, 10),
+        ));
+    });
+
+// PUT /:libraryId/users - Update existing User for this Library
+LibraryRouter.put("/:libraryId/users/:userId",
+    requireAdmin,
+    async (req, res) => {
+        res.send(await LibraryServices.usersUpdate(
+            parseInt(req.params.libraryId, 10),
+            parseInt(req.params.userId, 10),
+            req.body
+        ));
+    });
+
+// GET /:libraryId/users/exact/:username - Find exactly matching User by username
+LibraryRouter.get("/:libraryId/users/exact/:username",
+    requireAdmin,
+    async (req, res) => {
+        res.send(await LibraryServices.usersExact(
+            parseInt(req.params.libraryId, 10),
+            req.params.username,
+            req.query
+        ));
+    });
+
 // GET /:libraryId/volumes - Find matching Volumes for this Library
 LibraryRouter.get("/:libraryId/volumes",
     requireRegular,

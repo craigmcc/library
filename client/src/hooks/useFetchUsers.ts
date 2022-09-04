@@ -81,7 +81,7 @@ const useFetchUsers = (props: Props): State => {
                     }
                     if (url !== "") {
                         theUsers = (await Api.get(url)).data;
-                        logger.info({
+                        logger.debug({
                             context: "useFetchUsers.fetchUsers",
                             url: url,
                             users: Abridgers.USERS(theUsers),
