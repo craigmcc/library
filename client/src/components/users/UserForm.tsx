@@ -4,13 +4,14 @@
 
 // External Modules ----------------------------------------------------------
 
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
+import Table from "react-bootstrap/Table";
 import {CaretLeftSquare} from "react-bootstrap-icons";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -19,11 +20,13 @@ import {CheckBoxField, TextField} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
+import LibraryContext from "../libraries/LibraryContext";
 import {HandleAction, HandleUser} from "../../types";
 import User, {UserData} from "../../models/User";
 import {validateUserUsernameUnique} from "../../util/AsyncValidators";
+import logger from "../../util/ClientLogger";
 import * as ToModel from "../../util/ToModel";
-import {/*toEmptyStrings, */toNullValues} from "../../util/Transformations";
+import {toNullValues} from "../../util/Transformations";
 
 // Incoming Properties ------------------------------------------------------
 
@@ -31,17 +34,57 @@ export interface Props {
     autoFocus?: boolean;                // First element receive autoFocus? [false]
     handleInsert?: HandleUser;          // Handle User insert request [not allowed]
     handleRemove?: HandleUser;          // Handle User remove request [not allowed]
-    handleReturn: HandleAction;           // Handle return to previous view
+    handleReturn: HandleAction;         // Handle return to previous view
     handleUpdate?: HandleUser;          // Handle User update request [not allowed]
     user: User;                         // Initial values (id < 0 for adding)
 }
 
 // Component Details ---------------------------------------------------------
 
+interface Permission {
+    admin: boolean;                     // Grant admin permission?
+    regular: boolean;                   // Grant regular permission?
+}
+
+class UserDataExtended extends UserData {
+    constructor(data: any = {}) {
+        super(data);
+        this.permissions = [];
+    }
+    permissions: Permission[];          // Permissions for available Libraries
+}
+
 const UserForm = (props: Props) => {
+
+    const libraryContext = useContext(LibraryContext);
 
     const adding = (props.user.id < 0);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
+
+    const calculateDefaultValues = (): UserDataExtended => {
+        let defaultValues = new UserDataExtended(props.user);
+        const alloweds = props.user.scope.split(" ");
+        libraryContext.libraries.forEach(library => {
+            defaultValues.permissions.push({
+                admin: alloweds.includes(`${library.scope}:admin`),
+                regular: alloweds.includes(`${library.scope}:regular`),
+            });
+        })
+        return defaultValues;
+    }
+
+    const calculateScope = (values: UserDataExtended): string => {
+        const alloweds: string[] = [];
+        libraryContext.libraries.forEach((library, li) => {
+            if (values.permissions[li].admin) {
+                alloweds.push(`${library.scope}:admin`);
+            }
+            if (values.permissions[li].regular) {
+                alloweds.push(`${library.scope}:regular`);
+            }
+        });
+        return alloweds.join(" ");
+    }
 
     const onConfirm = (): void => {
         setShowConfirm(true);
@@ -58,7 +101,13 @@ const UserForm = (props: Props) => {
         }
     }
 
-    const onSubmit: SubmitHandler<UserData> = (values) => {
+    const onSubmit: SubmitHandler<UserDataExtended> = (values) => {
+        values.scope = calculateScope(values);
+        logger.info({
+            context: "UserForm.onSubmit",
+            values: values,
+        });
+/*
         const theUser = new User({
             ...props.user,
             ...values,
@@ -68,6 +117,7 @@ const UserForm = (props: Props) => {
         } else if (!adding && props.handleUpdate) {
             props.handleUpdate(theUser);
         }
+*/
     }
 
     // NOTE - there is no server-side equivalent for this because there is
@@ -100,8 +150,8 @@ const UserForm = (props: Props) => {
                 }),
         });
 
-    const {formState: {errors}, handleSubmit, register} = useForm<UserData>({
-        defaultValues: new UserData(props.user),
+    const {formState: {errors}, handleSubmit, register} = useForm<UserDataExtended>({
+        defaultValues: calculateDefaultValues(),
         mode: "onBlur",
         resolver: yupResolver(validationSchema),
     });
@@ -151,6 +201,7 @@ const UserForm = (props: Props) => {
                             valid="Name of this User."
                         />
                         <TextField
+                            disabled={true}
                             error={errors.scope}
                             label="Scope:"
                             name="scope"
@@ -190,6 +241,41 @@ const UserForm = (props: Props) => {
                             name="active"
                             register={register}
                         />
+                    </Row>
+
+                    <Row className="g-3 mb-3">
+                        <Table
+                            bordered={true}
+                            hover={true}
+                            size="sm"
+                            striped={true}
+                        >
+                            <thead>
+                            <tr className="table-secondary">
+                                <th>Library</th>
+                                <th>Permissions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {libraryContext.libraries.map((library, li) => (
+                                <tr key={li}>
+                                    <td>{library.name}</td>
+                                    <td>
+                                        <CheckBoxField
+                                            label="Admin"
+                                            name={`permissions.${li}.admin`}
+                                            register={register}
+                                        />
+                                        <CheckBoxField
+                                            label="Regular"
+                                            name={`permissions.${li}.regular`}
+                                            register={register}
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </Table>
                     </Row>
 
                     <Row className="g-3 mb-3">

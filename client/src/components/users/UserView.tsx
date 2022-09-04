@@ -1,4 +1,4 @@
-// UserSegment ---------------------------------------------------------------
+// UserView ---------------------------------------------------------------
 
 // Top-level view for managing User objects.
 
@@ -73,7 +73,7 @@ const UserView = () => {
             username: null,
         });
         logger.debug({
-            context: "UserSegment.handleAdd",
+            context: "UserView.handleAdd",
             user: theUser,
         });
         setUser(theUser);
@@ -82,8 +82,8 @@ const UserView = () => {
 
     // Handle selection of a User to edit details
     const handleEdit: HandleUser = (theUser) => {
-        logger.debug({
-            context: "UserSegment.handleEdit",
+        logger.info({
+            context: "UserView.handleEdit",
             user: Abridgers.USER(theUser),
         });
         setUser(theUser);
@@ -95,7 +95,7 @@ const UserView = () => {
         setMessage(`Inserting User '${theUser.username}'`);
         const inserted = await mutateUser.insert(theUser);
         logger.debug({
-            context: "UserSegment.handleInsert",
+            context: "UserView.handleInsert",
             user: Abridgers.USER(inserted),
         })
         setView(View.OPTIONS);
@@ -106,7 +106,7 @@ const UserView = () => {
         setMessage(`Removing User '${theUser.username}'`);
         const removed = await mutateUser.remove(theUser);
         logger.debug({
-            context: "UserSegment.remove",
+            context: "UserView.remove",
             user: Abridgers.USER(removed),
         });
         setView(View.OPTIONS);
@@ -115,7 +115,7 @@ const UserView = () => {
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
         logger.debug({
-            context: "UserSegment.handleReturn",
+            context: "UserView.handleReturn",
         });
         setView(View.OPTIONS);
     }
@@ -125,7 +125,7 @@ const UserView = () => {
         setMessage(`Updating User '${theUser.username}'`);
         const updated = await mutateUser.update(theUser);
         logger.debug({
-            context: "UserSegment.handleUpdate",
+            context: "UserView.handleUpdate",
             user: Abridgers.USER(updated),
         })
         setView(View.OPTIONS);
