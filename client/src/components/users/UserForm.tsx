@@ -188,6 +188,7 @@ const UserForm = (props: Props) => {
                             variant="outline-dark"
                         >
                             <CaretLeftFill
+                                aria-label="Back"
                                 data-testid="back"
                                 onClick={props.handleReturn}
                                 size={32}

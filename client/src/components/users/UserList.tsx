@@ -137,6 +137,7 @@ const UserList = (props: Props) => {
                 </Col>
                 <Col className="text-end">
                     <Button
+                        aria-label="Add"
                         data-testid="add0"
                         disabled={!canAdd}
                         onClick={canAdd ? props.handleAdd : undefined}
@@ -193,6 +194,7 @@ const UserList = (props: Props) => {
             <Row className="mb-3">
                 <Col className="text-end">
                     <Button
+                        aria-label="Add"
                         data-testid="add1"
                         disabled={!canAdd}
                         onClick={canAdd ? props.handleAdd : undefined}

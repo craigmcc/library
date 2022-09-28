@@ -192,11 +192,12 @@ const VolumeList = (props: Props) => {
                 {props.handleReturn ? (
                     <Col className="text-start">
                         <Button
+                            aria-label="Back"
+                            data-testid="back"
                             onClick={props.handleReturn}
                             variant="outline-dark"
                         >
                             <CaretLeftFill
-                                data-testid="back"
                                 onClick={props.handleReturn}
                                 size={32}
                             />
@@ -242,6 +243,7 @@ const VolumeList = (props: Props) => {
                 </Col>
                 <Col className="text-end">
                     <Button
+                        aria-label="Add"
                         data-testid="add0"
                         disabled={!canAdd}
                         onClick={canAdd ? props.handleAdd : undefined}
@@ -371,6 +373,7 @@ const VolumeList = (props: Props) => {
             <Row className="mb-3">
                 <Col className="text-end">
                     <Button
+                        aria-label="Add"
                         data-testid="add0"
                         disabled={!canAdd}
                         onClick={canAdd ? props.handleAdd : undefined}

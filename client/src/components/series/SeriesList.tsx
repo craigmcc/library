@@ -192,11 +192,12 @@ const SeriesList = (props: Props) => {
                 {props.handleReturn ? (
                     <Col className="text-start">
                         <Button
+                            aria-label="Back"
+                            data-testid="back"
                             onClick={props.handleReturn}
                             variant="outline-dark"
                         >
                             <CaretLeftFill
-                                data-testid="back"
                                 onClick={props.handleReturn}
                                 size={32}
                             />

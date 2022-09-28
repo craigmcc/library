@@ -101,6 +101,8 @@ const SeriesForm = (props: Props) => {
                 <Row className="mb-3">
                     <Col className="text-start">
                         <Button
+                            aria-label="Back"
+                            data-testid="back"
                             onClick={props.handleReturn}
                             variant="outline-dark"
                         >

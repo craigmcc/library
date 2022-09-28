@@ -203,11 +203,12 @@ const StoryList = (props: Props) => {
                 {props.handleReturn ? (
                     <Col className="text-start">
                         <Button
+                            aria-label="Back"
+                            data-testid="back"
                             onClick={props.handleReturn}
                             variant="outline-dark"
                         >
                             <CaretLeftFill
-                                data-testid="back"
                                 onClick={props.handleReturn}
                                 size={32}
                             />
@@ -399,6 +400,7 @@ const StoryList = (props: Props) => {
             <Row className="mb-3">
                 <Col className="text-end">
                     <Button
+                        aria-label="Add"
                         data-testid="add1"
                         disabled={!canAdd}
                         onClick={canAdd ? props.handleAdd : undefined}
