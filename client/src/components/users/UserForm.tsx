@@ -12,7 +12,7 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
-import {CaretLeftSquare} from "react-bootstrap-icons";
+import {CaretLeftFill} from "react-bootstrap-icons";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -183,11 +183,16 @@ const UserForm = (props: Props) => {
 
                 <Row className="mb-3">
                     <Col className="text-start">
-                        <CaretLeftSquare
-                            data-testid="back"
+                        <Button
                             onClick={props.handleReturn}
-                            size={32}
-                        />
+                            variant="outline-dark"
+                        >
+                            <CaretLeftFill
+                                data-testid="back"
+                                onClick={props.handleReturn}
+                                size={32}
+                            />
+                        </Button>
                     </Col>
                     <Col className="text-center">
                         <strong>

@@ -11,7 +11,7 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
-import {CaretLeftSquare, PlusCircleFill} from "react-bootstrap-icons";
+import {CaretLeftFill, PlusCircleFill} from "react-bootstrap-icons";
 import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
@@ -203,10 +203,17 @@ const AuthorList = (props: Props) => {
             <Row className="mb-3">
                 {props.handleReturn ? (
                     <Col className="text-start">
-                        <CaretLeftSquare
+                        <Button
+                            aria-label="Back"
                             onClick={props.handleReturn}
-                            size={32}
-                        />
+                            variant="outline-dark"
+                        >
+                            <CaretLeftFill
+                                data-testid="back"
+                                onClick={props.handleReturn}
+                                size={32}
+                            />
+                        </Button>
                     </Col>
                 ) : <Col/> }
                 <Col className="text-center">
