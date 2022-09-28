@@ -150,7 +150,7 @@ const LibraryView = () => {
 
             {(view === View.OPTIONS) ? (
                 <LibraryList
-                    handleAdd={handleAdd}
+                    handleAdd={canInsert ? handleAdd : undefined}
                     handleEdit={handleEdit}
                 />
             ) : null }

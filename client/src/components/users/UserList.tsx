@@ -23,6 +23,7 @@ import useFetchUsers from "../../hooks/useFetchUsers";
 import User from "../../models/User";
 import logger from "../../util/ClientLogger";
 import {listValue} from "../../util/Transformations";
+import Button from "react-bootstrap/Button";
 
 // Incoming Properties -------------------------------------------------------
 
@@ -52,6 +53,8 @@ const UserList = (props: Props) => {
         username: (searchText.length > 0) ? searchText : undefined,
     });
 
+    const canAdd = loginContext.data.loggedIn && props.handleAdd;
+
     useEffect(() => {
 
         logger.debug({
@@ -75,12 +78,6 @@ const UserList = (props: Props) => {
 
     const handleActive: HandleBoolean = (theActive) => {
         setActive(theActive);
-    }
-
-    const handleAdd: HandleAction = () => {
-        if (props.handleAdd) {
-            props.handleAdd();
-        }
     }
 
     const handleChange: HandleValue = (theSearchText) => {
@@ -139,12 +136,14 @@ const UserList = (props: Props) => {
                     />
                 </Col>
                 <Col className="text-end">
-                    <PlusCircleFill
-                        color="primary"
+                    <Button
                         data-testid="add0"
-                        onClick={(loginContext.data.loggedIn && props.handleAdd) ? handleAdd : undefined}
-                        size={32}
-                    />
+                        disabled={!canAdd}
+                        onClick={canAdd ? props.handleAdd : undefined}
+                        variant="outline-dark"
+                    >
+                        <PlusCircleFill size={32}/>
+                    </Button>
                 </Col>
             </Row>
 
@@ -193,12 +192,14 @@ const UserList = (props: Props) => {
 
             <Row className="mb-3">
                 <Col className="text-end">
-                    <PlusCircleFill
-                        color="primary"
+                    <Button
                         data-testid="add1"
-                        onClick={(loginContext.data.loggedIn && props.handleAdd) ? handleAdd : undefined}
-                        size={32}
-                    />
+                        disabled={!canAdd}
+                        onClick={canAdd ? props.handleAdd : undefined}
+                        variant="outline-dark"
+                    >
+                        <PlusCircleFill size={32}/>
+                    </Button>
                 </Col>
             </Row>
 

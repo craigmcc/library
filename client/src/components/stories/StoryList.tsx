@@ -28,7 +28,7 @@ import Volume from "../../models/Volume";
 import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
 import {authorsNames, listValue} from "../../util/Transformations";
-import {CaretLeftSquare} from "react-bootstrap-icons";
+import {CaretLeftSquare, PlusCircleFill} from "react-bootstrap-icons";
 
 // Incoming Properties -------------------------------------------------------
 
@@ -72,6 +72,8 @@ const StoryList = (props: Props) => {
         withSeries: true,
         withVolumes: true,
     });
+
+    const canAdd = loginContext.data.loggedIn && props.handleAdd;
 
     useEffect(() => {
         logger.debug({
@@ -245,11 +247,13 @@ const StoryList = (props: Props) => {
                 </Col>
                 <Col className="text-end">
                     <Button
-                        disabled={!props.handleAdd}
-                        onClick={props.handleAdd}
-                        size="sm"
-                        variant="primary"
-                    >Add</Button>
+                        data-testid="add0"
+                        disabled={!canAdd}
+                        onClick={canAdd ? props.handleAdd : undefined}
+                        variant="outline-dark"
+                    >
+                        <PlusCircleFill size={32}/>
+                    </Button>
                 </Col>
             </Row>
 
@@ -389,11 +393,13 @@ const StoryList = (props: Props) => {
             <Row className="mb-3">
                 <Col className="text-end">
                     <Button
-                        disabled={!props.handleAdd}
-                        onClick={props.handleAdd}
-                        size="sm"
-                        variant="primary"
-                    >Add</Button>
+                        data-testid="add1"
+                        disabled={!canAdd}
+                        onClick={canAdd ? props.handleAdd : undefined}
+                        variant="outline-dark"
+                    >
+                        <PlusCircleFill size={32}/>
+                    </Button>
                 </Col>
             </Row>
 

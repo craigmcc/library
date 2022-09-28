@@ -216,7 +216,7 @@ const SeriesView = (props: Props) => {
 
             {(view === View.OPTIONS) ? (
                 <SeriesList
-                    handleAdd={handleAdd}
+                    handleAdd={canInsert ? handleAdd : undefined}
                     handleEdit={handleEdit}
                     handleExclude={props.parent && !(props.parent instanceof Library) && canUpdate ? handleExclude : undefined}
                     handleInclude={props.parent && !(props.parent instanceof Library) && canUpdate ? handleInclude : undefined}

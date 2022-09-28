@@ -233,7 +233,7 @@ const StoryView = (props: Props) => {
 
             {(view === View.OPTIONS) ? (
                 <StoryList
-                    handleAdd={handleAdd}
+                    handleAdd={canInsert ? handleAdd : undefined}
                     handleEdit={handleEdit}
                     handleExclude={props.parent && !(props.parent instanceof Library) && canUpdate ? handleExclude : undefined}
                     handleInclude={props.parent && !(props.parent instanceof Library) && canUpdate ? handleInclude : undefined}

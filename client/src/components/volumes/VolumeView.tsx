@@ -221,7 +221,7 @@ const VolumeView = (props: Props) => {
 
             {(view === View.OPTIONS) ? (
                 <VolumeList
-                    handleAdd={handleAdd}
+                    handleAdd={canInsert ? handleAdd : undefined}
                     handleReturn={props.handleReturn ? props.handleReturn : undefined}
                     handleEdit={handleEdit}
                     handleExclude={props.parent && !(props.parent instanceof Library) && canUpdate ? handleExclude : undefined}

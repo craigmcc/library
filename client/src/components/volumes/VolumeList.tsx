@@ -69,6 +69,8 @@ const VolumeList = (props: Props) => {
         withStories: true,
     });
 
+    const canAdd = loginContext.data.loggedIn && props.handleAdd;
+
     useEffect(() => {
         logger.debug({
             context: "VolumeOptions.useEffect",
@@ -233,12 +235,14 @@ const VolumeList = (props: Props) => {
                     />
                 </Col>
                 <Col className="text-end">
-                    <PlusCircleFill
-                        color="primary"
+                    <Button
                         data-testid="add0"
-                        onClick={(loginContext.data.loggedIn && props.handleAdd) ? props.handleAdd : undefined}
-                        size={32}
-                    />
+                        disabled={!canAdd}
+                        onClick={canAdd ? props.handleAdd : undefined}
+                        variant="outline-dark"
+                    >
+                        <PlusCircleFill size={32}/>
+                    </Button>
                 </Col>
             </Row>
 
@@ -360,12 +364,14 @@ const VolumeList = (props: Props) => {
 
             <Row className="mb-3">
                 <Col className="text-end">
-                    <PlusCircleFill
-                        color="primary"
-                        data-testid="add1"
-                        onClick={(loginContext.data.loggedIn && props.handleAdd) ? props.handleAdd : undefined}
-                        size={32}
-                    />
+                    <Button
+                        data-testid="add0"
+                        disabled={!canAdd}
+                        onClick={canAdd ? props.handleAdd : undefined}
+                        variant="outline-dark"
+                    >
+                        <PlusCircleFill size={32}/>
+                    </Button>
                 </Col>
           </Row>
 
