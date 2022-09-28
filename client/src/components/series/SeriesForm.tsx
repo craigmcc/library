@@ -107,7 +107,6 @@ const SeriesForm = (props: Props) => {
                             variant="outline-dark"
                         >
                             <CaretLeftFill
-                                data-testid="back"
                                 onClick={props.handleReturn}
                                 size={32}
                             />
