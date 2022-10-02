@@ -23,7 +23,6 @@ import useFetchLibraries from "../../hooks/useFetchLibraries";
 import Library from "../../models/Library";
 import logger from "../../util/ClientLogger";
 import {listValue} from "../../util/Transformations";
-import Button from "react-bootstrap/Button";
 
 // Incoming Properties -------------------------------------------------------
 
