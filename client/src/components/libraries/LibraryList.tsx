@@ -10,12 +10,12 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
-import {PlusCircleFill} from "react-bootstrap-icons";
 import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
 import LibraryContext from "./LibraryContext";
+import AddButton from "../general/AddButton";
 import LoginContext from "../login/LoginContext";
 import FetchingProgress from "../shared/FetchingProgress";
 import {HandleAction, HandleBoolean, HandleLibrary, HandleValue, Scope} from "../../types";
@@ -134,14 +134,11 @@ const LibraryList = (props: Props) => {
                     />
                 </Col>
                 <Col className="text-end">
-                    <Button
-                        data-testid="add0"
+                    <AddButton
                         disabled={!canAdd}
-                        onClick={canAdd ? props.handleAdd : undefined}
-                        variant="outline-dark"
-                    >
-                        <PlusCircleFill size={32}/>
-                    </Button>
+                        handleAdd={props.handleAdd ? props.handleAdd : undefined}
+                        testId="add0"
+                    />
                 </Col>
             </Row>
 
@@ -189,16 +186,11 @@ const LibraryList = (props: Props) => {
             </Row>
 
             <Row className="mb-3">
-                <Col className="text-end">
-                    <Button
-                        data-testid="add1"
-                        disabled={!canAdd}
-                        onClick={canAdd ? props.handleAdd : undefined}
-                        variant="outline-dark"
-                    >
-                        <PlusCircleFill size={32}/>
-                    </Button>
-                </Col>
+                <AddButton
+                    disabled={!canAdd}
+                    handleAdd={props.handleAdd ? props.handleAdd : undefined}
+                    testId="add1"
+                />
             </Row>
 
         </Container>

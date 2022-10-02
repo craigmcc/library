@@ -10,11 +10,11 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
-import {PlusCircleFill} from "react-bootstrap-icons";
 import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
+import AddButton from "../general/AddButton";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import FetchingProgress from "../shared/FetchingProgress";
@@ -136,15 +136,11 @@ const UserList = (props: Props) => {
                     />
                 </Col>
                 <Col className="text-end">
-                    <Button
-                        aria-label="Add"
-                        data-testid="add0"
+                    <AddButton
                         disabled={!canAdd}
-                        onClick={canAdd ? props.handleAdd : undefined}
-                        variant="outline-dark"
-                    >
-                        <PlusCircleFill size={32}/>
-                    </Button>
+                        handleAdd={props.handleAdd ? props.handleAdd : undefined}
+                        testId="add0"
+                    />
                 </Col>
             </Row>
 
@@ -193,15 +189,11 @@ const UserList = (props: Props) => {
 
             <Row className="mb-3">
                 <Col className="text-end">
-                    <Button
-                        aria-label="Add"
-                        data-testid="add1"
+                    <AddButton
                         disabled={!canAdd}
-                        onClick={canAdd ? props.handleAdd : undefined}
-                        variant="outline-dark"
-                    >
-                        <PlusCircleFill size={32}/>
-                    </Button>
+                        handleAdd={props.handleAdd ? props.handleAdd : undefined}
+                        testId="add1"
+                    />
                 </Col>
             </Row>
 

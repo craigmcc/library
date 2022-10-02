@@ -11,7 +11,6 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
-import {CaretLeftFill} from "react-bootstrap-icons";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -23,6 +22,7 @@ import {HandleAction, HandleAuthor, Parent} from "../../types";
 import Author, {AuthorData} from "../../models/Author";
 import {validateAuthorNameUnique} from "../../util/AsyncValidators";
 import * as ToModel from "../../util/ToModel";
+import BackButton from "../general/BackButton";
 
 // Property Details ----------------------------------------------------------
 
@@ -103,17 +103,9 @@ const AuthorForm = (props: Props) => {
 
                 <Row className="mb-3">
                     <Col className="text-start">
-                        <Button
-                            aria-label="Back"
-                            data-testid="back"
-                            onClick={props.handleReturn}
-                            variant="outline-dark"
-                        >
-                            <CaretLeftFill
-                                onClick={props.handleReturn}
-                                size={32}
-                            />
-                        </Button>
+                        <BackButton
+                            handleBack={props.handleReturn}
+                        />
                     </Col>
                     <Col className="text-center">
                         <strong>

@@ -11,7 +11,6 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
-import {CaretLeftFill} from "react-bootstrap-icons";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -19,6 +18,7 @@ import {CheckBoxField, TextField} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
+import BackButton from "../general/BackButton";
 import {HandleAction, HandleLibrary} from "../../types";
 import Library, {LibraryData} from "../../models/Library";
 import {
@@ -118,17 +118,9 @@ const LibraryForm = (props: Props) => {
 
                 <Row className="mb-3">
                     <Col className="text-start">
-                        <Button
-                            aria-label="Back"
-                            data-testid="back"
-                            onClick={props.handleReturn}
-                            variant="outline-dark"
-                        >
-                            <CaretLeftFill
-                                onClick={props.handleReturn}
-                                size={32}
-                            />
-                        </Button>
+                        <BackButton
+                            handleBack={props.handleReturn}
+                        />
                     </Col>
                     <Col className="text-center">
                         <strong>
