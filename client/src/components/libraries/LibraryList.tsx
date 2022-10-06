@@ -185,11 +185,13 @@ const LibraryList = (props: Props) => {
             </Row>
 
             <Row className="mb-3">
-                <AddButton
-                    disabled={!canAdd}
-                    handleAdd={props.handleAdd ? props.handleAdd : undefined}
-                    testId="add1"
-                />
+                <Col className="text-end">
+                    <AddButton
+                        disabled={!canAdd}
+                        handleAdd={props.handleAdd ? props.handleAdd : undefined}
+                        testId="add1"
+                    />
+                </Col>
             </Row>
 
         </Container>
