@@ -1,7 +1,7 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "proxy": "http://localhost:8080",
+  "proxy": "http://localhost:8084",
   "private": true,
   "dependencies": {
     "@craigmcc/shared-react": "^2.0.2",
