@@ -97,7 +97,7 @@ const StoryForm = (props: Props) => {
         <>
 
             {/* Details Form */}
-            <Container id="StoryDetails">
+            <Container id="StoryForm">
 
                 <Row className="mb-3">
                     <Col className="text-start">
@@ -123,7 +123,7 @@ const StoryForm = (props: Props) => {
                 </Row>
 
                 <Form
-                    id="StoryDetails"
+                    id="StoryForm"
                     noValidate
                     onSubmit={handleSubmit(onSubmit)}
                 >

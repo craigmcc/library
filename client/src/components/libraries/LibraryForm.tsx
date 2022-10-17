@@ -114,7 +114,7 @@ const LibraryForm = (props: Props) => {
         <>
 
             {/* Details Form */}
-            <Container id="LibraryDetails">
+            <Container id="LibraryForm">
 
                 <Row className="mb-3">
                     <Col className="text-start">
@@ -137,7 +137,7 @@ const LibraryForm = (props: Props) => {
                 </Row>
 
                         <Form
-                            id="LibraryDetails"
+                            id="LibraryForm"
                             noValidate
                             onSubmit={handleSubmit(onSubmit)}
                         >

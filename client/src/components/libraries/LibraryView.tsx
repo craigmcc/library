@@ -1,4 +1,4 @@
-// LibrarySegment ------------------------------------------------------------
+// LibraryView ------------------------------------------------------------
 
 // Consolidated view for listing and editing Library objects.
 
@@ -45,7 +45,7 @@ const LibraryView = () => {
     useEffect(() => {
 
         logger.debug({
-            context: "LibrarySegment.useEffect",
+            context: "LibraryView.useEffect",
             library: Abridgers.LIBRARY(library),
             view: view.toString(),
         });
@@ -67,7 +67,7 @@ const LibraryView = () => {
             scope: null,
         });
         logger.debug({
-            context: "LibrarySegment.handleAdd",
+            context: "LibraryView.handleAdd",
             library: theLibrary,
         });
         setLibrary(theLibrary);
@@ -77,7 +77,7 @@ const LibraryView = () => {
     // Handle selection of a Library to edit details
     const handleEdit: HandleLibrary = (theLibrary) => {
         logger.debug({
-            context: "LibrarySegment.handleEdit",
+            context: "LibraryView.handleEdit",
             library: Abridgers.LIBRARY(theLibrary),
         });
         setLibrary(theLibrary);
@@ -89,7 +89,7 @@ const LibraryView = () => {
         setMessage(`Inserting Library '${theLibrary._title}'`);
         const inserted = await mutateLibrary.insert(theLibrary);
         logger.debug({
-            context: "LibrarySegment.handleInsert",
+            context: "LibraryView.handleInsert",
             library: Abridgers.LIBRARY(inserted),
         });
         setView(View.OPTIONS);
@@ -101,7 +101,7 @@ const LibraryView = () => {
         setMessage(`Removing Library '${theLibrary._title}'`);
         const removed = await mutateLibrary.remove(theLibrary);
         logger.debug({
-            context: "LibrarySegment.handleRemove",
+            context: "LibraryView.handleRemove",
             library: Abridgers.LIBRARY(removed),
         });
         setView(View.OPTIONS);
@@ -111,7 +111,7 @@ const LibraryView = () => {
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
         logger.debug({
-            context: "LibrarySegment.handleReturn",
+            context: "LibraryView.handleReturn",
         });
         setView(View.OPTIONS);
     }
@@ -121,7 +121,7 @@ const LibraryView = () => {
         setMessage(`Updating Library '${theLibrary._title}'`);
         const updated = await mutateLibrary.update(theLibrary);
         logger.debug({
-            context: "LibrarySegment.handleUpdate",
+            context: "LibraryView.handleUpdate",
             library: Abridgers.LIBRARY(updated),
         });
         setView(View.OPTIONS);

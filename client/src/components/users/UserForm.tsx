@@ -179,7 +179,7 @@ const UserForm = (props: Props) => {
         <>
 
             {/* Details Form */}
-            <Container id="UserDetails">
+            <Container id="UserForm">
 
                 <Row className="mb-3">
                     <Col className="text-start">
@@ -202,7 +202,7 @@ const UserForm = (props: Props) => {
                 </Row>
 
                 <Form
-                    id="UserDetails"
+                    id="UserForm"
                     noValidate
                     onSubmit={handleSubmit(onSubmit)}
                 >

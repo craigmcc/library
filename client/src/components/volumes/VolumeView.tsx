@@ -57,7 +57,7 @@ const VolumeView = (props: Props) => {
 
     useEffect(() => {
         logger.debug({
-            context: "VolumeSegment.useEffect",
+            context: "VolumeView.useEffect",
             library: libraryContext.library.id > 0 ? Abridgers.LIBRARY(libraryContext.library) : undefined,
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             volume: volume ? Abridgers.VOLUME(volume): undefined,
@@ -89,7 +89,7 @@ const VolumeView = (props: Props) => {
             type: "Single",
         });
         logger.debug({
-            context: "VolumeSegment.handleAdd",
+            context: "VolumeView.handleAdd",
             volume: theVolume,
         });
         setVolume(theVolume);
@@ -99,7 +99,7 @@ const VolumeView = (props: Props) => {
     // Handle selection of a Volume to edit details
     const handleEdit: HandleVolume = (theVolume) => {
         logger.debug({
-            context: "VolumeSegment.handleEdit",
+            context: "VolumeView.handleEdit",
             volume: Abridgers.VOLUME(theVolume),
         });
         setVolume(theVolume);
@@ -109,7 +109,7 @@ const VolumeView = (props: Props) => {
     // Handle excluding a Volume from its parent
     const handleExclude: HandleVolume = async (theVolume) => {
         logger.debug({
-            context: "VolumeSegment.handleExclude",
+            context: "VolumeView.handleExclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             volume: Abridgers.VOLUME(theVolume),
         });
@@ -124,7 +124,7 @@ const VolumeView = (props: Props) => {
     // Handle including a Volume into its Ancestor
     const handleInclude: HandleVolume = async (theVolume) => {
         logger.debug({
-            context: "VolumeSegment.handleInclude",
+            context: "VolumeView.handleInclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             volume: Abridgers.VOLUME(theVolume),
         });
@@ -141,7 +141,7 @@ const VolumeView = (props: Props) => {
         setMessage(`Inserting Volume ${theVolume._title}`);
         const inserted = await mutateVolume.insert(theVolume);
         logger.debug({
-            context: "VolumeSegment.handleInsert",
+            context: "VolumeView.handleInsert",
             volume: Abridgers.VOLUME(inserted),
         });
         handleInclude(inserted);
@@ -153,7 +153,7 @@ const VolumeView = (props: Props) => {
         setMessage(`Removing Volume ${theVolume._title}`);
         const removed = await mutateVolume.remove(theVolume);
         logger.debug({
-            context: "VolumeSegment.handleRemove",
+            context: "VolumeView.handleRemove",
             volume: Abridgers.VOLUME(removed),
         });
         setView(View.OPTIONS);
@@ -162,7 +162,7 @@ const VolumeView = (props: Props) => {
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
         logger.debug({
-            context: "VolumeSegment.handleReturn",
+            context: "VolumeView.handleReturn",
         });
         setView(View.OPTIONS);
     }
@@ -170,7 +170,7 @@ const VolumeView = (props: Props) => {
     // Handle request to show AuthorSegment for a parent Volume
     const handleShowAuthors: HandleVolume = (theVolume) => {
         logger.debug({
-            context: "VolumeSegment.handleShowAuthors",
+            context: "VolumeView.handleShowAuthors",
             volume: Abridgers.VOLUME(theVolume),
         });
         setVolume(theVolume);
@@ -180,7 +180,7 @@ const VolumeView = (props: Props) => {
     // Handle request to show StorySegment for a parent Volume
     const handleShowStories: HandleVolume = (theVolume) => {
         logger.debug({
-            context: "VolumeSegment.handleShowStories",
+            context: "VolumeView.handleShowStories",
             volume: Abridgers.VOLUME(theVolume),
         });
         setVolume(theVolume);
@@ -192,7 +192,7 @@ const VolumeView = (props: Props) => {
         setMessage(`Updating Volume ${theVolume._title}`);
         const updated = await mutateVolume.update(theVolume);
         logger.debug({
-            context: "VolumeSegment.handleUpdate",
+            context: "VolumeView.handleUpdate",
             volume: Abridgers.VOLUME(updated),
         });
         setView(View.OPTIONS);

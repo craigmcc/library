@@ -60,7 +60,7 @@ const StoryView = (props: Props) => {
 
     useEffect(() => {
         logger.debug({
-            context: "StorySegment.useEffect",
+            context: "StoryView.useEffect",
             library: libraryContext.library.id > 0 ? Abridgers.LIBRARY(libraryContext.library) : undefined,
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             story: story ? Abridgers.STORY(story): undefined,
@@ -87,7 +87,7 @@ const StoryView = (props: Props) => {
             notes: null,
         });
         logger.debug({
-            context: "StorySegment.handleAdd",
+            context: "StoryView.handleAdd",
             story: theStory,
         });
         setStory(theStory);
@@ -97,7 +97,7 @@ const StoryView = (props: Props) => {
     // Handle selection of a Story to edit details
     const handleEdit: HandleStory = (theStory) => {
         logger.debug({
-            context: "StorySegment.handleEdit",
+            context: "StoryView.handleEdit",
             story: Abridgers.STORY(theStory),
         });
         setStory(theStory);
@@ -107,7 +107,7 @@ const StoryView = (props: Props) => {
     // Handle excluding a Story from its parent
     const handleExclude: HandleStory = async (theStory) => {
         logger.debug({
-            context: "StorySegment.handleExclude",
+            context: "StoryView.handleExclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             story: Abridgers.STORY(theStory),
         });
@@ -122,7 +122,7 @@ const StoryView = (props: Props) => {
     // Handle including a Story into its Ancestor
     const handleInclude: HandleStory = async (theStory) => {
         logger.debug({
-            context: "StorySegment.handleInclude",
+            context: "StoryView.handleInclude",
             parent: props.parent ? Abridgers.ANY(props.parent) : undefined,
             story: Abridgers.STORY(theStory),
         });
@@ -139,7 +139,7 @@ const StoryView = (props: Props) => {
         setMessage(`Inserting Story '${theStory._title}'`);
         const inserted = await mutateStory.insert(theStory);
         logger.debug({
-            context: "StorySegment.handleInsert",
+            context: "StoryView.handleInsert",
             story: Abridgers.STORY(inserted),
         });
         if (theStory.ordinal) {
@@ -154,7 +154,7 @@ const StoryView = (props: Props) => {
         setMessage(`Removing Story '${theStory._title}'`);
         const removed = await mutateStory.remove(theStory);
         logger.debug({
-            context: "StorySegment.handleRemove",
+            context: "StoryView.handleRemove",
             story: Abridgers.STORY(removed),
         });
         setView(View.OPTIONS);
@@ -163,7 +163,7 @@ const StoryView = (props: Props) => {
     // Handle return from View.DETAILS to redisplay View.OPTIONS
     const handleReturn: HandleAction = () => {
         logger.debug({
-            context: "StorySegment.handleReturn",
+            context: "StoryView.handleReturn",
         });
         setView(View.OPTIONS);
     }
@@ -171,7 +171,7 @@ const StoryView = (props: Props) => {
     // Handle request to show AuthorSegment for a parent Story
     const handleShowAuthors: HandleStory = (theStory) => {
         logger.debug({
-            context: "StorySegment.handleShowAuthors",
+            context: "StoryView.handleShowAuthors",
             story: Abridgers.STORY(theStory),
         });
         setStory(theStory);
@@ -181,7 +181,7 @@ const StoryView = (props: Props) => {
     // Handle request to show SeriesSegment for a parent Story
     const handleShowSeries: HandleStory = (theStory) => {
         logger.debug({
-            context: "StorySegment.handleShowSeries",
+            context: "StoryView.handleShowSeries",
             story: Abridgers.STORY(theStory),
         });
         setStory(theStory);
@@ -191,7 +191,7 @@ const StoryView = (props: Props) => {
     // Handle request to show VolumeSegment for a parent Story
     const handleShowVolumes: HandleStory = (theStory) => {
         logger.debug({
-            context: "StorySegment.handleShowVolumes",
+            context: "StoryView.handleShowVolumes",
             story: Abridgers.STORY(theStory),
         });
         setStory(theStory);
@@ -203,7 +203,7 @@ const StoryView = (props: Props) => {
         setMessage(`Updating Story '${theStory._title}'`);
         const updated = await mutateStory.update(theStory);
         logger.debug({
-            context: "StorySegment.handleUpdate",
+            context: "StoryView.handleUpdate",
             story: Abridgers.STORY(updated),
         });
         setView(View.OPTIONS);

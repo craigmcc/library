@@ -122,7 +122,7 @@ const VolumeForm = (props: Props) => {
         <>
 
             {/* Details Form */}
-            <Container id="VolumeDetails">
+            <Container id="VolumeForm">
 
                 <Row className="mb-3">
                     <Col className="text-start">
@@ -148,7 +148,7 @@ const VolumeForm = (props: Props) => {
                 </Row>
 
                 <Form
-                    id="VolumeDetails"
+                    id="VolumeForm"
                     noValidate
                     onSubmit={handleSubmit(onSubmit)}
                 >

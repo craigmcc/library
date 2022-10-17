@@ -99,7 +99,7 @@ const AuthorForm = (props: Props) => {
         <>
 
             {/* Details Form */}
-            <Container id="AuthorDetails">
+            <Container id="AuthorForm">
 
                 <Row className="mb-3">
                     <Col className="text-start">
@@ -125,7 +125,7 @@ const AuthorForm = (props: Props) => {
                 </Row>
 
                 <Form
-                    id="AuthorDetails"
+                    id="AuthorForm"
                     noValidate
                     onSubmit={handleSubmit(onSubmit)}
                 >

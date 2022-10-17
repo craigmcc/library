@@ -1,4 +1,4 @@
-// AuthorOptions -----------------------------------------------------------------
+// AuthorList -----------------------------------------------------------------
 
 // List Authors that match search criteria, offering callbacks for adding,
 // editing, and removing Authors.  Optionally, include relevant actions.
@@ -78,7 +78,7 @@ const AuthorList = (props: Props) => {
 
     useEffect(() => {
         logger.debug({
-            context: "AuthorOptions.useEffect",
+            context: "AuthorList.useEffect",
             library: Abridgers.LIBRARY(libraryContext.library),
             parent: Abridgers.ANY(props.parent),
             active: active,
@@ -193,7 +193,7 @@ const AuthorList = (props: Props) => {
     }
 
     return (
-        <Container fluid id="AuthorOptions">
+        <Container fluid id="AuthorList">
 
             <FetchingProgress
                 error={fetchAuthors.error}

@@ -78,7 +78,7 @@ const StoryList = (props: Props) => {
 
     useEffect(() => {
         logger.debug({
-            context: "StoryOptions.useEffect",
+            context: "StoryList.useEffect",
             library: Abridgers.LIBRARY(libraryContext.library),
             parent: Abridgers.ANY(props.parent),
             active: active,
@@ -192,7 +192,7 @@ const StoryList = (props: Props) => {
     }
 
     return (
-        <Container fluid id="StoryOptions">
+        <Container fluid id="StoryList">
 
             <FetchingProgress
                 error={fetchStories.error}

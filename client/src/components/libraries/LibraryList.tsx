@@ -57,7 +57,7 @@ const LibraryList = (props: Props) => {
     useEffect(() => {
 
         logger.debug({
-            context: "LibraryOptions.useEffect",
+            context: "LibraryList.useEffect",
             active: active,
             name: searchText,
         });
@@ -96,7 +96,7 @@ const LibraryList = (props: Props) => {
     }
 
     return (
-        <Container fluid id="LibraryOptions">
+        <Container fluid id="LibraryList">
 
             <FetchingProgress
                 error={fetchLibraries.error}

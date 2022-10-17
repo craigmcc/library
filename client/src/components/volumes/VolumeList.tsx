@@ -74,7 +74,7 @@ const VolumeList = (props: Props) => {
 
     useEffect(() => {
         logger.debug({
-            context: "VolumeOptions.useEffect",
+            context: "VolumeList.useEffect",
             library: Abridgers.LIBRARY(libraryContext.library),
             parent: Abridgers.ANY(props.parent),
             active: active,
@@ -181,7 +181,7 @@ const VolumeList = (props: Props) => {
     }
 
     return (
-        <Container fluid id="VolumeOptions">
+        <Container fluid id="VolumeList">
 
             <FetchingProgress
                 error={fetchVolumes.error}
