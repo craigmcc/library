@@ -4,7 +4,7 @@
 
 // External Modules ----------------------------------------------------------
 
-import {renderHook, waitFor} from "@testing-library/react";
+import {act, renderHook, waitFor} from "@testing-library/react";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -41,11 +41,13 @@ describe("When logged in", () => {
             }
         })
 
-        // @ts-ignore
-        const wrapper = ({children}) => {
-            return Wrapper.loginContext({children}, USER);
-        }
-        const {result} = renderHook(() => useFetchLibraries(PROPS), { wrapper });
+        await act(async () => {
+            // @ts-ignore
+            const wrapper = ({children}) => {
+                return Wrapper.loginContext({children}, USER);
+            }
+            const {result} = renderHook(() => useFetchLibraries(PROPS), { wrapper });
+        })
 
     })
 
