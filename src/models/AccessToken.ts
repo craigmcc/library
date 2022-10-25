@@ -1,3 +1,8 @@
+/**
+ * OAuth access token created by @craigmcc/oauth-orchestrator.
+ * @packageDocumentation
+ */
+
 // AccessToken ---------------------------------------------------------------
 
 // OAuth access token created by @craigmcc/oauth-orchestrator.
@@ -27,6 +32,9 @@ import {BadRequest} from "../util/HttpErrors";
     },
     version: false,
 })
+    /**
+     * OAuth access token created by @craigmcc/oauth-orchestrator. (Class level).
+     */
 class AccessToken extends Model<AccessToken> {
 
     @Column({
@@ -36,7 +44,7 @@ class AccessToken extends Model<AccessToken> {
         primaryKey: true,
         type: DataType.INTEGER
     })
-    // Primary key for this AccessToken
+    /** Primary key for this AccessToken. */
     id!: number;
 
     @Column({
@@ -49,7 +57,9 @@ class AccessToken extends Model<AccessToken> {
             }
         }
     })
-    // Timestamp after which this token is no longer valid
+    /**
+     * Timestamp after which this token is no longer valid.
+     */
     expires!: Date;
 
     @Column({
@@ -62,7 +72,10 @@ class AccessToken extends Model<AccessToken> {
             }
         }
     })
-    // Scope(s) granted to this token
+    /**
+     * Scope(s) granted to this token.
+     * @public
+     */
     scope!: string;
 
     @Column({
@@ -75,7 +88,10 @@ class AccessToken extends Model<AccessToken> {
             }
         }
     })
-    // Access token value for use in transmitting HTTP requests
+    /**
+     * Access token value for use in transmitting HTTP requests.
+     * @public
+     */
     token!: string;
 
     @BelongsTo(() => User, {
@@ -85,7 +101,10 @@ class AccessToken extends Model<AccessToken> {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     })
-    // User that owns this AccessToken
+    /**
+     * User that owns this AccessToken.
+     * @public
+     */
     user!: User;
 
     @ForeignKey(() => User)
@@ -99,7 +118,10 @@ class AccessToken extends Model<AccessToken> {
             }
         }
     })
-    // ID of the User that owns this AccessToken
+    /**
+     * ID of the User that owns this AccessToken.
+     * @public
+     */
     userId!: number;
 
 }

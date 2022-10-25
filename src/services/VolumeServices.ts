@@ -1,6 +1,9 @@
-// VolumeServices ------------------------------------------------------------
+/**
+ * Services implementation for {@link models/Volume | Volume} models.
+ * @packageDocumentation
+ */
 
-// Services implementation for Volume models.
+// VolumeServices ------------------------------------------------------------
 
 // External Modules ----------------------------------------------------------
 
@@ -22,6 +25,9 @@ import * as SortOrder from "../util/SortOrder";
 
 // Public Objects ------------------------------------------------------------
 
+/**
+ * Define standard CRUD operations for {@link models/Volume | Volume} models.
+ */
 class VolumeServices extends BaseChildServices<Volume, Library> {
 
     constructor () {

@@ -1,8 +1,14 @@
-// BaseParentServices --------------------------------------------------------
+/**
+ * Base class for "parent" models, that have no requirement for a parentId
+ * method parameter.  For this application, that includes models like
+ * {@link models/Library | Library} and {@link models/User | User}.
+ *
+ * It defines the standard CRUD operations for this model, as well as
+ * standard helper methods that can be utilized by related services.
+ * @packageDocumentation
+ */
 
-// Abstract base class for Services implementations for a Model class
-// (one that does not require a parent instance for ownership), defining
-// standard CRUD operation methods and required public helper methods.
+// BaseParentServices --------------------------------------------------------
 
 // External Modules ----------------------------------------------------------
 
@@ -18,6 +24,8 @@ import {BadRequest, NotFound, NotUnique, ServerError} from "../util/HttpErrors";
 
 /**
  * Define standard CRUD operations for services of a parent Model class.
+ *
+ * @param M                             Model class for which services are created
  */
 abstract class BaseParentServices<M extends Model> extends BaseCommonServices<M> {
 

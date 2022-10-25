@@ -1,0 +1,9 @@
+{
+  "entryPoints": ["./src"],
+  "entryPointStrategy": "expand",
+  "exclude": ["**/**.test.ts"],
+  "excludeExternals": true,
+  "externalPattern": ["node_modules/**/*.ts"],
+  "json": "apidocs.json",
+  "out": "apidocs"
+}

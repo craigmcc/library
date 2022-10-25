@@ -1,6 +1,9 @@
-// Database ------------------------------------------------------------------
+/**
+ * Configuration of the Sequelize models and database used by this application.
+ * @packageDocumentation
+ */
 
-// Set up database integration and return a configured Sequelize object.
+// Database ------------------------------------------------------------------
 
 // External Modules ----------------------------------------------------------
 
@@ -28,6 +31,10 @@ import logger from "../util/ServerLogger";
 
 const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "test";
 
+/**
+ * The completely configured Sequelize instance for use in service objects.
+ * @public
+ */
 export const Database = new Sequelize(DATABASE_URL, {
     logging: false,
     pool: {

@@ -1,6 +1,9 @@
-// BaseCommonServices --------------------------------------------------------
+/**
+ * Base class for both BaseParentServices and BaseChildServices classes.
+ * @packageDocumentation
+ */
 
-// Public helper methods common to both parent and child services implementations.
+// BaseCommonServices --------------------------------------------------------
 
 // External Modules ----------------------------------------------------------
 
@@ -13,8 +16,10 @@ import {Model, ModelStatic} from "sequelize-typescript";
 
 /**
  * Define standard public methods for services of a Model class (parent or child).
+ *
+ * @param M                             Model class for which services are created
  */
-abstract class BaseCommonServices<M extends Model> {
+export default abstract class BaseCommonServices<M extends Model> {
 
     /**
      * Construct a new Services instance for the specified Sequelize Model.
@@ -90,5 +95,3 @@ abstract class BaseCommonServices<M extends Model> {
     public abstract appendMatchOptions(options: FindOptions, query?: any): FindOptions;
 
 }
-
-export default BaseCommonServices;

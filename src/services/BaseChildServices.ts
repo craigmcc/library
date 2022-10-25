@@ -1,8 +1,13 @@
-// BaseChildServices ---------------------------------------------------------
+/**
+ * Base class for "child" models, that require a parentId method parameter
+ * (for this application, that will generally be a libraryId) to determine
+ * the scope within which to select the specified child model(s).
 
-// Abstract base class for Services implementation for a child Model class
-// (one that is dependent on a parent instance for ownership), defining
-// standard CRUD operation methods and required public helper methods.
+ It defines the standard CRUD operations for this model, as well as
+ standard helper methods that can be utilized by related services.
+ @packageDocumentation */
+
+// BaseChildServices ---------------------------------------------------------
 
 // External Modules ----------------------------------------------------------
 
@@ -17,12 +22,12 @@ import {BadRequest, NotFound, NotUnique, ServerError} from "../util/HttpErrors";
 // Public Objects ------------------------------------------------------------
 
 /**
- * Define standard CRUD operations for services of a parent Model class.
+ * Define standard CRUD operations for services of a child Model class.
  *
- * @param M                             Constructor for Model class of the child being supported
- * @param C                             Constructor for Model class of the required parent
+ * @param C                             Constructor for Model class of the child being supported
+ * @param P                             Constructor for Model class of the required parent
  */
-abstract class BaseChildServices<C extends Model, P extends Model> extends BaseCommonServices<C> {
+export default abstract class BaseChildServices<C extends Model, P extends Model> extends BaseCommonServices<C> {
 
     /**
      * Construct a new services instance for the specified child Sequelize Model.
@@ -275,5 +280,3 @@ abstract class BaseChildServices<C extends Model, P extends Model> extends BaseC
     }
 
 }
-
-export default BaseChildServices;

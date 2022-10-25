@@ -1,9 +1,13 @@
-// AsyncValidators -----------------------------------------------------------
+/**
+ * Custom (to this application) validation methods that can only be used by
+ * server side applications, because they interact directly with the database.
+ * A "true" return indicates that the specified value is valid, while a
+ * "false" return indicates that it is not.  If a field is required, that must
+ * be validated separately.
+ * @packageDocumentation
+ */
 
-// Custom (to this application) validation methods that can only be used by
-// server side applications, because they interact directly with the database.
-// while "false" means it is not.  If a field is required, that must be
-// validated separately.
+// AsyncValidators -----------------------------------------------------------
 
 // External Modules ----------------------------------------------------------
 
@@ -22,6 +26,10 @@ import Volume from "../models/Volume";
 
 // Public Objects ------------------------------------------------------------
 
+/**
+ * Validate that this AccessToken's token is globally unique.
+ * @param accessToken                   The {@link models/AccessToken | AccessToken} to validate
+ */
 export const validateAccessTokenTokenUnique
     = async (accessToken: AccessToken): Promise<boolean> =>
 {
@@ -41,6 +49,10 @@ export const validateAccessTokenTokenUnique
     }
 }
 
+/**
+ * Validate that this Author's name is unique within its owning Library
+ * @param author                        The Author whose name should be validated
+ */
 export const validateAuthorNameUnique
     = async (author: Author): Promise<boolean> =>
 {
@@ -62,6 +74,10 @@ export const validateAuthorNameUnique
     }
 }
 
+/**
+ * Validate that the specified ID is a valid Library ID.
+ * @param libraryId                     The Library ID to be validated
+ */
 export const validateLibraryId = async (libraryId: number): Promise<boolean> => {
     if (libraryId) {
         const library = Library.findByPk(libraryId);
@@ -71,6 +87,10 @@ export const validateLibraryId = async (libraryId: number): Promise<boolean> => 
     }
 }
 
+/**
+ * Validate that the name of this Library is globally unique.
+ * @param library                       The Library whose name is to be validated
+ */
 export const validateLibraryNameUnique
     = async (library: Library): Promise<boolean> =>
 {
@@ -97,6 +117,10 @@ export const validateLibraryNameUnique
     }
 }
 
+/**
+ * Validate that the scope of this Library is globally unique.
+ * @param library                       The Library whose scope is to be validated
+ */
 export const validateLibraryScopeUnique
     = async (library: Library): Promise<boolean> =>
 {
@@ -123,6 +147,10 @@ export const validateLibraryScopeUnique
     }
 }
 
+/**
+ * Validate that this RefreshToken's token is globally unique.
+ * @param refreshToken                  The {@link models/RefreshToken | RefreshToken} to validate
+ */
 export const validateRefreshTokenTokenUnique
     = async (refreshToken: RefreshToken): Promise<boolean> =>
 {
@@ -142,6 +170,10 @@ export const validateRefreshTokenTokenUnique
     }
 }
 
+/**
+ * Validate that the name of this Series is unique within its owning Library.
+ * @param series                        The Series whose name is to be validated
+ */
 export const validateSeriesNameUnique
     = async (series: Series): Promise<boolean> =>
 {
@@ -170,6 +202,10 @@ export const validateSeriesNameUnique
     }
 }
 
+/**
+ * Validate that the name of this Story is unique within its owning Library.
+ * @param story                         The Story whose name is to be validated
+ */
 export const validateStoryNameUnique
     = async (story: Story): Promise<boolean> =>
 {
@@ -198,6 +234,10 @@ export const validateStoryNameUnique
     }
 }
 
+/**
+ * Validate that the username of this User is globally unique.
+ * @param user                          The User whose name is to be validated
+ */
 export const validateUserUsernameUnique
     = async (user: User): Promise<boolean> =>
 {
@@ -224,6 +264,10 @@ export const validateUserUsernameUnique
     }
 }
 
+/**
+ * Validate that the name of this Volume is unique within its owning Library.
+ * @param volume                        The Volume whose name is to be validated
+ */
 export const validateVolumeNameUnique
     = async (volume: Volume): Promise<boolean> =>
 {
