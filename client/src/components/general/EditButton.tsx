@@ -6,7 +6,7 @@
 
 import React from "react";
 import Button from "react-bootstrap/Button";
-import {PencilSquare} from "react-bootstrap-icons";
+import {PencilFill} from "react-bootstrap-icons";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -37,7 +37,7 @@ const EditButton = (props: EditButtonProps) => {
             title="Edit"
             variant={variant}
         >
-            <PencilSquare
+            <PencilFill
                 size={16}
             />
         </Button>
