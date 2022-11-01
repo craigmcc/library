@@ -14,11 +14,10 @@ import Row from "react-bootstrap/Row";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import {CheckBoxField, TextField} from "@craigmcc/shared-react";
+import {BackButton, CheckBoxField, TextField} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
-import BackButton from "../general/BackButton";
 import {HandleAction, HandleLibrary} from "../../types";
 import Library, {LibraryData} from "../../models/Library";
 import {

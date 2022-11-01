@@ -14,11 +14,10 @@ import Row from "react-bootstrap/Row";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import {CheckBoxField, SelectField, SelectOption, TextField} from "@craigmcc/shared-react";
+import {BackButton, CheckBoxField, SelectField, SelectOption, TextField} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
-import BackButton from "../general/BackButton";
 import {HandleAction, HandleVolume, Parent} from "../../types";
 import Volume, {VolumeData} from "../../models/Volume";
 import {validateVolumeNameUnique} from "../../util/AsyncValidators";

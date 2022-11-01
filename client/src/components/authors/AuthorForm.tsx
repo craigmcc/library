@@ -14,7 +14,7 @@ import Row from "react-bootstrap/Row";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import {CheckBoxField, TextField} from "@craigmcc/shared-react";
+import {BackButton, CheckBoxField, TextField} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -22,7 +22,6 @@ import {HandleAction, HandleAuthor, Parent} from "../../types";
 import Author, {AuthorData} from "../../models/Author";
 import {validateAuthorNameUnique} from "../../util/AsyncValidators";
 import * as ToModel from "../../util/ToModel";
-import BackButton from "../general/BackButton";
 
 // Property Details ----------------------------------------------------------
 

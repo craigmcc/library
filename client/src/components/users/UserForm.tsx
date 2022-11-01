@@ -15,7 +15,7 @@ import Table from "react-bootstrap/Table";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import {CheckBoxField, SelectField, SelectOption, TextField} from "@craigmcc/shared-react";
+import {BackButton, CheckBoxField, SelectField, SelectOption, TextField} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -26,7 +26,6 @@ import {validateUserUsernameLibraryUnique} from "../../util/AsyncValidators";
 import logger from "../../util/ClientLogger";
 import * as ToModel from "../../util/ToModel";
 import {toNullValues} from "../../util/Transformations";
-import BackButton from "../general/BackButton";
 
 // Incoming Properties ------------------------------------------------------
 

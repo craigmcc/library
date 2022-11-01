@@ -11,12 +11,10 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
-import {CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
+import {AddButton, BackButton, CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
-import AddButton from "../general/AddButton";
-import BackButton from "../general/BackButton";
 import LibraryContext from "../libraries/LibraryContext";
 import LoginContext from "../login/LoginContext";
 import FetchingProgress from "../shared/FetchingProgress";
