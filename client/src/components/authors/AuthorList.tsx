@@ -12,6 +12,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
 import {AddButton, BackButton, CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
+import EditButton from "../general/EditButton";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -315,6 +316,7 @@ const AuthorList = (props: Props) => {
                             </td>
                             <td key={1000 + (rowIndex * 100) + 5}>
                                 {(props.handleEdit) ? (
+/*
                                     <Button
                                         className="me-1"
                                         onClick={() => handleEdit(author)}
@@ -322,6 +324,11 @@ const AuthorList = (props: Props) => {
                                         type="button"
                                         variant="primary"
                                     >Edit</Button>
+*/
+                                    <EditButton
+                                        handleEdit={() => handleEdit(author)}
+                                        variant="primary"
+                                    />
                                 ) : null }
                                 {(props.handleExclude) ? (
                                     <Button
