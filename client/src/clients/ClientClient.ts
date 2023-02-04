@@ -29,4 +29,5 @@ class ClientClient {
 
 }
 
-export default new ClientClient();
+const instance = new ClientClient();
+export default instance;
