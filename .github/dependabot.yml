@@ -13,5 +13,5 @@ updates:
   - package-ecosystem: "npm"
     directory: "/client"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 #    target-branch: "v2.0"
