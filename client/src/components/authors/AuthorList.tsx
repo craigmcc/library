@@ -6,13 +6,11 @@
 // External Modules ----------------------------------------------------------
 
 import React, {useContext, useEffect, useState} from "react";
-import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
-import {AddButton, BackButton, CheckBox, Pagination, SearchBar} from "@craigmcc/shared-react";
-import EditButton from "../general/EditButton";
+import {AddButton, BackButton, CheckBox, EditButton, Pagination, SearchBar, TextButton} from "@craigmcc/shared-react";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -257,6 +255,7 @@ const AuthorList = (props: Props) => {
             <Row className="g-2">
                 <Table
                     //bordered={true}
+                    className="align-middle"
                     hover={true}
                     size="sm"
                     striped={true}
@@ -316,69 +315,56 @@ const AuthorList = (props: Props) => {
                             </td>
                             <td key={1000 + (rowIndex * 100) + 5}>
                                 {(props.handleEdit) ? (
-/*
-                                    <Button
-                                        className="me-1"
-                                        onClick={() => handleEdit(author)}
-                                        size="sm"
-                                        type="button"
-                                        variant="primary"
-                                    >Edit</Button>
-*/
                                     <EditButton
+                                        className="me-1"
                                         handleEdit={() => handleEdit(author)}
                                         variant="primary"
                                     />
                                 ) : null }
                                 {(props.handleExclude) ? (
-                                    <Button
+                                    <TextButton
                                         className="me-1"
                                         disabled={!included(author)}
-                                        onClick={() => handleExclude(author)}
-                                        size="sm"
-                                        type="button"
+                                        handleText={() => handleExclude(author)}
+                                        text="Exclude"
                                         variant="primary"
-                                    >Exclude</Button>
+                                    />
                                 ) : null }
                                 {(props.handleInclude) ? (
-                                    <Button
+                                    <TextButton
                                         className="me-1"
-                                        disabled={included(author)}
-                                        onClick={() => handleInclude(author)}
-                                        size="sm"
-                                        type="button"
+                                        disabled={!included(author)}
+                                        handleText={() => handleInclude(author)}
+                                        text="Include"
                                         variant="primary"
-                                    >Include</Button>
+                                    />
                                 ) : null }
                                 {props.handleShowSeries || props.handleShowStories || props.handleShowVolumes ? (
-                                    <span className="ms-1 me-2">|</span>
+                                    <span className="me-1">|</span>
                                 ) : null }
                                 {(props.handleShowSeries) ? (
-                                    <Button
+                                    <TextButton
                                         className="me-1"
-                                        onClick={() => handleShowSeries(author)}
-                                        size="sm"
-                                        type="button"
+                                        handleText={() => handleShowSeries(author)}
+                                        text="Series"
                                         variant="success"
-                                    >Series</Button>
+                                    />
                                 ) : null }
                                 {(props.handleShowStories) ? (
-                                    <Button
+                                    <TextButton
                                         className="me-1"
-                                        onClick={() => handleShowStories(author)}
-                                        size="sm"
-                                        type="button"
+                                        handleText={() => handleShowStories(author)}
+                                        text="Stories"
                                         variant="success"
-                                    >Stories</Button>
+                                    />
                                 ) : null }
                                 {(props.handleShowVolumes) ? (
-                                    <Button
+                                    <TextButton
                                         className="me-1"
-                                        onClick={() => handleShowVolumes(author)}
-                                        size="sm"
-                                        type="button"
+                                        handleText={() => handleShowVolumes(author)}
+                                        text="Volumes"
                                         variant="success"
-                                    >Volumes</Button>
+                                    />
                                 ) : null }
                             </td>
                         </tr>
