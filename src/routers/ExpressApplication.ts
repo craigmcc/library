@@ -71,12 +71,21 @@ app.use(bodyParser.urlencoded({
     extended: true,
 }));
 
-// Configure static file routing
+// Configure static file routing (primary application)
 const CLIENT_BASE: string = path.resolve("./") + "/client/build";
 logger.info({
     context: "Startup",
-    msg: "Static File Path",
+    msg: "Static File Path (Primary)",
     path: CLIENT_BASE
+});
+app.use(express.static(CLIENT_BASE));
+
+// Configure static file routing (secondary application)
+const CLIENT2_BASE: string = path.resolve("./") + "/client2/build";
+logger.info({
+    context: "Startup",
+    msg: "Static File Path (Secondary)",
+    path: CLIENT2_BASE
 });
 app.use(express.static(CLIENT_BASE));
 
@@ -91,9 +100,14 @@ app.use(handleValidationError);
 app.use(handleOAuthError);
 app.use(handleServerError); // The last of the last :-)
 
-// Configure unknown mappings back to client
+// Configure unknown mappings (secondary) to secondary client
+app.get("/client2/*", (req, res) => {
+    res.sendFile(CLIENT2_BASE + "/index.html");
+});
+
+// Configure unknown mappings (all others) to primary client
 app.get("*", (req, res) => {
     res.sendFile(CLIENT_BASE + "/index.html");
-})
+});
 
 export default app;
