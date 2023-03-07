@@ -71,6 +71,17 @@ app.use(bodyParser.urlencoded({
     extended: true,
 }));
 
+// Configure application-specific routing
+//app.use("/openapi.json", OpenApiRouter);
+app.use("/api", ApiRouter);
+app.use("/oauth", OAuthRouter);
+
+// Configure error handling (must be last)
+app.use(handleHttpError);
+app.use(handleValidationError);
+app.use(handleOAuthError);
+app.use(handleServerError); // The last of the last :-)
+
 // Configure static file routing (primary application)
 const CLIENT_BASE: string = path.resolve("./") + "/client/build";
 logger.info({
@@ -88,17 +99,6 @@ logger.info({
     path: CLIENT2_BASE
 });
 app.use(express.static(CLIENT2_BASE));
-
-// Configure application-specific routing
-//app.use("/openapi.json", OpenApiRouter);
-app.use("/api", ApiRouter);
-app.use("/oauth", OAuthRouter);
-
-// Configure error handling (must be last)
-app.use(handleHttpError);
-app.use(handleValidationError);
-app.use(handleOAuthError);
-app.use(handleServerError); // The last of the last :-)
 
 // Configure unknown mappings (secondary) to secondary client
 app.get("/client2/*", (req, res) => {
