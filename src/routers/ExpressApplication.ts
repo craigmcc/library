@@ -87,7 +87,7 @@ logger.info({
     msg: "Static File Path (Secondary)",
     path: CLIENT2_BASE
 });
-app.use(express.static(CLIENT_BASE));
+app.use(express.static(CLIENT2_BASE));
 
 // Configure application-specific routing
 //app.use("/openapi.json", OpenApiRouter);
