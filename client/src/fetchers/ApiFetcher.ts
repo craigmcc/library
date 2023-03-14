@@ -15,4 +15,6 @@ class ApiFetcher extends Fetcher {
 
 }
 
-export default new ApiFetcher();
+//export default new ApiFetcher();
+const apiFetcher = new ApiFetcher();
+export default apiFetcher;
