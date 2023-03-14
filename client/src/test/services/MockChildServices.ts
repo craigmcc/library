@@ -207,7 +207,7 @@ abstract class MockChildServices<C extends Model<C>, P extends Model<P>> extends
      * Reset the internal "database" to contain no instances.
      */
     public reset() {
-        this.lastId = 0;
+        //this.lastId = 0;
         this.map.clear();
     }
 

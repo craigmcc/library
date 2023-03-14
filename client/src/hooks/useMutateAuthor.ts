@@ -9,7 +9,7 @@ import {useContext, useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import {ProcessAuthor, ProcessAuthorParent} from "../types";
-import Api from "../clients/Api";
+import ApiFetcher from "../fetchers/ApiFetcher";
 import LibraryContext from "../components/libraries/LibraryContext";
 import Author, {AUTHORS_BASE} from "../models/Author";
 import * as Abridgers from "../util/Abridgers";
@@ -58,7 +58,7 @@ const useMutateAuthor = (props: Props = {}): State => {
         setError(null);
         setExecuting(true);
         try {
-            await Api.delete(url);
+            await ApiFetcher.delete(url);
             logger.debug({
                 context: "useMutateAuthor.exclude",
                 author: Abridgers.AUTHOR(theAuthor),
@@ -87,7 +87,7 @@ const useMutateAuthor = (props: Props = {}): State => {
         setError(null);
         setExecuting(true);
         try {
-            await Api.post(url);
+            await ApiFetcher.post(url);
             logger.debug({
                 context: "useMutateAuthor.include",
                 author: Abridgers.AUTHOR(theAuthor),
@@ -115,7 +115,7 @@ const useMutateAuthor = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            inserted = ToModel.AUTHOR((await Api.post(url, theAuthor)).data);
+            inserted = ToModel.AUTHOR(await ApiFetcher.post(url, theAuthor));
             logger.debug({
                 context: "useMutateAuthor.insert",
                 author: Abridgers.AUTHOR(inserted),
@@ -143,7 +143,7 @@ const useMutateAuthor = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            removed = ToModel.AUTHOR((await Api.delete(url)).data);
+            removed = ToModel.AUTHOR(await ApiFetcher.delete(url));
             logger.debug({
                 context: "useMutateAuthor.remove",
                 author: Abridgers.AUTHOR(removed),
@@ -171,7 +171,7 @@ const useMutateAuthor = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            updated = ToModel.AUTHOR((await Api.put(url, theAuthor)).data);
+            updated = ToModel.AUTHOR(await ApiFetcher.put(url, theAuthor));
             logger.debug({
                 context: "useMutateAuthor.update",
                 author: Abridgers.AUTHOR(updated),

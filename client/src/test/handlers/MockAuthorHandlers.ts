@@ -23,7 +23,7 @@ export const authorHandlers: RestHandler[] = [
         try {
             const {libraryId} = req.params;
             // @ts-ignore
-            const authors = MockAuthorServices.all(libraryId, req.url.searchParams);
+            const authors = MockAuthorServices.all(Number(libraryId), req.url.searchParams);
             return res(
                 ctx.status(OK),
                 ctx.json(authors),
@@ -38,7 +38,7 @@ export const authorHandlers: RestHandler[] = [
         try {
             const {libraryId, firstName, lastName} = req.params;
             // @ts-ignore
-            const author = MockAuthorServices.exact(libraryId, firstName, lastName, req.url.searchParams);
+            const author = MockAuthorServices.exact(Number(libraryId), firstName, lastName, req.url.searchParams);
             return res(
                 ctx.status(OK),
                 ctx.json(author),
@@ -53,7 +53,7 @@ export const authorHandlers: RestHandler[] = [
         try {
             const {authorId, libraryId} = req.params;
             // @ts-ignore
-            const author = MockAuthorServices.find(libraryId, authorId);
+            const author = MockAuthorServices.find(Number(libraryId), Number(authorId));
             return res(
                 ctx.status(OK),
                 ctx.json(author),
@@ -64,13 +64,11 @@ export const authorHandlers: RestHandler[] = [
     }),
 
     // insert ----------------------------------------------------------------
-    rest.post(`${PREFIX}/:libraryId`, (req, res, ctx) => {
+    rest.post(`${PREFIX}/:libraryId`, async (req, res, ctx) => {
         try {
             const {libraryId} = req.params;
-            // @ts-ignore
-            const author = new Author(req.json);
-            // @ts-ignore
-            const inserted = MockAuthorServices.insert(libraryId, author);
+            const author = await req.json();
+            const inserted = MockAuthorServices.insert(Number(libraryId), author);
             return res(
                 ctx.status(CREATED),
                 ctx.json(inserted),
@@ -85,7 +83,7 @@ export const authorHandlers: RestHandler[] = [
         try {
             const {authorId, libraryId} = req.params;
             // @ts-ignore
-            const author = MockAuthorServices.remove(libraryId, authorId);
+            const author = MockAuthorServices.remove(Number(libraryId), Number(authorId));
             return res(
                 ctx.status(OK),
                 ctx.json(author),
@@ -96,13 +94,11 @@ export const authorHandlers: RestHandler[] = [
     }),
 
     // update ----------------------------------------------------------------
-    rest.put(`${PREFIX}/:libraryId/:authorId`, (req, res, ctx) => {
+    rest.put(`${PREFIX}/:libraryId/:authorId`, async (req, res, ctx) => {
         try {
             const {authorId, libraryId} = req.params;
-            // @ts-ignore
-            const author = new Author(req.json);
-            // @ts-ignore
-            const updated = MockAuthorServices.update(libraryId, authorId, author);
+            const author = await req.json();
+            const updated = MockAuthorServices.update(Number(libraryId), Number(authorId), author);
             return res(
                 ctx.status(OK),
                 ctx.json(updated),

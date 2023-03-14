@@ -209,7 +209,7 @@ const AuthorList = (props: Props) => {
                 <Col className="text-center">
                     <strong>
                     <span>Manage Authors for {props.parent._model}:&nbsp;</span>
-                    <span className="text-info">{props.parent._title}</span>
+                    <span className="text-info" data-testid="parentTitle">{props.parent._title}</span>
                     </strong>
                 </Col>
                 <Col/>

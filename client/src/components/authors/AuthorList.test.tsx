@@ -26,9 +26,10 @@ const BASE_PROPS: Props = {
     parent: new Library(),
 }
 
-type Elements = {
+export type Elements = {
     // Fields
     activeOnly: HTMLElement,
+    parentTitle: HTMLElement,
     rows: HTMLElement[],
     searchBar: HTMLElement,
     // Buttons
@@ -39,11 +40,13 @@ type Elements = {
     pagePrevious: HTMLElement,
 }
 
-const elements = function (): Elements {
+export const elements = function (): Elements {
 
     const activeOnly = screen.getByLabelText("Active Authors Only?");
     expect(activeOnly).toBeInTheDocument();
     expect(activeOnly).not.toHaveAccessibleDescription("checked");
+    const parentTitle = screen.getByTestId("parentTitle");
+    expect(parentTitle).toBeInTheDocument();
     const rows = screen.getAllByRole("row");  // Includes header rows
     const searchBar = screen.getByLabelText("Search For Authors:");
     expect(searchBar).toBeInTheDocument();
@@ -60,6 +63,7 @@ const elements = function (): Elements {
     return {
 
         activeOnly: activeOnly,
+        parentTitle: parentTitle,
         rows: rows,
         searchBar: searchBar,
 
@@ -95,7 +99,7 @@ describe("When logged in", () => {
             )
         });
 
-        const {activeOnly, rows,// searchBar,
+        const {activeOnly, parentTitle, rows,// searchBar,
             add0, add1, pageNext, pageNumber, pagePrevious}
             = elements();
 
@@ -106,6 +110,7 @@ describe("When logged in", () => {
             expect(pageNext).toBeDisabled();
             expect(pageNumber).toBeDisabled();
             expect(pagePrevious).toBeDisabled();
+            expect(parentTitle.textContent).toEqual(LIBRARY.name);
             // NOTE - only sees the 2 header rows - expect(rows.length).toBe(SeedData.AUTHORS0.length + 2);  // header rows + all Authors
         });
 
