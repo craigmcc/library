@@ -9,10 +9,13 @@
 
 import logger from "./ClientLogger";
 import LocalStorage from "./LocalStorage";
-import {LOGIN_DATA_KEY} from "../constants";
+import {LOGIN_DATA_KEY, LOGIN_USER_KEY} from "../constants";
 import {LoginData} from "../types";
 import Credentials from "../models/Credentials";
 import OAuth from "../clients/OAuth";
+import User from "../models/User";
+import * as ToModel from "./ToModel";
+import * as Abridgers from "./Abridgers";
 
 // Models --------------------------------------------------------------------
 
@@ -49,6 +52,7 @@ export interface TokenResponse {
 // Private Objects ----------------------------------------------------------
 
 const loginData = new LocalStorage<LoginData>(LOGIN_DATA_KEY);
+const loginUser = new LocalStorage<User>(LOGIN_USER_KEY);
 
 // Public Objects -----------------------------------------------------------
 
@@ -94,7 +98,7 @@ export const login = async (credentials: Credentials): Promise<LoginData> => {
 }
 
 /**
- * Handle logout for the currently logged in User.
+ * Handle logout for the currently logged-in User.
  *
  * @returns                             Updated LoginData after logout
  */
@@ -211,4 +215,38 @@ export const refresh = async (): Promise<LoginData> => {
 
     }
 
+}
+
+/**
+ * Refresh the User object (will be null if a user is not logged on).
+ *
+ * @param theData                   Optional LoginData (needed during handleLogin
+ *                                  but can be omitted if calling this independently)
+ *
+ * @returns                         Currently logged-in user, or a placeholder
+ */
+export const refreshUser = async (theData?: LoginData): Promise<User> => {
+    const useData: LoginData = theData ? theData : loginData.value;
+    logger.debug({
+        context: "LoginDataUtils.refreshUser",
+        data: useData,
+    });
+    if (useData.loggedIn) {
+        const user: User = ToModel.USER((await OAuth.get("/me")).data);
+        logger.info({
+            context: "LoginDataUtils.refreshUser",
+            user: Abridgers.USER(user),
+        });
+        return user;
+    } else {
+        logger.info({
+            context: "LoginDataUtils.refreshUser",
+            msg: "Not logged in",
+        });
+        return new User({
+            active: false,
+            firstName: "-----",
+            lastName: "-----",
+        });
+    }
 }

@@ -12,15 +12,12 @@ import React, {createContext} from "react";
 
 import {LOGIN_DATA_KEY, LOGIN_USER_KEY} from "../../constants";
 import {LoginData, Scope} from "../../types";
-import OAuth from "../../clients/OAuth";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import Credentials from "../../models/Credentials";
 import Library from "../../models/Library";
 import User from "../../models/User";
-import * as Abridgers from "../../util/Abridgers";
 import logger from "../../util/ClientLogger";
-import {login, logout} from "../../util/LoginDataUtils";
-import * as ToModel from "../../util/ToModel";
+import {login, logout, refreshUser} from "../../util/LoginDataUtils";
 
 // Context Properties -------------------------------------------------------
 
@@ -111,7 +108,7 @@ export const LoginContextProvider = ({ children }) => {
         });
 
         // Refresh the current User information
-        await refreshUser(newData);
+        setUser(refreshUser(newData));
 
     }
 
@@ -131,37 +128,9 @@ export const LoginContextProvider = ({ children }) => {
         // Perform logout on the server
         setData(await logout());
 
-        // Erase our currently logged in User information
+        // Erase our currently logged-in User information
         setUser(LOGIN_USER);
 
-    }
-
-    /**
-     * Refresh the User object (will be null if a user is not logged on).
-     *
-     * @param theData                   Optional LoginData (needed during handleLogin
-     *                                  but can be omitted if calling this independently)
-     */
-    const refreshUser = async (theData?: LoginData): Promise<void> => {
-        const useData: LoginData = theData ? theData : data;
-        logger.debug({
-            context: "LoginContext.refreshUser",
-            data: useData,
-        });
-        if (useData.loggedIn) {
-            const user: User = ToModel.USER((await OAuth.get("/me")).data);
-            logger.info({
-                context: "LoginContext.refreshUser",
-                user: Abridgers.USER(user),
-            });
-            setUser(user);
-        } else {
-            logger.info({
-                context: "LoginContext.refreshUser",
-                msg: "Not logged in",
-            });
-            setUser(LOGIN_USER);
-        }
     }
 
     /**
