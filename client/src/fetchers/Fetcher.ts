@@ -71,7 +71,7 @@ abstract class Fetcher {
      * @throws HttpError if a non-OK HTTP status was returned
      */
     public async put(url: string, body: any): Promise<any> {
-        return this.execute(this.absoluteURL(url), "POST", body);
+        return this.execute(this.absoluteURL(url), "PUT", body);
     }
 
     // Private Methods -------------------------------------------------------
