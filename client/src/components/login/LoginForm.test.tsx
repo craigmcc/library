@@ -43,7 +43,6 @@ describe("All Tests", () => {
 
         const {login} = elements();
         const client = userEvent.setup();
-
         await client.click(login);
 
         await waitFor(() => {
@@ -63,7 +62,6 @@ describe("All Tests", () => {
 
         const {username, password} = elements();
         const client = userEvent.setup();
-
         await client.type(username, VALID_USERNAME);
         await client.type(password, VALID_PASSWORD + "{enter}");
 
@@ -87,7 +85,6 @@ describe("All Tests", () => {
 
         const {username, password, login} = elements();
         const client = userEvent.setup();
-
         await client.type(username, VALID_USERNAME);
         await client.type(password, VALID_PASSWORD);
         await client.click(login);
@@ -104,4 +101,3 @@ describe("All Tests", () => {
     })
 
 });
-
