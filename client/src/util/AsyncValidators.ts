@@ -14,7 +14,7 @@
 
 // Internal Modules ----------------------------------------------------------
 
-import Api from "../clients/Api";
+import ApiFetcher from "../fetchers/ApiFetcher";
 import Author, {AUTHORS_BASE} from "../models/Author";
 import Library, {LIBRARIES_BASE} from "../models/Library";
 import Series, {SERIES_BASE} from "../models/Series";
@@ -28,8 +28,8 @@ import {queryParameters} from "./QueryParameters";
 export const validateAuthorNameUnique = async (author: Author): Promise<boolean> => {
     if (author && author.firstName && author.lastName) {
         try {
-            const result = (await Api.get(AUTHORS_BASE
-                + `/${author.libraryId}/exact/${author.firstName}/${author.lastName}`)).data;
+            const result = await ApiFetcher.get(AUTHORS_BASE
+                + `/${author.libraryId}/exact/${author.firstName}/${author.lastName}`);
             return (result.id === author.id);
         } catch (error) {
             return true; // Definitely unique
@@ -42,8 +42,8 @@ export const validateAuthorNameUnique = async (author: Author): Promise<boolean>
 export const validateLibraryNameUnique = async (library: Library): Promise<boolean> => {
     if (library && library.name) {
         try {
-            const result = (await Api.get(LIBRARIES_BASE
-                + `/exact/${library.name}`)).data;
+            const result = await ApiFetcher.get(LIBRARIES_BASE
+                + `/exact/${library.name}`);
             return (result.id === library.id);
         } catch (error) {
             return true; // Definitely unique
@@ -59,8 +59,8 @@ export const validateLibraryScopeUnique = async (library: Library): Promise<bool
             const parameters = {
                 scope: library.scope,
             }
-            const results = (await Api.get(LIBRARIES_BASE
-                + `${queryParameters(parameters)}`)).data;
+            const results = await ApiFetcher.get(LIBRARIES_BASE
+                + `${queryParameters(parameters)}`);
             return (results.length === 0) || (results[0].id === library.id);
         } catch (error) {
             return true; // Definitely unique
@@ -73,8 +73,8 @@ export const validateLibraryScopeUnique = async (library: Library): Promise<bool
 export const validateSeriesNameUnique = async (series: Series): Promise<boolean> => {
     if (series && series.name) {
         try {
-            const result = (await Api.get(SERIES_BASE
-                + `/${series.libraryId}/exact/${series.name}`)).data;
+            const result = await ApiFetcher.get(SERIES_BASE
+                + `/${series.libraryId}/exact/${series.name}`);
             return (result.id === series.id);
         } catch (error) {
             return true; // Definitely unique
@@ -87,8 +87,8 @@ export const validateSeriesNameUnique = async (series: Series): Promise<boolean>
 export const validateStoryNameUnique = async (story: Story): Promise<boolean> => {
     if (story && story.name) {
         try {
-            const result = (await Api.get(STORIES_BASE
-                + `/${story.libraryId}/exact/${story.name}`)).data;
+            const result = await ApiFetcher.get(STORIES_BASE
+                + `/${story.libraryId}/exact/${story.name}`);
             return (result.id === story.id);
         } catch (error) {
             return true; // Definitely unique
@@ -101,8 +101,8 @@ export const validateStoryNameUnique = async (story: Story): Promise<boolean> =>
 export const validateUserUsernameUnique = async (user: User): Promise<boolean> => {
     if (user && user.username) {
         try {
-            const result = (await Api.get(USERS_BASE
-                + `/exact/${user.username}`)).data;
+            const result = await ApiFetcher.get(USERS_BASE
+                + `/exact/${user.username}`);
             return (result.id === user.id);
         } catch (error) {
             return true; // Definitely unique
@@ -115,8 +115,8 @@ export const validateUserUsernameUnique = async (user: User): Promise<boolean> =
 export const validateUserUsernameLibraryUnique = async (user: User, library: Library): Promise<boolean> => {
     if (user && user.username) {
         try {
-            const result = (await Api.get(LIBRARIES_BASE
-                + `/${library.id}/users/exact/${user.username}`)).data;
+            const result = await ApiFetcher.get(LIBRARIES_BASE
+                + `/${library.id}/users/exact/${user.username}`);
             return (result.id === user.id);
         } catch (error) {
             return true; // Definitely unique
@@ -129,8 +129,8 @@ export const validateUserUsernameLibraryUnique = async (user: User, library: Lib
 export const validateVolumeNameUnique = async (volume: Volume): Promise<boolean> => {
     if (volume && volume.name) {
         try {
-            const result = (await Api.get(VOLUMES_BASE
-                + `/${volume.libraryId}/exact/${volume.name}`)).data;
+            const result = await ApiFetcher.get(VOLUMES_BASE
+                + `/${volume.libraryId}/exact/${volume.name}`);
             return (result.id === volume.id);
         } catch (error) {
             return true; // Definitely unique
