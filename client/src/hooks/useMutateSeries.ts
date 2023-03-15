@@ -9,7 +9,7 @@ import {useContext, useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import {ProcessSeries, ProcessSeriesParent} from "../types";
-import Api from "../clients/Api";
+import ApiFetcher from "../fetchers/ApiFetcher";
 import LibraryContext from "../components/libraries/LibraryContext";
 import Author, {AUTHORS_BASE} from "../models/Author";
 import Series, {SERIES_BASE} from "../models/Series";
@@ -67,7 +67,7 @@ const useMutateSeries = (props: Props = {}): State => {
         setError(null);
         setExecuting(true);
         try {
-            await Api.delete(url);
+            await ApiFetcher.delete(url);
             logger.debug({
                 context: "useMutateSeries.exclude",
                 series: Abridgers.SERIES(theSeries),
@@ -103,7 +103,7 @@ const useMutateSeries = (props: Props = {}): State => {
         setError(null);
         setExecuting(true);
         try {
-            await Api.post(url);
+            await ApiFetcher.post(url);
             logger.debug({
                 context: "useMutateSeries.include",
                 series: Abridgers.SERIES(theSeries),
@@ -131,7 +131,7 @@ const useMutateSeries = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            inserted = ToModel.SERIES((await Api.post(url, theSeries)).data);
+            inserted = ToModel.SERIES(await ApiFetcher.post(url, theSeries));
             logger.debug({
                 context: "useMutateSeries.insert",
                 series: Abridgers.SERIES(inserted),
@@ -158,7 +158,7 @@ const useMutateSeries = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            removed = ToModel.SERIES((await Api.delete(url)).data);
+            removed = ToModel.SERIES(await ApiFetcher.delete(url));
             logger.debug({
                 context: "useMutateSeries.remove",
                 series: Abridgers.SERIES(removed),
@@ -186,7 +186,7 @@ const useMutateSeries = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            updated = ToModel.SERIES((await Api.put(url, theSeries)).data);
+            updated = ToModel.SERIES(await ApiFetcher.put(url, theSeries));
             logger.debug({
                 context: "useMutateSeries.update",
                 series: Abridgers.SERIES(updated),

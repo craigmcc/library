@@ -10,7 +10,7 @@ import {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import Api from "../clients/Api";
+import ApiFetcher from "../fetchers/ApiFetcher";
 import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
 import Author, {AUTHORS_BASE} from "../models/Author";
@@ -72,7 +72,7 @@ const useFetchFocused = (props: Props): State => {
                 `/${libraryContext.library.id}/${props.focusee.id}${queryParameters(parameters)}`;
             let tryFetch = loginContext.data.loggedIn && (props.focusee.id > 0);
             if (tryFetch) {
-                theAuthor = ToModel.AUTHOR((await Api.get(url)).data);
+                theAuthor = ToModel.AUTHOR(await ApiFetcher.get(url));
                 if (theAuthor.series && (theAuthor.series.length > 0)) {
                     theAuthor.series = Sorters.SERIESES(theAuthor.series);
                 }
@@ -113,7 +113,7 @@ const useFetchFocused = (props: Props): State => {
                 `/${libraryContext.library.id}/${props.focusee.id}${queryParameters(parameters)}`;
             let tryFetch = loginContext.data.loggedIn && (props.focusee.id > 0);
             if (tryFetch) {
-                theSeries = ToModel.SERIES((await Api.get(url)).data);
+                theSeries = ToModel.SERIES(await ApiFetcher.get(url));
                 if (theSeries.authors && (theSeries.authors.length > 0)) {
                     theSeries.authors = Sorters.AUTHORS(theSeries.authors);
                 }
@@ -152,7 +152,7 @@ const useFetchFocused = (props: Props): State => {
                 `/${libraryContext.library.id}/${props.focusee.id}${queryParameters(parameters)}`;
             let tryFetch = loginContext.data.loggedIn && (props.focusee.id > 0);
             if (tryFetch) {
-                theStory = ToModel.STORY((await Api.get(url)).data);
+                theStory = ToModel.STORY(await ApiFetcher.get(url));
                 if (theStory.authors && (theStory.authors.length > 0)) {
                     theStory.authors = Sorters.AUTHORS(theStory.authors);
                 }
@@ -193,7 +193,7 @@ const useFetchFocused = (props: Props): State => {
                 `/${libraryContext.library.id}/${props.focusee.id}${queryParameters(parameters)}`;
             let tryFetch = loginContext.data.loggedIn && (props.focusee.id > 0);
             if (tryFetch) {
-                theVolume = ToModel.VOLUME((await Api.get(url)).data);
+                theVolume = ToModel.VOLUME(await ApiFetcher.get(url));
                 if (theVolume.authors && (theVolume.authors.length > 0)) {
                     theVolume.authors = Sorters.AUTHORS(theVolume.authors);
                 }

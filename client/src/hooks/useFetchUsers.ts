@@ -9,7 +9,7 @@ import {useContext, useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import {Scope} from "../types";
-import Api from "../clients/Api";
+import ApiFetcher from "../fetchers/ApiFetcher";
 import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
 import {LIBRARIES_BASE} from "../models/Library";
@@ -18,6 +18,7 @@ import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
 import {queryParameters} from "../util/QueryParameters";
 import ReportError from "../util/ReportError";
+import * as ToModel from "../util/ToModel";
 
 // Incoming Properties and Outgoing State ------------------------------------
 
@@ -80,7 +81,7 @@ const useFetchUsers = (props: Props): State => {
                         url = `${LIBRARIES_BASE}/${libraryContext.library.id}/users${queryParameters(parameters)}`;
                     }
                     if (url !== "") {
-                        theUsers = (await Api.get(url)).data;
+                        theUsers = ToModel.USERS(await ApiFetcher.get(url));
                         logger.debug({
                             context: "useFetchUsers.fetchUsers",
                             url: url,

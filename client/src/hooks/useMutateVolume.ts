@@ -9,7 +9,7 @@ import {useContext, useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import {ProcessVolume, ProcessVolumeParent} from "../types";
-import Api from "../clients/Api";
+import ApiFetcher from "../fetchers/ApiFetcher";
 import LibraryContext from "../components/libraries/LibraryContext";
 import Author, {AUTHORS_BASE} from "../models/Author";
 import Volume, {VOLUMES_BASE} from "../models/Volume";
@@ -67,7 +67,7 @@ const useMutateVolume = (props: Props = {}): State => {
         setError(null);
         setExecuting(true);
         try {
-            await Api.delete(url);
+            await ApiFetcher.delete(url);
             logger.debug({
                 context: "useMutateVolume.exclude",
                 volume: Abridgers.VOLUME(theVolume),
@@ -103,7 +103,7 @@ const useMutateVolume = (props: Props = {}): State => {
         setError(null);
         setExecuting(true);
         try {
-            await Api.post(url);
+            await ApiFetcher.post(url);
             logger.debug({
                 context: "useMutateVolume.include",
                 volume: Abridgers.VOLUME(theVolume),
@@ -131,7 +131,7 @@ const useMutateVolume = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            inserted = ToModel.VOLUME((await Api.post(url, theVolume)).data);
+            inserted = ToModel.VOLUME(await ApiFetcher.post(url, theVolume));
             logger.debug({
                 context: "useMutateVolume.insert",
                 volume: Abridgers.VOLUME(inserted),
@@ -159,7 +159,7 @@ const useMutateVolume = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            removed = ToModel.VOLUME((await Api.delete(url)).data);
+            removed = ToModel.VOLUME(await ApiFetcher.delete(url));
             logger.debug({
                 context: "useMutateVolume.remove",
                 volume: Abridgers.VOLUME(removed),
@@ -187,7 +187,7 @@ const useMutateVolume = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            updated = ToModel.VOLUME((await Api.put(url, theVolume)).data);
+            updated = ToModel.VOLUME(await ApiFetcher.put(url, theVolume));
             logger.debug({
                 context: "useMutateVolume.update",
                 volume: Abridgers.VOLUME(updated),

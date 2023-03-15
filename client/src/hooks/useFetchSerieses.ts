@@ -13,7 +13,7 @@ import {useContext, useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import {HandleAction, Parent} from "../types";
-import Api from "../clients/Api";
+import ApiFetcher from "../fetchers/ApiFetcher";
 import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
 import Author, {AUTHORS_BASE} from "../models/Author";
@@ -89,7 +89,7 @@ const useFetchSerieses = (props: Props): State => {
             try {
                 let tryFetch = loginContext.data.loggedIn && (libraryContext.library.id > 0);
                 if (tryFetch) {
-                    theSerieses = ToModel.SERIESES((await Api.get<Series[]>(url)).data);
+                    theSerieses = ToModel.SERIESES((await ApiFetcher.get(url)));
                     theSerieses.forEach(theSeries => {
                         if (theSeries.authors && (theSeries.authors.length > 0)) {
                             theSeries.authors = Sorters.AUTHORS(theSeries.authors);

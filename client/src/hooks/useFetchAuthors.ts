@@ -13,7 +13,6 @@ import {useContext, useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import {HandleAction, Parent} from "../types";
-//import Api from "../clients/Api";
 import ApiFetcher from "../fetchers/ApiFetcher";
 import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
@@ -98,8 +97,7 @@ const useFetchAuthors = (props: Props): State => {
                     tryFetch = false;
                 }
                 if (tryFetch) {
-//                    theAuthors = ToModel.AUTHORS((await Api.get(url)).data);
-                    theAuthors = ToModel.AUTHORS((await ApiFetcher.get(url)));
+                    theAuthors = ToModel.AUTHORS(await ApiFetcher.get(url));
                     theAuthors.forEach(theAuthor => {
                         if (theAuthor.series && (theAuthor.series.length > 0)) {
                             theAuthor.series = Sorters.SERIESES(theAuthor.series);

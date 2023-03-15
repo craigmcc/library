@@ -9,7 +9,7 @@ import {useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import {ProcessLibrary} from "../types";
-import Api from "../clients/Api";
+import ApiFetcher from "../fetchers/ApiFetcher";
 import Library, {LIBRARIES_BASE} from "../models/Library";
 import * as Abridgers from "../util/Abridgers";
 import logger from "../util/ClientLogger";
@@ -52,7 +52,7 @@ const useMutateLibrary = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            inserted = ToModel.LIBRARY((await Api.post(url, theLibrary)).data);
+            inserted = ToModel.LIBRARY(await ApiFetcher.post(url, theLibrary));
             logger.debug({
                 context: "useMutateLibrary.insert",
                 library: Abridgers.LIBRARY(inserted),
@@ -80,7 +80,7 @@ const useMutateLibrary = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            removed = ToModel.LIBRARY((await Api.delete(url)).data);
+            removed = ToModel.LIBRARY(await ApiFetcher.delete(url));
             logger.debug({
                 context: "useMutateLibrary.remove",
                 library: Abridgers.LIBRARY(removed),
@@ -108,7 +108,7 @@ const useMutateLibrary = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            updated = ToModel.LIBRARY((await Api.put(url, theLibrary)).data);
+            updated = ToModel.LIBRARY(await ApiFetcher.put(url, theLibrary));
             logger.debug({
                 context: "useMutateLibrary.update",
                 library: Abridgers.LIBRARY(updated),

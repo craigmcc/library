@@ -8,7 +8,7 @@ import {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import Api from "../clients/Api";
+import ApiFetcher from "../fetchers/ApiFetcher";
 import LoginContext from "../components/login/LoginContext";
 import Library, {LIBRARIES_BASE} from "../models/Library";
 import * as Abridgers from "../util/Abridgers";
@@ -76,7 +76,7 @@ const useFetchLibraries = (props: Props): State => {
             try {
                 let tryFetch = loginContext.data.loggedIn;
                 if (tryFetch) {
-                    theLibraries = ToModel.LIBRARIES((await Api.get<Library[]>(url)).data);
+                    theLibraries = ToModel.LIBRARIES((await ApiFetcher.get(url)));
                     theLibraries.forEach(theLibrary => {
                         if (theLibrary.authors && (theLibrary.authors.length > 0)) {
                             theLibrary.authors = Sorters.AUTHORS(theLibrary.authors);

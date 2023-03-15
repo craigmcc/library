@@ -9,7 +9,7 @@ import {useContext, useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import {ProcessStory, ProcessStoryParent} from "../types";
-import Api from "../clients/Api";
+import ApiFetcher from "../fetchers/ApiFetcher";
 import LibraryContext from "../components/libraries/LibraryContext";
 import Author, {AUTHORS_BASE} from "../models/Author";
 import Series, {SERIES_BASE} from "../models/Series";
@@ -72,7 +72,7 @@ const useMutateStory = (props: Props = {}): State => {
         setError(null);
         setExecuting(true);
         try {
-            await Api.delete(url);
+            await ApiFetcher.delete(url);
             logger.debug({
                 context: "useMutateStory.exclude",
                 author: Abridgers.STORY(theStory),
@@ -112,7 +112,7 @@ const useMutateStory = (props: Props = {}): State => {
         setError(null);
         setExecuting(true);
         try {
-            await Api.post(url);
+            await ApiFetcher.post(url);
             logger.debug({
                 context: "useMutateStory.include",
                 story: Abridgers.STORY(theStory),
@@ -140,7 +140,7 @@ const useMutateStory = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            inserted = ToModel.STORY((await Api.post(url, theStory)).data);
+            inserted = ToModel.STORY(await ApiFetcher.post(url, theStory));
             logger.debug({
                 context: "useMutateStory.insert",
                 story: Abridgers.STORY(inserted),
@@ -168,7 +168,7 @@ const useMutateStory = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            removed = ToModel.STORY((await Api.delete(url)).data);
+            removed = ToModel.STORY(await ApiFetcher.delete(url));
             logger.debug({
                 context: "useMutateStory.remove",
                 story: Abridgers.STORY(removed),
@@ -196,7 +196,7 @@ const useMutateStory = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            updated = (await Api.put(url, theStory)).data;
+            updated = (await ApiFetcher.put(url, theStory));
             logger.debug({
                 context: "useMutateStory.update",
                 story: Abridgers.STORY(updated),

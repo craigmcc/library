@@ -13,7 +13,7 @@ import {useContext, useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import {HandleAction, Parent} from "../types";
-import Api from "../clients/Api";
+import ApiFetcher from "../fetchers/ApiFetcher";
 import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
 import Author, {AUTHORS_BASE} from "../models/Author";
@@ -97,7 +97,7 @@ const useFetchStories = (props: Props): State => {
                     tryFetch = false;
                 }
                 if (tryFetch) {
-                    theStories = ToModel.STORIES((await Api.get(url)).data);
+                    theStories = ToModel.STORIES((await ApiFetcher.get(url)));
                     theStories.forEach(theStory => {
                         if (theStory.authors && (theStory.authors.length > 0)) {
                             theStory.authors = Sorters.AUTHORS(theStory.authors);

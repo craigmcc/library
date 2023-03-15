@@ -9,7 +9,7 @@ import {useContext, useEffect, useState} from "react";
 // Internal Modules ----------------------------------------------------------
 
 import {ProcessUser, Scope} from "../types";
-import Api from "../clients/Api";
+import ApiFetcher from "../fetchers/ApiFetcher";
 import LibraryContext from "../components/libraries/LibraryContext";
 import LoginContext from "../components/login/LoginContext";
 import User, {USERS_BASE} from "../models/User";
@@ -62,7 +62,7 @@ const useMutateUser = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            inserted = ToModel.USER((await Api.post(url, theUser)).data);
+            inserted = ToModel.USER(await ApiFetcher.post(url, theUser));
             logger.debug({
                 context: "useMutateUser.insert",
                 user: Abridgers.USER(inserted),
@@ -94,7 +94,7 @@ const useMutateUser = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            removed = ToModel.USER((await Api.delete(url)).data);
+            removed = ToModel.USER(await ApiFetcher.delete(url));
             logger.debug({
                 context: "useMutateUser.remove",
                 user: Abridgers.USER(removed),
@@ -126,7 +126,7 @@ const useMutateUser = (props: Props = {}): State => {
         setExecuting(true);
 
         try {
-            updated = ToModel.USER((await Api.put(url, theUser)).data);
+            updated = ToModel.USER(await ApiFetcher.put(url, theUser));
             logger.debug({
                 context: "useMutateUser.update",
                 user: Abridgers.USER(updated),
