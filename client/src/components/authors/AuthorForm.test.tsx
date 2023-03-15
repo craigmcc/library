@@ -166,9 +166,7 @@ describe("Invalid Data", () => {
 
         const {save} = elements();
         const client = userEvent.setup();
-        await act(async () => {
-            await client.click(save);
-        });
+        await client.click(save);
 
         await waitFor(() => {
             expect(PROPS.handleReturn).not.toBeCalled();
@@ -314,4 +312,3 @@ describe("Valid Data", () => {
     });
 
 })
-
