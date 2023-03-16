@@ -1,6 +1,6 @@
 // LoginContext --------------------------------------------------------------
 
-// React Context containing information about the currently logged in user,
+// React Context containing information about the currently logged-in user,
 // if there is one.  If there is not, the LOGIN_CONTEXT global variable will be
 // null, and the loggedIn context method will return false.
 
@@ -86,6 +86,7 @@ export const LoginContextProvider = ({ children }) => {
         // Attempt to authenticate the specified credentials
         const newData = await login(credentials);
         setData(newData);
+        setUser(await refreshUser(newData));
 
         // Save allowed scope(s) and set logging level
         let logLevel = LOG_DEFAULT;
@@ -108,7 +109,7 @@ export const LoginContextProvider = ({ children }) => {
         });
 
         // Refresh the current User information
-        setUser(refreshUser(newData));
+        await refreshUser(newData);
 
     }
 
@@ -126,10 +127,9 @@ export const LoginContextProvider = ({ children }) => {
         logger.setLevel(LOG_DEFAULT);
 
         // Perform logout on the server
-        setData(await logout());
-
-        // Erase our currently logged-in User information
-        setUser(LOGIN_USER);
+        const newData = await logout();
+        setData(newData);
+        setUser(await refreshUser(newData));
 
     }
 
@@ -150,7 +150,7 @@ export const LoginContextProvider = ({ children }) => {
     }
 
     /**
-     * Return true if the currently logged in User has the specified
+     * Return true if the currently logged-in User has the specified
      * scope permissions.
      *
      * @param scope                     Scope to be tested for

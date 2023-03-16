@@ -92,7 +92,6 @@ export const login = async (credentials: Credentials): Promise<LoginData> => {
         scope: tokenResponse.scope,
         username: credentials.username,
     }
-    loginData.value = newData;
     return newData;
 
 }
@@ -135,7 +134,7 @@ export const logout = async (): Promise<LoginData> => {
         scope: null,
         username: null,
     }
-    loginData.value = currentData;
+    await refreshUser(currentData);
     return currentData;
 
 }
@@ -237,16 +236,19 @@ export const refreshUser = async (theData?: LoginData): Promise<User> => {
             context: "LoginDataUtils.refreshUser",
             user: Abridgers.USER(user),
         });
+        loginUser.value = user;
         return user;
     } else {
         logger.info({
             context: "LoginDataUtils.refreshUser",
             msg: "Not logged in",
         });
-        return new User({
+        const user = new User({
             active: false,
             firstName: "-----",
             lastName: "-----",
         });
+        loginUser.value = user;
+        return user;
     }
 }
