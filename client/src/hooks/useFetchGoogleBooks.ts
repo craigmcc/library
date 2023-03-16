@@ -9,7 +9,6 @@ import {useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
-import GoogleBooksApi from "../clients/GoogleBooksApi";
 import GoogleVolumes from "../models/GoogleVolumes";
 import logger from "../util/ClientLogger";
 import {queryParameters} from "../util/QueryParameters";
@@ -34,6 +33,8 @@ export interface State {
 
 // Hook Details --------------------------------------------------------------
 
+const BASE_URL = "https://www.googleapis.com/books/v1";
+
 const useFetchGoogleBooks = (props: Props): State => {
 
     const alertPopup = (props.alertPopup !== undefined) ? props.alertPopup : true;
@@ -55,11 +56,12 @@ const useFetchGoogleBooks = (props: Props): State => {
                 startIndex: props.offset ? props.offset : undefined,
                 q: encodeURIComponent(props.query),
             }
-            const url = `/volumes${queryParameters(parameters)}`;
+            const url = `${BASE_URL}/volumes${queryParameters(parameters)}`;
 
             try {
                 if (props.query !== "") {
-                    theBooks = (await GoogleBooksApi.get(url + `&key=${props.apiKey}`)).data;
+                    const response = await fetch(`${url}&${props.apiKey}`);
+                    theBooks = await response.json();
                 }
                 logger.debug({
                     context: "useFetchGoogleBooks.fetchBooks",
