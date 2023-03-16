@@ -4,13 +4,12 @@
 
 // External Modules ----------------------------------------------------------
 
-import React, {useEffect, useState} from "react";
-import {FetchingProgress} from "@craigmcc/shared-react";
+import React, {useContext, useEffect, useState} from "react";
 
 // Internal Modules ----------------------------------------------------------
 
 import GoogleBooksOptions from "./GoogleBooksOptions";
-import useFetchMe from "../../hooks/useFetchMe";
+import LoginContext from "../login/LoginContext";
 import logger from "../../util/ClientLogger";
 
 // Component Details ---------------------------------------------------------
@@ -23,30 +22,21 @@ enum View {
 const GoogleBooksSegment = () => {
 
     const [view/*, setView*/] = useState<View>(View.OPTIONS);
-
-    const fetchMe = useFetchMe({
-        alertPopup: false,
-    });
+    const loginContext = useContext(LoginContext);
 
     useEffect(() => {
         logger.debug({
             context: "GoogleBooksSegment.useEffect",
             view: view.toString(),
         });
-    }, [view, fetchMe.me, fetchMe.me.googleBooksApiKey]);
+    }, [view, loginContext.user]);
 
     return (
         <>
 
-            <FetchingProgress
-                error={fetchMe.error}
-                loading={fetchMe.loading}
-                message="Fetching User Profile"
-            />
-
             {(view === View.OPTIONS) ? (
                 <GoogleBooksOptions
-                    apiKey={fetchMe.me.googleBooksApiKey}
+                    apiKey={loginContext.user.googleBooksApiKey}
                 />
             ) : null}
 
