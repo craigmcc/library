@@ -12,9 +12,9 @@ import LocalStorage from "./LocalStorage";
 import {LOGIN_DATA_KEY, LOGIN_USER_KEY} from "../constants";
 import {LoginData} from "../types";
 import Credentials from "../models/Credentials";
-import OAuth from "../clients/OAuth";
+//import OAuth from "../clients/OAuth";
 import User from "../models/User";
-import * as ToModel from "./ToModel";
+//import * as ToModel from "./ToModel";
 import * as Abridgers from "./Abridgers";
 
 // Models --------------------------------------------------------------------
@@ -54,6 +54,8 @@ export interface TokenResponse {
 const loginData = new LocalStorage<LoginData>(LOGIN_DATA_KEY);
 const loginUser = new LocalStorage<User>(LOGIN_USER_KEY);
 
+const BASE_URL = "/oauth";
+
 // Public Objects -----------------------------------------------------------
 
 /**
@@ -73,9 +75,23 @@ export const login = async (credentials: Credentials): Promise<LoginData> => {
         password: credentials.password,
         username: credentials.username,
     }
+    console.log("tokenRequest", tokenRequest);
     // Will throw Error on login failure
+    const response = await fetch(`${BASE_URL}/token`, {
+        body: JSON.stringify(tokenRequest),
+        headers: {
+            "Content-Type": "application/json",
+        },
+        method: "POST",
+    });
+    if (!response.ok) {
+        throw new Error(`Login failed: ${JSON.stringify(await response.json())}`);
+    }
+    const tokenResponse: TokenResponse = await response.json();
+/*
     const tokenResponse: TokenResponse =
         (await OAuth.post("/token", tokenRequest)).data;
+*/
     logger.debug({
         context: "LoginDataUtils.login",
         msg: "Successful login",
@@ -108,11 +124,22 @@ export const logout = async (): Promise<LoginData> => {
     // Revoke the currently assigned access token (if any)
     if (currentData.loggedIn && currentData.accessToken) {
         try {
+/*
             await OAuth.delete("/token", {
                 headers: {
                     "Authorization": `Bearer ${currentData.accessToken}`
                 }
             });
+*/
+            const response = await fetch(`${BASE_URL}/token`, {
+                headers: {
+                    "Authorization": `Bearer ${currentData.accessToken}`,
+                },
+                method: "DELETE",
+            });
+            if (!response.ok) {
+                throw new Error(`Logout failed: ${JSON.stringify(await response.json())}`);
+            }
         } catch (error) {
             logger.error({
                 context: "loginDataUtils.logout",
@@ -179,8 +206,22 @@ export const refresh = async (): Promise<LoginData> => {
             grant_type: "refresh_token",
             refresh_token: currentData.refreshToken,
         }
+/*
         const tokenResponse: TokenResponse =
             (await OAuth.post("/token", tokenRequest)).data;
+*/
+        const response =  await fetch(`${BASE_URL}/token`, {
+            body: JSON.stringify(tokenRequest),
+            headers: {
+                "Authorization": `Bearer ${currentData.accessToken}`,
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+        });
+        if (!response.ok) {
+            throw new Error(`Refresh user failed: ${JSON.stringify(await response.json())}`);
+        }
+        const tokenResponse: TokenResponse = await response.json();
         currentData.accessToken = tokenResponse.access_token;
         currentData.alloweds = tokenResponse.scope ? tokenResponse.scope.split(" ") : [];
         currentData.expires = new Date((new Date()).getTime() + (tokenResponse.expires_in * 1000));
@@ -231,7 +272,17 @@ export const refreshUser = async (theData?: LoginData): Promise<User> => {
         data: useData,
     });
     if (useData.loggedIn) {
-        const user: User = ToModel.USER((await OAuth.get("/me")).data);
+        const response = await fetch(`${BASE_URL}/me`, {
+            headers: {
+                "Authorization": `Bearer ${useData.accessToken}`,
+            },
+            method: "GET",
+        });
+        if (!response.ok) {
+            throw new Error(`Refresh failed: ${JSON.stringify(await response.json())}`);
+        }
+        const user:User = await response.json();
+        //const user: User = ToModel.USER((await OAuth.get("/me")).data);
         logger.info({
             context: "LoginDataUtils.refreshUser",
             user: Abridgers.USER(user),
