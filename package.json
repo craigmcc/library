@@ -75,7 +75,7 @@
     "chai-http": "^4.3.0",
     "concurrently": "^7.6.0",
     "mocha": "^10.2.0",
-    "nodemon": "^2.0.21",
+    "nodemon": "^2.0.22",
     "ts-node": "^10.9.1",
     "typedoc": "^0.23.28",
     "typescript": "^5.0.2"
