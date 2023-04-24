@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "es2021",
+    "lib": ["dom", "DOM.Iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -21,6 +17,8 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "./src",
+    "src/models.d.ts",
+    "src/types.d.ts"
   ]
 }

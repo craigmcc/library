@@ -1,0 +1,10 @@
+/*
+$custom-colors: (
+  "info":    $indigo,
+  "success": $blue-800,
+);
+$theme-colors: map-merge($theme-colors, $custom-colors);
+*/
+
+$info:    #661052; // $indigo;
+$success: #fd7e14; // $orange;
