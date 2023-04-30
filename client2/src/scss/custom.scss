@@ -1,0 +1,24 @@
+// (1) Customize theme styles
+
+$secondary: #6610f2; // $indigo
+$secondary-light: #f2ebfa;
+
+
+// (2) Import so we can update things with formulas
+
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/variables";
+
+// (3) Merge maps as needed
+
+$custom-theme-colors: (
+  "secondary-light": $secondary-light,
+  "secondary-other": $indigo-300
+);
+$theme-colors: map-merge($custom-theme-colors, $theme-colors);
+
+// (4) Import everything else
+
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+
