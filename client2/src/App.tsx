@@ -6,7 +6,7 @@ import Row from "react-bootstrap/Row";
 //import "bootstrap/dist/css/bootstrap.min.css";
 import "./scss/custom.css";
 
-import Sidebar from "./components/general/Sidebar";
+import SidebarExample from "./components/general/SidebarExample";
 
 function App() {
 
@@ -14,7 +14,7 @@ function App() {
       <Container fluid id="App">
         <Row>
           <Col className="col-2">
-            <Sidebar/>
+            <SidebarExample/>
           </Col>
           <Col>
             <p className="text-secondary-other">The rest of the story.</p>

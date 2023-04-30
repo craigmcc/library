@@ -19,7 +19,7 @@ export interface SidebarProps {
 /**
  * The sidebar component that is present on all pages.
  */
-const Sidebar = (props: SidebarProps) => {
+const SidebarExample = (props: SidebarProps) => {
 
     return (
         <Container id="Sidebar"
@@ -60,4 +60,4 @@ const Sidebar = (props: SidebarProps) => {
 
 }
 
-export default Sidebar;
+export default SidebarExample;
