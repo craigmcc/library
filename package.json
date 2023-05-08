@@ -77,7 +77,7 @@
     "mocha": "^10.2.0",
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.1",
-    "typedoc": "^0.24.6",
+    "typedoc": "^0.24.7",
     "typescript": "^5.0.4"
   }
 }
