@@ -119,16 +119,16 @@ model Series_Stories {
 }
 
 model Story {
-  id              Int               @id @default(autoincrement())
-  active          Boolean           @default(true)
-  copyright       String?           @db.VarChar(255)
-  libraryId       Int               @map("library_id")
-  name            String            @db.VarChar(255)
-  notes           String?           @db.VarChar(255)
-  authorsStories  Authors_Stories[]
-  seriesStories   Series_Stories[]
-  library         Library           @relation(fields: [libraryId], references: [id], onDelete: Cascade)
-  volumesStories  Volumes_Stories[]
+  id             Int               @id @default(autoincrement())
+  active         Boolean           @default(true)
+  copyright      String?           @db.VarChar(255)
+  libraryId      Int               @map("library_id")
+  name           String            @db.VarChar(255)
+  notes          String?           @db.VarChar(255)
+  authorsStories Authors_Stories[]
+  seriesStories  Series_Stories[]
+  library        Library           @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  volumesStories Volumes_Stories[]
 
   @@unique([libraryId, name])
   @@map("stories")
@@ -149,30 +149,30 @@ model User {
 }
 
 model Volume {
-  id              Int               @id @default(autoincrement())
-  active          Boolean           @default(true)
-  copyright       String?           @db.VarChar(255)
-  googleId        String?           @map("google_id") @db.VarChar(255)
-  isbn            String?           @db.VarChar(255)
-  libraryId       Int               @map("library_id")
-  location        String?           @db.VarChar(255)
-  name            String            @db.VarChar(255)
-  notes           String?           @db.VarChar(255)
-  read            Boolean           @default(false)
-  type            String            @db.VarChar(255)
-  authorsVolumes  Authors_Volumes[]
-  library         Library           @relation(fields: [libraryId], references: [id], onDelete: Cascade)
-  volumesStories  Volumes_Stories[]
+  id             Int               @id @default(autoincrement())
+  active         Boolean           @default(true)
+  copyright      String?           @db.VarChar(255)
+  googleId       String?           @map("google_id") @db.VarChar(255)
+  isbn           String?           @db.VarChar(255)
+  libraryId      Int               @map("library_id")
+  location       String?           @db.VarChar(255)
+  name           String            @db.VarChar(255)
+  notes          String?           @db.VarChar(255)
+  read           Boolean           @default(false)
+  type           String            @db.VarChar(255)
+  authorsVolumes Authors_Volumes[]
+  library        Library           @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  volumesStories Volumes_Stories[]
 
   @@unique([libraryId, name])
   @@map("volumes")
 }
 
 model Volumes_Stories {
-  volumeId  Int    @map("volume_id")
-  storyId   Int    @map("story_id")
-  stories   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
-  volumes   Volume @relation(fields: [volumeId], references: [id], onDelete: Cascade)
+  volumeId Int    @map("volume_id")
+  storyId  Int    @map("story_id")
+  stories  Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  volumes  Volume @relation(fields: [volumeId], references: [id], onDelete: Cascade)
 
   @@id([volumeId, storyId])
   @@map("volumes_stories")
