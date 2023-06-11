@@ -20,7 +20,7 @@ model AccessToken {
 
 model Author {
   id             Int               @id @default(autoincrement())
-  active         Boolean           @default(true)
+  active         Boolean?          @default(true)
   libraryId      Int               @map("library_id")
   last_name      String            @db.VarChar(255)
   first_name     String            @db.VarChar(255)
@@ -69,7 +69,7 @@ model Authors_Volumes {
 
 model Library {
   id      Int      @id @default(autoincrement())
-  active  Boolean  @default(true)
+  active  Boolean? @default(true)
   name    String   @unique
   notes   String?
   scope   String   @unique
@@ -94,7 +94,7 @@ model RefreshToken {
 
 model Series {
   id            Int              @id @default(autoincrement())
-  active        Boolean          @default(true)
+  active        Boolean?         @default(true)
   copyright     String?          @db.VarChar(255)
   libraryId     Int              @map("library_id")
   name          String           @db.VarChar(255)
@@ -120,7 +120,7 @@ model Series_Stories {
 
 model Story {
   id             Int               @id @default(autoincrement())
-  active         Boolean           @default(true)
+  active         Boolean?          @default(true)
   copyright      String?           @db.VarChar(255)
   libraryId      Int               @map("library_id")
   name           String            @db.VarChar(255)
@@ -136,7 +136,7 @@ model Story {
 
 model User {
   id                   Int            @id @default(autoincrement())
-  active               Boolean        @default(true)
+  active               Boolean?       @default(true)
   google_books_api_key String?
   name                 String
   password             String
@@ -150,7 +150,7 @@ model User {
 
 model Volume {
   id             Int               @id @default(autoincrement())
-  active         Boolean           @default(true)
+  active         Boolean?          @default(true)
   copyright      String?           @db.VarChar(255)
   googleId       String?           @map("google_id") @db.VarChar(255)
   isbn           String?           @db.VarChar(255)
