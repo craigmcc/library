@@ -7,121 +7,134 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model access_tokens {
+model AccessToken {
   id      Int      @id @default(autoincrement())
   expires DateTime @db.Timestamptz(6)
   scope   String
   token   String
-  user_id Int
-  users   users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  userId  Int      @map("user_id")
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("access_tokens")
 }
 
-model authors {
+model Author {
   id              Int               @id @default(autoincrement())
   active          Boolean           @default(true)
-  library_id      Int
+  libraryId       Int               @map("library_id")
   last_name       String            @db.VarChar(255)
   first_name      String            @db.VarChar(255)
   notes           String?           @db.VarChar(255)
-  libraries       libraries         @relation(fields: [library_id], references: [id], onDelete: Cascade)
-  authors_series  authors_series[]
-  authors_stories authors_stories[]
-  authors_volumes authors_volumes[]
+  library         Library           @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  authorsSeries   Authors_Series[]
+  authorsStories  Authors_Stories[]
+  authorsVolumes  Authors_Volumes[]
 
-  @@unique([library_id, last_name, first_name])
+  @@unique([libraryId, last_name, first_name])
+  @@map("authors")
 }
 
-model authors_series {
-  author_id Int
+model Authors_Series {
+  authorId  Int      @map("author_id")
   principal Boolean?
-  series_id Int
-  authors   authors  @relation(fields: [author_id], references: [id], onDelete: Cascade)
-  series    series   @relation(fields: [series_id], references: [id], onDelete: Cascade)
+  seriesId  Int      @map("series_id")
+  author    Author   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  series    Series   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
 
-  @@id([author_id, series_id])
+  @@id([authorId, seriesId])
+  @@map("authors_series")
 }
 
-model authors_stories {
-  author_id Int
+model Authors_Stories {
+  authorId  Int     @map("author_id")
   principal Boolean?
-  story_id  Int
-  authors   authors  @relation(fields: [author_id], references: [id], onDelete: Cascade)
-  stories   stories  @relation(fields: [story_id], references: [id], onDelete: Cascade)
+  storyId   Int     @map("story_id")
+  author    Author  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  story     Story   @relation(fields: [storyId], references: [id], onDelete: Cascade)
 
-  @@id([author_id, story_id])
+  @@id([authorId, storyId])
+  @@map("authors_stories")
 }
 
-model authors_volumes {
-  author_id Int
+model Authors_Volumes {
+  authorId  Int      @map("author_id")
   principal Boolean?
-  volume_id Int
-  authors   authors  @relation(fields: [author_id], references: [id], onDelete: Cascade)
-  volumes   volumes  @relation(fields: [volume_id], references: [id], onDelete: Cascade)
+  volumeId  Int      @map("volume_id")
+  author    Author   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  volume    Volume   @relation(fields: [volumeId], references: [id], onDelete: Cascade)
 
-  @@id([author_id, volume_id])
+  @@id([authorId, volumeId])
+  @@map("authors_volumes")
 }
 
-model libraries {
+model Library {
   id      Int       @id @default(autoincrement())
   active  Boolean   @default(true)
   name    String    @unique
   notes   String?
   scope   String    @unique
-  authors authors[]
-  series  series[]
-  stories stories[]
-  volumes volumes[]
+  authors Author[]
+  series  Series[]
+  stories Story[]
+  volumes Volume[]
+
+  @@map("libraries")
 }
 
-model refresh_tokens {
+model RefreshToken {
   id           Int      @id @default(autoincrement())
-  access_token String
+  accessToken  String   @map("access_token")
   expires      DateTime @db.Timestamptz(6)
   token        String
-  user_id      Int
-  users        users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  userId       Int      @map("user_id")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
 }
 
-model series {
+model Series {
   id             Int              @id @default(autoincrement())
   active         Boolean          @default(true)
   copyright      String?          @db.VarChar(255)
-  library_id     Int
+  libraryId      Int              @map("library_id")
   name           String           @db.VarChar(255)
   notes          String?          @db.VarChar(255)
-  authors_series authors_series[]
-  libraries      libraries        @relation(fields: [library_id], references: [id], onDelete: Cascade)
-  series_stories series_stories[]
+  authorsSeries  Authors_Series[]
+  library        Library          @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  seriesStories  Series_Stories[]
 
-  @@unique([library_id, name])
+  @@unique([libraryId, name])
+  @@map("series")
 }
 
-model series_stories {
+model Series_Stories {
   ordinal   Int?
-  series_id Int
-  story_id  Int
-  series    series  @relation(fields: [series_id], references: [id], onDelete: Cascade)
-  stories   stories @relation(fields: [story_id], references: [id], onDelete: Cascade)
+  seriesId  Int      @map("series_id")
+  storyId   Int      @map("story_id")
+  series    Series   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
 
-  @@id([series_id, story_id])
+  @@id([seriesId, storyId])
+  @@map("series_stories")
 }
 
-model stories {
+model Story {
   id              Int               @id @default(autoincrement())
   active          Boolean           @default(true)
   copyright       String?           @db.VarChar(255)
-  library_id      Int
+  libraryId       Int               @map("library_id")
   name            String            @db.VarChar(255)
   notes           String?           @db.VarChar(255)
-  authors_stories authors_stories[]
-  series_stories  series_stories[]
-  libraries       libraries         @relation(fields: [library_id], references: [id], onDelete: Cascade)
-  volumes_stories volumes_stories[]
+  authorsStories  Authors_Stories[]
+  seriesStories   Series_Stories[]
+  library         Library           @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  volumesStories  Volumes_Stories[]
 
-  @@unique([library_id, name])
+  @@unique([libraryId, name])
+  @@map("stories")
 }
 
-model users {
+model User {
   id                   Int              @id @default(autoincrement())
   active               Boolean          @default(true)
   google_books_api_key String?
@@ -129,34 +142,38 @@ model users {
   password             String
   scope                String
   username             String           @unique
-  access_tokens        access_tokens[]
-  refresh_tokens       refresh_tokens[]
+  accessTokens         AccessToken[]
+  refreshTokens        RefreshToken[]
+
+  @@map("users")
 }
 
-model volumes {
+model Volume {
   id              Int               @id @default(autoincrement())
   active          Boolean           @default(true)
   copyright       String?           @db.VarChar(255)
-  google_id       String?           @db.VarChar(255)
+  googleId        String?           @db.VarChar(255) @map("google_id")
   isbn            String?           @db.VarChar(255)
-  library_id      Int
+  libraryId       Int               @map("library_id")
   location        String?           @db.VarChar(255)
   name            String            @db.VarChar(255)
   notes           String?           @db.VarChar(255)
   read            Boolean           @default(false)
   type            String            @db.VarChar(255)
-  authors_volumes authors_volumes[]
-  libraries       libraries         @relation(fields: [library_id], references: [id], onDelete: Cascade)
-  volumes_stories volumes_stories[]
+  authorsVolumes  Authors_Volumes[]
+  library         Library          @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  volumesStories  Volumes_Stories[]
 
-  @@unique([library_id, name])
+  @@unique([libraryId, name])
+  @@map("volumes")
 }
 
-model volumes_stories {
-  volume_id Int
-  story_id  Int
-  stories   stories @relation(fields: [story_id], references: [id], onDelete: Cascade)
-  volumes   volumes @relation(fields: [volume_id], references: [id], onDelete: Cascade)
+model Volumes_Stories {
+  volumeId  Int
+  storyId   Int
+  story     Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  volume    Volume @relation(fields: [volumeId], references: [id], onDelete: Cascade)
 
-  @@id([volume_id, story_id])
+  @@id([volumeId, storyId])
+  @@map("volumes_stories")
 }
