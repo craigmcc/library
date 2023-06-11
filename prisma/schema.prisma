@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model access_tokens {
+  id      Int      @id @default(autoincrement())
+  expires DateTime @db.Timestamptz(6)
+  scope   String
+  token   String
+  user_id Int
+  users   users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model authors {
+  id              Int               @id @default(autoincrement())
+  active          Boolean           @default(true)
+  library_id      Int
+  last_name       String            @db.VarChar(255)
+  first_name      String            @db.VarChar(255)
+  notes           String?           @db.VarChar(255)
+  libraries       libraries         @relation(fields: [library_id], references: [id], onDelete: Cascade)
+  authors_series  authors_series[]
+  authors_stories authors_stories[]
+  authors_volumes authors_volumes[]
+
+  @@unique([library_id, last_name, first_name])
+}
+
+model authors_series {
+  author_id Int
+  principal Boolean?
+  series_id Int
+  authors   authors  @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  series    series   @relation(fields: [series_id], references: [id], onDelete: Cascade)
+
+  @@id([author_id, series_id])
+}
+
+model authors_stories {
+  author_id Int
+  principal Boolean?
+  story_id  Int
+  authors   authors  @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  stories   stories  @relation(fields: [story_id], references: [id], onDelete: Cascade)
+
+  @@id([author_id, story_id])
+}
+
+model authors_volumes {
+  author_id Int
+  principal Boolean?
+  volume_id Int
+  authors   authors  @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  volumes   volumes  @relation(fields: [volume_id], references: [id], onDelete: Cascade)
+
+  @@id([author_id, volume_id])
+}
+
+model libraries {
+  id      Int       @id @default(autoincrement())
+  active  Boolean   @default(true)
+  name    String    @unique
+  notes   String?
+  scope   String    @unique
+  authors authors[]
+  series  series[]
+  stories stories[]
+  volumes volumes[]
+}
+
+model refresh_tokens {
+  id           Int      @id @default(autoincrement())
+  access_token String
+  expires      DateTime @db.Timestamptz(6)
+  token        String
+  user_id      Int
+  users        users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model series {
+  id             Int              @id @default(autoincrement())
+  active         Boolean          @default(true)
+  copyright      String?          @db.VarChar(255)
+  library_id     Int
+  name           String           @db.VarChar(255)
+  notes          String?          @db.VarChar(255)
+  authors_series authors_series[]
+  libraries      libraries        @relation(fields: [library_id], references: [id], onDelete: Cascade)
+  series_stories series_stories[]
+
+  @@unique([library_id, name])
+}
+
+model series_stories {
+  ordinal   Int?
+  series_id Int
+  story_id  Int
+  series    series  @relation(fields: [series_id], references: [id], onDelete: Cascade)
+  stories   stories @relation(fields: [story_id], references: [id], onDelete: Cascade)
+
+  @@id([series_id, story_id])
+}
+
+model stories {
+  id              Int               @id @default(autoincrement())
+  active          Boolean           @default(true)
+  copyright       String?           @db.VarChar(255)
+  library_id      Int
+  name            String            @db.VarChar(255)
+  notes           String?           @db.VarChar(255)
+  authors_stories authors_stories[]
+  series_stories  series_stories[]
+  libraries       libraries         @relation(fields: [library_id], references: [id], onDelete: Cascade)
+  volumes_stories volumes_stories[]
+
+  @@unique([library_id, name])
+}
+
+model users {
+  id                   Int              @id @default(autoincrement())
+  active               Boolean          @default(true)
+  google_books_api_key String?
+  name                 String
+  password             String
+  scope                String
+  username             String           @unique
+  access_tokens        access_tokens[]
+  refresh_tokens       refresh_tokens[]
+}
+
+model volumes {
+  id              Int               @id @default(autoincrement())
+  active          Boolean           @default(true)
+  copyright       String?           @db.VarChar(255)
+  google_id       String?           @db.VarChar(255)
+  isbn            String?           @db.VarChar(255)
+  library_id      Int
+  location        String?           @db.VarChar(255)
+  name            String            @db.VarChar(255)
+  notes           String?           @db.VarChar(255)
+  read            Boolean           @default(false)
+  type            String            @db.VarChar(255)
+  authors_volumes authors_volumes[]
+  libraries       libraries         @relation(fields: [library_id], references: [id], onDelete: Cascade)
+  volumes_stories volumes_stories[]
+
+  @@unique([library_id, name])
+}
+
+model volumes_stories {
+  volume_id Int
+  story_id  Int
+  stories   stories @relation(fields: [story_id], references: [id], onDelete: Cascade)
+  volumes   volumes @relation(fields: [volume_id], references: [id], onDelete: Cascade)
+
+  @@id([volume_id, story_id])
+}

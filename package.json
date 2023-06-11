@@ -76,6 +76,7 @@
     "concurrently": "^8.1.0",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.22",
+    "prisma": "^4.15.0",
     "ts-node": "^10.9.1",
     "typedoc": "^0.24.8",
     "typescript": "^5.1.3"
