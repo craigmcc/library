@@ -52,7 +52,16 @@ describe("LibraryActions Functional Tests", () => {
             expect(libraries.length).to.equal(SeedData.LIBRARIES.length);
         });
 
-        // TODO - "should pass on included children"
+        it("should pass on included children", async () => {
+            const libraries = await LibraryActions.all({
+                withAuthors: "",
+                withSeries: "",
+                withStories: "",
+                withVolumes: "",
+            });
+            // TODO - something weird going on
+            console.log("LIBRARIES", libraries);
+        });
 
         it("should pass on named libraries", async () => {
             const PATTERN = "iBr";
