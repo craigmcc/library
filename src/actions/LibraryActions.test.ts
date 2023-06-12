@@ -86,6 +86,7 @@ export function compareLibraryNew(OUTPUT: Library, INPUT: Library) {
     expect(OUTPUT.notes).to.equal(INPUT.notes ? INPUT.notes : null);
     expect(OUTPUT.scope).to.equal(INPUT.scope);
 }
+
 export function compareLibraryOld(OUTPUT: Library, INPUT: Library) {
     expect(OUTPUT.id).to.equal(INPUT.id ? INPUT.id : OUTPUT.id);
     expect(OUTPUT.active).to.equal(INPUT.active !== undefined ? INPUT.active : OUTPUT.active);
