@@ -22,15 +22,15 @@ model Author {
   id             Int               @id @default(autoincrement())
   active         Boolean?          @default(true)
   libraryId      Int               @map("library_id")
-  last_name      String            @db.VarChar(255)
-  first_name     String            @db.VarChar(255)
+  lastName       String            @map("last_name") @db.VarChar(255)
+  firstName      String            @map("first_name") @db.VarChar(255)
   notes          String?           @db.VarChar(255)
   library        Library           @relation(fields: [libraryId], references: [id], onDelete: Cascade)
   authorsSeries  Authors_Series[]
   authorsStories Authors_Stories[]
   authorsVolumes Authors_Volumes[]
 
-  @@unique([libraryId, last_name, first_name])
+  @@unique([libraryId, lastName, firstName])
   @@map("authors")
 }
 

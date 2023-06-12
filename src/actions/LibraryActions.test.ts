@@ -28,7 +28,11 @@ describe("LibraryActions Functional Tests", () => {
 
     beforeEach("#beforeEach", async () => {
         await BaseUtils.loadData({
+            withAuthors: true,
             withLibraries: true,
+            withSeries: true,
+            withStories: true,
+            withVolumes: true,
         });
     });
 
