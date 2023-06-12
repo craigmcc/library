@@ -18,7 +18,9 @@ import {
 // Internal Modules ----------------------------------------------------------
 
 import prisma from "../prisma";
-import { BadRequest, NotFound, NotUnique, ServerError } from "../util/HttpErrors";
+import { NotFound, NotUnique, ServerError } from "../util/HttpErrors";
+import { validateLibraryNameUnique, validateLibraryScopeUnique} from "../util-prisma/AsyncValidators";
+import * as ToModel from "../util-prisma/ToModel";
 
 
 // Action CRUD Functions -----------------------------------------------------
@@ -100,22 +102,26 @@ export const find = async (libraryId: number, query?: any): Promise<Library> => 
  * @throws ServerError                  If some other error occurs
  */
 export const insert = async (library: Prisma.LibraryCreateInput): Promise<Library> => {
-    // TODO - validation checks
+    const model: Library = ToModel.LIBRARY(library);
+    if (!await validateLibraryNameUnique(model)) {
+        throw new NotUnique(
+            `name: Library name ${library.name} is already in use`,
+            "LibraryActions.insert",
+        )
+    }
+    if (!await validateLibraryScopeUnique(model)) {
+        throw new NotUnique(
+            `scope: Library scope ${library.scope} is already in use`,
+            "LibraryActions.insert",
+        )
+    }
     const args: Prisma.LibraryCreateArgs = {
         data: library,
     }
     try {
-        const result = prisma.library.create(args);
+        const result = await prisma.library.create(args);
         return result;
     } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (error.code === "P2002") {
-                throw new NotUnique(
-                    `name: Library ${library.name} already exists`,
-                    "LibraryActions.insert",
-                )
-            }
-        }
         throw new ServerError(
             error as Error,
             "LibraryActions.insert"
@@ -161,7 +167,19 @@ export const remove = async (libraryId: number): Promise<Library> => {
  */
 export const update = async (libraryId: number, library: Prisma.LibraryUpdateInput): Promise<Library> => {
     await find(libraryId);  // May throw NotFound
-    // TODO - validation checks
+    const model = ToModel.LIBRARY(library);
+    if (!await validateLibraryNameUnique(model)) {
+        throw new NotUnique(
+            `name: Library name ${library.name} is already in use`,
+            "LibraryActions.insert",
+        )
+    }
+    if (!await validateLibraryScopeUnique(model)) {
+        throw new NotUnique(
+            `scope: Library scope ${library.scope} is already in use`,
+            "LibraryActions.insert",
+        )
+    }
     try {
         const result = await prisma.library.update({
             data: {
@@ -174,14 +192,6 @@ export const update = async (libraryId: number, library: Prisma.LibraryUpdateInp
         });
         return result;
     } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (error.code === "P2002") {
-                throw new NotUnique(
-                    `name: Library ${library.name} already exists`,
-                    "LibraryActions.insert",
-                )
-            }
-        }
         throw new ServerError(
             error as Error,
             "LibraryActions.update"
@@ -215,7 +225,7 @@ export const exact = async (name: string, query?: any): Promise<Library> => {
             return result;
         } else {
             throw new NotFound(
-                `name: Missing Library ${name}`,
+                `name: Missing Library '${name}'`,
                 "LibraryActions.exact",
             )
         }
