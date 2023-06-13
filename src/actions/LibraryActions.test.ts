@@ -9,7 +9,11 @@
 import chai from "chai";
 const expect = chai.expect;
 import {
+    Author,
     Library,
+    Series,
+    Story,
+    Volume,
 } from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
@@ -59,8 +63,8 @@ describe("LibraryActions Functional Tests", () => {
                 withStories: "",
                 withVolumes: "",
             });
-            // TODO - something weird going on
-            console.log("LIBRARIES", libraries);
+            // TODO - Library type does not include relation arrays,
+            // TODO - although the returned data does have them.
         });
 
         it("should pass on named libraries", async () => {

@@ -51,8 +51,8 @@ export const loadData = async (options: Partial<OPTIONS>): Promise<void> => {
 
     // Erase current (test) database contents completely
     // (Relies on "onDelete:cascade" settings in the schema)
-    prisma.library.deleteMany({});
-    prisma.user.deleteMany({});
+    await prisma.library.deleteMany({});
+    await prisma.user.deleteMany({});
 
     // Load users (and tokens) if requested
     if (options.withUsers) {
@@ -151,10 +151,10 @@ const hashedPassword = async (password: string | undefined): Promise<string> => 
 const loadAccessTokens = async (user: User, accessTokens: Prisma.AccessTokenUncheckedCreateInput[]): Promise<AccessToken[]> => {
     let results: AccessToken[] = [];
     try {
-        accessTokens.forEach(async accessToken => {
+        for (const accessToken of accessTokens) {
             accessToken.userId = user.id;
             results.push(await prisma.accessToken.create({ data: accessToken }));
-        })
+        }
         return results;
     } catch (error) {
         console.info(`  Reloading AccessTokens for User '${user.username}' ERROR`, error);
@@ -165,10 +165,10 @@ const loadAccessTokens = async (user: User, accessTokens: Prisma.AccessTokenUnch
 const loadAuthors = async (library: Library, authors: Prisma.AuthorUncheckedCreateInput[]): Promise<Author[]> => {
     let results: Author[] = [];
     try {
-        authors.forEach(async author => {
+        for (const author of authors) {
             author.libraryId = library.id;
             results.push(await prisma.author.create({data: author}));
-        })
+        }
         return results;
     } catch (error) {
         console.info(`  Reloading Authors for Library '${library.name}' ERROR`, error);
@@ -177,45 +177,45 @@ const loadAuthors = async (library: Library, authors: Prisma.AuthorUncheckedCrea
 }
 
 const loadAuthorsSeries = async (author: Author, serieses: Series[]): Promise<void> => {
-    serieses.forEach(async series => {
+    for (const series of serieses) {
         await prisma.authors_Series.create({
             data: {
                 authorId: author.id,
                 seriesId: series.id,
             }
         });
-    });
+    }
 }
 
 const loadAuthorsStories = async (author: Author, stories: Story[]): Promise<void> => {
-    stories.forEach(async story => {
+    for (const story of stories) {
         await prisma.authors_Stories.create({
             data: {
                 authorId: author.id,
                 storyId: story.id,
             }
         });
-    });
+    }
 }
 
 const loadAuthorsVolumes = async (author: Author, volumes: Volume[]): Promise<void> => {
-    volumes.forEach(async volume => {
+    for (const volume of volumes) {
         await prisma.authors_Volumes.create({
             data: {
                 authorId: author.id,
                 volumeId: volume.id,
             }
         });
-    });
+    }
 }
 
 const loadLibraries = async (libraries: Prisma.LibraryUncheckedCreateInput[]): Promise<Library[]> =>
 {
     let results: Library[] = [];
     try {
-        libraries.forEach(async library => {
+        for (const library of libraries) {
             results.push(await prisma.library.create({ data: library}));
-        })
+        }
     } catch (error) {
         console.info("  Reloading Libraries ERROR", error);
     }
@@ -225,10 +225,10 @@ const loadLibraries = async (libraries: Prisma.LibraryUncheckedCreateInput[]): P
 const loadRefreshTokens = async (user: User, refreshTokens: Prisma.RefreshTokenUncheckedCreateInput[]): Promise<RefreshToken[]> => {
     let results: RefreshToken[] = [];
     try {
-        refreshTokens.forEach(async refreshToken => {
+        for (const refreshToken of refreshTokens) {
             refreshToken.userId = user.id;
             results.push(await prisma.refreshToken.create({ data: refreshToken }));
-        });
+        }
         return results;
     } catch (error) {
         console.info(`  Reloading RefreshTokens for User '${user.username}' ERROR`, error);
@@ -239,10 +239,10 @@ const loadRefreshTokens = async (user: User, refreshTokens: Prisma.RefreshTokenU
 const loadSeries = async (library: Library, serieses: Prisma.SeriesUncheckedCreateInput[]): Promise<Series[]> => {
     let results: Series[] = [];
     try {
-        serieses.forEach(async series => {
+        for (const series of serieses) {
             series.libraryId = library.id;
             results.push(await prisma.series.create({ data: series }));
-        });
+        }
         return results;
     } catch (error) {
         console.info(`  Reloading Series for Library '${library.name}' ERROR`, error);
@@ -252,7 +252,7 @@ const loadSeries = async (library: Library, serieses: Prisma.SeriesUncheckedCrea
 
 const loadSeriesStories = async (series: Series, stories: Story[]): Promise<void> => {
     let ordinal = 1;
-    stories.forEach(async story => {
+    for (const story of stories) {
         await prisma.series_Stories.create({
             data: {
                 ordinal: ordinal++,
@@ -260,16 +260,16 @@ const loadSeriesStories = async (series: Series, stories: Story[]): Promise<void
                 storyId: story.id,
             }
         });
-    });
+    }
 }
 
 const loadStories = async (library: Library, stories: Prisma.StoryUncheckedCreateInput[]): Promise<Story[]> => {
     let results: Story[] = [];
     try {
-        stories.forEach(async story => {
+        for (const story of stories) {
             story.libraryId = library.id;
             results.push(await prisma.story.create({ data: story }));
-        });
+        }
         return results;
     } catch (error) {
         console.info(`  Reloading Stories for Library '${library.name}' ERROR`, error);
@@ -286,9 +286,9 @@ const loadUsers = async (users: Prisma.UserUncheckedCreateInput[]): Promise<User
         users[i].password = hashedPasswords[i];
     }
     try {
-        users.forEach(async user => {
+        for (const user of users) {
             results.push(await prisma.user.create({ data: user }));
-        });
+        }
         return results;
     } catch (error) {
         console.info("  Reloading Users ERROR", error);
@@ -299,10 +299,10 @@ const loadUsers = async (users: Prisma.UserUncheckedCreateInput[]): Promise<User
 const loadVolumes = async (library: Library, volumes: Prisma.VolumeUncheckedCreateInput[]): Promise<Volume[]> => {
     let results: Volume[] = [];
     try {
-        volumes.forEach(async volume => {
+        for (const volume of volumes) {
             volume.libraryId = library.id;
             results.push(await prisma.volume.create({ data: volume }));
-        });
+        }
         return results;
     } catch (error) {
         console.info(`  Reloading Volumes for Library '${library.name}' ERROR`, error);
@@ -311,12 +311,12 @@ const loadVolumes = async (library: Library, volumes: Prisma.VolumeUncheckedCrea
 }
 
 const loadVolumesStories = async (volume: Volume, stories: Story[]): Promise<void> => {
-    stories.forEach(async story => {
+    for (const story of stories) {
         await prisma.volumes_Stories.create({
             data: {
                 storyId: story.id,
                 volumeId: volume.id,
             }
         });
-    });
+    }
 }
