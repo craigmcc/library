@@ -18,9 +18,10 @@ import {
 // Internal Modules ----------------------------------------------------------
 
 import prisma from "../prisma";
-import { NotFound, NotUnique, ServerError } from "../util/HttpErrors";
+import {BadRequest, NotFound, NotUnique, ServerError} from "../util/HttpErrors";
 import { validateLibraryNameUnique, validateLibraryScopeUnique} from "../util-prisma/AsyncValidators";
 import * as ToModel from "../util-prisma/ToModel";
+import {validateLibraryScope} from "../util/ApplicationValidators";
 
 // Public Types --------------------------------------------------------------
 
@@ -113,15 +114,21 @@ export const find = async (libraryId: number, query?: any): Promise<LibraryPlus>
  */
 export const insert = async (library: Prisma.LibraryCreateInput): Promise<LibraryPlus> => {
     const model: Library = ToModel.LIBRARY(library);
+    if (!validateLibraryScope(library.scope)) {
+        throw new BadRequest(
+            `scope: Scope '${library.scope}' must not contain spaces`,
+            "LibraryActions.insert",
+        );
+    }
     if (!await validateLibraryNameUnique(model)) {
         throw new NotUnique(
-            `name: Library name ${library.name} is already in use`,
+            `name: Library name '${library.name}' is already in use`,
             "LibraryActions.insert",
         )
     }
     if (!await validateLibraryScopeUnique(model)) {
         throw new NotUnique(
-            `scope: Library scope ${library.scope} is already in use`,
+            `scope: Library scope '${library.scope}' is already in use`,
             "LibraryActions.insert",
         )
     }
