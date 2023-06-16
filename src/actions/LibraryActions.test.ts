@@ -22,6 +22,7 @@ import * as LibraryActions from "./LibraryActions";
 //import prisma from "../prisma";
 import * as BaseUtils from "../test-prisma/BaseUtils";
 import * as SeedData from "../test-prisma/SeedData";
+import {NotFound} from "../util/HttpErrors";
 //import * as ToModel from "../util-prisma/ToModel";
 
 // Test Specifications -------------------------------------------------------
@@ -93,7 +94,89 @@ describe("LibraryActions Functional Tests", () => {
             expect(OUTPUTS.length).to.equal(SeedData.LIBRARIES.length - 1);
             OUTPUTS.forEach((OUTPUT, index) => {
                 compareLibraryOld(OUTPUT, INPUTS[index + OFFSET]);
-            })
+            });
+        });
+
+    });
+
+    describe("LibraryActions.exact()", () => {
+
+        it("should fail on invalid name", async () => {
+            const INVALID_NAME = "INVALID LIBRARY NAME";
+            try {
+                await LibraryActions.exact(INVALID_NAME);
+                expect.fail("Should have thrown NotFound");
+            } catch (error) {
+                if (error instanceof NotFound) {
+                    expect(error.message).includes(`Missing Library '${INVALID_NAME}'`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+        });
+
+        it("should pass on valid names", async () => {
+            for (const library of SeedData.LIBRARIES) {
+                try {
+                    const result = await LibraryActions.exact(library.name);
+                    expect(result.name).to.equal(library.name);
+                } catch (error) {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+        });
+
+    });
+
+    describe("LibraryActions.find()", () => {
+
+        it("should fail on invalid id", async () => {
+            const INVALID_ID = 9999;
+            try {
+                await LibraryActions.find(INVALID_ID);
+                expect.fail("Should have thrown NotFound");
+            } catch (error) {
+                if (error instanceof NotFound) {
+                    expect(error.message).includes(`Missing Library ${INVALID_ID}`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+        });
+
+        it("should pass on included children", async () => {
+           const libraries = await LibraryActions.all();
+           for (const library of libraries) {
+               try {
+                   const result = await LibraryActions.find(library.id, {
+                       withAuthors:"",
+                       withSeries: "",
+                       withStories: "",
+                       withVolumes: "",
+                   });
+                   if (result.name !== SeedData.LIBRARY_NAME_THIRD) {
+                       expect(result.authors.length).to.be.greaterThan(0);
+                       expect(result.series.length).to.be.greaterThan(0);
+                       expect(result.stories.length).to.be.greaterThan(0);
+                       expect(result.volumes.length).to.be.greaterThan(0);
+                   }
+               } catch (error) {
+                   expect.fail(`Should not have thrown '${error}`);
+               }
+            }
+        });
+
+        it("should pass on valid ids", async () => {
+            const libraries = await LibraryActions.all();
+            for (const library of libraries) {
+                try {
+                    const result =
+                        await LibraryActions.find(library.id);
+                    expect(result.id).to.equal(library.id);
+                } catch (error) {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
         });
 
     });
