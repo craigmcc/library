@@ -63,8 +63,14 @@ describe("LibraryActions Functional Tests", () => {
                 withStories: "",
                 withVolumes: "",
             });
-            // TODO - Library type does not include relation arrays,
-            // TODO - although the returned data does have them.
+            for (const library of libraries) {
+                if (library.name !== SeedData.LIBRARY_NAME_THIRD) {
+                    expect(library.authors.length).to.be.greaterThan(0);
+                    expect(library.series.length).to.be.greaterThan(0);
+                    expect(library.stories.length).to.be.greaterThan(0);
+                    expect(library.volumes.length).to.be.greaterThan(0);
+                }
+            }
         });
 
         it("should pass on named libraries", async () => {

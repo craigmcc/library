@@ -22,6 +22,16 @@ import { NotFound, NotUnique, ServerError } from "../util/HttpErrors";
 import { validateLibraryNameUnique, validateLibraryScopeUnique} from "../util-prisma/AsyncValidators";
 import * as ToModel from "../util-prisma/ToModel";
 
+// Public Types --------------------------------------------------------------
+
+export type LibraryPlus = Library & Prisma.LibraryGetPayload<{
+    include: {
+        authors: true,
+        series: true,
+        stories: true,
+        volumes: true,
+    }
+}>
 
 // Action CRUD Functions -----------------------------------------------------
 
@@ -32,7 +42,7 @@ import * as ToModel from "../util-prisma/ToModel";
  *
  * @throws ServerError                  If a low level error is thrown
  */
-export const all = async (query?: any): Promise<Library[]> => {
+export const all = async (query?: any): Promise<LibraryPlus[]> => {
     const args: Prisma.LibraryFindManyArgs = {
         // cursor???
         // distinct???
@@ -45,7 +55,7 @@ export const all = async (query?: any): Promise<Library[]> => {
     }
     try {
         const results = await prisma.library.findMany(args);
-        return results;
+        return results as LibraryPlus[];
     } catch (error) {
         throw new ServerError(
             error as Error,
