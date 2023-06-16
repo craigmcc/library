@@ -101,6 +101,8 @@ describe("LibraryActions Functional Tests", () => {
 
     });
 
+    // TODO: LibraryActions.authors()
+
     describe("LibraryActions.exact()", () => {
 
         it("should fail on invalid name", async () => {
@@ -253,6 +255,48 @@ describe("LibraryActions Functional Tests", () => {
         });
 
     });
+
+    describe("LibraryActions.remove()", () => {
+
+        it("should fail on invalid ID", async () => {
+            const INVALID_ID = -1;
+            try {
+                await LibraryActions.remove(INVALID_ID);
+                expect.fail("Should have thrown NotFound");
+            } catch (error) {
+                if (error instanceof NotFound) {
+                    expect(error.message).to.include
+                        (`id: Missing Library ${INVALID_ID}`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+        });
+
+        it("should pass on valid ID", async () => {
+            const INPUT = await LibraryActions.exact(SeedData.LIBRARY_NAME_SECOND);
+            const OUTPUT = await LibraryActions.remove(INPUT.id);
+            compareLibraryOld(OUTPUT, INPUT);
+            try {
+                await LibraryActions.remove(INPUT.id);
+                expect.fail("Should have thrown NotFound after remove");
+            } catch (error) {
+                if (error instanceof NotFound) {
+                    expect(error.message).to.include
+                        (`id: Missing Library ${INPUT.id}`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+        });
+
+    });
+
+    // TODO: LibraryActions.series()
+
+    // TODO: LibraryActions.stories()
+
+    // TODO: LibraryActions.volumes()
 
 });
 
