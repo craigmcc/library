@@ -73,7 +73,7 @@ export const all = async (query?: any): Promise<LibraryPlus[]> => {
  * @throws NotFound                     If no such Library is found
  * @throws ServerError                  If a low level error is thrown
  */
-export const find = async (libraryId: number, query?: any): Promise<Library> => {
+export const find = async (libraryId: number, query?: any): Promise<LibraryPlus> => {
     const args: Prisma.LibraryFindUniqueArgs = {
         include: include(query),
         where: {
@@ -83,7 +83,7 @@ export const find = async (libraryId: number, query?: any): Promise<Library> => 
     try {
         const result = await prisma.library.findUnique(args);
         if (result) {
-            return result;
+            return result as LibraryPlus;
         } else {
             throw new NotFound(
                 `id: Missing Library ${libraryId}`,
@@ -111,7 +111,7 @@ export const find = async (libraryId: number, query?: any): Promise<Library> => 
  * @throws NotUnique                    If a unique key violation is attempted
  * @throws ServerError                  If some other error occurs
  */
-export const insert = async (library: Prisma.LibraryCreateInput): Promise<Library> => {
+export const insert = async (library: Prisma.LibraryCreateInput): Promise<LibraryPlus> => {
     const model: Library = ToModel.LIBRARY(library);
     if (!await validateLibraryNameUnique(model)) {
         throw new NotUnique(
@@ -130,7 +130,7 @@ export const insert = async (library: Prisma.LibraryCreateInput): Promise<Librar
     }
     try {
         const result = await prisma.library.create(args);
-        return result;
+        return result as LibraryPlus;
     } catch (error) {
         throw new ServerError(
             error as Error,
@@ -147,7 +147,7 @@ export const insert = async (library: Prisma.LibraryCreateInput): Promise<Librar
  * @throws NotFound                     If no such Library is found
  * @throws ServerError                  If a low level error is thrown
  */
-export const remove = async (libraryId: number): Promise<Library> => {
+export const remove = async (libraryId: number): Promise<LibraryPlus> => {
     await find(libraryId); // May throw NotFound
     try {
         const result = await prisma.library.delete({
@@ -155,7 +155,7 @@ export const remove = async (libraryId: number): Promise<Library> => {
                 id: libraryId,
             }
         });
-        return result;
+        return result as LibraryPlus;
     } catch (error) {
         throw new ServerError(
             error as Error,
@@ -175,7 +175,7 @@ export const remove = async (libraryId: number): Promise<Library> => {
  * @throws NotUnique                    If a unique key violation is attempted
  * @throws ServerError                  If some other error is thrown
  */
-export const update = async (libraryId: number, library: Prisma.LibraryUpdateInput): Promise<Library> => {
+export const update = async (libraryId: number, library: Prisma.LibraryUpdateInput): Promise<LibraryPlus> => {
     await find(libraryId);  // May throw NotFound
     const model = ToModel.LIBRARY(library);
     if (!await validateLibraryNameUnique(model)) {
@@ -200,7 +200,7 @@ export const update = async (libraryId: number, library: Prisma.LibraryUpdateInp
                 id: libraryId,
             }
         });
-        return result;
+        return result as LibraryPlus;
     } catch (error) {
         throw new ServerError(
             error as Error,
@@ -222,7 +222,7 @@ export const update = async (libraryId: number, library: Prisma.LibraryUpdateInp
  * @throws NotFound                     If no such Library is found
  * @throws ServerError                  If a low level error is thrown
  */
-export const exact = async (name: string, query?: any): Promise<Library> => {
+export const exact = async (name: string, query?: any): Promise<LibraryPlus> => {
     const args: Prisma.LibraryFindUniqueArgs = {
         include: include(query),
         where: {
@@ -232,7 +232,7 @@ export const exact = async (name: string, query?: any): Promise<Library> => {
     try {
         const result = await prisma.library.findUnique(args);
         if (result) {
-            return result;
+            return result as LibraryPlus;
         } else {
             throw new NotFound(
                 `name: Missing Library '${name}'`,
