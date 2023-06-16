@@ -25,10 +25,10 @@ import {
 export const LIBRARY = (input: any): Library => {
     const output: Library = {
         id: input.id ? input.id : undefined,
-        active: input.active ? input.active : undefined,
-        name: input.name ? input.name : undefined,
-        notes: input.notes ? input.notes : undefined,
-        scope: input.scope ? input.scope : undefined,
+        active: (typeof input.active === "boolean") ? input.active : undefined,
+        name: (typeof input.name === "string") ? input.name : undefined,
+        notes: (typeof input.notes === "string") ? input.notes : undefined,
+        scope: (typeof input.scope === "string") ? input.scope : undefined,
     };
     return output;
 }

@@ -20,8 +20,8 @@ import {
 import prisma from "../prisma";
 import {BadRequest, NotFound, NotUnique, ServerError} from "../util/HttpErrors";
 import { validateLibraryNameUnique, validateLibraryScopeUnique} from "../util-prisma/AsyncValidators";
-import * as ToModel from "../util-prisma/ToModel";
 import {validateLibraryScope} from "../util/ApplicationValidators";
+import * as ToModel from "../util-prisma/ToModel";
 
 // Public Types --------------------------------------------------------------
 
@@ -183,18 +183,27 @@ export const remove = async (libraryId: number): Promise<LibraryPlus> => {
  * @throws ServerError                  If some other error is thrown
  */
 export const update = async (libraryId: number, library: Prisma.LibraryUpdateInput): Promise<LibraryPlus> => {
-    await find(libraryId);  // May throw NotFound
-    const model = ToModel.LIBRARY(library);
-    if (!await validateLibraryNameUnique(model)) {
+    const original = await find(libraryId); // May throw NotFound
+    const model: Library = {
+        ...ToModel.LIBRARY(library),
+        id: libraryId,
+    }
+    if (library.scope && (typeof library.scope === "string") && !validateLibraryScope(library.scope)) {
+        throw new BadRequest(
+            `scope: Scope '${library.scope}' must not contain spaces`,
+            "LibraryActions.update",
+        );
+    }
+    if (library.name && (!await validateLibraryNameUnique(model))) {
         throw new NotUnique(
-            `name: Library name ${library.name} is already in use`,
-            "LibraryActions.insert",
+            `name: Library name '${library.name}' is already in use`,
+            "LibraryActions.update",
         )
     }
-    if (!await validateLibraryScopeUnique(model)) {
+    if (library.scope && (!await validateLibraryScopeUnique(model))) {
         throw new NotUnique(
-            `scope: Library scope ${library.scope} is already in use`,
-            "LibraryActions.insert",
+            `scope: Library scope '${library.scope}' is already in use`,
+            "LibraryActions.update",
         )
     }
     try {
