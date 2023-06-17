@@ -13,6 +13,7 @@
 import {
     Library,
     Prisma,
+    User,
 } from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
@@ -43,3 +44,31 @@ export const LIBRARIES = (inputs: any[]): Library[] => {
     });
     return outputs;
 }
+
+/**
+ * Convert an arbitrary input into a User object.
+ */
+export const USER = (input: any): User => {
+    const output: User = {
+        id: input.id ? input.id : undefined,
+        active: (typeof input.active === "boolean") ? input.active : undefined,
+        google_books_api_key: (typeof input.google_books_api_key === "string") ? input.google_books_api_key : undefined,
+        name: (typeof input.name === "string") ? input.name : undefined,
+        password: (typeof input.password === "string") ? input.password : undefined,
+        scope: (typeof input.scope === "string") ? input.scope : undefined,
+        username: (typeof input.username === "string") ? input.username : undefined,
+    }
+    return output;
+}
+
+/**
+ * Convert an array of arbitrary input into an array of User objects.
+ */
+export const USERS = (inputs: any[]): User[] =>{
+    const outputs: User[] = [];
+    inputs.forEach(input => {
+        outputs.push(USER(input));
+    });
+    return outputs;
+}
+

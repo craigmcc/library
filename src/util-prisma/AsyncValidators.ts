@@ -15,6 +15,7 @@
 import {
     Library,
     Prisma,
+    User,
 } from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
@@ -23,6 +24,80 @@ import prisma from "../prisma";
 import { ServerError } from "../util/HttpErrors";
 
 // Public Objects ------------------------------------------------------------
+
+/**
+ * Validate that the scope of this User is globally unique.
+ *
+ * @param user                          User whose scope is to be validated
+ *
+ * @throws ServerError                  If a low level error is thrown
+ */
+/*
+export const validateUserScopeUnique = async (user: User): Promise<boolean> => {
+    if (user && user.scope) {
+        const args: Prisma.UserFindManyArgs = {};
+        if (user.id && (user.id > 0)) {
+            args.where = {
+                id: {
+                    not: user.id,
+                },
+                scope: user.scope,
+            }
+        } else {
+            args.where = {
+                scope: user.scope,
+            }
+        }
+        try {
+            const results = await prisma.user.findMany(args);
+            return (results.length === 0);
+        } catch (error) {
+            throw new ServerError(
+                error as Error,
+                "validateUserScopeUnique",
+            )
+        }
+    } else {
+        return true;
+    }
+}
+*/
+
+/**
+ * Validate that the username of this User is globally unique.
+ *
+ * @param user                          User whose username is to be validated
+ *
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const validateUserUsernameUnique = async (user: User): Promise<boolean> => {
+    if (user && user.username) {
+        const args: Prisma.UserFindManyArgs = {};
+        if (user.id && (user.id > 0)) {
+            args.where = {
+                id: {
+                    not: user.id,
+                },
+                username: user.username,
+            }
+        } else {
+            args.where = {
+                username: user.username,
+            }
+        }
+        try {
+            const results = await prisma.user.findMany(args);
+            return (results.length === 0);
+        } catch (error) {
+            throw new ServerError(
+                error as Error,
+                "validateUserUsernameUnique",
+            )
+        }
+    } else {
+        return true;
+    }
+}
 
 /**
  * Validate that the name of this Library is globally unique.
