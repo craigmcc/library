@@ -372,9 +372,10 @@ describe("StoryActions Functional Tests", () => {
         });
 
         it("should pass on valid IDs", async () => {
-            const LIBRARY = await LibraryActions.exact(SeedData.LIBRARY_NAME_SECOND, {
-                withStories: true,
-            });
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_SECOND, {
+                    withStories: true,
+                });
             const INPUT = LIBRARY.stories[0];
             const OUTPUT = await StoryActions.remove(LIBRARY.id, INPUT.id);
             try {
@@ -383,6 +384,87 @@ describe("StoryActions Functional Tests", () => {
             } catch (error) {
                 expect((error as Error).message).to.include
                     (`id: Missing Story ${INPUT.id}`);
+            }
+        });
+
+    });
+
+    describe("StoryActions.update()", () => {
+
+        it("should fail on duplicate name", async () => {
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_FIRST, {
+                    withStories: true,
+                });
+            const ORIGINAL =
+                await StoryActions.find(LIBRARY.id, LIBRARY.stories[0].id);
+            const INPUT: Prisma.StoryUncheckedUpdateInput = {
+                name: LIBRARY.stories[1].name,
+            }
+            try {
+                await StoryActions.update(LIBRARY.id, ORIGINAL.id, INPUT);
+                expect.fail("Should have thrown NotUnique");
+            } catch (error) {
+                expect((error as Error).message).to.include
+                    (`name: Story name '${INPUT.name}' is already in use`);
+            }
+        });
+
+        it("should pass on no change update", async () => {
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_SECOND, {
+                    withStories: true,
+                });
+            const INPUT = LIBRARY.stories[0];
+            const UPDATE: Prisma.StoryUncheckedUpdateInput = {
+                active: INPUT.active,
+                copyright: INPUT.copyright,
+                name: INPUT.name,
+                notes: INPUT.notes,
+            }
+            try {
+                const OUTPUT =
+                    await StoryActions.update(LIBRARY.id, INPUT.id, UPDATE);
+                compareStoryOld(OUTPUT, INPUT);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+        });
+
+        it("should pass on no data update", async () => {
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_FIRST, {
+                    withStories: true,
+                });
+            const INPUT = LIBRARY.stories[0];
+            const UPDATE: Prisma.StoryUncheckedUpdateInput = {};
+            try {
+                const OUTPUT =
+                    await StoryActions.update(LIBRARY.id, INPUT.id, UPDATE);
+                compareStoryOld(OUTPUT, INPUT);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+        });
+
+        it("should pass on valid change update", async () => {
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_SECOND, {
+                    withStories: true,
+                });
+            const INPUT = LIBRARY.stories[0];
+            const UPDATE: Prisma.StoryUncheckedUpdateInput = {
+                active: INPUT.active ? !INPUT.active : undefined,
+                copyright: INPUT.copyright ? (INPUT.copyright + " NEW") : undefined,
+                name: INPUT.name + " NEW",
+                notes: INPUT.notes ? (INPUT.notes + " NEW") : undefined,
+            }
+            try {
+                const OUTPUT =
+                    await StoryActions.update(LIBRARY.id, INPUT.id, UPDATE);
+                compareStoryOld(OUTPUT, UPDATE as Story);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
             }
         });
 

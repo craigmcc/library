@@ -182,9 +182,14 @@ export const remove = async (libraryId: number, storyId: number): Promise<StoryP
  * @throws NotUnique                    If a unique key violation is attempted
  * @throws ServerError                  If a low level error is thrown
  */
-export const update = async (libraryId: number, storyId: number, story: Prisma.StoryUpdateInput): Promise<StoryPlus> => {
-    const original = await find(libraryId, storyId);
-    if (!await validateStoryNameUnique(ToModel.STORY(original))) {
+export const update = async (libraryId: number, storyId: number, story: Prisma.StoryUncheckedUpdateInput): Promise<StoryPlus> => {
+    const original = await find(libraryId, storyId); // May throw NotFound
+    const model: Story = {
+        ...ToModel.STORY(story),
+        id: storyId,
+        libraryId: libraryId,
+    }
+    if (story.name && (!await validateStoryNameUnique(ToModel.STORY(model)))) {
         throw new NotUnique(
             `name: Story name '${story.name}' is already in use in this Library`,
             "StoryActions.insert",
@@ -194,8 +199,8 @@ export const update = async (libraryId: number, storyId: number, story: Prisma.S
         const result = await prisma.story.update({
             data: {
                 ...story,
-                //id: storyId,            // No cheating
-                //libraryId: libraryId,   // No cheating`
+                id: storyId,            // No cheating
+                libraryId: libraryId,   // No cheating`
             },
             where: { id: storyId },
         });
