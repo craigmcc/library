@@ -32,7 +32,7 @@ export type LibraryPlus = Library & Prisma.LibraryGetPayload<{
         stories: true,
         volumes: true,
     }
-}>
+}>;
 
 // Action CRUD Functions -----------------------------------------------------
 

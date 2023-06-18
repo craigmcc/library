@@ -12,7 +12,7 @@
 
 import {
     Library,
-    Prisma,
+    Story,
     User,
 } from "@prisma/client";
 
@@ -41,6 +41,32 @@ export const LIBRARIES = (inputs: any[]): Library[] => {
     const outputs: Library[] = [];
     inputs.forEach(input => {
         outputs.push(LIBRARY(input));
+    });
+    return outputs;
+}
+
+/**
+ * Convert an arbitrary input into a Story object.
+ */
+export const STORY = (input: any): Story => {
+    const output: Story = {
+        id: input.id ? input.id : undefined,
+        active: (typeof input.active === "boolean") ? input.active : undefined,
+        copyright: (typeof input.copyright === "string") ? input.copyright : undefined,
+        libraryId: (typeof input.libraryId === "number") ? input.libraryId : undefined,
+        name: (typeof input.name === "string") ? input.name : undefined,
+        notes: (typeof input.notes === "string") ? input.notes : undefined,
+    };
+    return output;
+}
+
+/**
+ * Convert an array of arbitrary input into an array of Story objects.
+ */
+export const STORIES = (inputs: any[]): Story[] => {
+    const outputs: Story[] = [];
+    inputs.forEach(input => {
+        outputs.push(STORY(input));
     });
     return outputs;
 }

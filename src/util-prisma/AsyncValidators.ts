@@ -15,6 +15,7 @@
 import {
     Library,
     Prisma,
+    Story,
     User,
 } from "@prisma/client";
 
@@ -24,80 +25,6 @@ import prisma from "../prisma";
 import { ServerError } from "../util/HttpErrors";
 
 // Public Objects ------------------------------------------------------------
-
-/**
- * Validate that the scope of this User is globally unique.
- *
- * @param user                          User whose scope is to be validated
- *
- * @throws ServerError                  If a low level error is thrown
- */
-/*
-export const validateUserScopeUnique = async (user: User): Promise<boolean> => {
-    if (user && user.scope) {
-        const args: Prisma.UserFindManyArgs = {};
-        if (user.id && (user.id > 0)) {
-            args.where = {
-                id: {
-                    not: user.id,
-                },
-                scope: user.scope,
-            }
-        } else {
-            args.where = {
-                scope: user.scope,
-            }
-        }
-        try {
-            const results = await prisma.user.findMany(args);
-            return (results.length === 0);
-        } catch (error) {
-            throw new ServerError(
-                error as Error,
-                "validateUserScopeUnique",
-            )
-        }
-    } else {
-        return true;
-    }
-}
-*/
-
-/**
- * Validate that the username of this User is globally unique.
- *
- * @param user                          User whose username is to be validated
- *
- * @throws ServerError                  If a low level error is thrown
- */
-export const validateUserUsernameUnique = async (user: User): Promise<boolean> => {
-    if (user && user.username) {
-        const args: Prisma.UserFindManyArgs = {};
-        if (user.id && (user.id > 0)) {
-            args.where = {
-                id: {
-                    not: user.id,
-                },
-                username: user.username,
-            }
-        } else {
-            args.where = {
-                username: user.username,
-            }
-        }
-        try {
-            const results = await prisma.user.findMany(args);
-            return (results.length === 0);
-        } catch (error) {
-            throw new ServerError(
-                error as Error,
-                "validateUserUsernameUnique",
-            )
-        }
-    } else {
-        return true;
-    }
-}
 
 /**
  * Validate that the name of this Library is globally unique.
@@ -136,6 +63,44 @@ export const validateLibraryNameUnique = async (library: Library): Promise<boole
 }
 
 /**
+ * Validate that the name of this Story is unique within its Library.
+ *
+ * @param story                         Story whose name is to be validated
+ *
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const validateStoryNameUnique = async (story: Story): Promise<boolean> => {
+    if (story && story.name) {
+        const args: Prisma.StoryFindManyArgs = {};
+        if (story.id && (story.id > 0)) {
+            args.where = {
+                id: {
+                    not: story.id,
+                },
+                libraryId: story.libraryId,
+                name: story.name,
+            }
+        } else {
+            args.where = {
+                libraryId: story.libraryId,
+                name: story.name,
+            }
+        }
+        try {
+            const results = await prisma.story.findMany(args);
+            return (results.length === 0);
+        } catch (error) {
+            throw new ServerError(
+                error as Error,
+                "validateStoryNameUnique",
+            )
+        }
+    } else {
+        return true;
+    }
+}
+
+/**
  * Validate that the scope of this Library is globally unique.
  *
  * @param library                       Library whose scope is to be validated
@@ -164,6 +129,42 @@ export const validateLibraryScopeUnique = async (library: Library): Promise<bool
             throw new ServerError(
                 error as Error,
                 "validateLibraryScopeUnique",
+            )
+        }
+    } else {
+        return true;
+    }
+}
+
+/**
+ * Validate that the username of this User is globally unique.
+ *
+ * @param user                          User whose username is to be validated
+ *
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const validateUserUsernameUnique = async (user: User): Promise<boolean> => {
+    if (user && user.username) {
+        const args: Prisma.UserFindManyArgs = {};
+        if (user.id && (user.id > 0)) {
+            args.where = {
+                id: {
+                    not: user.id,
+                },
+                username: user.username,
+            }
+        } else {
+            args.where = {
+                username: user.username,
+            }
+        }
+        try {
+            const results = await prisma.user.findMany(args);
+            return (results.length === 0);
+        } catch (error) {
+            throw new ServerError(
+                error as Error,
+                "validateUserUsernameUnique",
             )
         }
     } else {
