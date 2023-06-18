@@ -290,15 +290,113 @@ describe("StoryActions Functional Tests", () => {
 
     });
 
+    describe("StoryActions.insert()", () => {
+
+        it("should fail on duplicate name", async () => {
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_FIRST, {
+                    withStories: true,
+                });
+            const INPUT: Prisma.StoryUncheckedCreateInput = {
+                libraryId: -1,          // Will get replaced
+                name: LIBRARY.stories[0].name,
+            }
+            try {
+                await StoryActions.insert(LIBRARY.id, INPUT);
+                expect.fail("Should have thrown NotUnique");
+            } catch (error) {
+                if (error instanceof NotUnique) {
+                    expect(error.message).to.include
+                        (`name: Story name '${INPUT.name}' is already in use`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+        });
+
+        it("should pass on valid input data", async () => {
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_SECOND, {
+                    withStories: "",
+                });
+            const INPUT: Prisma.StoryUncheckedCreateInput = {
+                active: false,
+                copyright: "2023",
+                libraryId: -1,          // Will get replaced
+                name: LIBRARY.stories[0].name + " NEW",
+                notes: "Valid notes",
+            }
+            try {
+                const OUTPUT =
+                    await StoryActions.insert(LIBRARY.id, INPUT);
+                compareStoryNew(OUTPUT, INPUT as Story, LIBRARY.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+        });
+
+    });
+
+    describe("StoryActions.remove()", () => {
+
+        it("should fail on invalid library ID", async () => {
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_FIRST, {
+                    withStories: true,
+                });
+            const INVALID_LIBRARY_ID = -1;
+            const VALID_STORY_ID = LIBRARY.stories[0].id;
+            try {
+                await StoryActions.remove(INVALID_LIBRARY_ID, VALID_STORY_ID);
+                expect.fail("Should have thrown NotFound");
+            } catch (error) {
+                expect((error as Error).message).to.include
+                    (`id: Missing Story ${VALID_STORY_ID}`);
+            }
+        });
+
+        it("should fail on invalid story ID", async () => {
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_FIRST, {
+                    withStories: true,
+                });
+            const VALID_LIBRARY_ID = LIBRARY.id;
+            const INVALID_STORY_ID = -1;
+            try {
+                await StoryActions.remove(VALID_LIBRARY_ID, INVALID_STORY_ID);
+                expect.fail("Should have thrown NotFound");
+            } catch (error) {
+                expect((error as Error).message).to.include
+                    (`id: Missing Story ${INVALID_STORY_ID}`);
+            }
+        });
+
+        it("should pass on valid IDs", async () => {
+            const LIBRARY = await LibraryActions.exact(SeedData.LIBRARY_NAME_SECOND, {
+                withStories: true,
+            });
+            const INPUT = LIBRARY.stories[0];
+            const OUTPUT = await StoryActions.remove(LIBRARY.id, INPUT.id);
+            try {
+                await StoryActions.remove(LIBRARY.id, INPUT.id);
+                expect.fail("SHould have thrown NotFound after remove");
+            } catch (error) {
+                expect((error as Error).message).to.include
+                    (`id: Missing Story ${INPUT.id}`);
+            }
+        });
+
+    });
+
 });
 
 // Private Objects -----------------------------------------------------------
 
-export function compareStoryNew(OUTPUT: Story, INPUT: Story) {
+export function compareStoryNew(OUTPUT: Story, INPUT: Story, libraryId: number) {
     expect(OUTPUT.id).to.exist;
     expect(OUTPUT.active).to.equal(INPUT.active !== undefined ? INPUT.active : true);
     expect(OUTPUT.copyright).to.equal(INPUT.copyright ? INPUT.copyright : null);
-    expect(OUTPUT.libraryId).to.equal(INPUT.libraryId);
+    expect(OUTPUT.libraryId).to.equal(libraryId);
     expect(OUTPUT.name).to.equal(INPUT.name);
     expect(OUTPUT.notes).to.equal(INPUT.notes ? INPUT.notes : null);
 }

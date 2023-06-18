@@ -119,9 +119,12 @@ export const find = async (libraryId: number, storyId: number, query?: any): Pro
  * @throws NotUnique                    If a unique key violation is attempted
  * @throws ServerError                  If some other error occurs
  */
-export const insert = async (libraryId: number, story: Prisma.StoryCreateInput): Promise<StoryPlus> => {
+export const insert = async (libraryId: number, story: Prisma.StoryUncheckedCreateInput): Promise<StoryPlus> => {
     const library = await LibraryActions.find(libraryId);
-    if (!await validateStoryNameUnique(ToModel.STORY(story))) {
+    if (!await validateStoryNameUnique(ToModel.STORY({
+        ...story,
+        libraryId: libraryId,
+    }))) {
         throw new NotUnique(
             `name: Story name '${story.name}' is already in use in this Library`,
             "StoryActions.insert",
@@ -129,7 +132,7 @@ export const insert = async (libraryId: number, story: Prisma.StoryCreateInput):
     }
     const args: Prisma.StoryUncheckedCreateInput = {
         ...story,
-        libraryId: libraryId,
+        libraryId: libraryId,           // No cheating
     }
     try {
         const result = await prisma.story.create({

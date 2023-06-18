@@ -151,7 +151,7 @@ describe("LibraryActions Functional Tests", () => {
             }
         });
 
-        it("should pass on included children", async () => {
+        it("should pass on included relations", async () => {
            const INPUTS = await LibraryActions.all();
            for (const INPUT of INPUTS) {
                try {
