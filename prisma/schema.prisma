@@ -171,8 +171,8 @@ model Volume {
 model VolumesStories {
   volumeId Int    @map("volume_id")
   storyId  Int    @map("story_id")
-  stories  Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
-  volumes  Volume @relation(fields: [volumeId], references: [id], onDelete: Cascade)
+  story    Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  volume   Volume @relation(fields: [volumeId], references: [id], onDelete: Cascade)
 
   @@id([volumeId, storyId])
   @@map("volumes_stories")

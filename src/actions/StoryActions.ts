@@ -29,8 +29,11 @@ import * as ToModel from "../util-prisma/ToModel";
 
 export type StoryPlus = Story & Prisma.StoryGetPayload<{
     include: {
+        authorsStories: true,
         // TODO - deal with many-to-many relations somehow
         library: true,
+        seriesStories: true,
+        volumesStories: true,
     }
 }>;
 
@@ -255,8 +258,29 @@ export const include = (query?: any): Prisma.StoryInclude | undefined => {
         return undefined;
     }
     const include: Prisma.StoryInclude = {};
+    if (query.hasOwnProperty("withAuthors")) {
+        include.authorsStories = {
+            include: {
+                author: true,
+            }
+        }
+    }
     if (query.hasOwnProperty("withLibrary")) {
         include.library = true;
+    }
+    if (query.hasOwnProperty("withSeries")) {
+        include.seriesStories = {
+            include: {
+                series: true,
+            }
+        }
+    }
+    if (query.hasOwnProperty("withVolumes")) {
+        include.volumesStories = {
+            include: {
+                volume: true,
+            }
+        }
     }
     if (Object.keys(include).length > 0) {
         return include;

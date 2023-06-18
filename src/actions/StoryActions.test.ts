@@ -65,7 +65,7 @@ describe("StoryActions Functional Tests", () => {
             expect(INPUTS.length).to.equal(SeedData.STORIES_LIBRARY1.length);
         });
 
-        it("should pass on parent Library", async () => {
+        it("should pass on included parent", async () => {
             const LIBRARY =
                 await LibraryActions.exact(SeedData.LIBRARY_NAME_FIRST);
             const INPUTS =
@@ -76,6 +76,26 @@ describe("StoryActions Functional Tests", () => {
             for (const INPUT of INPUTS) {
                 expect(INPUT.library).to.exist;
                 expect(INPUT.library.id).to.equal(LIBRARY.id);
+            }
+        });
+
+        it("should pass on included relations", async () => {
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_SECOND);
+            const INPUTS = await StoryActions.all(LIBRARY.id, {
+                withAuthors: "",
+                withSeries: "",
+                withVolumes: "",
+            });
+            for (const INPUT of INPUTS) {
+                try {
+                    //console.log("STORY", INPUT);
+                    expect(INPUT.authorsStories).to.exist;
+                    expect(INPUT.seriesStories).to.exist;
+                    expect(INPUT.volumesStories).to.exist;
+                } catch (error) {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
             }
         });
 
@@ -127,6 +147,51 @@ describe("StoryActions Functional Tests", () => {
             }
         })
 
+        it("should pass on included parent", async () => {
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_FIRST);
+            const INPUTS = await StoryActions.all(LIBRARY.id);
+            for (const INPUT of INPUTS) {
+                try {
+                    const OUTPUT =
+                        await StoryActions.exact(LIBRARY.id, INPUT.name, {
+                            withLibrary: "",
+                        });
+                    expect(OUTPUT.library).to.exist;
+                    expect(OUTPUT.library.id).to.equal(LIBRARY.id);
+                } catch (error) {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+        });
+
+        it("should pass on included relations", async () => {
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_SECOND);
+            const INPUTS = await StoryActions.all(LIBRARY.id);
+            for (const INPUT of INPUTS) {
+                try {
+                    const OUTPUT =
+                        await StoryActions.exact(LIBRARY.id, INPUT.name, {
+                            withAuthors: "",
+                            withSeries: "",
+                            withVolumes: "",
+                        });
+                    //console.log("STORY", OUTPUT);
+                    expect(OUTPUT.authorsStories).to.exist;
+                    expect(OUTPUT.seriesStories).to.exist;
+                    expect(OUTPUT.volumesStories).to.exist;
+                    if (OUTPUT.name !== "Rubble Story") { // Quirk of seed data
+                        expect(OUTPUT.authorsStories.length).to.be.greaterThan(0);
+                        expect(OUTPUT.seriesStories.length).to.be.greaterThan(0);
+                        expect(OUTPUT.volumesStories.length).to.be.greaterThan(0);
+                    }
+                } catch (error) {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+        });
+
         it("should pass on valid names", async () => {
             const LIBRARY =
                 await LibraryActions.exact(SeedData.LIBRARY_NAME_FIRST);
@@ -174,6 +239,33 @@ describe("StoryActions Functional Tests", () => {
                         });
                     expect(OUTPUT.library).to.exist;
                     expect(OUTPUT.library.id).to.equal(LIBRARY.id);
+                } catch (error) {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+        });
+
+        it("should pass on included relations", async () => {
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_SECOND);
+            const INPUTS = await StoryActions.all(LIBRARY.id);
+            for (const INPUT of INPUTS) {
+                try {
+                    const OUTPUT =
+                        await StoryActions.find(LIBRARY.id, INPUT.id, {
+                            withAuthors: "",
+                            withSeries: "",
+                            withVolumes: "",
+                        });
+                    //console.log("STORY", OUTPUT);
+                    expect(OUTPUT.authorsStories).to.exist;
+                    expect(OUTPUT.seriesStories).to.exist;
+                    expect(OUTPUT.volumesStories).to.exist;
+                    if (OUTPUT.name !== "Rubble Story") { // Quirk of seed data
+                        expect(OUTPUT.authorsStories.length).to.be.greaterThan(0);
+                        expect(OUTPUT.seriesStories.length).to.be.greaterThan(0);
+                        expect(OUTPUT.volumesStories.length).to.be.greaterThan(0);
+                    }
                 } catch (error) {
                     expect.fail(`Should not have thrown '${error}'`);
                 }
