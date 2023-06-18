@@ -178,7 +178,7 @@ const loadAuthors = async (library: Library, authors: Prisma.AuthorUncheckedCrea
 
 const loadAuthorsSeries = async (author: Author, serieses: Series[]): Promise<void> => {
     for (const series of serieses) {
-        await prisma.authors_Series.create({
+        await prisma.authorsSeries.create({
             data: {
                 authorId: author.id,
                 seriesId: series.id,
@@ -189,7 +189,7 @@ const loadAuthorsSeries = async (author: Author, serieses: Series[]): Promise<vo
 
 const loadAuthorsStories = async (author: Author, stories: Story[]): Promise<void> => {
     for (const story of stories) {
-        await prisma.authors_Stories.create({
+        await prisma.authorsStories.create({
             data: {
                 authorId: author.id,
                 storyId: story.id,
@@ -200,7 +200,7 @@ const loadAuthorsStories = async (author: Author, stories: Story[]): Promise<voi
 
 const loadAuthorsVolumes = async (author: Author, volumes: Volume[]): Promise<void> => {
     for (const volume of volumes) {
-        await prisma.authors_Volumes.create({
+        await prisma.authorsVolumes.create({
             data: {
                 authorId: author.id,
                 volumeId: volume.id,
@@ -253,7 +253,7 @@ const loadSeries = async (library: Library, serieses: Prisma.SeriesUncheckedCrea
 const loadSeriesStories = async (series: Series, stories: Story[]): Promise<void> => {
     let ordinal = 1;
     for (const story of stories) {
-        await prisma.series_Stories.create({
+        await prisma.seriesStories.create({
             data: {
                 ordinal: ordinal++,
                 seriesId: series.id,
@@ -312,7 +312,7 @@ const loadVolumes = async (library: Library, volumes: Prisma.VolumeUncheckedCrea
 
 const loadVolumesStories = async (volume: Volume, stories: Story[]): Promise<void> => {
     for (const story of stories) {
-        await prisma.volumes_Stories.create({
+        await prisma.volumesStories.create({
             data: {
                 storyId: story.id,
                 volumeId: volume.id,

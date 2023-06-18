@@ -26,15 +26,15 @@ model Author {
   firstName      String            @map("first_name") @db.VarChar(255)
   notes          String?           @db.VarChar(255)
   library        Library           @relation(fields: [libraryId], references: [id], onDelete: Cascade)
-  authorsSeries  Authors_Series[]
-  authorsStories Authors_Stories[]
-  authorsVolumes Authors_Volumes[]
+  authorsSeries  AuthorsSeries[]
+  authorsStories AuthorsStories[]
+  authorsVolumes AuthorsVolumes[]
 
   @@unique([libraryId, lastName, firstName])
   @@map("authors")
 }
 
-model Authors_Series {
+model AuthorsSeries {
   authorId  Int      @map("author_id")
   principal Boolean?
   seriesId  Int      @map("series_id")
@@ -45,7 +45,7 @@ model Authors_Series {
   @@map("authors_series")
 }
 
-model Authors_Stories {
+model AuthorsStories {
   authorId  Int      @map("author_id")
   principal Boolean?
   storyId   Int      @map("story_id")
@@ -56,7 +56,7 @@ model Authors_Stories {
   @@map("authors_stories")
 }
 
-model Authors_Volumes {
+model AuthorsVolumes {
   authorId  Int      @map("author_id")
   principal Boolean?
   volumeId  Int      @map("volume_id")
@@ -99,15 +99,15 @@ model Series {
   libraryId     Int              @map("library_id")
   name          String           @db.VarChar(255)
   notes         String?          @db.VarChar(255)
-  authorsSeries Authors_Series[]
+  authorsSeries AuthorsSeries[]
   library       Library          @relation(fields: [libraryId], references: [id], onDelete: Cascade)
-  seriesStories Series_Stories[]
+  seriesStories SeriesStories[]
 
   @@unique([libraryId, name])
   @@map("series")
 }
 
-model Series_Stories {
+model SeriesStories {
   ordinal  Int?
   seriesId Int    @map("series_id")
   storyId  Int    @map("story_id")
@@ -125,10 +125,10 @@ model Story {
   libraryId      Int               @map("library_id")
   name           String            @db.VarChar(255)
   notes          String?           @db.VarChar(255)
-  authorsStories Authors_Stories[]
-  seriesStories  Series_Stories[]
+  authorsStories AuthorsStories[]
+  seriesStories  SeriesStories[]
   library        Library           @relation(fields: [libraryId], references: [id], onDelete: Cascade)
-  volumesStories Volumes_Stories[]
+  volumesStories VolumesStories[]
 
   @@unique([libraryId, name])
   @@map("stories")
@@ -160,15 +160,15 @@ model Volume {
   notes          String?           @db.VarChar(255)
   read           Boolean           @default(false)
   type           String            @db.VarChar(255)
-  authorsVolumes Authors_Volumes[]
+  authorsVolumes AuthorsVolumes[]
   library        Library           @relation(fields: [libraryId], references: [id], onDelete: Cascade)
-  volumesStories Volumes_Stories[]
+  volumesStories VolumesStories[]
 
   @@unique([libraryId, name])
   @@map("volumes")
 }
 
-model Volumes_Stories {
+model VolumesStories {
   volumeId Int    @map("volume_id")
   storyId  Int    @map("story_id")
   stories  Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
