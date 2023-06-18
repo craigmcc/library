@@ -2,6 +2,8 @@
 
 /**
  *  Functional tests for LibraryActions.
+ *
+ *  @packageDocumentation
  */
 
 // External Modules ----------------------------------------------------------

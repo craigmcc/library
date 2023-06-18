@@ -49,7 +49,7 @@ export const all = async (libraryId: number, query?: any): Promise<StoryPlus[]> 
         // cursor???
         // distinct???
         include: include(query),
-        orderBy: orderBy(libraryId, query),
+        orderBy: orderBy(query),
         select: select(query),
         skip: skip(query),
         take: take(query),
@@ -269,9 +269,8 @@ export const include = (query?: any): Prisma.StoryInclude | undefined => {
  * Calculate and return the "orderBy" options from the specified query
  * parameters, if any were specified.
  */
-export const orderBy = (libraryId: number, query?: any): Prisma.StoryOrderByWithRelationInput => {
+export const orderBy = (query?: any): Prisma.StoryOrderByWithRelationInput => {
     return {
-        libraryId: "asc",
         name: "asc",
     }
 }

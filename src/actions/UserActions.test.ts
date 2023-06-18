@@ -2,6 +2,8 @@
 
 /**
  *  Functional tests for UserActions.
+ *
+ *  @packageDocumentation
  */
 
 // External Modules ----------------------------------------------------------
