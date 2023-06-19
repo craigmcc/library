@@ -13,6 +13,7 @@
 // External Modules ----------------------------------------------------------
 
 import {
+    Author,
     Library,
     Prisma,
     Story,
@@ -25,6 +26,46 @@ import prisma from "../prisma";
 import { ServerError } from "../util/HttpErrors";
 
 // Public Objects ------------------------------------------------------------
+
+/**
+ * Validate that the full name of this Author is unique within its Library.
+ *
+ * @param author                        Author whose name is to be validated
+ *
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const validateAuthorNameUnique = async (author: Author): Promise<boolean> => {
+    if (author && author.firstName && author.lastName) {
+        const args: Prisma.AuthorFindManyArgs = {};
+        if (author.id && (author.id > 0)) {
+            args.where = {
+                id: {
+                    not: author.id,
+                },
+                firstName: author.firstName,
+                lastName: author.lastName,
+                libraryId: author.libraryId,
+            }
+        } else {
+            args.where = {
+                firstName: author.firstName,
+                lastName: author.lastName,
+                libraryId: author.libraryId,
+            }
+        }
+        try {
+            const results = await prisma.author.findMany(args);
+            return (results.length === 0);
+        } catch (error) {
+            throw new ServerError(
+                error as Error,
+                "validateAuthorNameUnique",
+            )
+        }
+    } else {
+        return true;
+    }
+}
 
 /**
  * Validate that the name of this Library is globally unique.
@@ -63,6 +104,42 @@ export const validateLibraryNameUnique = async (library: Library): Promise<boole
 }
 
 /**
+ * Validate that the scope of this Library is globally unique.
+ *
+ * @param library                       Library whose scope is to be validated
+ *
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const validateLibraryScopeUnique = async (library: Library): Promise<boolean> => {
+    if (library && library.scope) {
+        const args: Prisma.LibraryFindManyArgs = {};
+        if (library.id && (library.id > 0)) {
+            args.where = {
+                id: {
+                    not: library.id,
+                },
+                scope: library.scope,
+            }
+        } else {
+            args.where = {
+                scope: library.scope,
+            }
+        }
+        try {
+            const results = await prisma.library.findMany(args);
+            return (results.length === 0);
+        } catch (error) {
+            throw new ServerError(
+                error as Error,
+                "validateLibraryScopeUnique",
+            )
+        }
+    } else {
+        return true;
+    }
+}
+
+/**
  * Validate that the name of this Story is unique within its Library.
  *
  * @param story                         Story whose name is to be validated
@@ -93,42 +170,6 @@ export const validateStoryNameUnique = async (story: Story): Promise<boolean> =>
             throw new ServerError(
                 error as Error,
                 "validateStoryNameUnique",
-            )
-        }
-    } else {
-        return true;
-    }
-}
-
-/**
- * Validate that the scope of this Library is globally unique.
- *
- * @param library                       Library whose scope is to be validated
- *
- * @throws ServerError                  If a low level error is thrown
- */
-export const validateLibraryScopeUnique = async (library: Library): Promise<boolean> => {
-    if (library && library.scope) {
-        const args: Prisma.LibraryFindManyArgs = {};
-        if (library.id && (library.id > 0)) {
-            args.where = {
-                id: {
-                    not: library.id,
-                },
-                scope: library.scope,
-            }
-        } else {
-            args.where = {
-                scope: library.scope,
-            }
-        }
-        try {
-            const results = await prisma.library.findMany(args);
-            return (results.length === 0);
-        } catch (error) {
-            throw new ServerError(
-                error as Error,
-                "validateLibraryScopeUnique",
             )
         }
     } else {

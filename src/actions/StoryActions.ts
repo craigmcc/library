@@ -19,6 +19,7 @@ import {
 
 // Internal Modules ----------------------------------------------------------
 
+import * as AuthorActions from "./AuthorActions";
 import * as LibraryActions from "./LibraryActions";
 import prisma from "../prisma";
 import {NotFound, NotUnique, ServerError} from "../util/HttpErrors";
@@ -192,7 +193,7 @@ export const update = async (libraryId: number, storyId: number, story: Prisma.S
     if (story.name && (!await validateStoryNameUnique(ToModel.STORY(model)))) {
         throw new NotUnique(
             `name: Story name '${story.name}' is already in use in this Library`,
-            "StoryActions.insert",
+            "StoryActions.update",
         );
     }
     try {
@@ -216,7 +217,73 @@ export const update = async (libraryId: number, storyId: number, story: Prisma.S
 // Action Unique Functions ---------------------------------------------------
 
 /**
- * Return the Story instance with the specified storyId, or throw NotFound
+ * Connect the specified Author to this Story.
+ *
+ * @param libraryId                     ID of the Library being queried
+ * @param storyId                       ID of the Story being connected to.
+ * @param authorId                      ID of the Author being connected
+ * @param principal                     Is this a principal Author of this Story?
+ *
+ * @throws NotFound                     If the specified Story or Author is not found
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const authorConnect =
+    async (libraryId: number, storyId: number, authorId: number, principal?: boolean): Promise<StoryPlus> =>
+{
+    const story = await find(libraryId, storyId);
+    await AuthorActions.find(libraryId, authorId);
+    try {
+        await prisma.authorsStories.create({
+            data: {
+                authorId: authorId,
+                principal: principal,
+                storyId: storyId,
+            }
+        });
+        return story;
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "StoryActions.authorConnect()",
+        );
+    }
+}
+
+/**
+ * Disconnect the specified Author from this Story.
+ *
+ * @param libraryId                     ID of the Library being queried
+ * @param storyId                       ID of the Story being disconnected from
+ * @param authorId                      ID of the Author being disconnected
+ *
+ * @throws NotFound                     If the specified Story or Author is not found
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const authorDisconnect =
+    async (libraryId: number, storyId: number, authorId: number): Promise<StoryPlus> =>
+{
+    const story = await find(libraryId, storyId);
+    await AuthorActions.find(libraryId, authorId);
+    try {
+        await prisma.authorsStories.delete({
+            where: {
+                authorId_storyId: {
+                    authorId: authorId,
+                    storyId: storyId,
+                }
+            },
+        });
+        return story;
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "StoryActions.authorConnect()",
+        );
+    }
+}
+
+/**
+ * Return the Story instance with the specified name, or throw NotFound
  *
  * @param libraryId                     ID of the Library being queried
  * @param name                          Name of the requested Story

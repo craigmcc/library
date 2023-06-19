@@ -11,14 +11,43 @@
 // External Modules ----------------------------------------------------------
 
 import {
+    Author,
     Library,
+    Series,
     Story,
     User,
+    Volume,
 } from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
 
 // Public Objects ------------------------------------------------------------
+
+/**
+ * Convert an arbitrary input into a Author object.
+ */
+export const AUTHOR = (input: any): Author => {
+    const output: Author = {
+        id: input.id ? input.id : undefined,
+        active: (typeof input.active === "boolean") ? input.active : undefined,
+        firstName: (typeof input.firstName === "string") ? input.firstName : undefined,
+        lastName: (typeof input.lastName === "string") ? input.lastName : undefined,
+        libraryId: (typeof input.libraryId === "number") ? input.libraryId : undefined,
+        notes: (typeof input.notes === "string") ? input.notes : undefined,
+    };
+    return output;
+}
+
+/**
+ * Convert an array of arbitrary input into an array of Story objects.
+ */
+export const AUTHORS = (inputs: any[]): Author[] => {
+    const outputs: Author[] = [];
+    inputs.forEach(input => {
+        outputs.push(AUTHOR(input));
+    });
+    return outputs;
+}
 
 /**
  * Convert an arbitrary input into a Library object.
