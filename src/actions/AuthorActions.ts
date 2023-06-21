@@ -159,7 +159,7 @@ export const insert = async (libraryId: number, author: Prisma.AuthorUncheckedCr
  * Remove and return the specified Author.
  *
  * @param libraryId                     ID of the owning Library
- * @param authorId                      ID of the author to be removed
+ * @param authorId                      ID of the Author to be removed
  *
  * @throws NotFound                     If the specified Library or Author cannot be found
  * @throws ServerError                  If a low level error is thrown
@@ -271,7 +271,7 @@ export const exact =
  * Connect the specified Story to this Author.
  *
  * @param libraryId                     ID of the Library being queried
- * @param authorId                      ID of the Author being connected to.
+ * @param authorId                      ID of the Author being connected to
  * @param storyId                       ID of the Story being connected
  * @param principal                     Is this a principal Author of this Story?
  *
@@ -293,6 +293,14 @@ export const storyConnect =
             });
             return author;
         } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === "P2002") {
+                    throw new NotUnique(
+                        `connect: Author ID ${authorId} and Story ID ${storyId} are already connected`,
+                        "StoryAction.authorConnect"
+                    );
+                }
+            }
             throw new ServerError(
                 error as Error,
                 "AuthorActions.storyConnect()",
@@ -311,7 +319,7 @@ export const storyConnect =
  * @throws ServerError                  If a low level error is thrown
  */
 export const storyDisconnect =
-    async (libraryId: number, storyId: number, authorId: number): Promise<AuthorPlus> =>
+    async (libraryId: number, authorId: number, storyId: number): Promise<AuthorPlus> =>
     {
         const author = await find(libraryId, authorId);
         await StoryActions.find(libraryId, storyId);
@@ -326,6 +334,14 @@ export const storyDisconnect =
             });
             return author;
         } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === "P2025") {
+                    throw new NotFound(
+                        `disconnect: Author ID ${authorId} and Story ID ${storyId} are not connected`,
+                        "AuthorActions.storyDisconnect",
+                    );
+                }
+            }
             throw new ServerError(
                 error as Error,
                 "AuthorActions.storyConnect()",

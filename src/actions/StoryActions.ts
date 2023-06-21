@@ -118,7 +118,7 @@ export const find = async (libraryId: number, storyId: number, query?: any): Pro
  * @throws ServerError                  If some other error occurs
  */
 export const insert = async (libraryId: number, story: Prisma.StoryUncheckedCreateInput): Promise<StoryPlus> => {
-    const library = await LibraryActions.find(libraryId);
+    await LibraryActions.find(libraryId);
     if (!await validateStoryNameUnique(ToModel.STORY({
         ...story,
         libraryId: libraryId,
@@ -149,7 +149,7 @@ export const insert = async (libraryId: number, story: Prisma.StoryUncheckedCrea
  * Remove and return the specified Story.
  *
  * @param libraryId                     ID of the owning Library
- * @param storyId                       ID of the story to be removed
+ * @param storyId                       ID of the Story to be removed
  *
  * @throws NotFound                     If the specified Library or Story cannot be found
  * @throws ServerError                  If a low level error is thrown
@@ -181,7 +181,7 @@ export const remove = async (libraryId: number, storyId: number): Promise<StoryP
  * @throws ServerError                  If a low level error is thrown
  */
 export const update = async (libraryId: number, storyId: number, story: Prisma.StoryUncheckedUpdateInput): Promise<StoryPlus> => {
-    const original = await find(libraryId, storyId); // May throw NotFound
+    await find(libraryId, storyId); // May throw NotFound
     const model: Story = {
         ...ToModel.STORY(story),
         id: storyId,
@@ -217,7 +217,7 @@ export const update = async (libraryId: number, storyId: number, story: Prisma.S
  * Connect the specified Author to this Story.
  *
  * @param libraryId                     ID of the Library being queried
- * @param storyId                       ID of the Story being connected to.
+ * @param storyId                       ID of the Story being connected to
  * @param authorId                      ID of the Author being connected
  * @param principal                     Is this a principal Author of this Story?
  *
