@@ -14,6 +14,7 @@
 
 import {
     Author,
+    AuthorsStories,
     Prisma,
 } from "@prisma/client";
 
@@ -34,6 +35,13 @@ export type AuthorPlus = Author & Prisma.AuthorGetPayload<{
         authorsStories: true,
         library: true,
         authorsVolumes: true,
+    }
+}>;
+
+export type AuthorsStoriesPlus = AuthorsStories & Prisma.AuthorsStoriesGetPayload<{
+    include: {
+        author: true,
+        story: true,
     }
 }>;
 
@@ -343,6 +351,7 @@ export const include = (query?: any): Prisma.AuthorInclude | undefined => {
     if (query.hasOwnProperty("withSeries")) {
         include.authorsSeries = {
             include: {
+                author: true,
                 series: true,
             }
         }
@@ -350,6 +359,7 @@ export const include = (query?: any): Prisma.AuthorInclude | undefined => {
     if (query.hasOwnProperty("withStories")) {
         include.authorsStories = {
             include: {
+                author: true,
                 story: true,
             }
         }
@@ -357,6 +367,7 @@ export const include = (query?: any): Prisma.AuthorInclude | undefined => {
     if (query.hasOwnProperty("withVolumes")) {
         include.authorsVolumes = {
             include: {
+                author: true,
                 volume: true,
             }
         }

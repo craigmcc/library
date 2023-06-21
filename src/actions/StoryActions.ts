@@ -5,8 +5,6 @@
 /**
  * Server side actions for Story model objects.
  *
- * TODO - deal with many-to-many relationships later.
- *
  * @packageDocumentation
  */
 
@@ -31,7 +29,6 @@ import * as ToModel from "../util-prisma/ToModel";
 export type StoryPlus = Story & Prisma.StoryGetPayload<{
     include: {
         authorsStories: true,
-        // TODO - deal with many-to-many relations somehow
         library: true,
         seriesStories: true,
         volumesStories: true,
@@ -225,6 +222,7 @@ export const update = async (libraryId: number, storyId: number, story: Prisma.S
  * @param principal                     Is this a principal Author of this Story?
  *
  * @throws NotFound                     If the specified Story or Author is not found
+ * @throws NotUnique                    If this Author and Story are already connected
  * @throws ServerError                  If a low level error is thrown
  */
 export const authorConnect =
@@ -242,6 +240,14 @@ export const authorConnect =
         });
         return story;
     } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === "P2002") {
+                throw new NotUnique(
+                    `connect: Author ID ${authorId} and Story ID ${storyId} are already connected`,
+                    "StoryAction.authorConnect"
+                );
+            }
+        }
         throw new ServerError(
             error as Error,
             "StoryActions.authorConnect()",
@@ -275,9 +281,17 @@ export const authorDisconnect =
         });
         return story;
     } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === "P2025") {
+                throw new NotFound(
+                    `disconnect: Author ID ${authorId} and Story ID ${storyId} are not connected`,
+                    "StoryActions.authorDisconnect",
+                );
+            }
+        }
         throw new ServerError(
             error as Error,
-            "StoryActions.authorConnect()",
+            "StoryActions.authorDisconnect()",
         );
     }
 }
@@ -337,6 +351,7 @@ export const include = (query?: any): Prisma.StoryInclude | undefined => {
         include.authorsStories = {
             include: {
                 author: true,
+                story: true,
             }
         }
     }
@@ -347,12 +362,14 @@ export const include = (query?: any): Prisma.StoryInclude | undefined => {
         include.seriesStories = {
             include: {
                 series: true,
+                story: true,
             }
         }
     }
     if (query.hasOwnProperty("withVolumes")) {
         include.volumesStories = {
             include: {
+                story: true,
                 volume: true,
             }
         }
@@ -442,3 +459,4 @@ export const where = (libraryId: number, query?: any): Prisma.StoryWhereInput | 
     }
     return where;
 }
+
