@@ -15,6 +15,7 @@
 import {
     Author,
     AuthorsStories,
+    AuthorsVolumes,
     Prisma,
 } from "@prisma/client";
 
@@ -44,6 +45,13 @@ export type AuthorsStoriesPlus = AuthorsStories & Prisma.AuthorsStoriesGetPayloa
         story: true,
     }
 }>;
+
+export type AuthorsVolumesPlus = AuthorsVolumes & Prisma.AuthorsVolumesGetPayload<{
+    include: {
+        author: true,
+        volume: true,
+    }
+}>
 
 // Action CRUD Functions -----------------------------------------------------
 

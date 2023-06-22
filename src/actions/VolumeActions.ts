@@ -20,7 +20,8 @@ import {
 import * as AuthorActions from "./AuthorActions";
 import * as LibraryActions from "./LibraryActions";
 import prisma from "../prisma";
-import {NotFound, NotUnique, ServerError} from "../util/HttpErrors";
+import {BadRequest, NotFound, NotUnique, ServerError} from "../util/HttpErrors";
+import {validateVolumeLocation, validateVolumeType} from "../util/ApplicationValidators";
 import {validateVolumeNameUnique} from "../util-prisma/AsyncValidators";
 import * as ToModel from "../util-prisma/ToModel";
 
@@ -118,6 +119,18 @@ export const find = async (libraryId: number, volumeId: number, query?: any): Pr
  */
 export const insert = async (libraryId: number, volume: Prisma.VolumeUncheckedCreateInput): Promise<VolumePlus> => {
     await LibraryActions.find(libraryId);
+    if (!validateVolumeLocation(volume.location)) {
+        throw new BadRequest(
+            `location:  Invalid Volume location '${volume.location}'`,
+            "VolumeActions.insert",
+        );
+    }
+    if (!validateVolumeType(volume.type)) {
+        throw new BadRequest(
+            `type: Invalid Volume type '${volume.type}'`,
+            "VolumeActions.insert",
+        );
+    }
     if (!await validateVolumeNameUnique(ToModel.VOLUME({
         ...volume,
         libraryId: libraryId,
@@ -181,6 +194,18 @@ export const remove = async (libraryId: number, volumeId: number): Promise<Volum
  */
 export const update = async (libraryId: number, volumeId: number, volume: Prisma.VolumeUncheckedUpdateInput): Promise<VolumePlus> => {
     await find(libraryId, volumeId); // May throw NotFound
+    if (!validateVolumeLocation((typeof volume.location === "string") ? volume.location : null)) {
+        throw new BadRequest(
+            `location:  Invalid Volume location '${volume.location}'`,
+            "VolumeActions.update",
+        );
+    }
+    if (!validateVolumeType((typeof volume.type === "string") ? volume.type : null)) {
+        throw new BadRequest(
+            `type: Invalid Volume type '${volume.type}'`,
+            "VolumeActions.update",
+        );
+    }
     const model: Volume = {
         ...ToModel.VOLUME(volume),
         id: volumeId,
