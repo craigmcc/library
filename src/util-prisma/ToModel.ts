@@ -127,3 +127,34 @@ export const USERS = (inputs: any[]): User[] =>{
     return outputs;
 }
 
+/**
+ * Convert an arbitrary input into a Volume object.
+ */
+export const VOLUME = (input: any): Volume => {
+    const output: Volume = {
+        id: input.id ? input.id : undefined,
+        active: (typeof input.active === "boolean") ? input.active : undefined,
+        copyright: (typeof input.copyright === "string") ? input.copyright : undefined,
+        googleId: (typeof input.goodleId === "string") ? input.googleId : undefined,
+        isbn: (typeof input.isbn === "string") ? input.isbn : undefined,
+        libraryId: (typeof input.libraryId === "number") ? input.libraryId : undefined,
+        location: (typeof input.location === "string") ? input.location : undefined,
+        name: (typeof input.name === "string") ? input.name : undefined,
+        notes: (typeof input.notes === "string") ? input.notes : undefined,
+        read: (typeof input.read === "boolean") ? input.read : undefined,
+        type: (typeof input.type === "string") ? input.type : undefined,
+    }
+    return output;
+}
+
+/**
+ * Convert an array of arbitrary input into an array of Volume objects.
+ */
+export const VOLUMES = (inputs: any[]): Volume[] =>{
+    const outputs: Volume[] = [];
+    inputs.forEach(input => {
+        outputs.push(VOLUME(input));
+    });
+    return outputs;
+}
+

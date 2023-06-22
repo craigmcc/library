@@ -18,6 +18,7 @@ import {
     Prisma,
     Story,
     User,
+    Volume,
 } from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
@@ -206,6 +207,44 @@ export const validateUserUsernameUnique = async (user: User): Promise<boolean> =
             throw new ServerError(
                 error as Error,
                 "validateUserUsernameUnique",
+            )
+        }
+    } else {
+        return true;
+    }
+}
+
+/**
+ * Validate that the name of this Volume is unique within its Library.
+ *
+ * @param volume                        Volume whose name is to be validated
+ *
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const validateVolumeNameUnique = async (volume: Volume): Promise<boolean> => {
+    if (volume && volume.name) {
+        const args: Prisma.StoryFindManyArgs = {};
+        if (volume.id && (volume.id > 0)) {
+            args.where = {
+                id: {
+                    not: volume.id,
+                },
+                libraryId: volume.libraryId,
+                name: volume.name,
+            }
+        } else {
+            args.where = {
+                libraryId: volume.libraryId,
+                name: volume.name,
+            }
+        }
+        try {
+            const results = await prisma.volume.findMany(args);
+            return (results.length === 0);
+        } catch (error) {
+            throw new ServerError(
+                error as Error,
+                "validateVolumeNameUnique",
             )
         }
     } else {
