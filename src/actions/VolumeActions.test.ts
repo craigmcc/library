@@ -548,6 +548,164 @@ describe("VolumeActions Functional Tests", () => {
 
     });
 
+    describe("VolumeActions.storyConnect()", () => {
+
+        it("should fail on connecting twice", async () => {
+            // Set up LIBRARY, STORY, and VOLUME
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_THIRD);
+            const STORY =
+                await StoryActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Story Name",
+                });
+            const VOLUME =
+                await VolumeActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    location: "Other",
+                    name: "Test Volume",
+                    type: "Single",
+                });
+            // Perform the storyConnect() action once
+            try {
+                await VolumeActions.storyConnect(LIBRARY.id, VOLUME.id, STORY.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Attempt to perform the action again
+            try {
+                await VolumeActions.storyConnect(LIBRARY.id, VOLUME.id, STORY.id);
+                expect.fail("Should have thrown NotUnique");
+            } catch (error) {
+                if (error instanceof NotUnique) {
+                    expect(error.message).to.include
+                    (`connect: Story ID ${STORY.id} and Volume ID ${VOLUME.id} are already connected`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}`);
+                }
+            }
+        });
+
+        it("should pass on valid data", async () => {
+            // Set up LIBRARY, STORY, and VOLUME
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_THIRD);
+            const STORY =
+                await StoryActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Story Name",
+                });
+            const VOLUME =
+                await VolumeActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    location: "Other",
+                    name: "Test Volume",
+                    type: "Single",
+                });
+            // Perform the storyConnect() action
+            try {
+                await VolumeActions.storyConnect(LIBRARY.id, VOLUME.id, STORY.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Verify that the connection is represented correctly
+            const OUTPUT =
+                await VolumeActions.find(LIBRARY.id, VOLUME.id, {
+                    withStories: true,
+                });
+            expect(OUTPUT.volumesStories).to.exist;
+            const VOLUMES_STORIES = OUTPUT.volumesStories as VolumeActions.VolumesStoriesPlus[];
+            expect(VOLUMES_STORIES.length).to.equal(1);
+            expect(VOLUMES_STORIES[0].storyId).to.equal(STORY.id);
+            expect(VOLUMES_STORIES[0].story).to.exist;
+            expect(VOLUMES_STORIES[0].volume.id).to.equal(VOLUME.id);
+            expect(VOLUMES_STORIES[0].volume).to.exist;
+        });
+
+    });
+
+    describe("VolumeActions.storyDisconnect()", () => {
+
+        it("should fail on disconnecting twice", async () => {
+            // Set up LIBRARY, STORY, and VOLUME
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_THIRD);
+            const STORY =
+                await StoryActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Story Name",
+                });
+            const VOLUME =
+                await VolumeActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    location: "Other",
+                    name: "Test Volume",
+                    type: "Single",
+                });
+            // Perform the storyConnect() action
+            try {
+                await VolumeActions.storyConnect(LIBRARY.id, VOLUME.id, STORY.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Perform the storyDisconnect() action
+            try {
+                await VolumeActions.storyDisconnect(LIBRARY.id, VOLUME.id, STORY.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Verify that disconnecting twice fails
+            try {
+                await VolumeActions.storyDisconnect(LIBRARY.id, VOLUME.id, STORY.id);
+                expect.fail("Should have thrown NotFound");
+            } catch (error) {
+                if (error instanceof NotFound) {
+                    expect(error.message).to.include
+                    (`disconnect: Story ID ${STORY.id} and Volume ID ${VOLUME.id} are not connected`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+        });
+
+        it("should pass on valid data", async () => {
+            // Set up LIBRARY, STORY, and VOLUME
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_THIRD);
+            const STORY =
+                await StoryActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Story Name",
+                });
+            const VOLUME =
+                await VolumeActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    location: "Other",
+                    name: "Test Volume",
+                    type: "Single",
+                });
+            // Perform the storyConnect() action
+            try {
+                await VolumeActions.storyConnect(LIBRARY.id, VOLUME.id, STORY.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Perform the storyDisconnect() action
+            try {
+                await VolumeActions.storyDisconnect(LIBRARY.id, VOLUME.id, STORY.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Verify that the disconnect occurred
+            const OUTPUT = await VolumeActions.find(LIBRARY.id, VOLUME.id, {
+                withStories: true,
+            });
+            expect(OUTPUT.volumesStories).to.exist;
+            expect(OUTPUT.volumesStories.length).to.equal(0);
+        });
+
+    });
+
     describe("VolumeActions.update()", () => {
 
         it("should fail on duplicate name", async () => {

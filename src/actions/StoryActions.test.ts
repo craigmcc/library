@@ -24,6 +24,7 @@ import {
 import * as AuthorActions from "./AuthorActions";
 import * as LibraryActions from "./LibraryActions";
 import * as StoryActions from "./StoryActions";
+import * as VolumeActions from "./VolumeActions";
 import * as BaseUtils from "../test-prisma/BaseUtils";
 import * as SeedData from "../test-prisma/SeedData";
 import {NotFound, NotUnique} from "../util/HttpErrors";
@@ -621,6 +622,160 @@ describe("StoryActions Functional Tests", () => {
             } catch (error) {
                 expect.fail(`Should not have thrown '${error}'`);
             }
+        });
+
+    });
+
+    describe("StoryActions.volumeConnect()", () => {
+
+        it("should fail on connecting twice", async () => {
+            // Set up LIBRARY, VOLUME, and STORY
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_THIRD);
+            const VOLUME =
+                await VolumeActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Volume Name",
+                    type: "Single",
+                });
+            const STORY =
+                await StoryActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Test Story",
+                });
+            // Perform the volumeConnect() action once
+            try {
+                await StoryActions.volumeConnect(LIBRARY.id, STORY.id, VOLUME.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Attempt to perform the action again
+            try {
+                await StoryActions.volumeConnect(LIBRARY.id, STORY.id, VOLUME.id);
+                expect.fail("Should have thrown NotUnique");
+            } catch (error) {
+                if (error instanceof NotUnique) {
+                    expect(error.message).to.include
+                    (`connect: Volume ID ${VOLUME.id} and Story ID ${STORY.id} are already connected`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}`);
+                }
+            }
+        });
+
+        it("should pass on valid data", async () => {
+            // Set up LIBRARY, VOLUME, and STORY
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_THIRD);
+            const VOLUME =
+                await VolumeActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Volume Name",
+                    type: "Single",
+                });
+            const STORY =
+                await StoryActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Test Story",
+                });
+            // Perform the volumeConnect() action
+            try {
+                await StoryActions.volumeConnect(LIBRARY.id, STORY.id, VOLUME.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Verify that the connection is represented correctly
+            const OUTPUT =
+                await StoryActions.find(LIBRARY.id, STORY.id, {
+                    withVolumes: true,
+                });
+            expect(OUTPUT.volumesStories).to.exist;
+            const VOLUMES_STORIES = OUTPUT.volumesStories as VolumeActions.VolumesStoriesPlus[];
+            expect(VOLUMES_STORIES.length).to.equal(1);
+            expect(VOLUMES_STORIES[0].volumeId).to.equal(VOLUME.id);
+            expect(VOLUMES_STORIES[0].volume).to.exist;
+            expect(VOLUMES_STORIES[0].story.id).to.equal(STORY.id);
+            expect(VOLUMES_STORIES[0].story).to.exist;
+        });
+
+    });
+
+    describe("StoryActions.authorDisconnect()", () => {
+
+        it("should fail on disconnecting twice", async () => {
+            // Set up LIBRARY, AUTHOR, and STORY
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_THIRD);
+            const AUTHOR =
+                await AuthorActions.insert(LIBRARY.id, {
+                    firstName: "Test First",
+                    lastName: "Test Last",
+                    libraryId: LIBRARY.id,
+                });
+            const STORY =
+                await StoryActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Test Story",
+                });
+            // Perform the authorConnect() action
+            try {
+                await StoryActions.authorConnect(LIBRARY.id, STORY.id, AUTHOR.id, true);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Perform the authorDisconnect() action
+            try {
+                await StoryActions.authorDisconnect(LIBRARY.id, STORY.id, AUTHOR.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Verify that disconnecting twice fails
+            try {
+                await StoryActions.authorDisconnect(LIBRARY.id, STORY.id, AUTHOR.id);
+                expect.fail("Should have thrown NotFound");
+            } catch (error) {
+                if (error instanceof NotFound) {
+                    expect(error.message).to.include
+                    (`disconnect: Author ID ${AUTHOR.id} and Story ID ${STORY.id} are not connected`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+        });
+
+        it("should pass on valid data", async () => {
+            // Set up LIBRARY, AUTHOR, and STORY
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_THIRD);
+            const AUTHOR =
+                await AuthorActions.insert(LIBRARY.id, {
+                    firstName: "Test First",
+                    lastName: "Test Last",
+                    libraryId: LIBRARY.id,
+                });
+            const STORY =
+                await StoryActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Test Story",
+                });
+            // Perform the authorConnect() action
+            try {
+                await StoryActions.authorConnect(LIBRARY.id, STORY.id, AUTHOR.id, true);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Perform the authorDisconnect() action
+            try {
+                await StoryActions.authorDisconnect(LIBRARY.id, STORY.id, AUTHOR.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Verify that the disconnect occurred
+            const OUTPUT = await StoryActions.find(LIBRARY.id, STORY.id, {
+                withAuthors: true,
+            });
+            expect(OUTPUT.authorsStories).to.exist;
+            expect(OUTPUT.authorsStories.length).to.equal(0);
         });
 
     });

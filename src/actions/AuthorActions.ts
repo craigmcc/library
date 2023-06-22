@@ -51,7 +51,7 @@ export type AuthorsVolumesPlus = AuthorsVolumes & Prisma.AuthorsVolumesGetPayloa
         author: true,
         volume: true,
     }
-}>
+}>;
 
 // Action CRUD Functions -----------------------------------------------------
 

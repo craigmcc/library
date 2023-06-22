@@ -13,12 +13,14 @@
 import {
     Prisma,
     Volume,
+    VolumesStories,
 } from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
 
 import * as AuthorActions from "./AuthorActions";
 import * as LibraryActions from "./LibraryActions";
+import * as StoryActions from "./StoryActions";
 import prisma from "../prisma";
 import {BadRequest, NotFound, NotUnique, ServerError} from "../util/HttpErrors";
 import {validateVolumeLocation, validateVolumeType} from "../util/ApplicationValidators";
@@ -32,6 +34,13 @@ export type VolumePlus = Volume & Prisma.VolumeGetPayload<{
         authorsVolumes: true,
         library: true,
         volumesStories: true,
+    }
+}>;
+
+export type VolumesStoriesPlus = VolumesStories & Prisma.VolumesStoriesGetPayload<{
+    include: {
+        story: true,
+        volume: true,
     }
 }>;
 
@@ -359,6 +368,87 @@ export const exact = async (libraryId: number, name: string, query?: any): Promi
         }
     }
 }
+
+/**
+ * Connect the specified Story to this Volume.
+ *
+ * @param libraryId                     ID of the Library being queried
+ * @param volumeId                      ID of the Volume being connected to
+ * @param storyId                       ID of the Story being connected
+ *
+ * @throws NotFound                     If the specified Volume or Story is not found
+ * @throws NotUnique                    If this Story and Volume are already connected
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const storyConnect =
+    async (libraryId: number, volumeId: number, storyId: number): Promise<VolumePlus> =>
+    {
+        const volume = await find(libraryId, volumeId);
+        await StoryActions.find(libraryId, storyId);
+        try {
+            await prisma.volumesStories.create({
+                data: {
+                    storyId: storyId,
+                    volumeId: volumeId,
+                }
+            });
+            return volume;
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === "P2002") {
+                    throw new NotUnique(
+                        `connect: Story ID ${storyId} and Volume ID ${volumeId} are already connected`,
+                        "VolumeAction.storyConnect"
+                    );
+                }
+            }
+            throw new ServerError(
+                error as Error,
+                "VolumeActions.storyConnect()",
+            );
+        }
+    }
+
+/**
+ * Disconnect the specified Story from this Volume.
+ *
+ * @param libraryId                     ID of the Library being queried
+ * @param volumeId                      ID of the Volume being disconnected from
+ * @param storyId                       ID of the Story being disconnected
+ *
+ * @throws NotFound                     If the specified Volume or Author is not found
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const storyDisconnect =
+    async (libraryId: number, volumeId: number, storyId: number): Promise<VolumePlus> =>
+    {
+        const volume = await find(libraryId, volumeId);
+        await StoryActions.find(libraryId, storyId);
+        try {
+            await prisma.volumesStories.delete({
+                where: {
+                    volumeId_storyId: {
+                        storyId: storyId,
+                        volumeId: volumeId,
+                    }
+                },
+            });
+            return volume;
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === "P2025") {
+                    throw new NotFound(
+                        `disconnect: Story ID ${storyId} and Volume ID ${volumeId} are not connected`,
+                        "VolumeActions.authorDisconnect",
+                    );
+                }
+            }
+            throw new ServerError(
+                error as Error,
+                "VolumeActions.authorDisconnect()",
+            );
+        }
+    }
 
 // Support Functions ---------------------------------------------------------
 
