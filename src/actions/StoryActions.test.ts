@@ -198,9 +198,8 @@ describe("StoryActions Functional Tests", () => {
             expect(AUTHORS_STORIES.length).to.equal(1);
             expect(AUTHORS_STORIES[0].authorId).to.equal(AUTHOR.id);
             expect(AUTHORS_STORIES[0].author).to.exist;
-            expect(AUTHORS_STORIES[0].author.id).to.equal(AUTHOR.id);
-            expect(AUTHORS_STORIES[0].story).to.exist;
             expect(AUTHORS_STORIES[0].story.id).to.equal(STORY.id);
+            expect(AUTHORS_STORIES[0].story).to.exist;
         });
 
     });

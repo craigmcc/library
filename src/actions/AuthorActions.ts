@@ -399,11 +399,11 @@ export const include = (query?: any): Prisma.AuthorInclude | undefined => {
  * Calculate and return the "orderBy" options from the specified query
  * parameters, if any were specified.
  */
-export const orderBy = (query?: any): Prisma.AuthorOrderByWithRelationInput => {
-    return {
-        lastName: "asc",
-        firstName: "asc",
-    }
+export const orderBy = (query?: any): Prisma.AuthorOrderByWithRelationInput[] => {
+    return [
+        { lastName: "asc" },
+        { firstName: "asc"},
+    ];
 }
 
 /**
@@ -457,6 +457,33 @@ export const take = (query?: any): number | undefined => {
  * parameters, if any were specified.
  */
 export const where = (libraryId: number, query?: any): Prisma.AuthorWhereInput | undefined => {
+    // Special case for name matching
+    if (query && query.hasOwnProperty("name")) {
+        const names = query.name.trim().split(" ");
+        const firstMatch = names[0];
+        const lastMatch = (names.length > 1) ? names[1] : names[0]
+        const where:  Prisma.AuthorWhereInput = {
+            OR: [
+                {
+                    firstName: {
+                        contains: firstMatch,
+                        mode: "insensitive",
+                    },
+                },
+                {
+                    lastName: {
+                        contains: lastMatch,
+                        mode: "insensitive",
+                    },
+                },
+            ],
+            AND: {
+                libraryId: libraryId,
+            },
+        }
+        return where;
+    }
+    // Standard handling for other filter options
     const where: Prisma.AuthorWhereInput = {
         libraryId: libraryId,
     }
@@ -466,6 +493,7 @@ export const where = (libraryId: number, query?: any): Prisma.AuthorWhereInput |
     if (query.hasOwnProperty("active")) {
         where.active = true;
     }
+/*
     if (query.hasOwnProperty("name")) {
         const names = query.name.trim().split(" ");
         const firstMatch = names[0];
@@ -481,5 +509,6 @@ export const where = (libraryId: number, query?: any): Prisma.AuthorWhereInput |
             }
         }
     }
+*/
     return where;
 }
