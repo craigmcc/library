@@ -30,7 +30,7 @@ export type UserPlus = User & Prisma.UserGetPayload<{
         accessTokens: true,
         refreshTokens: true,
     }
-}>
+}>;
 
 // Action CRUD Functions -----------------------------------------------------
 
