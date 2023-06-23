@@ -24,6 +24,7 @@ import {
 import * as AuthorActions from "./AuthorActions";
 import * as LibraryActions from "./LibraryActions";
 import * as StoryActions from "./StoryActions";
+import * as VolumeActions from "./VolumeActions";
 import * as BaseUtils from "../test-prisma/BaseUtils";
 import * as SeedData from "../test-prisma/SeedData";
 import {NotFound, NotUnique} from "../util/HttpErrors";
@@ -618,6 +619,164 @@ describe("AuthorActions Functional Tests", () => {
             } catch (error) {
                 expect.fail(`Should not have thrown '${error}'`);
             }
+        });
+
+    });
+
+    describe("AuthorActions.volumeConnect()", () => {
+
+        it("should fail on connecting twice", async () => {
+            // Set up LIBRARY, AUTHOR, and VOLUME
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_THIRD);
+            const AUTHOR =
+                await AuthorActions.insert(LIBRARY.id, {
+                    firstName: "Test First",
+                    lastName: "Test Last",
+                    libraryId: LIBRARY.id,
+                });
+            const VOLUME =
+                await VolumeActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Test Volume",
+                    type: "Single",
+                });
+            // Perform the storyConnect() action once
+            try {
+                await AuthorActions.volumeConnect(LIBRARY.id, AUTHOR.id, VOLUME.id, true);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Attempt to perform the action again
+            try {
+                await AuthorActions.volumeConnect(LIBRARY.id, AUTHOR.id, VOLUME.id, true);
+                expect.fail("Should have thrown NotUnique");
+            } catch (error) {
+                if (error instanceof NotUnique) {
+                    expect(error.message).to.include
+                    (`connect: Author ID ${AUTHOR.id} and Volume ID ${VOLUME.id} are already connected`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}`);
+                }
+            }
+        });
+
+        it("should pass on valid data", async () => {
+            // Set up LIBRARY, AUTHOR, and VOLUME
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_THIRD);
+            const AUTHOR =
+                await AuthorActions.insert(LIBRARY.id, {
+                    firstName: "Test First",
+                    lastName: "Test Last",
+                    libraryId: LIBRARY.id,
+                });
+            const VOLUME =
+                await VolumeActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Test Volume",
+                    type: "Single",
+                });
+            // Perform the volumeConnect() action
+            try {
+                await AuthorActions.volumeConnect(LIBRARY.id, AUTHOR.id, VOLUME.id, true);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Verify that the connection is represented correctly
+            const OUTPUT =
+                await AuthorActions.find(LIBRARY.id, AUTHOR.id, {
+                    withVolumes: true,
+                });
+            expect(OUTPUT.authorsVolumes).to.exist;
+            const AUTHORS_VOLUMES = OUTPUT.authorsVolumes as AuthorActions.AuthorsVolumesPlus[];
+            expect(AUTHORS_VOLUMES.length).to.equal(1);
+            expect(AUTHORS_VOLUMES[0].authorId).to.equal(AUTHOR.id);
+            expect(AUTHORS_VOLUMES[0].author).to.exist;
+            expect(AUTHORS_VOLUMES[0].volume.id).to.equal(VOLUME.id);
+            expect(AUTHORS_VOLUMES[0].volume).to.exist;
+        });
+
+    });
+
+    describe("AuthorActions.volumeDisconnect()", () => {
+
+        it("should fail on disconnecting twice", async () => {
+            // Set up LIBRARY, AUTHOR, and VOLUME
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_THIRD);
+            const AUTHOR =
+                await AuthorActions.insert(LIBRARY.id, {
+                    firstName: "Test First",
+                    lastName: "Test Last",
+                    libraryId: LIBRARY.id,
+                });
+            const VOLUME =
+                await VolumeActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Test Volume",
+                    type: "Single",
+                });
+            // Perform the volumeConnect() action
+            try {
+                await AuthorActions.volumeConnect(LIBRARY.id, AUTHOR.id, VOLUME.id, true);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Perform the volumeDisconnect() action
+            try {
+                await AuthorActions.volumeDisconnect(LIBRARY.id, AUTHOR.id, VOLUME.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Verify that disconnecting twice fails
+            try {
+                await AuthorActions.volumeDisconnect(LIBRARY.id, AUTHOR.id, VOLUME.id);
+                expect.fail("Should have thrown NotFound");
+            } catch (error) {
+                if (error instanceof NotFound) {
+                    expect(error.message).to.include
+                    (`disconnect: Author ID ${AUTHOR.id} and Volume ID ${VOLUME.id} are not connected`);
+                } else {
+                    expect.fail(`Should not have thrown '${error}'`);
+                }
+            }
+        });
+
+        it("should pass on valid data", async () => {
+            // Set up LIBRARY, AUTHOR, and VOLUME
+            const LIBRARY =
+                await LibraryActions.exact(SeedData.LIBRARY_NAME_THIRD);
+            const AUTHOR =
+                await AuthorActions.insert(LIBRARY.id, {
+                    firstName: "Test First",
+                    lastName: "Test Last",
+                    libraryId: LIBRARY.id,
+                });
+            const VOLUME =
+                await VolumeActions.insert(LIBRARY.id, {
+                    libraryId: LIBRARY.id,
+                    name: "Test Volume",
+                    type: "Single",
+                });
+            // Perform the volumeConnect() action
+            try {
+                await AuthorActions.volumeConnect(LIBRARY.id, AUTHOR.id, VOLUME.id, true);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Perform the volumeDisconnect() action
+            try {
+                await AuthorActions.volumeDisconnect(LIBRARY.id, AUTHOR.id, VOLUME.id);
+            } catch (error) {
+                expect.fail(`Should not have thrown '${error}'`);
+            }
+            // Verify that the disconnect occurred
+            const OUTPUT = await AuthorActions.find(LIBRARY.id, AUTHOR.id, {
+                withVolumes: true,
+            });
+            expect(OUTPUT.authorsVolumes).to.exist;
+            expect(OUTPUT.authorsVolumes.length).to.equal(0);
         });
 
     });

@@ -23,6 +23,7 @@ import {
 
 import * as LibraryActions from "./LibraryActions";
 import * as StoryActions from "./StoryActions";
+import * as VolumeActions from "./VolumeActions";
 import prisma from "../prisma";
 import {NotFound, NotUnique, ServerError} from "../util/HttpErrors";
 import {validateAuthorNameUnique} from "../util-prisma/AsyncValidators";
@@ -353,6 +354,89 @@ export const storyDisconnect =
             throw new ServerError(
                 error as Error,
                 "AuthorActions.storyConnect()",
+            );
+        }
+
+    }
+
+/**
+ * Connect the specified Volume to this Author.
+ *
+ * @param libraryId                     ID of the Library being queried
+ * @param authorId                      ID of the Author being connected to
+ * @param volumeId                      ID of the Volume being connected
+ * @param principal                     Is this a principal Author of this Story?
+ *
+ * @throws NotFound                     If the specified Author or Story is not found
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const volumeConnect =
+    async (libraryId: number, authorId: number, volumeId: number, principal?: boolean): Promise<AuthorPlus> =>
+    {
+        const author = await find(libraryId, authorId);
+        await VolumeActions.find(libraryId, volumeId);
+        try {
+            await prisma.authorsVolumes.create({
+                data: {
+                    authorId: authorId,
+                    principal: principal,
+                    volumeId: volumeId,
+                }
+            });
+            return author;
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === "P2002") {
+                    throw new NotUnique(
+                        `connect: Author ID ${authorId} and Volume ID ${volumeId} are already connected`,
+                        "AuthorActions.volumeConnect"
+                    );
+                }
+            }
+            throw new ServerError(
+                error as Error,
+                "AuthorActions.volumeConnect()",
+            );
+        }
+    }
+
+/**
+ * Disconnect the specified Volume from this Author.
+ *
+ * @param libraryId                     ID of the Library being queried
+ * @param authorId                      ID of the Author being disconnected from
+ * @param volumeId                      ID of the Volume being disconnected
+ *
+ * @throws NotFound                     If the specified Author or Volume is not found
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const volumeDisconnect =
+    async (libraryId: number, authorId: number, volumeId: number): Promise<AuthorPlus> =>
+    {
+        const author = await find(libraryId, authorId);
+        await VolumeActions.find(libraryId, volumeId);
+        try {
+            await prisma.authorsVolumes.delete({
+                where: {
+                    authorId_volumeId: {
+                        authorId: authorId,
+                        volumeId: volumeId,
+                    }
+                },
+            });
+            return author;
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === "P2025") {
+                    throw new NotFound(
+                        `disconnect: Author ID ${authorId} and Volume ID ${volumeId} are not connected`,
+                        "AuthorActions.storyDisconnect",
+                    );
+                }
+            }
+            throw new ServerError(
+                error as Error,
+                "AuthorActions.volumeDisconnect()",
             );
         }
 
