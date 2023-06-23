@@ -37,6 +37,13 @@ export type SeriesPlus = Series & Prisma.SeriesGetPayload<{
     }
 }>;
 
+export type SeriesStoriesPlus = SeriesStories & Prisma.SeriesStoriesGetPayload<{
+    include: {
+        series: true,
+        story: true,
+    }
+}>;
+
 // Action CRUD Functions -----------------------------------------------------
 
 /**

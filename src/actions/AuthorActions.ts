@@ -14,6 +14,7 @@
 
 import {
     Author,
+    AuthorsSeries,
     AuthorsStories,
     AuthorsVolumes,
     Prisma,
@@ -22,6 +23,7 @@ import {
 // Internal Modules ----------------------------------------------------------
 
 import * as LibraryActions from "./LibraryActions";
+import * as SeriesActions from "./SeriesActions";
 import * as StoryActions from "./StoryActions";
 import * as VolumeActions from "./VolumeActions";
 import prisma from "../prisma";
@@ -37,6 +39,13 @@ export type AuthorPlus = Author & Prisma.AuthorGetPayload<{
         authorsStories: true,
         library: true,
         authorsVolumes: true,
+    }
+}>;
+
+export type AuthorsSeriesPlus = AuthorsSeries & Prisma.AuthorsSeriesGetPayload<{
+    include: {
+        author: true,
+        series: true,
     }
 }>;
 
@@ -277,6 +286,87 @@ export const exact =
     }
 
 /**
+ * Connect the specified Series to this Author.
+ *
+ * @param libraryId                     ID of the Library being queried
+ * @param authorId                      ID of the Author being connected to
+ * @param seriesId                      ID of the Series being connected
+ *
+ * @throws NotFound                     If the specified Author or Series is not found
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const seriesConnect =
+    async (libraryId: number, authorId: number, seriesId: number): Promise<AuthorPlus> =>
+    {
+        const author = await find(libraryId, authorId);
+        await SeriesActions.find(libraryId, seriesId);
+        try {
+            await prisma.authorsSeries.create({
+                data: {
+                    authorId: authorId,
+                    seriesId: seriesId,
+                }
+            });
+            return author;
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === "P2002") {
+                    throw new NotUnique(
+                        `connect: Author ID ${authorId} and Series ID ${seriesId} are already connected`,
+                        "AuthorActions.seriesConnect"
+                    );
+                }
+            }
+            throw new ServerError(
+                error as Error,
+                "AuthorActions.seriesConnect()",
+            );
+        }
+    }
+
+/**
+ * Disconnect the specified Series from this Author.
+ *
+ * @param libraryId                     ID of the Library being queried
+ * @param authorId                      ID of the Author being disconnected from
+ * @param seriesId                      ID of the Series being disconnected
+ *
+ * @throws NotFound                     If the specified Author or Story is not found
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const seriesDisconnect =
+    async (libraryId: number, authorId: number, seriesId: number): Promise<AuthorPlus> =>
+    {
+        const author = await find(libraryId, authorId);
+        await SeriesActions.find(libraryId, seriesId);
+        try {
+            await prisma.authorsSeries.delete({
+                where: {
+                    authorId_seriesId: {
+                        authorId: authorId,
+                        seriesId: seriesId,
+                    }
+                },
+            });
+            return author;
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === "P2025") {
+                    throw new NotFound(
+                        `disconnect: Author ID ${authorId} and Series ID ${seriesId} are not connected`,
+                        "AuthorActions.seriesDisconnect",
+                    );
+                }
+            }
+            throw new ServerError(
+                error as Error,
+                "AuthorActions.seriesDisconnect",
+            );
+        }
+
+    }
+
+/**
  * Connect the specified Story to this Author.
  *
  * @param libraryId                     ID of the Library being queried
@@ -306,13 +396,13 @@ export const storyConnect =
                 if (error.code === "P2002") {
                     throw new NotUnique(
                         `connect: Author ID ${authorId} and Story ID ${storyId} are already connected`,
-                        "StoryAction.authorConnect"
+                        "AuthorActions.storyConnect"
                     );
                 }
             }
             throw new ServerError(
                 error as Error,
-                "AuthorActions.storyConnect()",
+                "AuthorActions.storyConnect",
             );
         }
     }
@@ -353,7 +443,7 @@ export const storyDisconnect =
             }
             throw new ServerError(
                 error as Error,
-                "AuthorActions.storyConnect()",
+                "AuthorActions.storyDisconnect",
             );
         }
 
