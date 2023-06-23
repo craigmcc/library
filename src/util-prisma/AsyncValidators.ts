@@ -16,6 +16,7 @@ import {
     Author,
     Library,
     Prisma,
+    Series,
     Story,
     User,
     Volume,
@@ -133,6 +134,44 @@ export const validateLibraryScopeUnique = async (library: Library): Promise<bool
             throw new ServerError(
                 error as Error,
                 "validateLibraryScopeUnique",
+            )
+        }
+    } else {
+        return true;
+    }
+}
+
+/**
+ * Validate that the name of this Series is unique within its Library.
+ *
+ * @param series                        Series whose name is to be validated
+ *
+ * @throws ServerError                  If a low level error is thrown
+ */
+export const validateSeriesNameUnique = async (series: Series): Promise<boolean> => {
+    if (series && series.name) {
+        const args: Prisma.SeriesFindManyArgs = {};
+        if (series.id && (series.id > 0)) {
+            args.where = {
+                id: {
+                    not: series.id,
+                },
+                libraryId: series.libraryId,
+                name: series.name,
+            }
+        } else {
+            args.where = {
+                libraryId: series.libraryId,
+                name: series.name,
+            }
+        }
+        try {
+            const results = await prisma.series.findMany(args);
+            return (results.length === 0);
+        } catch (error) {
+            throw new ServerError(
+                error as Error,
+                "validateStoryNameUnique",
             )
         }
     } else {

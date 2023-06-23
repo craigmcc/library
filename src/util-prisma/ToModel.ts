@@ -75,6 +75,32 @@ export const LIBRARIES = (inputs: any[]): Library[] => {
 }
 
 /**
+ * Convert an arbitrary input into a Series object.
+ */
+export const SERIES = (input: any): Series => {
+    const output: Series = {
+        id: input.id ? input.id : undefined,
+        active: (typeof input.active === "boolean") ? input.active : undefined,
+        copyright: (typeof input.copyright === "string") ? input.string : undefined,
+        libraryId: (typeof input.libraryId === "number") ? input.libraryId : undefined,
+        name: (typeof input.name === "string") ? input.name : undefined,
+        notes: (typeof input.notes === "string") ? input.notes : undefined,
+    }
+    return output;
+}
+
+/**
+ * Convert an array of arbitrary input into an array of Series objects.
+ */
+export const SERIESES = (inputs: any[]): Series[] => {
+    const outputs: Series[] = [];
+    inputs.forEach(input => {
+        outputs.push(SERIES(input));
+    });
+    return outputs;
+}
+
+/**
  * Convert an arbitrary input into a Story object.
  */
 export const STORY = (input: any): Story => {
