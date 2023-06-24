@@ -39,15 +39,23 @@ export type AccessTokenPlus = AccessToken & Prisma.AccessTokenGetPayload<{
  *
  */
 export const exact = async (token: string, query?: any): Promise<AccessTokenPlus | null> => {
-    // TODO - "token" should be a unique constraint
-    const accessTokens = await prisma.accessToken.findMany({
-        include: include(query),
-        where: {token: token}
-    });
-    if (accessTokens.length > 0) {
-        return accessTokens[0] as AccessTokenPlus;
-    } else {
-        return null;
+    try {
+        const result = await prisma.accessToken.findUnique({
+            include: include(query),
+            where: {
+                token: token,
+            }
+        });
+        if (result) {
+            return result as AccessTokenPlus;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "AccessTokenActions.exact"
+        );
     }
 }
 
@@ -98,7 +106,7 @@ export const revoke = async (token: string): Promise<void> => {
                 "AccessTokenActions.revoke",
             )
         }
-        // Delete any corresonding refresh tokens
+        // Delete any corresponding refresh tokens
         await prisma.refreshToken.deleteMany({
             where: {
                 accessToken: token,

@@ -39,6 +39,24 @@ export type RefreshTokenPlus = RefreshToken & Prisma.RefreshTokenGetPayload<{
  *
  */
 export const exact = async (token: string, query?: any): Promise<RefreshTokenPlus | null> => {
+    try {
+        const result = await prisma.refreshToken.findUnique({
+            include: include(query),
+            where: {
+                token: token,
+            }
+        });
+        if (result) {
+            return result as RefreshTokenPlus;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "RefreshTokenActions.exact"
+        );
+    }
     // TODO - "token" should be a unique constraint
     const refreshTokens = await prisma.refreshToken.findMany({
         include: include(query),

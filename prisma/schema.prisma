@@ -16,6 +16,7 @@ model AccessToken {
   userId  Int      @map("user_id")
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([token])
   @@map("access_tokens")
 }
 
@@ -90,6 +91,8 @@ model RefreshToken {
   userId      Int      @map("user_id")
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([accessToken])
+  @@unique([token])
   @@map("refresh_tokens")
 }
 
