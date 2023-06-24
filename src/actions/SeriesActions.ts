@@ -87,17 +87,16 @@ export const all = async (libraryId: number, query?: any): Promise<SeriesPlus[]>
  * @throws ServerError                  If a low level error is thrown
  */
 export const find = async (libraryId: number, seriesId: number, query?: any): Promise<SeriesPlus> => {
-    const args: Prisma.SeriesFindManyArgs = {
-        include: include(query),
-        where: {
-            id: seriesId,
-            libraryId: libraryId,
-        }
-    }
     try {
-        const results = await prisma.series.findMany(args);
-        if (results && (results.length > 0) && (results[0].libraryId === libraryId)) {
-            return results[0] as SeriesPlus;
+        const result = await prisma.series.findUnique({
+            include: include(query),
+            where: {
+                id: seriesId,
+                libraryId: libraryId,
+            }
+        });
+        if (result) {
+            return result as SeriesPlus;
         } else {
             throw new NotFound(
                 `id: Missing Series ${seriesId}`,
@@ -316,17 +315,18 @@ export const authorDisconnect =
  * @throws ServerError                  If a low level error is thrown
  */
 export const exact = async (libraryId: number, name: string, query?: any): Promise<SeriesPlus> => {
-    const args: Prisma.SeriesFindManyArgs = {
-        include: include(query),
-        where: {
-            libraryId: libraryId,
-            name: name,
-        }
-    }
     try {
-        const results = await prisma.series.findMany(args);
-        if (results && (results.length > 0) && (results[0].libraryId === libraryId)) {
-            return results[0] as SeriesPlus;
+        const result = await prisma.series.findUnique({
+            include: include(query),
+            where: {
+                libraryId_name: {
+                    libraryId,
+                    name: name,
+                },
+            }
+        });
+        if (result) {
+            return result as SeriesPlus;
         } else {
             throw new NotFound(
                 `name: Missing Series '${name}'`,

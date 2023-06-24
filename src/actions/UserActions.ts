@@ -76,14 +76,13 @@ export const all = async (query?: any): Promise<UserPlus[]> => {
  * @throws ServerError                  If a low level error is thrown
  */
 export const find = async (userId: number, query?: any): Promise<UserPlus> => {
-    const args: Prisma.UserFindUniqueArgs = {
-        include: include(query),
-        where: {
-            id: userId,
-        }
-    }
     try {
-        const result = await prisma.user.findUnique(args);
+        const result = await prisma.user.findUnique({
+            include: include(query),
+            where: {
+                id: userId,
+            }
+        });
         if (result) {
             result.password = "";
             return result as UserPlus;
@@ -224,14 +223,13 @@ export const update = async (userId: number, user: Prisma.UserUpdateInput): Prom
  * @throws ServerError                  If a low level error is thrown
  */
 export const exact = async (username: string, query?: any): Promise<UserPlus> => {
-    const args: Prisma.UserFindUniqueArgs = {
-        include: include(query),
-        where: {
-            username: username,
-        }
-    }
     try {
-        const result = await prisma.user.findUnique(args);
+        const result = await prisma.user.findUnique({
+            include: include(query),
+            where: {
+                username: username,
+            }
+        });
         if (result) {
             result.password = "";
             return result as UserPlus;

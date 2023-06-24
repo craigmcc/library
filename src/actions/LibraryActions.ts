@@ -75,14 +75,13 @@ export const all = async (query?: any): Promise<LibraryPlus[]> => {
  * @throws ServerError                  If a low level error is thrown
  */
 export const find = async (libraryId: number, query?: any): Promise<LibraryPlus> => {
-    const args: Prisma.LibraryFindUniqueArgs = {
-        include: include(query),
-        where: {
-            id: libraryId,
-        }
-    }
     try {
-        const result = await prisma.library.findUnique(args);
+        const result = await prisma.library.findUnique({
+            include: include(query),
+            where: {
+                id: libraryId,
+            }
+        });
         if (result) {
             return result as LibraryPlus;
         } else {
@@ -239,14 +238,13 @@ export const update = async (libraryId: number, library: Prisma.LibraryUpdateInp
  * @throws ServerError                  If a low level error is thrown
  */
 export const exact = async (name: string, query?: any): Promise<LibraryPlus> => {
-    const args: Prisma.LibraryFindUniqueArgs = {
-        include: include(query),
-        where: {
-            name: name,
-        }
-    }
     try {
-        const result = await prisma.library.findUnique(args);
+        const result = await prisma.library.findUnique({
+            include: include(query),
+            where: {
+                name: name,
+            }
+        });
         if (result) {
             return result as LibraryPlus;
         } else {

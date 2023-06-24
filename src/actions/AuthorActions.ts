@@ -106,17 +106,16 @@ export const all = async (libraryId: number, query?: any): Promise<AuthorPlus[]>
  * @throws ServerError                  If a low level error is thrown
  */
 export const find = async (libraryId: number, authorId: number, query?: any): Promise<AuthorPlus> => {
-    const args: Prisma.AuthorFindManyArgs = {
-        include: include(query),
-        where: {
-            id: authorId,
-            libraryId: libraryId,
-        }
-    }
     try {
-        const results = await prisma.author.findMany(args);
-        if (results && (results.length > 0) && (results[0].libraryId === libraryId)) {
-            return results[0] as AuthorPlus;
+        const result = await prisma.author.findUnique({
+            include: include(query),
+            where: {
+                id: authorId,
+                libraryId: libraryId,
+            }
+        });
+        if (result) {
+            return result as AuthorPlus;
         } else {
             throw new NotFound(
                 `id: Missing Author ${authorId}`,
@@ -255,18 +254,18 @@ export const update = async (libraryId: number, authorId: number, author: Prisma
 export const exact =
     async (libraryId: number, firstName: string, lastName: string, query?: any): Promise<AuthorPlus> =>
     {
-        const args: Prisma.AuthorFindManyArgs = {
-            include: include(query),
-            where: {
-                firstName: firstName,
-                lastName: lastName,
-                libraryId: libraryId,
-            }
-        }
         try {
-            const results = await prisma.author.findMany(args);
-            if (results && (results.length > 0) && (results[0].libraryId === libraryId)) {
-                return results[0] as AuthorPlus;
+            const result = await prisma.author.findUnique({
+                include: include(query),
+                where: { libraryId_lastName_firstName: {
+                        firstName: firstName,
+                        lastName: lastName,
+                        libraryId: libraryId,
+                    }
+                }
+            });
+            if (result) {
+                return result as AuthorPlus;
             } else {
                 throw new NotFound(
                     `name: Missing Author '${firstName} ${lastName}'`,

@@ -80,17 +80,16 @@ export const all = async (libraryId: number, query?: any): Promise<StoryPlus[]> 
  * @throws ServerError                  If a low level error is thrown
  */
 export const find = async (libraryId: number, storyId: number, query?: any): Promise<StoryPlus> => {
-    const args: Prisma.StoryFindManyArgs = {
-        include: include(query),
-        where: {
-            id: storyId,
-            libraryId: libraryId,
-        }
-    }
     try {
-        const results = await prisma.story.findMany(args);
-        if (results && (results.length > 0) && (results[0].libraryId === libraryId)) {
-            return results[0] as StoryPlus;
+        const result = await prisma.story.findUnique({
+            include: include(query),
+            where: {
+                id: storyId,
+                libraryId: libraryId,
+            }
+        });
+        if (result) {
+            return result as StoryPlus;
         } else {
             throw new NotFound(
                 `id: Missing Story ${storyId}`,
@@ -309,17 +308,18 @@ export const authorDisconnect =
  * @throws ServerError                  If a low level error is thrown
  */
 export const exact = async (libraryId: number, name: string, query?: any): Promise<StoryPlus> => {
-    const args: Prisma.StoryFindManyArgs = {
-        include: include(query),
-        where: {
-            libraryId: libraryId,
-            name: name,
-        }
-    }
     try {
-        const results = await prisma.story.findMany(args);
-        if (results && (results.length > 0) && (results[0].libraryId === libraryId)) {
-            return results[0] as StoryPlus;
+        const result = await prisma.story.findUnique({
+            include: include(query),
+            where: {
+                libraryId_name: {
+                    libraryId: libraryId,
+                    name: name,
+                }
+            }
+        });
+        if (result) {
+            return result as StoryPlus;
         } else {
             throw new NotFound(
                 `name: Missing Story '${name}'`,

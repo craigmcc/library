@@ -87,17 +87,16 @@ export const all = async (libraryId: number, query?: any): Promise<VolumePlus[]>
  * @throws ServerError                  If a low level error is thrown
  */
 export const find = async (libraryId: number, volumeId: number, query?: any): Promise<VolumePlus> => {
-    const args: Prisma.VolumeFindManyArgs = {
-        include: include(query),
-        where: {
-            id: volumeId,
-            libraryId: libraryId,
-        }
-    }
     try {
-        const results = await prisma.volume.findMany(args);
-        if (results && (results.length > 0) && (results[0].libraryId === libraryId)) {
-            return results[0] as VolumePlus;
+        const result = await prisma.volume.findUnique({
+            include: include(query),
+            where: {
+                id: volumeId,
+                libraryId: libraryId,
+            }
+        });
+        if (result) {
+            return result as VolumePlus;
         } else {
             throw new NotFound(
                 `id: Missing Volume ${volumeId}`,
@@ -340,17 +339,18 @@ export const authorDisconnect =
  * @throws ServerError                  If a low level error is thrown
  */
 export const exact = async (libraryId: number, name: string, query?: any): Promise<VolumePlus> => {
-    const args: Prisma.VolumeFindManyArgs = {
-        include: include(query),
-        where: {
-            libraryId: libraryId,
-            name: name,
-        }
-    }
     try {
-        const results = await prisma.volume.findMany(args);
-        if (results && (results.length > 0) && (results[0].libraryId === libraryId)) {
-            return results[0] as VolumePlus;
+        const result = await prisma.volume.findUnique({
+            include: include(query),
+            where: {
+                libraryId_name: {
+                    libraryId: libraryId,
+                    name: name,
+                }
+            }
+        });
+        if (result) {
+            return result as VolumePlus;
         } else {
             throw new NotFound(
                 `name: Missing Volume '${name}'`,
