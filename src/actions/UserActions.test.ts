@@ -18,9 +18,11 @@ import {
 // Internal Modules ----------------------------------------------------------
 
 import * as UserActions from "./UserActions";
-import * as BaseUtils from "../test-prisma/BaseUtils";
+import ActionsUtils from "../test-prisma/ActionsUtils";
 import * as SeedData from "../test-prisma/SeedData";
 import {NotFound, NotUnique} from "../util/HttpErrors";
+
+const UTILS = new ActionsUtils();
 
 // Test Specifications -------------------------------------------------------
 
@@ -29,7 +31,7 @@ describe("UserActions Functional Tests", () => {
     // Test Hooks ------------------------------------------------------------
 
     beforeEach("#beforeEach", async () => {
-        await BaseUtils.loadData({
+        await UTILS.loadData({
             withAccessTokens: true,
             withRefreshTokens: true,
             withUsers: true,

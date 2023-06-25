@@ -11,20 +11,18 @@
 import chai from "chai";
 const expect = chai.expect;
 import {
-    Author,
     Library,
     Prisma,
-    Series,
-    Story,
-    Volume,
 } from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
 
 import * as LibraryActions from "./LibraryActions";
-import * as BaseUtils from "../test-prisma/BaseUtils";
+import ActionsUtils from "../test-prisma/ActionsUtils";
 import * as SeedData from "../test-prisma/SeedData";
 import {BadRequest, NotFound, NotUnique} from "../util/HttpErrors";
+
+const UTILS = new ActionsUtils();
 
 // Test Specifications -------------------------------------------------------
 
@@ -33,7 +31,7 @@ describe("LibraryActions Functional Tests", () => {
     // Test Hooks ------------------------------------------------------------
 
     beforeEach("#beforeEach", async () => {
-        await BaseUtils.loadData({
+        await UTILS.loadData({
             withAuthors: true,
             withLibraries: true,
             withSeries: true,

@@ -17,6 +17,11 @@ import {
 
 // Internal Modules ----------------------------------------------------------
 
+import * as AuthorActions from "./AuthorActions";
+import * as SeriesActions from "./SeriesActions";
+import * as StoryActions from "./StoryActions";
+import * as UserActions from "./UserActions";
+import * as VolumeActions from "./VolumeActions";
 import prisma from "../prisma";
 import {BadRequest, NotFound, NotUnique, ServerError} from "../util/HttpErrors";
 import { validateLibraryNameUnique, validateLibraryScopeUnique} from "../util-prisma/AsyncValidators";
@@ -226,7 +231,15 @@ export const update = async (libraryId: number, library: Prisma.LibraryUpdateInp
 
 // Action Unique Functions ---------------------------------------------------
 
-// TODO - authors()
+/**
+ * Return all matching Authors for the specified Library.
+ *
+ * @param libraryId                     ID of the Library to return data for
+ * @param query                         Optional Authors query parameters.
+ */
+export const authors = async (libraryId: number, query?: any): Promise<AuthorActions.AuthorPlus[]> => {
+    return await AuthorActions.all(libraryId, query);
+}
 
 /**
  * Return the Library instance with the specified name, or throw NotFound.
@@ -265,21 +278,108 @@ export const exact = async (name: string, query?: any): Promise<LibraryPlus> => 
     }
 }
 
-// TODO - series()
+/**
+ * Return all matching Series for the specified Library.
+ *
+ * @param libraryId                     ID of the Library to return data for
+ * @param query                         Optional Series query parameters.
+ */
+export const series = async (libraryId: number, query?: any): Promise<SeriesActions.SeriesPlus[]> => {
+    return await SeriesActions.all(libraryId, query);
+}
 
-// TODO - stories()
+/**
+ * Return all matching Stories for the specified Library.
+ *
+ * @param libraryId                     ID of the Library to return data for
+ * @param query                         Optional Stories query parameters.
+ */
+export const stories = async (libraryId: number, query?: any): Promise<StoryActions.StoryPlus[]> => {
+    return await StoryActions.all(libraryId, query);
+}
 
-// TODO - users()
+/**
+ * Return all users whose scope includes a scope value that starts with
+ * the scope prefix for this Library.
+ *
+ * @param libraryId                     ID of the Library to return data for
+ * @param query                         Optional Users query parameters
+ */
+export const users = async (libraryId: number, query?: any): Promise<UserActions.UserPlus[]> => {
+    const library = await find(libraryId);
+    const pattern = `${library.scope}`;
+    const results = await UserActions.all(query);
+    const users: UserActions.UserPlus[] = [];
+    for(const user of results) {
+        let match = false;
+        const alloweds = user.scope.split(" ");
+        for (const allowed of alloweds) {
+            if (allowed.startsWith(pattern)) {
+                match = true;
+            }
+        }
+        if (match) {
+            users.push(user);
+        }
+    }
+    return users;
+}
 
-// TODO - usersExact()
+/**
+ * Return the User with the specified username for the specified Library.
+ *
+ * @param libraryId                     ID of the Library to return data for
+ * @param username                      Exact username to be matched
+ * @param query                         Optional User query parameters
+ */
+export const usersExact = async (libraryId: number, username: string, query?: any): Promise<UserActions.UserPlus> => {
+    await find(libraryId);
+    return await UserActions.exact(username, query);
+}
 
-// TODO - usersInsert()
+/**
+ * Insert and return the specified User for this Library.
+ *
+ * @param libraryId                     ID of the Library to return data for
+ * @param user                          User to be inserted
+ */
+export const usersInsert = async (libraryId: number, user: Prisma.UserCreateInput): Promise<UserActions.UserPlus> => {
+    await find(libraryId);
+    return await UserActions.insert(user);
+}
 
-// TODO - usersRemove()
+/**
+ * Remove and return the specified User for this Library.
+ *
+ * @param libraryId                     ID of the Library to return data for
+ * @param userId                        ID of the user to be removed
+ */
+export const usersRemove = async (libraryId: number, userId: number): Promise<UserActions.UserPlus> => {
+    await find(libraryId);
+    return await UserActions.remove(userId);
+}
 
-// TODO - usersUpdate()
+/**
+ * Update and return the specified User for this Library.
+ *
+ * @param libraryId                     ID of the Library to return data for
+ * @param userId                        ID of the user to be updated
+ * @param user                          User updates to be performed
+ */
+export const usersUpdate = async (libraryId: number, userId: number, user: Prisma.UserUpdateInput): Promise<UserActions.UserPlus> => {
+    await find(libraryId);
+    return await UserActions.update(userId, user);
+}
 
-// TODO - volumes()
+/**
+ * Return all matching Volumes for the specified Library.
+ *
+ * @param libraryId                     ID of the Library to return data for
+ * @param query                         Optional Stories query parameters.
+ */
+export const volumes = async (libraryId: number, query?: any): Promise<VolumeActions.VolumePlus[]> => {
+    return await VolumeActions.all(libraryId, query);
+}
 
 // Support Functions ---------------------------------------------------------
 
