@@ -1,4 +1,4 @@
-// OAuthMiddleware -----------------------------------------------------------
+// oauth-prisma/OAuthMiddleware.ts
 
 // Express middleware to enforce OAuth scope limits.
 

@@ -1,6 +1,10 @@
-// oauth-prisma/OAuthOrchestratorHandlers
+// oauth-prisma/OAuthOrchestratorHandlers.ts
 
-// Handlers for use by @craigmcc/oauth-orchestrator.
+/**
+ * Handlers for use by @craigmcc/oauth-orchestrator.
+ *
+ * @packageDocumentation
+ */
 
 // External Modules ----------------------------------------------------------
 
@@ -22,11 +26,10 @@ import {
 
 // Internal Modules ----------------------------------------------------------
 
-import prisma from "../prisma";
+import {generateRandomToken, verifyPassword} from "./OAuthUtils";
 import * as AccessTokenActions from "../actions/AccessTokenActions";
 import * as RefreshTokenActions from "../actions/RefreshTokenActions";
 import * as UserActions from "../actions/UserActions";
-import {generateRandomToken, verifyPassword} from "../oauth/OAuthUtils";
 import {NotFound} from "../util/HttpErrors";
 
 // Private Objects -----------------------------------------------------------
@@ -150,24 +153,14 @@ const revokeAccessToken: RevokeAccessToken = async (token: string): Promise<void
             )
         }
     }
-    // Revoke the access token
-    const results = await prisma.accessToken.deleteMany({
-        where: {
-            token: token,
-        }
-    });
-    if (results.count < 1) {
+    // Revoke the access token and related refresh tokens (if any)
+    const count = await AccessTokenActions.revoke(token);
+    if (count < 1) {
         throw new InvalidRequestError(
             "token: Missing or invalid token",
             "OAuthOrchestratorHandlers.revokeAccessToken"
         );
     }
-    // Revoke any related RefreshToken
-    await prisma.refreshToken.deleteMany({
-        where: {
-            accessToken: token,
-        }
-    });
 }
 
 // Public Objects ------------------------------------------------------------

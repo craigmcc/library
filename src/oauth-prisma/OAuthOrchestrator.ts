@@ -1,6 +1,10 @@
-// OAuthOrchestrator ---------------------------------------------------------
+// oauth-prisma/OAuthOrchestrator.ts
 
-// Initialize OAuth handling for this application.
+/**
+ * Initialize OAuth handling for this application.
+ *
+ * @packageDocumentation
+ */
 
 // External Modules ----------------------------------------------------------
 

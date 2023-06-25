@@ -88,11 +88,12 @@ export const insert = async (accessToken: Prisma.AccessTokenUncheckedCreateInput
  * Revoke the specified AccessToken and any related RefreshTokens.
  *
  * @param token                         Access token value to be revoked
+ * @returns                             Count of revoked access tokens
  *
  * @throws NotFound                     If no such access token is found
  * @throws ServerError                  If a low level error occurs
  */
-export const revoke = async (token: string): Promise<void> => {
+export const revoke = async (token: string): Promise<number> => {
     try {
         // Delete this access token
         const results = await prisma.accessToken.deleteMany({
@@ -100,27 +101,19 @@ export const revoke = async (token: string): Promise<void> => {
                 token: token,
             }
         });
-        if (results.count < 1) {
-            throw new NotFound(
-                "token: Missing or invalid token",
-                "AccessTokenActions.revoke",
-            )
-        }
         // Delete any corresponding refresh tokens
         await prisma.refreshToken.deleteMany({
             where: {
                 accessToken: token,
             }
         });
+        // Return the count of revoked access tokens
+        return results.count;
     } catch (error) {
-        if (error instanceof NotFound) {
-            throw error;
-        } else {
-            throw new ServerError(
-                error as Error,
-                "AccessTokenActions.revoke",
-            );
-        }
+        throw new ServerError(
+            error as Error,
+            "AccessTokenActions.revoke",
+        );
     }
 
 }
