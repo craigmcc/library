@@ -76,7 +76,7 @@
     "concurrently": "^8.2.2",
     "mocha": "^10.2.0",
     "nodemon": "^3.0.2",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "typedoc": "^0.25.4",
     "typescript": "^5.3.3"
   }
